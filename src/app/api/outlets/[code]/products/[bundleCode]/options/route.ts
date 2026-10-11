@@ -9,31 +9,44 @@ export async function GET(
   _request: NextRequest,
   segmentData: { params: Promise<{ code: string; bundleCode: string }> }
 ) {
+  const { code, bundleCode } = await segmentData.params;
+  if (!code || !bundleCode) {
+    return NextResponse.json(
+      { error: 'Parameter code dan bundleCode wajib disertakan' },
+      { status: 400 }
+    );
+  }
+
+  const cacheKey = cacheKeys.productOptions(code, bundleCode);
+
+  // 1. Cek cache segar
+  const cached = await cacheService.get<{ options: ProductOptionDetails }>(cacheKey);
+  if (cached) {
+    return NextResponse.json(cached);
+  }
+
+  // 2. Ambil dari KK API dengan proteksi stale-if-error
   try {
-    const { code, bundleCode } = await segmentData.params;
-    if (!code || !bundleCode) {
-      return NextResponse.json(
-        { error: 'Parameter code dan bundleCode wajib disertakan' },
-        { status: 400 }
-      );
-    }
-
-    const cacheKey = cacheKeys.productOptions(code, bundleCode);
-    const cached = await cacheService.get<{ options: ProductOptionDetails }>(cacheKey);
-    if (cached) {
-      return NextResponse.json(cached);
-    }
-
-    // Ambil detail store untuk mendapatkan id (outlet_id) yang dibutuhkan KK
     const store = await kkApiClient.getStore(code);
     const rawOptions = await kkApiClient.getProductOptions(store.id, code, bundleCode);
     const options = normalizeProductOptions(rawOptions);
     const responsePayload = { options };
 
     await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.optionsTtlSeconds);
-
     return NextResponse.json(responsePayload);
   } catch (error: any) {
+    console.error(`[Options API] KK gagal mengambil opsi [${code}/${bundleCode}]: ${error.message}`);
+
+    // Stale-if-error: kembalikan cache terakhir walau sudah kedaluwarsa
+    const staleData = await cacheService.getStale<{ options: ProductOptionDetails }>(cacheKey);
+    if (staleData) {
+      console.warn(`[Options API] Menggunakan STALE data untuk opsi [${code}/${bundleCode}] karena KK error.`);
+      return NextResponse.json(
+        { ...staleData, isStale: true },
+        { headers: { 'X-Cache-Status': 'STALE-IF-ERROR' } }
+      );
+    }
+
     return NextResponse.json(
       { error: error.message || 'Gagal memuat opsi varian produk' },
       { status: 500 }
