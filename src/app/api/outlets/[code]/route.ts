@@ -25,7 +25,7 @@ export async function GET(
     const outlet = normalizeStore(rawStore);
     const responsePayload = { outlet };
 
-    await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.storesTtlSeconds);
+    await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.storeOpenStatusTtlSeconds);
 
     return NextResponse.json(responsePayload);
   } catch (error: any) {

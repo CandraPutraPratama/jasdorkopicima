@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const SAMPLES_DIR = path.resolve(__dirname, '../docs/api-samples');
 const BASE_URL = process.env.KOPI_KENANGAN_API_BASE || 'https://order.kopikenangan.com/web_order/api';
-const PHONE = process.env.KOPI_KENANGAN_PHONE || '6281234567890';
+const PHONE = process.env.KOPI_KENANGAN_PHONE || '';
 
 async function postKK(endpoint, body, token = null) {
   const headers = {

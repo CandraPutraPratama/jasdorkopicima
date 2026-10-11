@@ -25,10 +25,12 @@ export interface BusinessConfig {
   pricing: PricingConfig;
   operational: OperationalConfig;
   cache: {
-    /** TTL cache menu outlet dalam detik (default 2 jam) */
+    /** TTL cache menu outlet dalam detik (15 menit) */
     menuTtlSeconds: number;
-    /** TTL cache opsi varian produk dalam detik (default 4 jam) */
+    /** TTL cache opsi varian produk dalam detik (1 jam) */
     optionsTtlSeconds: number;
+    /** TTL cache status buka / detail dinamis outlet (90 detik = 1.5 menit) */
+    storeOpenStatusTtlSeconds: number;
     /** TTL cache daftar outlet dalam detik (default 6 jam) */
     storesTtlSeconds: number;
   };
@@ -52,8 +54,9 @@ export const BUSINESS_CONFIG: BusinessConfig = {
     timeZone: 'Asia/Jakarta',
   },
   cache: {
-    menuTtlSeconds: 2 * 60 * 60, // 2 jam
-    optionsTtlSeconds: 4 * 60 * 60, // 4 jam
+    menuTtlSeconds: 15 * 60, // 15 menit
+    optionsTtlSeconds: 60 * 60, // 1 jam
+    storeOpenStatusTtlSeconds: 90, // 1.5 menit (antara 1 s/d 2 menit)
     storesTtlSeconds: 6 * 60 * 60, // 6 jam
   },
   client: {
