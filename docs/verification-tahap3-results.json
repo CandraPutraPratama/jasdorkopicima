@@ -1,0 +1,436 @@
+{
+  "test_7a": {
+    "tokenSuccess": true,
+    "tokenCustomerName": "",
+    "menuSuccess": true,
+    "menuGroupsCount": 10,
+    "conclusion": "Token dengan nomor HP kosong BERHASIL 100% digunakan untuk mengambil menu tanpa kendala."
+  },
+  "test_7b": {
+    "Jakarta": {
+      "storeCode": "CIMB",
+      "storeName": "Graha CIMB Niaga",
+      "totalProducts": 105,
+      "differentPriceCount": 7,
+      "percentage": "6.7%",
+      "diffSamples": [
+        {
+          "group": "Promo & Combo",
+          "name": "Buy 2 Disc 25%",
+          "price": 27750,
+          "origPrice": 44000,
+          "discountAmount": 16250,
+          "isCombo": true
+        },
+        {
+          "group": "Promo & Combo",
+          "name": "2 KKM Hanya 29RBan",
+          "price": 29900,
+          "origPrice": 38000,
+          "discountAmount": 8100,
+          "isCombo": true
+        },
+        {
+          "group": "Promo & Combo",
+          "name": "Beli 3 Hanya 47RB",
+          "price": 47000,
+          "origPrice": 59000,
+          "discountAmount": 12000,
+          "isCombo": true
+        },
+        {
+          "group": "Promo & Combo",
+          "name": "PEKA 1",
+          "price": 95000,
+          "origPrice": 107000,
+          "discountAmount": 12000,
+          "isCombo": true
+        },
+        {
+          "group": "Promo & Combo",
+          "name": "PEKA 2",
+          "price": 84000,
+          "origPrice": 91000,
+          "discountAmount": 7000,
+          "isCombo": true
+        }
+      ]
+    },
+    "Surabaya": {
+      "storeCode": "KK.SBY.THSQRE",
+      "storeName": "The Square Surabaya",
+      "totalProducts": 111,
+      "differentPriceCount": 8,
+      "percentage": "7.2%",
+      "diffSamples": [
+        {
+          "group": "Promo & Combo",
+          "name": "Buy 2 Disc 25%",
+          "price": 28500,
+          "origPrice": 44000,
+          "discountAmount": 15500,
+          "isCombo": true
+        },
+        {
+          "group": "Promo & Combo",
+          "name": "2 KKM Hanya 29RBan",
+          "price": 29900,
+          "origPrice": 38000,
+          "discountAmount": 8100,
+          "isCombo": true
+        },
+        {
+          "group": "Promo & Combo",
+          "name": "Beli 3 Hanya 47RB",
+          "price": 47000,
+          "origPrice": 59000,
+          "discountAmount": 12000,
+          "isCombo": true
+        },
+        {
+          "group": "Promo & Combo",
+          "name": "PEKA 1",
+          "price": 95000,
+          "origPrice": 107000,
+          "discountAmount": 12000,
+          "isCombo": true
+        },
+        {
+          "group": "Promo & Combo",
+          "name": "PEKA 2",
+          "price": 84000,
+          "origPrice": 91000,
+          "discountAmount": 7000,
+          "isCombo": true
+        }
+      ]
+    },
+    "Bandung": {
+      "storeCode": "KK.BDG.UBERTOS",
+      "storeName": "Ubertos Bandung",
+      "totalProducts": 117,
+      "differentPriceCount": 12,
+      "percentage": "10.3%",
+      "diffSamples": [
+        {
+          "group": "Promo & Combo",
+          "name": "Buy 2 Disc 25%",
+          "price": 28500,
+          "origPrice": 44000,
+          "discountAmount": 15500,
+          "isCombo": true
+        },
+        {
+          "group": "Promo & Combo",
+          "name": "2 KKM Hanya 29RBan",
+          "price": 29900,
+          "origPrice": 38000,
+          "discountAmount": 8100,
+          "isCombo": true
+        },
+        {
+          "group": "Promo & Combo",
+          "name": "Teddy Bear Bottle",
+          "price": 50000,
+          "origPrice": 61000,
+          "discountAmount": 11000,
+          "isCombo": true
+        },
+        {
+          "group": "Promo & Combo",
+          "name": "Beli 3 Hanya 47RB",
+          "price": 47000,
+          "origPrice": 59000,
+          "discountAmount": 12000,
+          "isCombo": true
+        },
+        {
+          "group": "Promo & Combo",
+          "name": "PEKA 1",
+          "price": 95000,
+          "origPrice": 107000,
+          "discountAmount": 12000,
+          "isCombo": true
+        }
+      ]
+    }
+  },
+  "test_7c": {
+    "targetOutlets": [
+      {
+        "city": "Jakarta",
+        "code": "CIMB",
+        "name": "Graha CIMB Niaga"
+      },
+      {
+        "city": "Surabaya",
+        "code": "KK.SBY.THSQRE",
+        "name": "The Square Surabaya"
+      },
+      {
+        "city": "Bandung",
+        "code": "KK.BDG.UBERTOS",
+        "name": "Ubertos Bandung"
+      }
+    ],
+    "comparisonTable": [
+      {
+        "name": "Kopi Kenangan Mantan",
+        "prices": {
+          "Jakarta": {
+            "price": 19000,
+            "origPrice": 19000,
+            "isSoldOut": false
+          },
+          "Surabaya": {
+            "price": 19000,
+            "origPrice": 19000,
+            "isSoldOut": false
+          },
+          "Bandung": {
+            "price": 19000,
+            "origPrice": 19000,
+            "isSoldOut": false
+          }
+        }
+      },
+      {
+        "name": "Americano",
+        "prices": {
+          "Jakarta": {
+            "price": 17000,
+            "origPrice": 17000,
+            "isSoldOut": false
+          },
+          "Surabaya": {
+            "price": 17000,
+            "origPrice": 17000,
+            "isSoldOut": false
+          },
+          "Bandung": {
+            "price": 17000,
+            "origPrice": 17000,
+            "isSoldOut": false
+          }
+        }
+      },
+      {
+        "name": "Avocado Coffee",
+        "prices": {
+          "Jakarta": {
+            "price": 28000,
+            "origPrice": 28000,
+            "isSoldOut": false
+          },
+          "Surabaya": {
+            "price": 28000,
+            "origPrice": 28000,
+            "isSoldOut": false
+          },
+          "Bandung": {
+            "price": 28000,
+            "origPrice": 28000,
+            "isSoldOut": false
+          }
+        }
+      },
+      {
+        "name": "Caramel Macchiato",
+        "prices": {
+          "Jakarta": {
+            "price": 28000,
+            "origPrice": 28000,
+            "isSoldOut": false
+          },
+          "Surabaya": {
+            "price": 28000,
+            "origPrice": 28000,
+            "isSoldOut": false
+          },
+          "Bandung": {
+            "price": 28000,
+            "origPrice": 28000,
+            "isSoldOut": false
+          }
+        }
+      },
+      {
+        "name": "Kenangan Milk Tea",
+        "prices": {
+          "Jakarta": {
+            "price": 21000,
+            "origPrice": 21000,
+            "isSoldOut": false
+          },
+          "Surabaya": {
+            "price": 21000,
+            "origPrice": 21000,
+            "isSoldOut": false
+          },
+          "Bandung": {
+            "price": 21000,
+            "origPrice": 21000,
+            "isSoldOut": false
+          }
+        }
+      },
+      {
+        "name": "Matcha Latte",
+        "prices": {
+          "Jakarta": {
+            "price": 25000,
+            "origPrice": 25000,
+            "isSoldOut": false
+          },
+          "Surabaya": {
+            "price": 25000,
+            "origPrice": 25000,
+            "isSoldOut": false
+          },
+          "Bandung": {
+            "price": 25000,
+            "origPrice": 25000,
+            "isSoldOut": false
+          }
+        }
+      }
+    ]
+  },
+  "test_7d": {
+    "Taro Cloud Latte": {
+      "basePrice": 22000,
+      "skuCount": 24,
+      "isConsistent": true,
+      "minDelta": 0,
+      "maxDelta": 23000,
+      "sampleDeltas": [
+        {
+          "sku": "7245645000",
+          "description": "Ice, Regular, Kenangan Blend, Milk, Normal Sugar",
+          "price": 22000,
+          "delta": 0
+        },
+        {
+          "sku": "7245645024",
+          "description": "Ice, Regular, Kenangan Blend, Milk, Less Sugar",
+          "price": 22000,
+          "delta": 0
+        },
+        {
+          "sku": "7245645012",
+          "description": "Ice, Regular, Kenangan Blend, Oatside, Normal Sugar",
+          "price": 25000,
+          "delta": 3000
+        },
+        {
+          "sku": "7245645036",
+          "description": "Ice, Regular, Kenangan Blend, Oatside, Less Sugar",
+          "price": 25000,
+          "delta": 3000
+        },
+        {
+          "sku": "7245645006",
+          "description": "Ice, Regular, Juwara Beans, Milk, Normal Sugar",
+          "price": 25000,
+          "delta": 3000
+        },
+        {
+          "sku": "7245645030",
+          "description": "Ice, Regular, Juwara Beans, Milk, Less Sugar",
+          "price": 25000,
+          "delta": 3000
+        }
+      ]
+    },
+    "Kopi Kenangan Mantan": {
+      "basePrice": 19000,
+      "skuCount": 60,
+      "isConsistent": true,
+      "minDelta": 0,
+      "maxDelta": 22000,
+      "sampleDeltas": [
+        {
+          "sku": "7833007000",
+          "description": "Ice, Regular, Kenangan Blend, Milk, Normal Sugar",
+          "price": 19000,
+          "delta": 0
+        },
+        {
+          "sku": "7833007024",
+          "description": "Ice, Regular, Kenangan Blend, Milk, Less Sugar",
+          "price": 19000,
+          "delta": 0
+        },
+        {
+          "sku": "7833007048",
+          "description": "Ice, Regular, Kenangan Blend, Milk, No Sugar",
+          "price": 19000,
+          "delta": 0
+        },
+        {
+          "sku": "7833007012",
+          "description": "Ice, Regular, Kenangan Blend, Oatside, Normal Sugar",
+          "price": 22000,
+          "delta": 3000
+        },
+        {
+          "sku": "7833007036",
+          "description": "Ice, Regular, Kenangan Blend, Oatside, Less Sugar",
+          "price": 22000,
+          "delta": 3000
+        },
+        {
+          "sku": "7833007060",
+          "description": "Ice, Regular, Kenangan Blend, Oatside, No Sugar",
+          "price": 22000,
+          "delta": 3000
+        }
+      ]
+    },
+    "Avocado Coffee": {
+      "basePrice": 28000,
+      "skuCount": 36,
+      "isConsistent": true,
+      "minDelta": 0,
+      "maxDelta": 25000,
+      "sampleDeltas": [
+        {
+          "sku": "2895061000",
+          "description": "Ice, Regular, Kenangan Blend, Milk, Normal Sugar",
+          "price": 28000,
+          "delta": 0
+        },
+        {
+          "sku": "2895061024",
+          "description": "Ice, Regular, Kenangan Blend, Milk, Less Sugar",
+          "price": 28000,
+          "delta": 0
+        },
+        {
+          "sku": "2895061048",
+          "description": "Ice, Regular, Kenangan Blend, Milk, No Sugar",
+          "price": 28000,
+          "delta": 0
+        },
+        {
+          "sku": "2895061012",
+          "description": "Ice, Regular, Kenangan Blend, Oatside, Normal Sugar",
+          "price": 31000,
+          "delta": 3000
+        },
+        {
+          "sku": "2895061036",
+          "description": "Ice, Regular, Kenangan Blend, Oatside, Less Sugar",
+          "price": 31000,
+          "delta": 3000
+        },
+        {
+          "sku": "2895061060",
+          "description": "Ice, Regular, Kenangan Blend, Oatside, No Sugar",
+          "price": 31000,
+          "delta": 3000
+        }
+      ]
+    }
+  }
+}

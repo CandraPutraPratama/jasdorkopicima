@@ -143,6 +143,12 @@ export class KkApiClient {
   } = {}): Promise<KkQueryStoreData> {
     const { pageNum = 1, pageSize = 20, keyword = '', storeType = 0 } = params;
     const res = await this.rawFetch<KkApiResponse<KkQueryStoreData>>('/store/query_store', {
+      fuzzy_name: keyword,
+      deliverable: 2,
+      page: {
+        page_index: pageNum,
+        page_size: pageSize,
+      },
       page_num: pageNum,
       page_size: pageSize,
       keyword,
