@@ -1,1 +1,34 @@
 @import "tailwindcss";
+
+@theme {
+  --color-brand-dark: #111111;
+  --color-brand-gold: #D4AF37;
+  --color-brand-gold-hover: #b8972e;
+  --color-brand-bg: #FFFFFF;
+  --color-brand-text: #1F2937;
+}
+
+:root {
+  --brand-dark: #111111;
+  --brand-gold: #D4AF37;
+  --brand-bg: #FFFFFF;
+  --brand-text: #1F2937;
+}
+
+html, body {
+  background-color: #F8F9FA;
+  color: #1F2937;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+/* Scrollbar styling for sticky tabs */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
