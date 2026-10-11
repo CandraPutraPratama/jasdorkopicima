@@ -1,0 +1,258 @@
+'use client';
+
+import { use, useState, useEffect, useRef } from 'react';
+import { useOperationalStatus } from '@/hooks/useOperationalStatus';
+import { ClosedScreen } from '@/components/ClosedScreen';
+import { Header } from '@/components/Header';
+import { MenuCategoryNav } from '@/components/MenuCategoryNav';
+import { ProductCard } from '@/components/ProductCard';
+import { ProductBottomSheet } from '@/components/ProductBottomSheet';
+import { ProductCardSkeleton, CategoryTabSkeleton } from '@/components/Skeleton';
+import type { Outlet, MenuGroup, Product } from '@/types/domain';
+
+interface OutletMenuPageProps {
+  params: Promise<{ code: string }>;
+}
+
+export default function OutletMenuPage({ params }: OutletMenuPageProps) {
+  const resolvedParams = use(params);
+  const outletCode = resolvedParams.code;
+
+  const { isOpen: isJasdorOpen, status: jasdorStatus, isLoading: isJasdorLoading, refetch } =
+    useOperationalStatus();
+
+  const [outlet, setOutlet] = useState<Outlet | null>(null);
+  const [menuGroups, setMenuGroups] = useState<MenuGroup[]>([]);
+  const [activeCategoryCode, setActiveCategoryCode] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Bottom Sheet state
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const categoryRefs = useRef<Record<string, HTMLElement | null>>({});
+
+  useEffect(() => {
+    if (!outletCode) return;
+
+    let isCancelled = false;
+    setIsLoading(true);
+    setErrorMessage(null);
+
+    // Ambil detail outlet (segar dari get_store) dan menu kelompok produk
+    Promise.all([
+      fetch(`/api/outlets/${encodeURIComponent(outletCode)}`).then((r) => {
+        if (!r.ok) throw new Error('Outlet tidak ditemukan');
+        return r.json();
+      }),
+      fetch(`/api/outlets/${encodeURIComponent(outletCode)}/menu`).then((r) => {
+        if (!r.ok) throw new Error('Gagal memuat menu outlet');
+        return r.json();
+      }),
+    ])
+      .then(([outletData, menuData]) => {
+        if (!isCancelled) {
+          setOutlet(outletData.outlet || null);
+          const groups: MenuGroup[] = menuData.menuGroups || [];
+          setMenuGroups(groups);
+          if (groups.length > 0) {
+            setActiveCategoryCode(groups[0].code);
+          }
+          setIsLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (!isCancelled) {
+          setErrorMessage(err.message || 'Terjadi kesalahan saat memuat menu');
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [outletCode]);
+
+  const handleSelectCategory = (code: string) => {
+    setActiveCategoryCode(code);
+    const element = categoryRefs.current[code];
+    if (element) {
+      const yOffset = -115; // Offset untuk sticky header dan navigation tabs
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
+
+  // 1. Loading Jam Operasional
+  if (isJasdorLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-white">
+        <div className="w-8 h-8 border-3 border-amber-400 border-t-transparent rounded-full animate-spin" />
+        <p className="mt-3 text-xs text-stone-500 font-medium">Memeriksa operasional...</p>
+      </div>
+    );
+  }
+
+  // 2. TUTUP TOTAL jika di luar jam operasional Jasdor (08.00 - 23.20 WIB)
+  if (!isJasdorOpen) {
+    return (
+      <ClosedScreen
+        currentWibTime={jasdorStatus?.currentWibTime}
+        openTime={jasdorStatus?.openTime}
+        closeTime={jasdorStatus?.closeTime}
+        onRefresh={refetch}
+      />
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col bg-stone-50">
+      {/* Header dengan tombol kembali */}
+      <Header showBack={true} backHref="/" backLabel="Kembali ke Cari Outlet" />
+
+      {/* Loading State Outlet & Menu */}
+      {isLoading && (
+        <div className="p-4 space-y-4">
+          <div className="p-4 bg-white rounded-2xl border border-stone-200 animate-pulse">
+            <div className="h-6 bg-stone-200 rounded w-2/3 mb-2" />
+            <div className="h-4 bg-stone-100 rounded w-full mb-2" />
+            <div className="h-4 bg-stone-100 rounded w-1/3" />
+          </div>
+          <CategoryTabSkeleton />
+          <div className="space-y-3">
+            <ProductCardSkeleton />
+            <ProductCardSkeleton />
+            <ProductCardSkeleton />
+          </div>
+        </div>
+      )}
+
+      {/* Error State */}
+      {errorMessage && !isLoading && (
+        <div className="flex-1 p-6 flex flex-col items-center justify-center text-center">
+          <div className="w-14 h-14 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mb-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-7 w-7"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <h2 className="text-base font-bold text-[#111111] mb-1">Gagal Memuat Outlet</h2>
+          <p className="text-xs text-stone-500 max-w-xs mb-4">{errorMessage}</p>
+          <a
+            href="/"
+            className="min-h-[44px] px-5 py-2.5 bg-[#111111] text-[#D4AF37] font-semibold text-xs rounded-xl flex items-center justify-center"
+          >
+            Pilih Outlet Lain
+          </a>
+        </div>
+      )}
+
+      {/* Content Outlet Menu */}
+      {!isLoading && !errorMessage && outlet && (
+        <div className="flex-1 flex flex-col">
+          {/* Header Outlet Info Card */}
+          <div className="p-4 bg-white border-b border-stone-200">
+            <div className="flex items-start justify-between gap-2">
+              <h1 className="text-lg font-bold text-[#111111] leading-snug">
+                {outlet.name}
+              </h1>
+              <span
+                className={`shrink-0 px-2.5 py-0.5 text-[11px] font-semibold rounded-full border ${
+                  outlet.isOpen
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                    : 'bg-rose-50 text-rose-700 border-rose-200'
+                }`}
+              >
+                {outlet.isOpen ? 'Buka Sekarang' : 'Tutup'}
+              </span>
+            </div>
+
+            <p className="text-xs text-stone-600 mt-1 leading-relaxed">
+              {outlet.address}
+            </p>
+
+            {outlet.openTime && outlet.closeTime && (
+              <div className="flex items-center gap-2 mt-2 pt-2 border-t border-stone-100 text-[11px] text-stone-500">
+                <span>
+                  Jam buka: {outlet.openTime.slice(0, 5)} - {outlet.closeTime.slice(0, 5)} WIB
+                </span>
+                {outlet.phone && (
+                  <>
+                    <span>•</span>
+                    <span>Telp: {outlet.phone}</span>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Sticky Horizontally Swipeable Menu Category Nav */}
+          <MenuCategoryNav
+            categories={menuGroups}
+            activeCategoryCode={activeCategoryCode}
+            onSelectCategory={handleSelectCategory}
+          />
+
+          {/* Daftar Produk per Kategori */}
+          <div className="p-4 space-y-6 pb-12">
+            {menuGroups.length === 0 ? (
+              <div className="p-8 bg-white rounded-2xl border border-stone-200 text-center">
+                <p className="text-xs text-stone-500">
+                  Tidak ada menu aktif yang tersedia di outlet ini saat ini.
+                </p>
+              </div>
+            ) : (
+              menuGroups.map((group) => (
+                <section
+                  key={group.code}
+                  ref={(el) => {
+                    categoryRefs.current[group.code] = el;
+                  }}
+                  className="space-y-3"
+                >
+                  <div className="flex items-center justify-between pt-1">
+                    <h2 className="text-sm font-bold text-[#111111] tracking-tight">
+                      {group.name}
+                    </h2>
+                    <span className="text-[11px] text-stone-400">
+                      {group.products.length} menu
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {group.products.map((product) => (
+                      <ProductCard
+                        key={product.bundleCode || product.id}
+                        product={product}
+                        onSelectProduct={(p) => setSelectedProduct(p)}
+                      />
+                    ))}
+                  </div>
+                </section>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Lembar Detail Produk (Bottom Sheet) */}
+      {selectedProduct && outlet && (
+        <ProductBottomSheet
+          outletCode={outlet.code}
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
+    </div>
+  );
+}
