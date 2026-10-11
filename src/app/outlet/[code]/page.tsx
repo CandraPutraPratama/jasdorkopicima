@@ -1,6 +1,7 @@
 'use client';
 
 import { use, useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { useOperationalStatus } from '@/hooks/useOperationalStatus';
 import { ClosedScreen } from '@/components/ClosedScreen';
 import { Header } from '@/components/Header';
@@ -148,12 +149,12 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           </div>
           <h2 className="text-base font-bold text-[#111111] mb-1">Gagal Memuat Outlet</h2>
           <p className="text-xs text-stone-500 max-w-xs mb-4">{errorMessage}</p>
-          <a
+          <Link
             href="/"
             className="min-h-[44px] px-5 py-2.5 bg-[#111111] text-[#D4AF37] font-semibold text-xs rounded-xl flex items-center justify-center"
           >
             Pilih Outlet Lain
-          </a>
+          </Link>
         </div>
       )}
 

@@ -53,7 +53,7 @@ export async function searchOutlets(
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
 
-    let query = supabase
+    const query = supabase
       .from('outlets')
       .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active', {
         count: 'exact',

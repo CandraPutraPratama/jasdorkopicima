@@ -24,6 +24,9 @@ export interface KkStoreItem {
   open_status?: string;
   latitude?: string;
   longitude?: string;
+  order_type?: number[];
+  status?: string;
+  order_msg?: string;
 }
 
 export interface KkQueryStoreData {
@@ -115,6 +118,8 @@ export interface KkProductOptionsData {
   };
   product_dimension_wording?: KkDimensionWordingData;
   option_product_map?: Record<string, KkOptionSkuItem>;
+  default_selection_impact_sku?: Record<string, string>;
+  default_selection_notes?: Record<string, string>;
   product_addon_wording?: KkProductAddonWordingData | KkAddonWordingItem[];
   notes?: KkNoteGroupItem[];
 }
