@@ -15,6 +15,11 @@ export interface Outlet {
   timeZone: number;
   phone?: string;
   distanceStr?: string;
+  orderType?: number[];
+  status?: string;
+  orderMsg?: string;
+  canOrder: boolean;
+  orderReason?: string;
 }
 
 export interface Product {
@@ -50,6 +55,7 @@ export interface VariantDimension {
 
 export interface VariantSku {
   sku: string;
+  combinationKey: string;
   name: string;
   description: string;
   price: number;
@@ -75,6 +81,8 @@ export interface ProductOptionDetails {
   product: Product;
   dimensions: VariantDimension[];
   skus: VariantSku[];
+  optionMap: Record<string, VariantSku>;
+  defaultSelectionMap?: Record<string, string>;
   addons: Addon[];
   notes: ProductNoteGroup[];
 }

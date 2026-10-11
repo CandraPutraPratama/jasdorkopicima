@@ -16,10 +16,19 @@ import type {
   KkProductOptionsData,
 } from '../types/kk-api.ts';
 
+import { checkOutletOrderability } from './orderability.ts';
+
 /**
  * Menormalkan data 1 store/outlet dari KK ke domain Outlet
  */
 export function normalizeStore(raw: KkStoreItem): Outlet {
+  const orderability = checkOutletOrderability({
+    orderType: raw.order_type,
+    status: raw.status,
+    orderMsg: raw.order_msg,
+    isOpen: Boolean(raw.is_open),
+  });
+
   return {
     id: raw.id,
     code: raw.code || '',
@@ -31,6 +40,11 @@ export function normalizeStore(raw: KkStoreItem): Outlet {
     timeZone: raw.time_zone || 7,
     phone: raw.phone || undefined,
     distanceStr: raw.distance_str || undefined,
+    orderType: raw.order_type,
+    status: raw.status,
+    orderMsg: raw.order_msg,
+    canOrder: orderability.canOrder,
+    orderReason: orderability.reason,
   };
 }
 
@@ -121,20 +135,26 @@ export function normalizeProductOptions(raw: KkProductOptionsData): ProductOptio
     });
   }
 
-  // Variant SKUs
+  // Variant SKUs & Option Product Map
   const skus: VariantSku[] = [];
+  const optionMap: Record<string, VariantSku> = {};
   const rawSkus = raw.option_product_map || {};
-  for (const item of Object.values(rawSkus)) {
+
+  for (const [key, item] of Object.entries(rawSkus)) {
     const skuPrice = item.price || 0;
     const variantAddition = Math.max(0, skuPrice - basePrice);
 
-    skus.push({
+    const variantSku: VariantSku = {
       sku: String(item.product_code || ''),
+      combinationKey: key,
       name: (item.name || '').trim(),
       description: (item.display_description || '').trim(),
       price: skuPrice,
       variantAddition,
-    });
+    };
+
+    skus.push(variantSku);
+    optionMap[key] = variantSku;
   }
 
   // Addons / Toppings / Sauces
@@ -168,10 +188,14 @@ export function normalizeProductOptions(raw: KkProductOptionsData): ProductOptio
     }
   }
 
+  const defaultSelectionMap = (raw.default_selection_impact_sku || {}) as Record<string, string>;
+
   return {
     product,
     dimensions,
     skus,
+    optionMap,
+    defaultSelectionMap,
     addons,
     notes,
   };
