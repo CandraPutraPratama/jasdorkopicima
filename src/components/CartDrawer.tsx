@@ -147,7 +147,15 @@ export function CartDrawer({
 
     try {
       // 1. Cek jam buka jasdor secara real-time ke server
-      const opRes = await fetch('/api/operational-status', { cache: 'no-store' });
+      let simulateParam = '';
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const sim = urlParams.get('simulate');
+        if (sim === 'open' || sim === 'closed') {
+          simulateParam = `?simulate=${sim}`;
+        }
+      }
+      const opRes = await fetch(`/api/operational-status${simulateParam}`, { cache: 'no-store' });
       const opData = await opRes.json();
       if (!opData.isOpen) {
         throw new Error('Jasdor sedang tutup saat ini. Pesanan tidak dapat dikirim.');
@@ -539,6 +547,11 @@ export function CartDrawer({
         {/* Footer Tombol Kirim ke WhatsApp */}
         {items.length > 0 && (
           <div className="sticky bottom-0 bg-white border-t border-stone-200 p-4 space-y-2 shadow-lg">
+            {errorMessage && (
+              <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs">
+                {errorMessage}
+              </div>
+            )}
             <button
               type="button"
               disabled={isSubmitting}
@@ -587,10 +600,10 @@ export function CartDrawer({
 
             <div className="space-y-1">
               <h3 className="font-bold text-base text-[#111111]">
-                Sudah Mengirim Pesan?
+                Sudah mengirim pesan di WhatsApp?
               </h3>
               <p className="text-xs text-stone-500 leading-relaxed">
-                Apakah Anda sudah mengirim format pesanan ke WhatsApp Jasdor?
+                Konfirmasi jika Anda sudah mengirimkan format pesanan ke WhatsApp Jasdor.
               </p>
             </div>
 
@@ -600,14 +613,14 @@ export function CartDrawer({
                 onClick={handleConfirmWhatsAppSent}
                 className="w-full min-h-[44px] px-4 py-2.5 bg-[#111111] text-[#D4AF37] font-bold text-xs rounded-xl shadow-xs"
               >
-                Sudah Terkirim
+                Sudah
               </button>
               <button
                 type="button"
                 onClick={() => setShowSuccessDialog(false)}
                 className="w-full min-h-[44px] px-4 py-2.5 bg-stone-100 text-stone-700 font-semibold text-xs rounded-xl"
               >
-                Belum (Simpan Keranjang)
+                Belum
               </button>
             </div>
 
