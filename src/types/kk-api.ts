@@ -22,6 +22,8 @@ export interface KkStoreItem {
   phone?: string;
   distance_str?: string;
   open_status?: string;
+  latitude?: string;
+  longitude?: string;
 }
 
 export interface KkQueryStoreData {

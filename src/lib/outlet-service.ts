@@ -110,6 +110,8 @@ export async function syncOutletsToDb(): Promise<{
         code: s.code,
         name: (s.name || '').trim(),
         address: (s.address || '').trim(),
+        latitude: s.latitude ? parseFloat(s.latitude) : null,
+        longitude: s.longitude ? parseFloat(s.longitude) : null,
         open_time: s.open || '',
         close_time: s.close || '',
         is_active: true,

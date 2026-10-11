@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { getEnvVar } from './env.ts';
 
 let serverClientInstance: SupabaseClient | null = null;
 
@@ -12,11 +13,16 @@ export function getSupabaseServerClient(): SupabaseClient {
     return serverClientInstance;
   }
 
-  const supabaseUrl =
-    process.env.SUPABASE_URL ||
-    process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const rawUrl =
+    getEnvVar('SUPABASE_URL') ||
+    getEnvVar('NEXT_PUBLIC_SUPABASE_URL') ||
+    '';
 
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const rawKey = getEnvVar('SUPABASE_SERVICE_ROLE_KEY') || '';
+
+  // Sanitasi URL dan key untuk menghilangkan kutip atau karakter whitespace/newline tak sengaja saat secret put
+  const supabaseUrl = rawUrl.trim().replace(/^["']|["']$/g, '').replace(/[\r\n]+/g, '');
+  const serviceRoleKey = rawKey.trim().replace(/^["']|["']$/g, '').replace(/[\r\n]+/g, '');
 
   if (!supabaseUrl || !serviceRoleKey) {
     throw new Error(

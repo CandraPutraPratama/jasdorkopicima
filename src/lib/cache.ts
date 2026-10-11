@@ -13,6 +13,7 @@ export interface CacheService {
   has(key: string): Promise<boolean>;
   delete(key: string): Promise<void>;
   clear(): Promise<void>;
+  cleanExpiredEntries(olderThanDays?: number): Promise<number>;
 }
 
 /**
@@ -56,6 +57,18 @@ export class InMemoryCacheService implements CacheService {
 
   async clear(): Promise<void> {
     this.store.clear();
+  }
+
+  async cleanExpiredEntries(olderThanDays = 7): Promise<number> {
+    const threshold = Date.now() - olderThanDays * 24 * 60 * 60 * 1000;
+    let purged = 0;
+    for (const [k, v] of this.store.entries()) {
+      if (v.expiresAt < threshold) {
+        this.store.delete(k);
+        purged++;
+      }
+    }
+    return purged;
   }
 
   size(): number {
@@ -190,6 +203,37 @@ export class SupabaseCacheService implements CacheService {
       await client.from('generic_cache').delete().neq('key', '');
     } catch (err: any) {
       console.warn(`[CacheService] Gagal membersihkan cache Supabase: ${err.message}`);
+    }
+  }
+
+  /**
+   * Menghapus baris generic_cache yang kedaluwarsa lebih dari olderThanDays (default 7 hari).
+   */
+  async cleanExpiredEntries(olderThanDays = 7): Promise<number> {
+    await this.inMemoryFallback.cleanExpiredEntries(olderThanDays);
+    const client = this.getClient();
+    if (!client) return 0;
+
+    try {
+      const thresholdDate = new Date(
+        Date.now() - olderThanDays * 24 * 60 * 60 * 1000
+      ).toISOString();
+
+      const { data, error } = await client
+        .from('generic_cache')
+        .delete()
+        .lt('expires_at', thresholdDate)
+        .select('key');
+
+      if (error) {
+        console.warn(`[CacheService] Gagal membersihkan generic_cache usang (> ${olderThanDays} hari): ${error.message}`);
+        return 0;
+      }
+
+      return data?.length ?? 0;
+    } catch (err: any) {
+      console.warn(`[CacheService] Exception saat purge generic_cache usang: ${err.message}`);
+      return 0;
     }
   }
 }
