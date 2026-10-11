@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import type { Product, ProductOptionDetails, Addon, VariantSku } from '@/types/domain';
+import type { CartItem } from '@/lib/cart-reducer';
 import {
   findMatchingSku,
   isDimensionValueAvailable,
@@ -14,12 +15,14 @@ interface ProductBottomSheetProps {
   outletCode: string;
   product: Product;
   onClose: () => void;
+  onAddToCart: (item: Omit<CartItem, 'id'>) => void;
 }
 
 export function ProductBottomSheet({
   outletCode,
   product,
   onClose,
+  onAddToCart,
 }: ProductBottomSheetProps) {
   const [options, setOptions] = useState<ProductOptionDetails | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -440,17 +443,67 @@ export function ProductBottomSheet({
             </div>
           </div>
 
-          {/* Tombol Tambah ke Keranjang (NONAKTIF - Sesuai Aturan Tahap 5A) */}
+          {/* Tombol Tambah ke Keranjang (Aktif di Tahap 5B) */}
           <button
             type="button"
-            disabled
-            className="w-full min-h-[48px] px-4 py-3 bg-stone-200 text-stone-500 font-bold text-xs rounded-xl flex items-center justify-center gap-2 cursor-not-allowed opacity-80"
+            onClick={() => {
+              // Bangun teks ringkasan varian
+              const variantParts: string[] = [];
+              if (options?.dimensions) {
+                for (const dim of options.dimensions) {
+                  const selectedValId = selectedDimensions[dim.code];
+                  const val = dim.values.find((v) => v.id === selectedValId);
+                  if (val) {
+                    variantParts.push(val.name);
+                  }
+                }
+              }
+
+              if (selectedNotes) {
+                for (const [, valText] of Object.entries(selectedNotes)) {
+                  if (valText && !variantParts.includes(valText)) {
+                    variantParts.push(valText);
+                  }
+                }
+              }
+
+              const variantDescription = variantParts.join(', ');
+              const toppingTotal = selectedAddons.reduce((sum, a) => sum + (a.price || 0), 0);
+
+              onAddToCart({
+                bundleCode: product.bundleCode,
+                sku: matchedSku?.sku,
+                name: product.name,
+                image: product.image,
+                basePrice: product.basePrice,
+                variantAddition: matchedSku ? matchedSku.variantAddition : 0,
+                toppingTotal,
+                quantity,
+                variantDescription,
+                addons: selectedAddons,
+                notes: customerNotes,
+              });
+
+              onClose();
+            }}
+            className="w-full min-h-[48px] px-4 py-3 bg-[#111111] hover:bg-stone-900 active:scale-98 text-[#D4AF37] font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md"
           >
-            <span>Tambah ke Keranjang (Tahap 5B)</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+            <span>Tambah ke Keranjang • {formatRupiah(pricing.subtotal)}</span>
           </button>
-          <p className="text-[10px] text-stone-400 text-center">
-            Fitur keranjang, checkout, dan WhatsApp akan dibuka di Tahap 5B.
-          </p>
         </div>
       </div>
     </div>
