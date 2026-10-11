@@ -9,6 +9,10 @@ import { MenuCategoryNav } from '@/components/MenuCategoryNav';
 import { ProductCard } from '@/components/ProductCard';
 import { ProductBottomSheet } from '@/components/ProductBottomSheet';
 import { ProductCardSkeleton, CategoryTabSkeleton } from '@/components/Skeleton';
+import { useCart } from '@/hooks/useCart';
+import { FloatingCartBar } from '@/components/FloatingCartBar';
+import { CartDrawer } from '@/components/CartDrawer';
+import { SwitchOutletModal } from '@/components/SwitchOutletModal';
 import type { Outlet, MenuGroup, Product } from '@/types/domain';
 
 interface OutletMenuPageProps {
@@ -21,6 +25,9 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
 
   const { isOpen: isJasdorOpen, status: jasdorStatus, isLoading: isJasdorLoading, refetch } =
     useOperationalStatus();
+
+  const cart = useCart();
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState<boolean>(false);
 
   const [outlet, setOutlet] = useState<Outlet | null>(null);
   const [menuGroups, setMenuGroups] = useState<MenuGroup[]>([]);
@@ -205,7 +212,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           />
 
           {/* Daftar Produk per Kategori */}
-          <div className="p-4 space-y-6 pb-12">
+          <div className="p-4 space-y-6 pb-28">
             {menuGroups.length === 0 ? (
               <div className="p-8 bg-white rounded-2xl border border-stone-200 text-center">
                 <p className="text-xs text-stone-500">
@@ -252,6 +259,40 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           outletCode={outlet.code}
           product={selectedProduct}
           onClose={() => setSelectedProduct(null)}
+          onAddToCart={(item) => cart.addItem(item, outlet.code, outlet.name)}
+        />
+      )}
+
+      {/* Floating Cart Bar jika ada item di keranjang */}
+      {cart.totalQuantity > 0 && (
+        <FloatingCartBar
+          totalQuantity={cart.totalQuantity}
+          subtotal={cart.pricing.subtotal}
+          onOpenCart={() => setIsCartDrawerOpen(true)}
+        />
+      )}
+
+      {/* Lembar Keranjang Belanja & Checkout */}
+      <CartDrawer
+        isOpen={isCartDrawerOpen}
+        onClose={() => setIsCartDrawerOpen(false)}
+        items={cart.items}
+        pricing={cart.pricing}
+        outlet={outlet}
+        cartOutletCode={cart.outletCode || undefined}
+        cartOutletName={cart.outletName || undefined}
+        onUpdateQuantity={cart.updateQuantity}
+        onRemoveItem={cart.removeItem}
+        onClearCart={cart.clearCart}
+      />
+
+      {/* Modal Konfirmasi Pindah Outlet */}
+      {cart.pendingSwitch && (
+        <SwitchOutletModal
+          currentOutletName={cart.outletName}
+          newOutletName={cart.pendingSwitch.outletName}
+          onConfirm={cart.confirmSwitchOutlet}
+          onCancel={cart.cancelSwitchOutlet}
         />
       )}
     </div>

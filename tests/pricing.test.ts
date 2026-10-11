@@ -1,7 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { calculateOrderPricing, calculateItemPricing } from '../src/lib/pricing.ts';
-import { BUSINESS_CONFIG } from '../src/config/business.ts';
 
 describe('Pricing Engine (Pure Calculation)', () => {
   it('calculates single item pricing correctly (Latte with variants)', () => {
