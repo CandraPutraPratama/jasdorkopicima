@@ -1,0 +1,142 @@
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+import { calculateOrderPricing, calculateItemPricing } from '../src/lib/pricing.ts';
+import { BUSINESS_CONFIG } from '../src/config/business.ts';
+
+describe('Pricing Engine (Pure Calculation)', () => {
+  it('calculates single item pricing correctly (Latte with variants)', () => {
+    // Latte: harga dasar Rp34.000, Large +Rp5.000, Juwara +Rp3.000
+    const item = {
+      name: 'Creamy Caramel Latte',
+      basePrice: 34000,
+      variantAddition: 8000, // Large 5000 + Juwara 3000
+      toppingTotal: 0,
+      quantity: 1,
+    };
+
+    const result = calculateItemPricing(item);
+    // harga asli = 34000 + 8000 = 42000
+    assert.strictEqual(result.originalPricePerItem, 42000);
+    // harga promo = (34000 * 0.5) + 8000 = 17000 + 8000 = 25000
+    assert.strictEqual(result.promoPricePerItem, 25000);
+    assert.strictEqual(result.savingsPerItem, 17000);
+  });
+
+  it('calculates single item pricing for cookie without variants', () => {
+    // Cookie: harga dasar Rp19.000
+    const item = {
+      name: 'Oatmeal Raisin Soft Baked Cookie',
+      basePrice: 19000,
+      variantAddition: 0,
+      toppingTotal: 0,
+      quantity: 1,
+    };
+
+    const result = calculateItemPricing(item);
+    assert.strictEqual(result.originalPricePerItem, 19000);
+    assert.strictEqual(result.promoPricePerItem, 9500);
+    assert.strictEqual(result.savingsPerItem, 9500);
+  });
+
+  it('matches the exact brief scenario with subtotal, fee, total, and savings', () => {
+    const items = [
+      {
+        name: 'Creamy Caramel Latte',
+        basePrice: 34000,
+        variantAddition: 8000, // Large (+Rp5.000), Juwara Beans (+Rp3.000)
+        toppingTotal: 0,
+        quantity: 1,
+      },
+      {
+        name: 'Oatmeal Raisin Soft Baked Cookie',
+        basePrice: 19000,
+        variantAddition: 0,
+        toppingTotal: 0,
+        quantity: 1,
+      },
+    ];
+
+    const orderPricing = calculateOrderPricing(items);
+    assert.strictEqual(orderPricing.totalQuantity, 2);
+    assert.strictEqual(orderPricing.subtotal, 34500);
+    assert.strictEqual(orderPricing.fee, 4000);
+    assert.strictEqual(orderPricing.total, 38500);
+    assert.strictEqual(orderPricing.totalSavings, 26500);
+  });
+
+  it('applies Rp4.000 fee when order has exactly 1 item (single quantity)', () => {
+    const items = [
+      {
+        name: 'Kopi Kenangan Mantan',
+        basePrice: 18000,
+        variantAddition: 0,
+        toppingTotal: 0,
+        quantity: 1,
+      },
+    ];
+
+    const orderPricing = calculateOrderPricing(items);
+    assert.strictEqual(orderPricing.totalQuantity, 1);
+    assert.strictEqual(orderPricing.fee, 4000);
+    assert.strictEqual(orderPricing.subtotal, 9000);
+    assert.strictEqual(orderPricing.total, 13000);
+  });
+
+  it('applies Rp2.000 x 2 = Rp4.000 fee when quantity is 2 of the same menu item', () => {
+    const items = [
+      {
+        name: 'Kopi Kenangan Mantan',
+        basePrice: 18000,
+        variantAddition: 0,
+        toppingTotal: 0,
+        quantity: 2,
+      },
+    ];
+
+    const orderPricing = calculateOrderPricing(items);
+    assert.strictEqual(orderPricing.totalQuantity, 2);
+    assert.strictEqual(orderPricing.fee, 4000);
+    assert.strictEqual(orderPricing.subtotal, 18000);
+    assert.strictEqual(orderPricing.total, 22000);
+  });
+
+  it('applies Rp2.000 x 5 = Rp10.000 fee when order has 5 items', () => {
+    const items = [
+      {
+        name: 'Kopi Kenangan Mantan',
+        basePrice: 18000,
+        variantAddition: 0,
+        toppingTotal: 0,
+        quantity: 3,
+      },
+      {
+        name: 'Americano',
+        basePrice: 15000,
+        variantAddition: 0,
+        toppingTotal: 0,
+        quantity: 2,
+      },
+    ];
+
+    const orderPricing = calculateOrderPricing(items);
+    assert.strictEqual(orderPricing.totalQuantity, 5);
+    assert.strictEqual(orderPricing.fee, 10000);
+  });
+
+  it('calculates toppings correctly with zero discount on toppings', () => {
+    const item = {
+      name: 'Avocado Coffee',
+      basePrice: 28000,
+      variantAddition: 0,
+      toppingTotal: 6000, // e.g. Boba +Rp6.000
+      quantity: 1,
+    };
+
+    const result = calculateItemPricing(item);
+    // Asli: 28000 + 6000 = 34000
+    assert.strictEqual(result.originalPricePerItem, 34000);
+    // Promo: (28000 / 2) + 6000 = 14000 + 6000 = 20000
+    assert.strictEqual(result.promoPricePerItem, 20000);
+    assert.strictEqual(result.savingsPerItem, 14000);
+  });
+});
