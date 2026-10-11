@@ -105,17 +105,17 @@ export default function HomePage() {
         <div className="bg-gradient-to-r from-[#111111] to-stone-900 rounded-2xl p-4 text-white mb-4 shadow-sm border border-stone-800">
           <div className="flex items-center justify-between mb-1">
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#D4AF37]">
-              Jastip Resmi Kopi Cima
+              Jastip Independen Kopi Cima
             </span>
             <span className="px-2 py-0.5 bg-amber-500/20 text-[#D4AF37] border border-amber-500/30 text-[10px] font-semibold rounded-full">
-              Hemat 50%
+              Diskon Menu Dasar
             </span>
           </div>
           <h1 className="text-lg font-bold tracking-tight text-white">
             Pilih Outlet Kopi Kenangan
           </h1>
           <p className="text-xs text-stone-300 mt-1 leading-relaxed">
-            Harga promo 50% dari harga dasar menu. Fee jasa flat dan hemat mulai Rp2.000.
+            Diskon 50% dari harga dasar menu. Tambahan varian, topping, dan biaya jasa dibayar normal.
           </p>
         </div>
 

@@ -52,7 +52,7 @@ export function Header({
                 jasdorkopicima
               </span>
               <span className="text-[10px] text-[#D4AF37] font-semibold tracking-wide block leading-none">
-                JASTIP DISKON 50%
+                JASTIP KOPI KENANGAN
               </span>
             </div>
           </Link>
