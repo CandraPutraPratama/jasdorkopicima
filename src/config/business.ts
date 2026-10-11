@@ -40,6 +40,7 @@ export interface BusinessConfig {
     /** Jeda sopan antar request berturut-turut dalam milidetik */
     politeDelayMs: number;
   };
+  whatsappNumber: string;
 }
 
 export const BUSINESS_CONFIG: BusinessConfig = {
@@ -63,4 +64,5 @@ export const BUSINESS_CONFIG: BusinessConfig = {
     timeoutMs: 8000,
     politeDelayMs: 250,
   },
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '6287793420768',
 };
