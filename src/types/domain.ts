@@ -1,0 +1,80 @@
+/**
+ * Domain Models resmi aplikasi jasdorkopicima.
+ * Seluruh kode backend/frontend HANYA mengonsumsi tipe domain ini,
+ * terisolasi sepenuhnya dari struktur data internal Kopi Kenangan.
+ */
+
+export interface Outlet {
+  id: number;
+  code: string;
+  name: string;
+  address: string;
+  isOpen: boolean;
+  openTime: string;
+  closeTime: string;
+  timeZone: number;
+  phone?: string;
+  distanceStr?: string;
+}
+
+export interface Product {
+  id: number;
+  bundleCode: string;
+  productCode: string;
+  name: string;
+  description: string;
+  image: string;
+  basePrice: number;
+  originalPrice: number;
+  isSoldOut: boolean;
+  isCombo: boolean;
+}
+
+export interface MenuGroup {
+  code: string;
+  name: string;
+  products: Product[];
+}
+
+export interface VariantDimensionValue {
+  id: number;
+  name: string;
+  icon?: string;
+}
+
+export interface VariantDimension {
+  code: number;
+  name: string;
+  values: VariantDimensionValue[];
+}
+
+export interface VariantSku {
+  sku: string;
+  name: string;
+  description: string;
+  price: number;
+  /** Tambahan harga = sku.price - basePrice */
+  variantAddition: number;
+}
+
+export interface Addon {
+  sku: string;
+  name: string;
+  price: number;
+  categoryName: string;
+  icon?: string;
+}
+
+export interface ProductNoteGroup {
+  name: string;
+  type: string;
+  options: string[];
+}
+
+export interface ProductOptionDetails {
+  product: Product;
+  dimensions: VariantDimension[];
+  skus: VariantSku[];
+  addons: Addon[];
+  notes: ProductNoteGroup[];
+}
