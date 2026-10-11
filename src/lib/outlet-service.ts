@@ -10,46 +10,73 @@ export interface SearchOutletsResult {
 }
 
 /**
- * Mencari outlet dari database Supabase dengan indeks pencarian cepat.
- * Jika database masih kosong, otomatis fallback ke pemanggilan KK API langsung.
+ * Mencari outlet berdasarkan keyword (nama, mall, atau jalan).
+ * Jika keyword kosong, langsung mengembalikan daftar kosong (tidak menampilkan seluruh 1.357 outlet).
+ * Menggunakan KK API queryStore untuk mendapatkan status order_type, status, dan order_msg real-time.
+ * Jika KK API gagal, otomatis fallback ke pencarian database Supabase.
  */
 export async function searchOutlets(
   keyword = '',
   page = 1,
   pageSize = 20
 ): Promise<SearchOutletsResult> {
-  const from = (page - 1) * pageSize;
-  const to = from + pageSize - 1;
+  const trimmed = keyword.trim();
+  if (!trimmed) {
+    return {
+      items: [],
+      total: 0,
+      source: 'database',
+    };
+  }
 
+  // 1. Ambil dari KK API terlebih dahulu untuk mendapatkan status real-time (order_type, status, order_msg)
+  try {
+    const rawData = await kkApiClient.queryStore({
+      pageNum: page,
+      pageSize,
+      keyword: trimmed,
+    });
+
+    const items = normalizeStores(rawData.store || []);
+    return {
+      items,
+      total: rawData.total || items.length,
+      source: 'kk-api-fallback',
+    };
+  } catch (kkErr: any) {
+    console.warn(`[OutletService] KK API queryStore error (${kkErr.message}). Fallback ke Supabase.`);
+  }
+
+  // 2. Fallback ke database Supabase
   try {
     const supabase = getSupabaseServerClient();
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
     let query = supabase
       .from('outlets')
       .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active', {
         count: 'exact',
       })
-      .eq('is_active', true);
-
-    const trimmed = keyword.trim();
-    if (trimmed) {
-      // Menggunakan pencarian cepat yang didukung indeks pg_trgm (name & address)
-      query = query.or(`name.ilike.%${trimmed}%,address.ilike.%${trimmed}%`);
-    }
-
-    query = query.order('name', { ascending: true }).range(from, to);
+      .eq('is_active', true)
+      .or(`name.ilike.%${trimmed}%,address.ilike.%${trimmed}%`)
+      .order('name', { ascending: true })
+      .range(from, to);
 
     const { data, count, error } = await query;
 
-    if (!error && data && (count ?? 0) > 0) {
+    if (!error && data) {
       const items: Outlet[] = data.map((row) => ({
         id: Number(row.id),
         code: row.code,
         name: row.name,
         address: row.address,
-        isOpen: true, // is_open dinamis diambil segar dari get_store saat outlet dipilih
+        isOpen: true,
         openTime: row.open_time || '',
         closeTime: row.close_time || '',
         timeZone: 7,
+        canOrder: false,
+        orderReason: 'Status real-time tidak tersedia',
       }));
 
       return {
@@ -59,20 +86,13 @@ export async function searchOutlets(
       };
     }
   } catch (err: any) {
-    console.warn(`[OutletService] Gagal membaca dari database Supabase (${err.message}). Menggunakan fallback KK API.`);
+    console.warn(`[OutletService] Supabase fallback juga gagal: ${err.message}`);
   }
 
-  // Fallback ke KK API langsung
-  const rawData = await kkApiClient.queryStore({
-    pageNum: page,
-    pageSize,
-    keyword,
-  });
-
   return {
-    items: normalizeStores(rawData.store || []),
-    total: rawData.total || 0,
-    source: 'kk-api-fallback',
+    items: [],
+    total: 0,
+    source: 'database',
   };
 }
 

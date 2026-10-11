@@ -7,9 +7,18 @@ import type { Outlet } from '@/types/domain';
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const keyword = searchParams.get('q') || searchParams.get('keyword') || '';
+    const keyword = (searchParams.get('q') || searchParams.get('keyword') || '').trim();
     const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
     const pageSize = Math.min(50, Math.max(1, parseInt(searchParams.get('pageSize') || '20', 10)));
+
+    if (!keyword) {
+      return NextResponse.json({
+        total: 0,
+        page,
+        pageSize,
+        items: [],
+      });
+    }
 
     const cacheKey = cacheKeys.storeList(keyword, page, pageSize);
     const cached = await cacheService.get<{
@@ -32,7 +41,8 @@ export async function GET(request: NextRequest) {
       items,
     };
 
-    await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.storesTtlSeconds);
+    // Cache status outlet selama 90 detik agar status 'Pesan Sekarang' tetap segar
+    await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.storeOpenStatusTtlSeconds);
 
     return NextResponse.json(responsePayload);
   } catch (error: any) {
