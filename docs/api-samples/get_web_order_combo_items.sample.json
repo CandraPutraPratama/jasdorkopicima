@@ -1,0 +1,642 @@
+{
+  "error_code": 0,
+  "msg": "OK",
+  "data": {
+    "Combo": {
+      "available_end_time": 1793465999,
+      "available_start_time": 1789923600,
+      "combo_bundle_id": 12413,
+      "combo_code": "3076694",
+      "combo_name": "Buy 2 Disc 25%",
+      "combo_type_code": 2,
+      "cut_off_hours": -1,
+      "description": "Nikmati diskon 25% dengan pembelian 2 Purple Cloud Series!",
+      "discount_amount": 0,
+      "discount_amount_dec": "0",
+      "discount_type_code": 6,
+      "final_price": null,
+      "final_price_dec": null,
+      "is_soldout": false,
+      "photo_url": "https://cdn.kopikenangan.com/ID/release/pub/b/m/cfdbb7e1-5407-4832-b9bd-4f0dc2488f44?",
+      "product_code": "3076694_001",
+      "sale_restriction": 2147483647,
+      "sales_count": 92635,
+      "thumb_url": "https://cdn.kopikenangan.com/ID/release/pub/b/m/f6be7697-324c-4564-8f53-cea513680b63?",
+      "veg_classification": 0
+    },
+    "Products": [
+      {
+        "additional_price": "0",
+        "base_sku": {
+          "price": "19000",
+          "sku": "8056833000"
+        },
+        "bundle_code": "8056833",
+        "category": null,
+        "category_id": null,
+        "combo_item_default_notes_map": {
+          "2935": 4366
+        },
+        "combo_item_id": 52250,
+        "default_sku": {
+          "Name": "Taro Cloud Milk Tea",
+          "combo_base_sku_price": null,
+          "dimension_text": "Ice, Regular, Normal Sugar, Normal Ice",
+          "new_dimension_text": "Ice, Regular, Normal Sugar, Normal Ice",
+          "price": 19000,
+          "price_dec": "19000",
+          "product_code": "8056833000",
+          "topping_price": null,
+          "topping_price_dec": null,
+          "topping_text": null
+        },
+        "description": "Perpaduan black tea, susu, dan taro macchiato cream",
+        "discount_percentage": "100",
+        "group_id": 10221,
+        "icon": null,
+        "id": 12380,
+        "image": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/0c6fdba9-33ad-47eb-9503-5f14e098f378?",
+        "is_combo_item": true,
+        "is_favorite": null,
+        "is_soldout": null,
+        "knowledge_image": null,
+        "knowledge_title": null,
+        "mix_match_item_discount": 0,
+        "mix_match_item_discount_dec": "0",
+        "name": "Taro Cloud Milk Tea",
+        "price": null,
+        "price_dec": null,
+        "type": "MERCHANDISE",
+        "type_code": 4005,
+        "veg_classification": 0
+      },
+      {
+        "additional_price": "0",
+        "base_sku": {
+          "price": "19000",
+          "sku": "9590924000"
+        },
+        "bundle_code": "9590924",
+        "category": null,
+        "category_id": null,
+        "combo_item_default_notes_map": {
+          "2935": 4366
+        },
+        "combo_item_id": 52251,
+        "default_sku": {
+          "Name": "Taro Milk",
+          "combo_base_sku_price": null,
+          "dimension_text": "Ice, Regular, Milk, Normal Sugar, Normal Ice",
+          "new_dimension_text": "Ice, Regular, Milk, Normal Sugar, Normal Ice",
+          "price": 19000,
+          "price_dec": "19000",
+          "product_code": "9590924000",
+          "topping_price": null,
+          "topping_price_dec": null,
+          "topping_text": null
+        },
+        "description": "Perpaduan high quality taro powder dengan susu",
+        "discount_percentage": "100",
+        "group_id": 10221,
+        "icon": null,
+        "id": 12381,
+        "image": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/ca6a8c48-3692-4fca-950b-7c9e27e79d0a?",
+        "is_combo_item": true,
+        "is_favorite": null,
+        "is_soldout": null,
+        "knowledge_image": null,
+        "knowledge_title": null,
+        "mix_match_item_discount": 0,
+        "mix_match_item_discount_dec": "0",
+        "name": "Taro Milk",
+        "price": null,
+        "price_dec": null,
+        "type": "MERCHANDISE",
+        "type_code": 4005,
+        "veg_classification": 0
+      },
+      {
+        "additional_price": "0",
+        "base_sku": {
+          "price": "22000",
+          "sku": "7245645000"
+        },
+        "bundle_code": "7245645",
+        "category": null,
+        "category_id": null,
+        "combo_item_default_notes_map": {
+          "2903": 4076
+        },
+        "combo_item_id": 52252,
+        "default_sku": {
+          "Name": "Taro Cloud Latte",
+          "combo_base_sku_price": null,
+          "dimension_text": "Ice, Regular, Kenangan Blend, Milk, Normal Sugar, Normal Ice",
+          "new_dimension_text": "Ice, Regular, Kenangan Blend, Milk, Normal Sugar, Normal Ice",
+          "price": 22000,
+          "price_dec": "22000",
+          "product_code": "7245645000",
+          "topping_price": null,
+          "topping_price_dec": null,
+          "topping_text": null
+        },
+        "description": "Perpaduan espresso, susu, sirup hazelnut, dan taro macchiato cream",
+        "discount_percentage": "100",
+        "group_id": 10221,
+        "icon": null,
+        "id": 12382,
+        "image": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/72512ca3-d6b5-49dc-a9f5-440a71c7ed34?",
+        "is_combo_item": true,
+        "is_favorite": null,
+        "is_soldout": null,
+        "knowledge_image": null,
+        "knowledge_title": null,
+        "mix_match_item_discount": 0,
+        "mix_match_item_discount_dec": "0",
+        "name": "Taro Cloud Latte",
+        "price": null,
+        "price_dec": null,
+        "type": "MERCHANDISE",
+        "type_code": 4005,
+        "veg_classification": 0
+      },
+      {
+        "additional_price": "0",
+        "base_sku": {
+          "price": "22000",
+          "sku": "1269751000"
+        },
+        "bundle_code": "1269751",
+        "category": null,
+        "category_id": null,
+        "combo_item_default_notes_map": {
+          "2935": 4366
+        },
+        "combo_item_id": 52253,
+        "default_sku": {
+          "Name": "Taro Cloud Matcha",
+          "combo_base_sku_price": null,
+          "dimension_text": "Ice, Regular, Milk, Normal Sugar, Normal Ice",
+          "new_dimension_text": "Ice, Regular, Milk, Normal Sugar, Normal Ice",
+          "price": 22000,
+          "price_dec": "22000",
+          "product_code": "1269751000",
+          "topping_price": null,
+          "topping_price_dec": null,
+          "topping_text": null
+        },
+        "description": "Perpaduan high quality matcha powder, susu, dan taro macchiato cream",
+        "discount_percentage": "100",
+        "group_id": 10221,
+        "icon": null,
+        "id": 12383,
+        "image": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/6c925d17-6b7f-4952-9831-b0032ffd62e0?",
+        "is_combo_item": true,
+        "is_favorite": null,
+        "is_soldout": null,
+        "knowledge_image": null,
+        "knowledge_title": null,
+        "mix_match_item_discount": 0,
+        "mix_match_item_discount_dec": "0",
+        "name": "Taro Cloud Matcha",
+        "price": null,
+        "price_dec": null,
+        "type": "MERCHANDISE",
+        "type_code": 4005,
+        "veg_classification": 0
+      },
+      {
+        "additional_price": "0",
+        "base_sku": {
+          "price": "19000",
+          "sku": "8056833000"
+        },
+        "bundle_code": "8056833",
+        "category": null,
+        "category_id": null,
+        "combo_item_default_notes_map": {
+          "2935": 4366
+        },
+        "combo_item_id": 52254,
+        "default_sku": {
+          "Name": "Taro Cloud Milk Tea",
+          "combo_base_sku_price": null,
+          "dimension_text": "Ice, Regular, Normal Sugar, Normal Ice",
+          "new_dimension_text": "Ice, Regular, Normal Sugar, Normal Ice",
+          "price": 19000,
+          "price_dec": "19000",
+          "product_code": "8056833000",
+          "topping_price": null,
+          "topping_price_dec": null,
+          "topping_text": null
+        },
+        "description": "Perpaduan black tea, susu, dan taro macchiato cream",
+        "discount_percentage": "100",
+        "group_id": 10222,
+        "icon": null,
+        "id": 12380,
+        "image": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/0c6fdba9-33ad-47eb-9503-5f14e098f378?",
+        "is_combo_item": true,
+        "is_favorite": null,
+        "is_soldout": null,
+        "knowledge_image": null,
+        "knowledge_title": null,
+        "mix_match_item_discount": 0,
+        "mix_match_item_discount_dec": "0",
+        "name": "Taro Cloud Milk Tea",
+        "price": null,
+        "price_dec": null,
+        "type": "MERCHANDISE",
+        "type_code": 4005,
+        "veg_classification": 0
+      },
+      {
+        "additional_price": "0",
+        "base_sku": {
+          "price": "19000",
+          "sku": "9590924000"
+        },
+        "bundle_code": "9590924",
+        "category": null,
+        "category_id": null,
+        "combo_item_default_notes_map": {
+          "2935": 4366
+        },
+        "combo_item_id": 52255,
+        "default_sku": {
+          "Name": "Taro Milk",
+          "combo_base_sku_price": null,
+          "dimension_text": "Ice, Regular, Milk, Normal Sugar, Normal Ice",
+          "new_dimension_text": "Ice, Regular, Milk, Normal Sugar, Normal Ice",
+          "price": 19000,
+          "price_dec": "19000",
+          "product_code": "9590924000",
+          "topping_price": null,
+          "topping_price_dec": null,
+          "topping_text": null
+        },
+        "description": "Perpaduan high quality taro powder dengan susu",
+        "discount_percentage": "100",
+        "group_id": 10222,
+        "icon": null,
+        "id": 12381,
+        "image": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/ca6a8c48-3692-4fca-950b-7c9e27e79d0a?",
+        "is_combo_item": true,
+        "is_favorite": null,
+        "is_soldout": null,
+        "knowledge_image": null,
+        "knowledge_title": null,
+        "mix_match_item_discount": 0,
+        "mix_match_item_discount_dec": "0",
+        "name": "Taro Milk",
+        "price": null,
+        "price_dec": null,
+        "type": "MERCHANDISE",
+        "type_code": 4005,
+        "veg_classification": 0
+      },
+      {
+        "additional_price": "0",
+        "base_sku": {
+          "price": "22000",
+          "sku": "7245645000"
+        },
+        "bundle_code": "7245645",
+        "category": null,
+        "category_id": null,
+        "combo_item_default_notes_map": {
+          "2903": 4076
+        },
+        "combo_item_id": 52256,
+        "default_sku": {
+          "Name": "Taro Cloud Latte",
+          "combo_base_sku_price": null,
+          "dimension_text": "Ice, Regular, Kenangan Blend, Milk, Normal Sugar, Normal Ice",
+          "new_dimension_text": "Ice, Regular, Kenangan Blend, Milk, Normal Sugar, Normal Ice",
+          "price": 22000,
+          "price_dec": "22000",
+          "product_code": "7245645000",
+          "topping_price": null,
+          "topping_price_dec": null,
+          "topping_text": null
+        },
+        "description": "Perpaduan espresso, susu, sirup hazelnut, dan taro macchiato cream",
+        "discount_percentage": "100",
+        "group_id": 10222,
+        "icon": null,
+        "id": 12382,
+        "image": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/72512ca3-d6b5-49dc-a9f5-440a71c7ed34?",
+        "is_combo_item": true,
+        "is_favorite": null,
+        "is_soldout": null,
+        "knowledge_image": null,
+        "knowledge_title": null,
+        "mix_match_item_discount": 0,
+        "mix_match_item_discount_dec": "0",
+        "name": "Taro Cloud Latte",
+        "price": null,
+        "price_dec": null,
+        "type": "MERCHANDISE",
+        "type_code": 4005,
+        "veg_classification": 0
+      },
+      {
+        "additional_price": "0",
+        "base_sku": {
+          "price": "22000",
+          "sku": "1269751000"
+        },
+        "bundle_code": "1269751",
+        "category": null,
+        "category_id": null,
+        "combo_item_default_notes_map": {
+          "2935": 4366
+        },
+        "combo_item_id": 52257,
+        "default_sku": {
+          "Name": "Taro Cloud Matcha",
+          "combo_base_sku_price": null,
+          "dimension_text": "Ice, Regular, Milk, Normal Sugar, Normal Ice",
+          "new_dimension_text": "Ice, Regular, Milk, Normal Sugar, Normal Ice",
+          "price": 22000,
+          "price_dec": "22000",
+          "product_code": "1269751000",
+          "topping_price": null,
+          "topping_price_dec": null,
+          "topping_text": null
+        },
+        "description": "Perpaduan high quality matcha powder, susu, dan taro macchiato cream",
+        "discount_percentage": "100",
+        "group_id": 10222,
+        "icon": null,
+        "id": 12383,
+        "image": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/6c925d17-6b7f-4952-9831-b0032ffd62e0?",
+        "is_combo_item": true,
+        "is_favorite": null,
+        "is_soldout": null,
+        "knowledge_image": null,
+        "knowledge_title": null,
+        "mix_match_item_discount": 0,
+        "mix_match_item_discount_dec": "0",
+        "name": "Taro Cloud Matcha",
+        "price": null,
+        "price_dec": null,
+        "type": "MERCHANDISE",
+        "type_code": 4005,
+        "veg_classification": 0
+      },
+      {
+        "additional_price": "0",
+        "base_sku": {
+          "price": "18000",
+          "sku": "6493381000"
+        },
+        "bundle_code": "6493381",
+        "category": null,
+        "category_id": null,
+        "combo_item_default_notes_map": null,
+        "combo_item_id": 52258,
+        "default_sku": {
+          "Name": "Double Choco Bagel",
+          "combo_base_sku_price": null,
+          "dimension_text": "",
+          "new_dimension_text": "",
+          "price": 18000,
+          "price_dec": "18000",
+          "product_code": "6493381000",
+          "topping_price": null,
+          "topping_price_dec": null,
+          "topping_text": null
+        },
+        "description": "Roti bagel bercita rasa coklat dengan topping choco chip dan isian choco spread",
+        "discount_percentage": "100",
+        "group_id": 10222,
+        "icon": null,
+        "id": 12370,
+        "image": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/14790595-ae19-4f4f-9645-0b47933841ba?",
+        "is_combo_item": true,
+        "is_favorite": null,
+        "is_soldout": null,
+        "knowledge_image": null,
+        "knowledge_title": null,
+        "mix_match_item_discount": 0,
+        "mix_match_item_discount_dec": "0",
+        "name": "Double Choco Bagel",
+        "price": null,
+        "price_dec": null,
+        "type": "MERCHANDISE",
+        "type_code": 4005,
+        "veg_classification": 0
+      },
+      {
+        "additional_price": "0",
+        "base_sku": {
+          "price": "18000",
+          "sku": "5641200000"
+        },
+        "bundle_code": "5641200",
+        "category": null,
+        "category_id": null,
+        "combo_item_default_notes_map": null,
+        "combo_item_id": 52259,
+        "default_sku": {
+          "Name": "Triple Cheese Bagel",
+          "combo_base_sku_price": null,
+          "dimension_text": "",
+          "new_dimension_text": "",
+          "price": 18000,
+          "price_dec": "18000",
+          "product_code": "5641200000",
+          "topping_price": null,
+          "topping_price_dec": null,
+          "topping_text": null
+        },
+        "description": "Roti bagel bercita rasa keju dari keju parmesan dengan topping keju mozarella dan lelehan keju cheddar",
+        "discount_percentage": "100",
+        "group_id": 10222,
+        "icon": null,
+        "id": 12371,
+        "image": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/85287339-2dbe-49f3-91df-0a4d616e67a7?",
+        "is_combo_item": true,
+        "is_favorite": null,
+        "is_soldout": null,
+        "knowledge_image": null,
+        "knowledge_title": null,
+        "mix_match_item_discount": 0,
+        "mix_match_item_discount_dec": "0",
+        "name": "Triple Cheese Bagel",
+        "price": null,
+        "price_dec": null,
+        "type": "MERCHANDISE",
+        "type_code": 4005,
+        "veg_classification": 0
+      },
+      {
+        "additional_price": "0",
+        "base_sku": {
+          "price": "20000",
+          "sku": "3373629000"
+        },
+        "bundle_code": "3373629",
+        "category": null,
+        "category_id": null,
+        "combo_item_default_notes_map": null,
+        "combo_item_id": 52260,
+        "default_sku": {
+          "Name": "Beef & Cheese Jalapeño Bagel",
+          "combo_base_sku_price": null,
+          "dimension_text": "",
+          "new_dimension_text": "",
+          "price": 20000,
+          "price_dec": "20000",
+          "product_code": "3373629000",
+          "topping_price": null,
+          "topping_price_dec": null,
+          "topping_text": null
+        },
+        "description": "Roti bagel topping irisan cabai jalapeño & keju cheddar parut dengan isian smoked beef, sesame mayo & caramelized onion",
+        "discount_percentage": "100",
+        "group_id": 10222,
+        "icon": null,
+        "id": 12372,
+        "image": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/d9632b98-8c4f-43d3-9ec6-27c953efba7d?",
+        "is_combo_item": true,
+        "is_favorite": null,
+        "is_soldout": null,
+        "knowledge_image": null,
+        "knowledge_title": null,
+        "mix_match_item_discount": 0,
+        "mix_match_item_discount_dec": "0",
+        "name": "Beef & Cheese Jalapeño Bagel",
+        "price": null,
+        "price_dec": null,
+        "type": "MERCHANDISE",
+        "type_code": 4005,
+        "veg_classification": 0
+      }
+    ],
+    "attribution_flag": 0,
+    "combo_groups": [
+      {
+        "discount_percentage": "75",
+        "group_id": 10221,
+        "group_name": "Opsi 1",
+        "number_to_pick": 1,
+        "optional": 0
+      },
+      {
+        "discount_percentage": "75",
+        "group_id": 10222,
+        "group_name": "Opsi 2",
+        "number_to_pick": 1,
+        "optional": 0
+      }
+    ],
+    "default_selections": [
+      {
+        "addon_skus": null,
+        "is_selected": false,
+        "item_id": 52250,
+        "product_notes": {
+          "2935": 4366
+        },
+        "sku": "8056833000"
+      },
+      {
+        "addon_skus": null,
+        "is_selected": false,
+        "item_id": 52251,
+        "product_notes": {
+          "2935": 4366
+        },
+        "sku": "9590924000"
+      },
+      {
+        "addon_skus": null,
+        "is_selected": false,
+        "item_id": 52252,
+        "product_notes": {
+          "2903": 4076
+        },
+        "sku": "7245645000"
+      },
+      {
+        "addon_skus": null,
+        "is_selected": false,
+        "item_id": 52253,
+        "product_notes": {
+          "2935": 4366
+        },
+        "sku": "1269751000"
+      },
+      {
+        "addon_skus": null,
+        "is_selected": false,
+        "item_id": 52254,
+        "product_notes": {
+          "2935": 4366
+        },
+        "sku": "8056833000"
+      },
+      {
+        "addon_skus": null,
+        "is_selected": false,
+        "item_id": 52255,
+        "product_notes": {
+          "2935": 4366
+        },
+        "sku": "9590924000"
+      },
+      {
+        "addon_skus": null,
+        "is_selected": false,
+        "item_id": 52256,
+        "product_notes": {
+          "2903": 4076
+        },
+        "sku": "7245645000"
+      },
+      {
+        "addon_skus": null,
+        "is_selected": false,
+        "item_id": 52257,
+        "product_notes": {
+          "2935": 4366
+        },
+        "sku": "1269751000"
+      },
+      {
+        "addon_skus": null,
+        "is_selected": false,
+        "item_id": 52258,
+        "product_notes": {},
+        "sku": "6493381000"
+      },
+      {
+        "addon_skus": null,
+        "is_selected": false,
+        "item_id": 52259,
+        "product_notes": {},
+        "sku": "5641200000"
+      },
+      {
+        "addon_skus": null,
+        "is_selected": false,
+        "item_id": 52260,
+        "product_notes": {},
+        "sku": "3373629000"
+      }
+    ],
+    "delivery_restriction": 0,
+    "flash_sale_info": null,
+    "heart_point_aov": null,
+    "labels": [
+      {
+        "background_color": 4280391251,
+        "decoration_color": 0,
+        "label_text": "Promo"
+      }
+    ],
+    "unavailable_reason": null
+  }
+}

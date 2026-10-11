@@ -1,0 +1,8 @@
+{
+  "error_code": 0,
+  "msg": "OK",
+  "data": {
+    "customer_name": "REDACTED_CUSTOMER_NAME",
+    "web_order_session_token": "REDACTED_WEB_ORDER_SESSION_TOKEN"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "error_code": 0,
+  "msg": "OK",
+  "data": {
+    "address": "Graha CIMB Niaga, Lantai Ground Floor, SCBD, Jl. Jend. Sudirman Kav. 58, Karet Semanggi",
+    "close": "15:00:00",
+    "code": "CIMB",
+    "dine_in": 0,
+    "id": 176,
+    "is_open": true,
+    "name": "Graha CIMB Niaga",
+    "open": "07:00:00",
+    "time_zone": 7,
+    "time_zone_second": 25200
+  }
+}
