@@ -8,7 +8,7 @@ import type { Outlet } from '@/types/domain';
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const keyword = searchParams.get('keyword') || '';
+    const keyword = searchParams.get('q') || searchParams.get('keyword') || '';
     const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
     const pageSize = Math.min(50, Math.max(1, parseInt(searchParams.get('pageSize') || '20', 10)));
 
