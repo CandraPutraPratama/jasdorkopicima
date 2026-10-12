@@ -43,6 +43,17 @@ export async function GET(
   } catch (error: any) {
     console.error(`[Options API] KK gagal mengambil opsi [${code}/${bundleCode}]: ${error.message}`);
 
+    if (
+      error.message?.includes('404') ||
+      error.message?.includes('tidak ditemukan') ||
+      error.message?.includes('not exist')
+    ) {
+      return NextResponse.json(
+        { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
+        { status: 404 }
+      );
+    }
+
     // Stale-if-error: kembalikan cache terakhir walau sudah kedaluwarsa
     const staleData = await cacheService.getStale<{ options: ProductOptionDetails }>(cacheKey);
     if (staleData) {

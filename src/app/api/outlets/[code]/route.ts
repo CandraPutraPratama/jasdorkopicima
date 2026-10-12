@@ -36,7 +36,11 @@ export async function GET(
 
     return NextResponse.json(responsePayload);
   } catch (error: any) {
-    if (error.message?.includes('404') || error.message?.includes('tidak ditemukan')) {
+    if (
+      error.message?.includes('404') ||
+      error.message?.includes('tidak ditemukan') ||
+      error.message?.includes('not exist')
+    ) {
       return NextResponse.json(
         { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
         { status: 404 }

@@ -24,7 +24,11 @@ export async function GET(
       );
     }
   } catch (storeErr: any) {
-    if (storeErr.message?.includes('404') || storeErr.message?.includes('tidak ditemukan')) {
+    if (
+      storeErr.message?.includes('404') ||
+      storeErr.message?.includes('tidak ditemukan') ||
+      storeErr.message?.includes('not exist')
+    ) {
       return NextResponse.json(
         { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
         { status: 404 }
