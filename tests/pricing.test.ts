@@ -1,6 +1,11 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { calculateOrderPricing, calculateItemPricing } from '../src/lib/pricing.ts';
+import {
+  calculateOrderPricing,
+  calculateItemPricing,
+  calculateFlatVariantAddition,
+  calculateFlatAddonTotal,
+} from '../src/lib/pricing.ts';
 
 describe('Pricing Engine (Pure Calculation)', () => {
   it('calculates single item pricing correctly (Latte with variants)', () => {
@@ -137,5 +142,52 @@ describe('Pricing Engine (Pure Calculation)', () => {
     // Promo: (28000 / 2) + 6000 = 14000 + 6000 = 20000
     assert.strictEqual(result.promoPricePerItem, 20000);
     assert.strictEqual(result.savingsPerItem, 14000);
+  });
+
+  it('calculates flat additions for Large, Juwara, Oatside, and combinations', () => {
+    // Large: 5000
+    assert.strictEqual(calculateFlatVariantAddition(['Large']), 5000);
+    // Juwara Beans: 3000
+    assert.strictEqual(calculateFlatVariantAddition(['Juwara Beans']), 3000);
+    // Oatside: 3000
+    assert.strictEqual(calculateFlatVariantAddition(['Oatside']), 3000);
+    // Regular, Kenangan Blend, Milk, Less Sugar, Less Ice: 0
+    assert.strictEqual(
+      calculateFlatVariantAddition(['Regular', 'Kenangan Blend', 'Milk', 'Less Sugar', 'Less Ice']),
+      0
+    );
+    // Combination: Large + Juwara Beans = 8000
+    assert.strictEqual(calculateFlatVariantAddition(['Large', 'Juwara Beans']), 8000);
+    // Combination: Large + Juwara Beans + Oatside = 11000
+    assert.strictEqual(calculateFlatVariantAddition(['Large', 'Juwara Beans', 'Oatside']), 11000);
+  });
+
+  it('calculates flat addon totals for Whipped Cream, Syrup, and Topping', () => {
+    // Whipped Cream is gratis (0)
+    const whip = [{ name: 'Whipped Cream Chocolate', categoryName: 'Whipped Cream' }];
+    assert.strictEqual(calculateFlatAddonTotal(whip), 0);
+
+    // Syrup: +6.000 per pilihan
+    const syrups = [
+      { name: 'Vanilla Syrup', categoryName: 'Syrup' },
+      { name: 'Butterscotch Sauce', categoryName: 'Syrup' },
+    ];
+    assert.strictEqual(calculateFlatAddonTotal(syrups), 12000);
+
+    // Topping: +6.000 per pilihan
+    const toppings = [
+      { name: 'Oreo', categoryName: 'Topping' },
+      { name: 'Grass Jelly', categoryName: 'Topping' },
+      { name: 'Espresso Shot Juwara Beans', categoryName: 'Topping' },
+    ];
+    assert.strictEqual(calculateFlatAddonTotal(toppings), 18000);
+
+    // Combination of Whipped Cream (0) + 1 Syrup (6k) + 1 Topping (6k) = 12.000
+    const combo = [
+      { name: 'Whipped Cream Vanilla', categoryName: 'Whipped Cream' },
+      { name: 'Choco Sauce', categoryName: 'Syrup' },
+      { name: 'Oreo', categoryName: 'Topping' },
+    ];
+    assert.strictEqual(calculateFlatAddonTotal(combo), 12000);
   });
 });

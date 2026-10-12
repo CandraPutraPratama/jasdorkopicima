@@ -71,30 +71,27 @@ test('isDimensionValueAvailable correctly disables impossible options', () => {
   assert.equal(isLargeAvailable, false);
 });
 
-test('calculateBottomSheetPricing accurately calculates original, promo, and toppings', () => {
-  const basePrice = 20000;
-  const matchedSku: VariantSku = {
-    sku: 'SKU-1',
-    combinationKey: '',
-    name: 'Test',
-    description: '',
-    price: 26000,
-    variantAddition: 6000,
-  };
+test('calculateBottomSheetPricing accurately calculates original, promo, and flat toppings/syrup/whip', () => {
+  const basePrice = 34000;
+  const selectedOptions = ['Large', 'Juwara Beans']; // 5000 + 3000 = 8000
   const selectedAddons: Addon[] = [
-    { sku: 'ADD-1', name: 'Grass Jelly', price: 4000, categoryName: 'Topping' },
-    { sku: 'ADD-2', name: 'Boba', price: 3000, categoryName: 'Topping' },
+    { sku: 'ADD-1', name: 'Grass Jelly', price: 6000, categoryName: 'Topping' }, // +6000
+    { sku: 'ADD-2', name: 'Vanilla Syrup', price: 6000, categoryName: 'Syrup' }, // +6000
+    { sku: 'ADD-3', name: 'Whipped Cream Chocolate', price: 0, categoryName: 'Whipped Cream' }, // +0
   ];
 
-  // Base = 20000 (promo 50% = 10000)
-  // Variant addition = 6000 (full price)
-  // Toppings = 4000 + 3000 = 7000 (full price)
-  // Original price per item = 20000 + 6000 + 7000 = 33000
-  // Promo price per item = 10000 + 6000 + 7000 = 23000
-  const result = calculateBottomSheetPricing(basePrice, matchedSku, selectedAddons, 2);
+  // Base = 34000 (promo 50% = 17000)
+  // Variant addition = 5000 + 3000 = 8000 (full price)
+  // Addons = 6000 (Topping) + 6000 (Syrup) + 0 (Whip) = 12000 (full price)
+  // Original price per item = 34000 + 8000 + 12000 = 54000
+  // Promo price per item = 17000 + 8000 + 12000 = 37000
+  const result = calculateBottomSheetPricing(basePrice, selectedOptions, selectedAddons, 2);
 
-  assert.equal(result.originalPricePerItem, 33000);
-  assert.equal(result.promoPricePerItem, 23000);
-  assert.equal(result.subtotal, 46000);
-  assert.equal(result.originalTotal, 66000);
+  assert.equal(result.variantAddition, 8000);
+  assert.equal(result.toppingTotal, 12000);
+  assert.equal(result.originalPricePerItem, 54000);
+  assert.equal(result.promoPricePerItem, 37000);
+  assert.equal(result.subtotal, 74000);
+  assert.equal(result.originalTotal, 108000);
+  assert.equal(result.savingsTotal, 34000); // 17000 * 2
 });

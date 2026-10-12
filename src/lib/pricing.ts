@@ -1,4 +1,8 @@
-import { BUSINESS_CONFIG } from '../config/business.ts';
+import {
+  BUSINESS_CONFIG,
+  getOptionAddition,
+  classifyAddonGroup,
+} from '../config/business.ts';
 import type { PricingConfig } from '../config/business.ts';
 
 export interface OrderItemInput {
@@ -115,4 +119,38 @@ export function calculateOrderPricing(
     totalSavings,
     items: itemResults,
   };
+}
+
+/**
+ * Menghitung total tambahan harga varian dari daftar nama nilai opsi yang dipilih
+ * berdasarkan tabel flat di config (Large: 5000, Juwara Beans: 3000, Oatside: 3000, lainnya 0).
+ */
+export function calculateFlatVariantAddition(selectedOptionValueNames: string[]): number {
+  if (!selectedOptionValueNames || selectedOptionValueNames.length === 0) return 0;
+  return selectedOptionValueNames.reduce((sum, name) => sum + getOptionAddition(name), 0);
+}
+
+/**
+ * Menghitung total harga addon tambahan secara flat per grup:
+ * - Whipped Cream: Rp0 (gratis)
+ * - Syrup: +Rp6.000 per pilihan
+ * - Topping: +Rp6.000 per pilihan
+ */
+export function calculateFlatAddonTotal(
+  addons: Array<{ name: string; categoryName?: string; price?: number }>
+): number {
+  if (!addons || addons.length === 0) return 0;
+  return addons.reduce((sum, addon) => {
+    const group = classifyAddonGroup(addon.name, addon.categoryName);
+    if (group === 'whipped_cream') {
+      return sum + BUSINESS_CONFIG.pricing.addonPrices.whippedCream;
+    }
+    if (group === 'syrup') {
+      return sum + BUSINESS_CONFIG.pricing.addonPrices.syrup;
+    }
+    if (group === 'topping') {
+      return sum + BUSINESS_CONFIG.pricing.addonPrices.topping;
+    }
+    return sum;
+  }, 0);
 }

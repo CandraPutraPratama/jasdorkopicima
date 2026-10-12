@@ -1,5 +1,9 @@
 import type { VariantSku, Addon } from '../types/domain.ts';
-import { calculateItemPricing } from './pricing.ts';
+import {
+  calculateItemPricing,
+  calculateFlatVariantAddition,
+  calculateFlatAddonTotal,
+} from './pricing.ts';
 
 /**
  * Mencocokkan SKU varian dari optionMap berdasarkan seluruh dimensi yang dipilih user.
@@ -71,11 +75,11 @@ export function isDimensionValueAvailable(
 
 /**
  * Menghitung rincian harga untuk lembar detail produk (bottom sheet).
- * Menggunakan rumus resmi pricing.ts tanpa menulis ulang perhitungannya.
+ * Menggunakan rumus resmi pricing.ts dengan tambahan harga FLAT di config.
  */
 export function calculateBottomSheetPricing(
   basePrice: number,
-  matchedSku: VariantSku | null,
+  optionsOrSku: string[] | VariantSku | null,
   selectedAddons: Addon[],
   quantity = 1
 ): {
@@ -83,9 +87,18 @@ export function calculateBottomSheetPricing(
   promoPricePerItem: number;
   subtotal: number;
   originalTotal: number;
+  variantAddition: number;
+  toppingTotal: number;
+  savingsTotal: number;
 } {
-  const variantAddition = matchedSku ? matchedSku.variantAddition : 0;
-  const toppingTotal = selectedAddons.reduce((sum, a) => sum + (a.price || 0), 0);
+  let variantAddition = 0;
+  if (Array.isArray(optionsOrSku)) {
+    variantAddition = calculateFlatVariantAddition(optionsOrSku);
+  } else if (optionsOrSku && typeof optionsOrSku === 'object') {
+    variantAddition = optionsOrSku.variantAddition || 0;
+  }
+
+  const toppingTotal = calculateFlatAddonTotal(selectedAddons);
 
   const pricing = calculateItemPricing({
     name: 'Produk',
@@ -100,5 +113,8 @@ export function calculateBottomSheetPricing(
     promoPricePerItem: pricing.promoPricePerItem,
     subtotal: pricing.subtotalItem,
     originalTotal: pricing.originalPricePerItem * quantity,
+    variantAddition,
+    toppingTotal,
+    savingsTotal: pricing.totalSavingsItem,
   };
 }
