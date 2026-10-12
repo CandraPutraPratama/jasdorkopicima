@@ -5,32 +5,32 @@ import type { KkMenuData, KkProductOptionsData } from '../src/types/kk-api.ts';
 
 describe('Adapter: normalizeMenu and normalizeProductOptions', () => {
   it('filters and sorts menu groups strictly according to allowlist', () => {
-    const rawMenu: KkMenuData = {
+    const rawMenu = {
       menu_groups: [
         {
           group_code: 'promo',
           group_name: 'Promo & Combo',
-          menu_products: [{ id: 1, name: 'Paket Mantan', is_combo_v2: false } as any],
+          menu_products: [{ id: 1, name: 'Paket Mantan', is_combo_v2: false }],
         },
         {
           group_code: 'food',
           group_name: ' FOOD ',
-          menu_products: [{ id: 2, name: 'Toast Choco', is_combo_v2: false } as any],
+          menu_products: [{ id: 2, name: 'Toast Choco', is_combo_v2: false }],
         },
         {
           group_code: 'brew',
           group_name: 'Manual Brew',
-          menu_products: [{ id: 3, name: 'V60 Gayo', is_combo_v2: false } as any],
+          menu_products: [{ id: 3, name: 'V60 Gayo', is_combo_v2: false }],
         },
         {
           group_code: 'baru',
           group_name: 'baru!',
-          menu_products: [{ id: 4, name: 'Taro Cloud Latte', is_combo_v2: false } as any],
+          menu_products: [{ id: 4, name: 'Taro Cloud Latte', is_combo_v2: false }],
         },
         {
           group_code: 'coffee',
           group_name: 'Coffee',
-          menu_products: [{ id: 5, name: 'Kopi Kenangan Mantan', is_combo_v2: false } as any],
+          menu_products: [{ id: 5, name: 'Kopi Kenangan Mantan', is_combo_v2: false }],
         },
         {
           group_code: 'empty_frappe',
@@ -38,7 +38,7 @@ describe('Adapter: normalizeMenu and normalizeProductOptions', () => {
           menu_products: [], // group kosong harus diabaikan
         },
       ],
-    };
+    } as unknown as KkMenuData;
 
     const normalized = normalizeMenu(rawMenu);
     assert.equal(normalized.length, 3);
@@ -49,7 +49,7 @@ describe('Adapter: normalizeMenu and normalizeProductOptions', () => {
   });
 
   it('filters out Jumbo from dimensions and optionMap', () => {
-    const rawOptions: KkProductOptionsData = {
+    const rawOptions = {
       base_product: {
         id: 101,
         bundle_code: 'PROD_101',
@@ -98,7 +98,7 @@ describe('Adapter: normalizeMenu and normalizeProductOptions', () => {
           },
         ],
       },
-    };
+    } as unknown as KkProductOptionsData;
 
     const normalized = normalizeProductOptions(rawOptions);
     const sizeDim = normalized.dimensions.find((d) => d.name === 'Size');

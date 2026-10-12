@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import type { Product, ProductOptionDetails, Addon, VariantSku } from '@/types/domain';
 import type { CartItem } from '@/lib/cart-reducer';
@@ -10,6 +10,7 @@ import {
   calculateBottomSheetPricing,
 } from '@/lib/option-validation';
 import { formatRupiah } from '@/lib/currency';
+import { getOptionAddition, BUSINESS_CONFIG } from '@/config/business';
 
 interface ProductBottomSheetProps {
   outletCode: string;
@@ -31,7 +32,9 @@ export function ProductBottomSheet({
   // User selections
   const [selectedDimensions, setSelectedDimensions] = useState<Record<number, number>>({});
   const [selectedNotes, setSelectedNotes] = useState<Record<string, string>>({});
-  const [selectedAddons, setSelectedAddons] = useState<Addon[]>([]);
+  const [selectedWhippedCream, setSelectedWhippedCream] = useState<Addon | null>(null);
+  const [selectedSyrups, setSelectedSyrups] = useState<Addon[]>([]);
+  const [selectedToppings, setSelectedToppings] = useState<Addon[]>([]);
   const [quantity, setQuantity] = useState<number>(1);
   const [customerNotes, setCustomerNotes] = useState<string>('');
 
@@ -54,11 +57,10 @@ export function ProductBottomSheet({
           const opt: ProductOptionDetails = data.options;
           setOptions(opt);
 
-          // Inisialisasi default selections
+          // Inisialisasi default selections dimensi
           const initialDims: Record<number, number> = {};
           if (opt && opt.dimensions) {
             for (const dim of opt.dimensions) {
-              // Cek defaultSelectionMap jika tersedia
               const defaultVal = opt.defaultSelectionMap?.[String(dim.code)];
               if (defaultVal) {
                 initialDims[dim.code] = Number(defaultVal);
@@ -80,6 +82,11 @@ export function ProductBottomSheet({
           }
           setSelectedNotes(initialNotes);
 
+          // Whipped cream: jika ada opsi yang tersedia, biarkan user memilih (atau default null)
+          setSelectedWhippedCream(null);
+          setSelectedSyrups([]);
+          setSelectedToppings([]);
+
           setIsLoading(false);
         }
       })
@@ -95,18 +102,63 @@ export function ProductBottomSheet({
     };
   }, [outletCode, product.bundleCode]);
 
-  // Hitung SKU varian yang cocok dengan kombinasi terpilih
+  // Pisahkan addons ke dalam 3 grup per spesifikasi
+  const { whippedCreamAddons, syrupAddons, toppingAddons } = useMemo(() => {
+    const all = options?.addons || [];
+    const whipped = all.filter((a) => a.group === 'whipped_cream');
+    const syrup = all.filter((a) => a.group === 'syrup');
+    const topping = all.filter((a) => a.group === 'topping');
+    return {
+      whippedCreamAddons: whipped,
+      syrupAddons: syrup,
+      toppingAddons: topping,
+    };
+  }, [options?.addons]);
+
+  // Gabungan seluruh addons yang terpilih
+  const selectedAddons = useMemo(() => {
+    const list: Addon[] = [];
+    if (selectedWhippedCream) {
+      list.push(selectedWhippedCream);
+    }
+    list.push(...selectedSyrups);
+    list.push(...selectedToppings);
+    return list;
+  }, [selectedWhippedCream, selectedSyrups, selectedToppings]);
+
+  // Daftar nama opsi yang dipilih user
+  const selectedOptionNames = useMemo(() => {
+    if (!options?.dimensions) return [];
+    const names: string[] = [];
+    for (const dim of options.dimensions) {
+      const selectedId = selectedDimensions[dim.code];
+      const found = dim.values.find((v) => v.id === selectedId);
+      if (found) {
+        names.push(found.name);
+      }
+    }
+    return names;
+  }, [options?.dimensions, selectedDimensions]);
+
+  // SKU varian yang cocok dengan kombinasi terpilih (hanya untuk validasi stok)
   const matchedSku: VariantSku | null = options?.optionMap
     ? findMatchingSku(options.optionMap, selectedDimensions)
     : null;
 
-  // Hitung harga dinamis
-  const pricing = calculateBottomSheetPricing(
-    product.basePrice,
-    matchedSku,
-    selectedAddons,
-    quantity
-  );
+  // Hitung rincian harga dinamis flat
+  const pricing = useMemo(() => {
+    return calculateBottomSheetPricing(
+      product.basePrice,
+      selectedOptionNames,
+      selectedAddons,
+      quantity
+    );
+  }, [product.basePrice, selectedOptionNames, selectedAddons, quantity]);
+
+  // Cek apakah Whipped Cream wajib tapi belum dipilih
+  const hasWhippedCreamOptions = whippedCreamAddons.length > 0;
+  const isWhippedCreamMissing = hasWhippedCreamOptions && !selectedWhippedCream;
+  const isAddToCartDisabled = isLoading || Boolean(errorMessage) || isWhippedCreamMissing;
 
   const handleSelectDimensionValue = (dimCode: number, valId: number) => {
     if (!options?.optionMap) return;
@@ -124,8 +176,9 @@ export function ProductBottomSheet({
     }));
   };
 
-  const handleToggleAddon = (addon: Addon) => {
-    setSelectedAddons((prev) => {
+  const handleToggleSyrup = (addon: Addon) => {
+    if (addon.isSoldOut) return;
+    setSelectedSyrups((prev) => {
       const exists = prev.some((a) => a.sku === addon.sku);
       if (exists) {
         return prev.filter((a) => a.sku !== addon.sku);
@@ -134,13 +187,64 @@ export function ProductBottomSheet({
     });
   };
 
+  const handleToggleTopping = (addon: Addon) => {
+    if (addon.isSoldOut) return;
+    setSelectedToppings((prev) => {
+      const exists = prev.some((a) => a.sku === addon.sku);
+      if (exists) {
+        return prev.filter((a) => a.sku !== addon.sku);
+      }
+      return [...prev, addon];
+    });
+  };
+
+  const handleAddToCart = () => {
+    if (isAddToCartDisabled) return;
+
+    // Kumpulkan ringkasan varian
+    const variantParts: string[] = [...selectedOptionNames];
+
+    // Tambahkan notes (misal: Ice Level)
+    if (selectedNotes) {
+      for (const [, valText] of Object.entries(selectedNotes)) {
+        if (valText && !variantParts.includes(valText)) {
+          variantParts.push(valText);
+        }
+      }
+    }
+
+    const variantDescription = variantParts.join(', ');
+
+    onAddToCart({
+      bundleCode: product.bundleCode,
+      sku: matchedSku?.sku,
+      name: product.name,
+      image: product.image,
+      basePrice: product.basePrice,
+      variantAddition: pricing.variantAddition,
+      toppingTotal: pricing.toppingTotal,
+      quantity,
+      variantDescription,
+      addons: selectedAddons,
+      notes: customerNotes,
+    });
+
+    onClose();
+  };
+
+  // Helper untuk menentukan grid kolom: 3 opsi -> grid-cols-3, 2 atau >=4 opsi -> grid-cols-2
+  const getGridColsClass = (count: number) => {
+    if (count === 3) return 'grid-cols-3';
+    return 'grid-cols-2';
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-2xs transition-opacity animate-in fade-in duration-200">
       {/* Backdrop tap to dismiss */}
       <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
 
       {/* Sheet Container (Mobile-first max-w-md) */}
-      <div className="relative w-full max-w-md max-h-[90vh] bg-white rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300">
+      <div className="relative w-full max-w-md max-h-[92vh] bg-white rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300">
         {/* Header Lembar Produk */}
         <div className="sticky top-0 z-10 bg-white/95 backdrop-blur px-5 py-3.5 border-b border-stone-200 flex items-center justify-between">
           <div className="pr-4">
@@ -171,7 +275,7 @@ export function ProductBottomSheet({
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 space-y-5">
           {/* Ringkasan Produk */}
           <div className="flex gap-3 pb-3 border-b border-stone-100">
             <div className="relative w-16 h-16 bg-stone-100 rounded-xl overflow-hidden shrink-0 border border-stone-100">
@@ -223,147 +327,130 @@ export function ProductBottomSheet({
             </div>
           )}
 
-          {/* Opsi Dimensi Varian */}
-          {!isLoading && options && options.dimensions && options.dimensions.map((dim) => (
-            <div key={dim.code} className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-bold text-[#111111] uppercase tracking-wide">
-                  {dim.name}
-                </span>
-                <span className="text-[10px] text-stone-400">Pilih 1</span>
+          {/* 1. Opsi Dimensi Varian (Temperature, Size, Beans, Milk, Sugar Level) */}
+          {!isLoading && options?.dimensions && options.dimensions.map((dim) => {
+            const gridClass = getGridColsClass(dim.values.length);
+            return (
+              <div key={dim.code} className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-[#111111] uppercase tracking-wide">
+                    {dim.name}
+                  </span>
+                  <span className="text-[10px] text-stone-400">Pilih 1</span>
+                </div>
+
+                <div className={`grid ${gridClass} gap-2`}>
+                  {dim.values.map((val) => {
+                    const isSelected = selectedDimensions[dim.code] === val.id;
+                    const isAvailable = isDimensionValueAvailable(
+                      options.optionMap,
+                      selectedDimensions,
+                      dim.code,
+                      val.id
+                    );
+                    const addition = getOptionAddition(val.name);
+
+                    return (
+                      <button
+                        key={val.id}
+                        type="button"
+                        disabled={!isAvailable}
+                        onClick={() => handleSelectDimensionValue(dim.code, val.id)}
+                        className={`min-h-[46px] p-2 rounded-xl text-xs font-medium border text-center flex flex-col items-center justify-center transition ${
+                          isSelected
+                            ? 'border-[#111111] bg-[#111111] text-[#D4AF37] font-bold shadow-xs'
+                            : isAvailable
+                            ? 'border-stone-200 bg-white hover:border-amber-400 text-stone-700 active:scale-98'
+                            : 'border-stone-100 bg-stone-50 text-stone-300 cursor-not-allowed line-through'
+                        }`}
+                      >
+                        <span className="line-clamp-2 leading-tight">{val.name}</span>
+                        {addition > 0 && (
+                          <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#D4AF37]' : 'text-stone-500'}`}>
+                            +{formatRupiah(addition)}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
+            );
+          })}
 
-              <div className="grid grid-cols-2 gap-2">
-                {dim.values.map((val) => {
-                  const isSelected = selectedDimensions[dim.code] === val.id;
-                  const isAvailable = isDimensionValueAvailable(
-                    options.optionMap,
-                    selectedDimensions,
-                    dim.code,
-                    val.id
-                  );
+          {/* 2. Opsi Notes (Ice Level) */}
+          {!isLoading && options?.notes && options.notes.map((note) => {
+            const gridClass = getGridColsClass(note.options.length);
+            return (
+              <div key={note.name} className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-[#111111] uppercase tracking-wide">
+                    {note.name}
+                  </span>
+                  <span className="text-[10px] text-stone-400">Pilih 1</span>
+                </div>
 
-                  return (
-                    <button
-                      key={val.id}
-                      type="button"
-                      disabled={!isAvailable}
-                      onClick={() => handleSelectDimensionValue(dim.code, val.id)}
-                      className={`min-h-[44px] px-3 py-2 rounded-xl text-xs font-medium border text-left flex items-center justify-between transition ${
-                        isSelected
-                          ? 'border-[#111111] bg-[#111111] text-[#D4AF37] font-bold shadow-xs'
-                          : isAvailable
-                          ? 'border-stone-200 bg-white hover:border-amber-400 text-stone-700 active:scale-98'
-                          : 'border-stone-100 bg-stone-50 text-stone-300 cursor-not-allowed line-through'
-                      }`}
-                    >
-                      <span>{val.name}</span>
-                      {isSelected && (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-3.5 w-3.5 text-[#D4AF37]"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      )}
-                    </button>
-                  );
-                })}
+                <div className={`grid ${gridClass} gap-2`}>
+                  {note.options.map((optText) => {
+                    const isSelected = selectedNotes[note.name] === optText;
+                    return (
+                      <button
+                        key={optText}
+                        type="button"
+                        onClick={() =>
+                          setSelectedNotes((prev) => ({
+                            ...prev,
+                            [note.name]: optText,
+                          }))
+                        }
+                        className={`min-h-[46px] p-2 rounded-xl text-xs font-medium border text-center flex flex-col items-center justify-center transition ${
+                          isSelected
+                            ? 'border-[#111111] bg-[#111111] text-[#D4AF37] font-bold shadow-xs'
+                            : 'border-stone-200 bg-white text-stone-700 hover:border-amber-400 active:scale-98'
+                        }`}
+                      >
+                        <span className="line-clamp-2 leading-tight">{optText}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
-          {/* Opsi Notes (misal: Ice Level) */}
-          {!isLoading && options && options.notes && options.notes.map((note) => (
-            <div key={note.name} className="space-y-2">
-              <span className="text-xs font-bold text-[#111111] uppercase tracking-wide block">
-                {note.name}
-              </span>
-
-              <div className="flex flex-wrap gap-2">
-                {note.options.map((optText) => {
-                  const isSelected = selectedNotes[note.name] === optText;
-                  return (
-                    <button
-                      key={optText}
-                      type="button"
-                      onClick={() =>
-                        setSelectedNotes((prev) => ({
-                          ...prev,
-                          [note.name]: optText,
-                        }))
-                      }
-                      className={`min-h-[44px] px-4 py-2 rounded-xl text-xs font-medium border transition ${
-                        isSelected
-                          ? 'border-[#111111] bg-[#111111] text-[#D4AF37] font-bold shadow-xs'
-                          : 'border-stone-200 bg-white text-stone-700 hover:border-amber-400 active:scale-98'
-                      }`}
-                    >
-                      {optText}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-
-          {/* Opsi Topping / Addon */}
-          {!isLoading && options && options.addons && options.addons.length > 0 && (
+          {/* 3. Opsi Whipped Cream (Tepat di bawah Ice Level, khusus Frappe, Pilih 1 Radio, Gratis) */}
+          {!isLoading && whippedCreamAddons.length > 0 && (
             <div className="space-y-2 pt-2 border-t border-stone-100">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-bold text-[#111111] uppercase tracking-wide">
-                  Topping Tambahan
+                <span className="text-xs font-bold text-[#111111] uppercase tracking-wide flex items-center gap-1">
+                  <span>Whipped Cream</span>
+                  <span className="text-rose-500 text-sm">*</span>
                 </span>
-                <span className="text-[10px] text-stone-400">Opsional</span>
+                <span className="text-[10px] text-amber-700 font-semibold bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                  Wajib Pilih 1 • Gratis
+                </span>
               </div>
 
-              <div className="space-y-2">
-                {options.addons.map((addon) => {
-                  const isChecked = selectedAddons.some((a) => a.sku === addon.sku);
+              <div className={`grid ${getGridColsClass(whippedCreamAddons.length)} gap-2`}>
+                {whippedCreamAddons.map((addon) => {
+                  const isSelected = selectedWhippedCream?.sku === addon.sku;
                   return (
                     <button
                       key={addon.sku}
                       type="button"
-                      onClick={() => handleToggleAddon(addon)}
-                      className={`w-full min-h-[44px] px-3.5 py-2.5 rounded-xl border flex items-center justify-between text-xs transition ${
-                        isChecked
-                          ? 'border-amber-400 bg-amber-50/60 font-semibold text-stone-900'
-                          : 'border-stone-200 bg-white text-stone-700 hover:border-stone-300'
+                      disabled={addon.isSoldOut}
+                      onClick={() => setSelectedWhippedCream(addon)}
+                      className={`min-h-[46px] p-2 rounded-xl text-xs font-medium border text-center flex flex-col items-center justify-center transition ${
+                        isSelected
+                          ? 'border-[#111111] bg-[#111111] text-[#D4AF37] font-bold shadow-xs'
+                          : addon.isSoldOut
+                          ? 'border-stone-100 bg-stone-50 text-stone-300 cursor-not-allowed line-through'
+                          : 'border-stone-200 bg-white hover:border-amber-400 text-stone-700 active:scale-98'
                       }`}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <div
-                          className={`w-4 h-4 rounded border flex items-center justify-center ${
-                            isChecked
-                              ? 'bg-[#111111] border-[#111111] text-[#D4AF37]'
-                              : 'border-stone-300 bg-white'
-                          }`}
-                        >
-                          {isChecked && (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-3 w-3"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          )}
-                        </div>
-                        <span>{addon.name}</span>
-                      </div>
-                      <span className="text-stone-500">
-                        +{formatRupiah(addon.price)}
+                      <span className="line-clamp-2 leading-tight">{addon.name}</span>
+                      <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#D4AF37]' : 'text-stone-400'}`}>
+                        Gratis
                       </span>
                     </button>
                   );
@@ -372,40 +459,117 @@ export function ProductBottomSheet({
             </div>
           )}
 
-          {/* Jumlah Pesanan (Quantity) */}
-          <div className="pt-2 border-t border-stone-100 flex items-center justify-between">
-            <div>
-              <span className="text-xs font-bold text-[#111111] uppercase tracking-wide block">
-                Jumlah Pesanan
-              </span>
-              <span className="text-[11px] text-stone-400">Atur kuantitas item</span>
-            </div>
+          {/* 4. Opsi Syrup (Checkbox, Opsional, +Rp6.000 per pilihan) */}
+          {!isLoading && syrupAddons.length > 0 && (
+            <div className="space-y-2 pt-2 border-t border-stone-100">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-[#111111] uppercase tracking-wide">
+                  Syrup
+                </span>
+                <span className="text-[10px] text-stone-400">
+                  Opsional • +{formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.syrup)}
+                </span>
+              </div>
 
-            <div className="flex items-center gap-3 bg-stone-100 p-1 rounded-xl border border-stone-200">
-              <button
-                type="button"
-                disabled={quantity <= 1}
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="min-h-[44px] min-w-[44px] bg-white rounded-lg flex items-center justify-center text-stone-700 font-bold disabled:opacity-40 hover:bg-stone-50 active:scale-95 shadow-2xs"
-                aria-label="Kurangi jumlah"
-              >
-                -
-              </button>
-              <span className="w-6 text-center font-bold text-sm text-[#111111]">
-                {quantity}
-              </span>
-              <button
-                type="button"
-                onClick={() => setQuantity((q) => q + 1)}
-                className="min-h-[44px] min-w-[44px] bg-white rounded-lg flex items-center justify-center text-stone-700 font-bold hover:bg-stone-50 active:scale-95 shadow-2xs"
-                aria-label="Tambah jumlah"
-              >
-                +
-              </button>
+              <div className="grid grid-cols-2 gap-2">
+                {syrupAddons.map((addon) => {
+                  const isChecked = selectedSyrups.some((a) => a.sku === addon.sku);
+                  return (
+                    <button
+                      key={addon.sku}
+                      type="button"
+                      disabled={addon.isSoldOut}
+                      onClick={() => handleToggleSyrup(addon)}
+                      className={`min-h-[46px] p-2.5 rounded-xl border flex items-center justify-between text-xs transition text-left ${
+                        isChecked
+                          ? 'border-amber-400 bg-amber-50/70 font-semibold text-stone-900 shadow-2xs'
+                          : addon.isSoldOut
+                          ? 'border-stone-100 bg-stone-50 text-stone-300 cursor-not-allowed'
+                          : 'border-stone-200 bg-white text-stone-700 hover:border-stone-300 active:scale-98'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0 pr-1">
+                        <div
+                          className={`w-3.5 h-3.5 rounded border shrink-0 flex items-center justify-center ${
+                            isChecked
+                              ? 'bg-[#111111] border-[#111111] text-[#D4AF37]'
+                              : 'border-stone-300 bg-white'
+                          }`}
+                        >
+                          {isChecked && (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-2.5 w-2.5" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </div>
+                        <span className="line-clamp-2 leading-tight text-[11px]">{addon.name}</span>
+                      </div>
+                      <span className="text-[10px] text-stone-500 shrink-0 font-medium">
+                        +{formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.syrup)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Kolom Catatan Pelanggan */}
+          {/* 5. Opsi Topping (Checkbox, Opsional, +Rp6.000 per pilihan) */}
+          {!isLoading && toppingAddons.length > 0 && (
+            <div className="space-y-2 pt-2 border-t border-stone-100">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-[#111111] uppercase tracking-wide">
+                  Topping
+                </span>
+                <span className="text-[10px] text-stone-400">
+                  Opsional • +{formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.topping)}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                {toppingAddons.map((addon) => {
+                  const isChecked = selectedToppings.some((a) => a.sku === addon.sku);
+                  return (
+                    <button
+                      key={addon.sku}
+                      type="button"
+                      disabled={addon.isSoldOut}
+                      onClick={() => handleToggleTopping(addon)}
+                      className={`min-h-[46px] p-2.5 rounded-xl border flex items-center justify-between text-xs transition text-left ${
+                        isChecked
+                          ? 'border-amber-400 bg-amber-50/70 font-semibold text-stone-900 shadow-2xs'
+                          : addon.isSoldOut
+                          ? 'border-stone-100 bg-stone-50 text-stone-300 cursor-not-allowed'
+                          : 'border-stone-200 bg-white text-stone-700 hover:border-stone-300 active:scale-98'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0 pr-1">
+                        <div
+                          className={`w-3.5 h-3.5 rounded border shrink-0 flex items-center justify-center ${
+                            isChecked
+                              ? 'bg-[#111111] border-[#111111] text-[#D4AF37]'
+                              : 'border-stone-300 bg-white'
+                          }`}
+                        >
+                          {isChecked && (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-2.5 w-2.5" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </div>
+                        <span className="line-clamp-2 leading-tight text-[11px]">{addon.name}</span>
+                      </div>
+                      <span className="text-[10px] text-stone-500 shrink-0 font-medium">
+                        +{formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.topping)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 6. Kolom Catatan Pelanggan (Pindah ke bawah semua opsi, tepat di atas bar bawah) */}
           <div className="space-y-1.5 pt-2 border-t border-stone-100">
             <label htmlFor="customer-notes" className="text-xs font-bold text-[#111111] uppercase tracking-wide block">
               Catatan Pesanan
@@ -421,13 +585,15 @@ export function ProductBottomSheet({
           </div>
         </div>
 
-        {/* Sticky Footer: Rincian Harga & Tombol Keranjang (Tahap 5B) */}
-        <div className="sticky bottom-0 bg-white border-t border-stone-200 p-4 space-y-2 shadow-lg">
+        {/* Sticky Footer: Total Estimasi, Stepper di KIRI, dan Tombol Tambah ke Keranjang */}
+        <div className="sticky bottom-0 bg-white border-t border-stone-200 p-3.5 space-y-2.5 shadow-lg">
           <div className="flex items-baseline justify-between">
             <div>
-              <span className="text-[11px] text-stone-400 block">Total Estimasi ({quantity} item)</span>
+              <span className="text-[10px] text-stone-400 block font-medium">
+                Total Estimasi ({quantity} item)
+              </span>
               <div className="flex items-baseline gap-2">
-                <span className="text-lg font-bold text-amber-700">
+                <span className="text-base font-bold text-amber-700">
                   {formatRupiah(pricing.subtotal)}
                 </span>
                 <span className="text-xs text-stone-400 line-through">
@@ -437,73 +603,69 @@ export function ProductBottomSheet({
             </div>
 
             <div className="text-right">
-              <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                Hemat {formatRupiah(pricing.originalTotal - pricing.subtotal)}
+              <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                Hemat {formatRupiah(pricing.savingsTotal)}
               </span>
             </div>
           </div>
 
-          {/* Tombol Tambah ke Keranjang (Aktif di Tahap 5B) */}
-          <button
-            type="button"
-            onClick={() => {
-              // Bangun teks ringkasan varian
-              const variantParts: string[] = [];
-              if (options?.dimensions) {
-                for (const dim of options.dimensions) {
-                  const selectedValId = selectedDimensions[dim.code];
-                  const val = dim.values.find((v) => v.id === selectedValId);
-                  if (val) {
-                    variantParts.push(val.name);
-                  }
-                }
-              }
+          {/* Peringatan jika Whipped Cream belum dipilih */}
+          {isWhippedCreamMissing && (
+            <div className="p-2 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-[11px] text-center font-medium">
+              ⚠️ Silakan pilih 1 opsi Whipped Cream sebelum menambahkan ke keranjang
+            </div>
+          )}
 
-              if (selectedNotes) {
-                for (const [, valText] of Object.entries(selectedNotes)) {
-                  if (valText && !variantParts.includes(valText)) {
-                    variantParts.push(valText);
-                  }
-                }
-              }
+          {/* Baris Tombol & Stepper di sebelah KIRI */}
+          <div className="flex items-center gap-2">
+            {/* Stepper Jumlah di Sebelah KIRI Tombol */}
+            <div className="flex items-center shrink-0 bg-stone-100 p-0.5 rounded-xl border border-stone-200 h-[46px]">
+              <button
+                type="button"
+                disabled={quantity <= 1}
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                className="w-9 h-full bg-white rounded-lg flex items-center justify-center text-stone-700 font-bold disabled:opacity-30 hover:bg-stone-50 active:scale-95 shadow-2xs text-sm"
+                aria-label="Kurangi jumlah"
+              >
+                -
+              </button>
+              <span className="w-6 text-center font-bold text-xs text-[#111111]">
+                {quantity}
+              </span>
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => q + 1)}
+                className="w-9 h-full bg-white rounded-lg flex items-center justify-center text-stone-700 font-bold hover:bg-stone-50 active:scale-95 shadow-2xs text-sm"
+                aria-label="Tambah jumlah"
+              >
+                +
+              </button>
+            </div>
 
-              const variantDescription = variantParts.join(', ');
-              const toppingTotal = selectedAddons.reduce((sum, a) => sum + (a.price || 0), 0);
-
-              onAddToCart({
-                bundleCode: product.bundleCode,
-                sku: matchedSku?.sku,
-                name: product.name,
-                image: product.image,
-                basePrice: product.basePrice,
-                variantAddition: matchedSku ? matchedSku.variantAddition : 0,
-                toppingTotal,
-                quantity,
-                variantDescription,
-                addons: selectedAddons,
-                notes: customerNotes,
-              });
-
-              onClose();
-            }}
-            className="w-full min-h-[48px] px-4 py-3 bg-[#111111] hover:bg-stone-900 active:scale-98 text-[#D4AF37] font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
+            {/* Tombol Tambah ke Keranjang */}
+            <button
+              type="button"
+              disabled={isAddToCartDisabled}
+              onClick={handleAddToCart}
+              className="flex-1 min-h-[46px] px-3 py-2 bg-[#111111] hover:bg-stone-900 active:scale-98 text-[#D4AF37] font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-            <span>Tambah ke Keranjang • {formatRupiah(pricing.subtotal)}</span>
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3.5 w-3.5 shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+              <span className="line-clamp-1">Tambah ke Keranjang • {formatRupiah(pricing.subtotal)}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
