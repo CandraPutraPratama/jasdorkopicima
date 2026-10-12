@@ -1,6 +1,13 @@
 import { calculateOrderPricing } from './pricing.ts';
 import { formatRupiah } from './currency.ts';
 import type { CartItem } from './cart-reducer.ts';
+import type { Addon } from '../types/domain.ts';
+import {
+  getOptionAddition,
+  isHiddenOptionValue,
+  classifyAddonGroup,
+  addonPrices,
+} from '../config/business.ts';
 
 export interface BuildWhatsAppMessageInput {
   customerName: string;
@@ -21,6 +28,75 @@ export function cleanNotes(notes?: string): string {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 100);
+}
+
+/**
+ * Format rincian varian flat dan addon per grup di dalam kurung:
+ * (Iced, Large (+Rp5.000), Juwara Beans (+Rp3.000), Less Sugar, Whipped Cream: Chocolate, Syrup: Choco Sauce (+Rp6.000), Topping: Oreo (+Rp6.000))
+ */
+export function formatItemDetails(item: CartItem): string {
+  const parts: string[] = [];
+
+  // 1. Opsi Varian
+  if (item.variantDescription && item.variantDescription.trim()) {
+    const tokens = item.variantDescription
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    for (const token of tokens) {
+      // Hapus suffix harga sebelumnya jika ada (misal: "Large (+Rp5.000)")
+      const cleanToken = token.replace(/\s*\(\+Rp[\d.]+\)$/i, '').trim();
+      if (!cleanToken || isHiddenOptionValue(cleanToken)) continue;
+
+      const addition = getOptionAddition(cleanToken);
+      if (addition > 0) {
+        parts.push(`${cleanToken} (+${formatRupiah(addition)})`);
+      } else {
+        parts.push(cleanToken);
+      }
+    }
+  }
+
+  // 2. Addon dikelompokkan ke 3 grup: Whipped Cream, Syrup, Topping
+  if (item.addons && item.addons.length > 0) {
+    const whipped: Addon[] = [];
+    const syrups: Addon[] = [];
+    const toppings: Addon[] = [];
+
+    for (const addon of item.addons) {
+      const group = addon.group || classifyAddonGroup(addon.name, addon.categoryName || addon.category);
+      if (group === 'whipped_cream') {
+        whipped.push(addon);
+      } else if (group === 'syrup') {
+        syrups.push(addon);
+      } else if (group === 'topping') {
+        toppings.push(addon);
+      }
+    }
+
+    if (whipped.length > 0) {
+      // Whipped cream gratis, tanpa harga. Hapus prefix redundant 'Whipped Cream ' jika ada
+      const names = whipped.map((w) => w.name.replace(/^Whipped Cream\s+/i, '').trim());
+      parts.push(`Whipped Cream: ${names.join(', ')}`);
+    }
+
+    if (syrups.length > 0) {
+      const syrupParts = syrups.map(
+        (s) => `${s.name} (+${formatRupiah(addonPrices.syrup)})`
+      );
+      parts.push(`Syrup: ${syrupParts.join(', ')}`);
+    }
+
+    if (toppings.length > 0) {
+      const toppingParts = toppings.map(
+        (t) => `${t.name} (+${formatRupiah(addonPrices.topping)})`
+      );
+      parts.push(`Topping: ${toppingParts.join(', ')}`);
+    }
+  }
+
+  return parts.length > 0 ? ` (${parts.join(', ')})` : '';
 }
 
 /**
@@ -59,20 +135,7 @@ export function buildWhatsAppMessage(input: BuildWhatsAppMessageInput): string {
     const item = items[i];
     const itemPricing = orderPricing.items[i];
 
-    // Bangun rincian varian dan topping di dalam kurung
-    const parts: string[] = [];
-    if (item.variantDescription && item.variantDescription.trim()) {
-      parts.push(item.variantDescription.trim());
-    }
-
-    if (item.addons && item.addons.length > 0) {
-      const toppingStr = item.addons
-        .map((a) => `${a.name} (+${formatRupiah(a.price)})`)
-        .join(', ');
-      parts.push(`Topping: ${toppingStr}`);
-    }
-
-    const detailsStr = parts.length > 0 ? ` (${parts.join(', ')})` : '';
+    const detailsStr = formatItemDetails(item);
     const lineTotal = formatRupiah(itemPricing.subtotalItem);
 
     lines.push(`- ${item.quantity}x ${item.name}${detailsStr} ${lineTotal}`);

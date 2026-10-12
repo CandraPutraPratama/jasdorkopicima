@@ -100,6 +100,11 @@ export const BUSINESS_CONFIG: BusinessConfig = {
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '6287793420768',
 };
 
+export const addonPrices = BUSINESS_CONFIG.pricing.addonPrices;
+export const flatOptionAdditions = BUSINESS_CONFIG.pricing.flatOptionAdditions;
+export const menuGroupAllowlist = BUSINESS_CONFIG.menuGroupAllowlist;
+export const hiddenOptionValues = BUSINESS_CONFIG.hiddenOptionValues;
+
 /**
  * Mengambil tambahan harga flat dari nama nilai opsi (misal "Large" -> 5000, "Juwara Beans" -> 3000, "Oatside" -> 3000, lainnya 0).
  */

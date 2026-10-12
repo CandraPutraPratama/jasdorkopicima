@@ -124,18 +124,53 @@ test('buildWhatsAppMessage handles scheduled pickup format', () => {
   assert.match(message, /Biaya Jasa \(Rp2\.000 x 2 item\): Rp4\.000/);
 });
 
-test('buildWhatsAppMessage formats toppings correctly inside parentheses', () => {
+test('buildWhatsAppMessage produces exact required template string for Korea Banana Latte with grouped addons and flat additions', () => {
+  const items: CartItem[] = [
+    {
+      id: 'item-kbl',
+      bundleCode: '99881',
+      name: 'Korea Banana Latte',
+      basePrice: 32000, // promo 16.000
+      variantAddition: 8000, // Large (5k) + Juwara Beans (3k)
+      toppingTotal: 12000, // Choco Sauce (6k) + Oreo (6k)
+      quantity: 1,
+      variantDescription: 'Iced, Large, Juwara Beans, Less Sugar, Less Ice',
+      addons: [
+        { sku: 'WC-1', name: 'Whipped Cream Chocolate', price: 0, categoryName: 'Whipped Cream' },
+        { sku: 'SYR-1', name: 'Choco Sauce', price: 6000, categoryName: 'Syrup' },
+        { sku: 'TOP-1', name: 'Oreo', price: 6000, categoryName: 'Topping' },
+      ],
+      notes: '',
+    },
+  ];
+
+  const message = buildWhatsAppMessage({
+    customerName: 'Budi',
+    outletName: 'MERR Rungkut Surabaya (DT)',
+    pickupMode: 'now',
+    estimatedTime: '14:15',
+    items,
+  });
+
+  // Base 32k / 2 = 16k + 8k + 12k = 36k
+  assert.match(
+    message,
+    /- 1x Korea Banana Latte \(Iced, Large \(\+Rp5\.000\), Juwara Beans \(\+Rp3\.000\), Less Sugar, Less Ice, Whipped Cream: Chocolate, Syrup: Choco Sauce \(\+Rp6\.000\), Topping: Oreo \(\+Rp6\.000\)\) Rp36\.000/
+  );
+});
+
+test('buildWhatsAppMessage formats toppings correctly inside parentheses with +Rp6.000', () => {
   const items: CartItem[] = [
     {
       id: 'item-1',
       bundleCode: '202',
       name: 'Avocado Coffee',
-      basePrice: 28000,
+      basePrice: 28000, // promo 14k
       variantAddition: 0,
-      toppingTotal: 4000,
+      toppingTotal: 6000,
       quantity: 1,
       variantDescription: 'Ice, Regular',
-      addons: [{ sku: 'TOP-1', name: 'Grass Jelly', price: 4000, categoryName: 'Topping' }],
+      addons: [{ sku: 'TOP-1', name: 'Grass Jelly', price: 6000, categoryName: 'Topping' }],
       notes: '',
     },
   ];
@@ -148,8 +183,8 @@ test('buildWhatsAppMessage formats toppings correctly inside parentheses', () =>
     items,
   });
 
-  // Base 28k (promo 14k) + Topping 4k = Rp18.000
-  assert.match(message, /- 1x Avocado Coffee \(Ice, Regular, Topping: Grass Jelly \(\+Rp4\.000\)\) Rp18\.000/);
+  // Base 28k (promo 14k) + Topping 6k = Rp20.000
+  assert.match(message, /- 1x Avocado Coffee \(Ice, Regular, Topping: Grass Jelly \(\+Rp6\.000\)\) Rp20\.000/);
 });
 
 test('cleanNotes strips control characters and limits length to 100 characters', () => {
