@@ -105,6 +105,45 @@ export async function searchOutlets(
 }
 
 /**
+ * Memeriksa apakah suatu kode outlet berada dalam ruang lingkup resmi Kopi Kenangan.
+ * Menggunakan database Supabase (yang disinkronkan berkala dengan data brand_and_image lengkap)
+ * serta pengaman berbasis prefix kode dan nama outlet.
+ */
+export async function verifyStoreScope(code: string, rawStore?: any): Promise<boolean> {
+  const normCode = (code || '').trim().toLowerCase();
+  const normName = (rawStore?.name || '').trim().toLowerCase();
+
+  // 1. Pengecualian mutlak untuk Signature & Heritage
+  if (normCode.startsWith('ks.') || normName.includes('signature')) return false;
+  if (normCode.startsWith('kh.') || normCode === 'jkt.kenhertg' || normName.includes('heritage')) return false;
+  if (normName.includes('internal testing') || normCode.startsWith('testposstores')) return false;
+
+  // 2. Jika rawStore memiliki brand_and_image langsung (misal dari queryStore)
+  if (rawStore?.brand_and_image && Array.isArray(rawStore.brand_and_image) && rawStore.brand_and_image.length > 0) {
+    return isStoreInScope(rawStore);
+  }
+
+  // 3. Cek database Supabase yang memiliki status is_in_scope hasil sync resmi
+  try {
+    const supabase = getSupabaseServerClient();
+    const { data } = await supabase
+      .from('outlets')
+      .select('is_in_scope')
+      .eq('code', code)
+      .maybeSingle();
+
+    if (data) {
+      return Boolean(data.is_in_scope);
+    }
+  } catch (err) {
+    console.warn(`[verifyStoreScope] Gagal cek Supabase: ${err}`);
+  }
+
+  // 4. Fallback jika database tidak dapat diakses
+  return !normName.includes('chigo') && !normCode.includes('.cg');
+}
+
+/**
  * Sinkronisasi seluruh outlet dari Kopi Kenangan ke database Supabase.
  * Mengambil seluruh outlet secara batch (page_size: 100) dan melakukan bulk upsert.
  */

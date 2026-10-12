@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { kkApiClient } from '@/lib/kk-client';
 import { normalizeStore } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
-import { BUSINESS_CONFIG, isStoreInScope } from '@/config/business';
+import { BUSINESS_CONFIG } from '@/config/business';
+import { verifyStoreScope } from '@/lib/outlet-service';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import type { Outlet } from '@/types/domain';
 
@@ -43,7 +44,8 @@ export async function GET(
     }
 
     const rawStore = await kkApiClient.getStore(code);
-    if (!rawStore || !isStoreInScope(rawStore)) {
+    const inScope = await verifyStoreScope(code, rawStore);
+    if (!rawStore || !inScope) {
       return NextResponse.json(
         { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
         { status: 404 }
