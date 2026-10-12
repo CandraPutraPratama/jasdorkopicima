@@ -7,31 +7,30 @@ export async function GET() {
   try {
     const supabase = getSupabaseServerClient();
 
-    // 1. Hitung total outlet di database
-    const { count: totalCount, error: errTotal } = await supabase
-      .from('outlets')
-      .select('*', { count: 'exact', head: true });
+    // Jalankan query secara paralel dengan batasan waktu (timeout 8s) agar tidak menggantung
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Supabase query timeout')), 8000)
+    );
 
-    // 2. Hitung outlet yang in-scope (Kopi Kenangan)
-    const { count: inScopeCount, error: errScope } = await supabase
-      .from('outlets')
-      .select('*', { count: 'exact', head: true })
-      .eq('is_in_scope', true);
+    const queryPromise = Promise.all([
+      // 1. Hitung total outlet di database
+      supabase.from('outlets').select('*', { count: 'exact', head: true }),
+      // 2. Hitung outlet yang in-scope (Kopi Kenangan)
+      supabase.from('outlets').select('*', { count: 'exact', head: true }).eq('is_in_scope', true),
+      // 3. Ambil waktu update terakhir
+      supabase.from('outlets').select('updated_at').order('updated_at', { ascending: false }).limit(1).maybeSingle(),
+    ]);
 
-    // 3. Ambil waktu update terakhir
-    const { data: latestRow, error: errLatest } = await supabase
-      .from('outlets')
-      .select('updated_at')
-      .order('updated_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    const [resTotal, resScope, resLatest] = await Promise.race([queryPromise, timeoutPromise]);
 
-    if (errTotal || errScope || errLatest) {
-      throw new Error(errTotal?.message || errScope?.message || errLatest?.message || 'Gagal query status database');
+    if (resTotal.error || resScope.error || resLatest.error) {
+      throw new Error(
+        resTotal.error?.message || resScope.error?.message || resLatest.error?.message || 'Gagal query status database'
+      );
     }
 
-    const total = totalCount ?? 0;
-    const inScope = inScopeCount ?? 0;
+    const total = resTotal.count ?? 0;
+    const inScope = resScope.count ?? 0;
     const outOfScope = total - inScope;
 
     return NextResponse.json({
@@ -39,7 +38,7 @@ export async function GET() {
       totalOutlets: total,
       inScopeOutlets: inScope,
       outOfScopeOutlets: outOfScope,
-      lastSyncedAt: latestRow?.updated_at || null,
+      lastSyncedAt: resLatest.data?.updated_at || null,
       serverTime: new Date().toISOString(),
     });
   } catch (err: any) {

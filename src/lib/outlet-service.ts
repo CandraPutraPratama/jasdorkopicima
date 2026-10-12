@@ -38,7 +38,13 @@ export async function searchOutlets(
       keyword: trimmed,
     });
 
-    const items = normalizeStores(rawData.store || []);
+    const lowerKeyword = trimmed.toLowerCase();
+    const items = normalizeStores(rawData.store || []).filter(
+      (item) =>
+        item.name.toLowerCase().includes(lowerKeyword) ||
+        item.address.toLowerCase().includes(lowerKeyword) ||
+        item.code.toLowerCase().includes(lowerKeyword)
+    );
     return {
       items,
       total: items.length,
