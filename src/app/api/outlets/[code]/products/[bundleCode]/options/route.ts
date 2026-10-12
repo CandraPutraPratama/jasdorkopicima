@@ -3,12 +3,34 @@ import { kkApiClient } from '@/lib/kk-client';
 import { normalizeProductOptions } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG, isStoreInScope } from '@/config/business';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { checkAndLogMarginSafety } from '@/lib/margin-guard';
 import type { ProductOptionDetails } from '@/types/domain';
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   segmentData: { params: Promise<{ code: string; bundleCode: string }> }
 ) {
+  const clientIp = getClientIp(request.headers);
+  const rateLimit = checkRateLimit(`options:${clientIp}`, {
+    maxRequests: 60,
+    windowSeconds: 60,
+  });
+
+  if (!rateLimit.success) {
+    return NextResponse.json(
+      { error: 'Terlalu banyak permintaan varian produk. Silakan tunggu beberapa saat.' },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': String(rateLimit.resetInSeconds),
+          'X-RateLimit-Limit': String(rateLimit.limit),
+          'X-RateLimit-Remaining': '0',
+        },
+      }
+    );
+  }
+
   const { code, bundleCode } = await segmentData.params;
   if (!code || !bundleCode) {
     return NextResponse.json(
@@ -36,6 +58,15 @@ export async function GET(
     }
     const rawOptions = await kkApiClient.getProductOptions(store.id, code, bundleCode);
     const options = normalizeProductOptions(rawOptions);
+
+    // Pengaman margin berjalan: pantau jika selisih KK melebihi ambang batas impas
+    checkAndLogMarginSafety({
+      productName: options.product.name,
+      outletCode: code,
+      basePrice: options.product.basePrice,
+      skus: options.skus,
+    });
+
     const responsePayload = { options };
 
     await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.optionsTtlSeconds);

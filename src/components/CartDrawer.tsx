@@ -50,6 +50,7 @@ export function CartDrawer({
   const [generatedMessage, setGeneratedMessage] = useState('');
   const [isCopied, setIsCopied] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showUncertainModal, setShowUncertainModal] = useState(false);
   const [orderCompleted, setOrderCompleted] = useState(false);
 
   // Hitung slot pick up yang tersedia secara dinamis
@@ -172,56 +173,69 @@ export function CartDrawer({
         }
       }
 
-      // 3. Cek ketersediaan produk terbaru dari query menu (apakah ada yang sold out)
+      // 3. Pengecekan stok yang benar-benar FRESH langsung ke KK API
       if (effectiveOutletCode) {
-        const menuRes = await fetch(`/api/outlets/${encodeURIComponent(effectiveOutletCode)}/menu`, {
-          cache: 'no-store',
+        const valRes = await fetch(`/api/outlets/${encodeURIComponent(effectiveOutletCode)}/validate-cart`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: items.map((it) => ({
+              bundleCode: it.bundleCode,
+              sku: it.sku,
+              name: it.name,
+              quantity: it.quantity,
+            })),
+          }),
         });
-        const menuData = await menuRes.json();
-        const allProducts = (menuData.menuGroups || []).flatMap((g: any) => g.products || []);
 
-        for (const item of items) {
-          const freshProd = allProducts.find((p: any) => p.bundleCode === item.bundleCode);
-          if (freshProd && freshProd.isSoldOut) {
-            throw new Error(`Maaf, item "${item.name}" saat ini sudah habis di outlet.`);
-          }
+        const valData = await valRes.json();
+
+        if (!valData.valid) {
+          const reasons = (valData.unavailableItems || [])
+            .map((u: any) => `${u.name} (${u.reason})`)
+            .join(', ');
+          throw new Error(`Maaf, beberapa menu sedang habis di outlet: ${reasons}`);
         }
-      }
 
-      // 4. Hitung estimasi waktu siap untuk pickup sekarang (waktu saat ini + 10 menit di WIB)
-      const now = new Date();
-      const readyDate = new Date(now.getTime() + 10 * 60 * 1000);
-      const { timeString: estimatedTime } = getWibTimeParts(readyDate);
+        // 4. Hitung estimasi waktu siap untuk pickup sekarang
+        const now = new Date();
+        const readyDate = new Date(now.getTime() + 10 * 60 * 1000);
+        const { timeString: estimatedTime } = getWibTimeParts(readyDate);
 
-      // 5. Bangun string pesan format WhatsApp resmi
-      const message = buildWhatsAppMessage({
-        customerName: trimmedName,
-        outletName: effectiveOutletName,
-        pickupMode,
-        estimatedTime,
-        scheduledTime: selectedSlot,
-        items,
-      });
+        // 5. Bangun string pesan format WhatsApp resmi
+        const message = buildWhatsAppMessage({
+          customerName: trimmedName,
+          outletName: effectiveOutletName,
+          pickupMode,
+          estimatedTime,
+          scheduledTime: selectedSlot,
+          items,
+        });
 
-      setGeneratedMessage(message);
+        setGeneratedMessage(message);
 
-      // 6. Buat URL WhatsApp
-      const waInfo = buildWhatsAppUrl(BUSINESS_CONFIG.whatsappNumber, message);
+        // Jika stok tidak bisa dipastikan secara otomatis, beri pilihan eksplisit kepada customer
+        if (valData.uncertain) {
+          setShowUncertainModal(true);
+          return;
+        }
 
-      // Buka wa.me
-      window.open(waInfo.url, '_blank', 'noopener,noreferrer');
-
-      // Tampilkan dialog konfirmasi "Sudah mengirim pesan di WhatsApp?"
-      setShowSuccessDialog(true);
-
-      // Jika URL terlalu panjang (>1800 karakter), tampilkan modal salin pesan
-      if (!waInfo.isDirect) {
-        setShowCopyModal(true);
+        // Jika stok terverifikasi valid, langsung buka WhatsApp
+        dispatchWhatsAppOrder(message);
       }
     } catch (err: any) {
       setErrorMessage(err.message || 'Terjadi kesalahan saat memvalidasi pesanan.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const dispatchWhatsAppOrder = (message: string) => {
+    const waInfo = buildWhatsAppUrl(BUSINESS_CONFIG.whatsappNumber, message);
+    window.open(waInfo.url, '_blank', 'noopener,noreferrer');
+    setShowSuccessDialog(true);
+    if (!waInfo.isDirect) {
+      setShowCopyModal(true);
     }
   };
 
@@ -646,6 +660,59 @@ export function CartDrawer({
                   />
                 </svg>
                 {isCopied ? 'Tersalin!' : 'Salin Teks Pesan'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Peringatan Stok Tidak Pasti */}
+      {showUncertainModal && (
+        <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/70 backdrop-blur-2xs animate-in fade-in">
+          <div className="w-full max-w-sm bg-white rounded-2xl p-5 shadow-2xl space-y-3.5 text-center">
+            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+            </div>
+
+            <div className="space-y-1">
+              <h3 className="font-bold text-sm text-[#111111]">
+                Stok Tidak Dapat Dipastikan Otomatis
+              </h3>
+              <p className="text-xs text-stone-500 leading-relaxed">
+                Koneksi pengecekan stok ke outlet sedang lambat. Kamu tetap dapat melanjutkan pesanan dan ketersediaan stok akan dikonfirmasi langsung oleh admin jasdor via WhatsApp.
+              </p>
+            </div>
+
+            <div className="space-y-2 pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowUncertainModal(false);
+                  dispatchWhatsAppOrder(generatedMessage);
+                }}
+                className="w-full min-h-[44px] px-4 py-2.5 bg-[#111111] text-[#D4AF37] font-bold text-xs rounded-xl shadow-xs"
+              >
+                Tetap Lanjut ke WhatsApp
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowUncertainModal(false)}
+                className="w-full min-h-[44px] px-4 py-2.5 bg-stone-100 text-stone-700 font-semibold text-xs rounded-xl hover:bg-stone-200"
+              >
+                Kembali ke Keranjang
               </button>
             </div>
           </div>

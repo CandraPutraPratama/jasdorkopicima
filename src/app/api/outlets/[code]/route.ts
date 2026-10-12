@@ -3,12 +3,33 @@ import { kkApiClient } from '@/lib/kk-client';
 import { normalizeStore } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG, isStoreInScope } from '@/config/business';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import type { Outlet } from '@/types/domain';
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   segmentData: { params: Promise<{ code: string }> }
 ) {
+  const clientIp = getClientIp(request.headers);
+  const rateLimit = checkRateLimit(`outlet:${clientIp}`, {
+    maxRequests: 60,
+    windowSeconds: 60,
+  });
+
+  if (!rateLimit.success) {
+    return NextResponse.json(
+      { error: 'Terlalu banyak permintaan detail outlet. Silakan tunggu beberapa saat.' },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': String(rateLimit.resetInSeconds),
+          'X-RateLimit-Limit': String(rateLimit.limit),
+          'X-RateLimit-Remaining': '0',
+        },
+      }
+    );
+  }
+
   try {
     const { code } = await segmentData.params;
     if (!code) {

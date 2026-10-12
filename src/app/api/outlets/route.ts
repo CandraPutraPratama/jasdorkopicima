@@ -2,9 +2,30 @@ import { NextRequest, NextResponse } from 'next/server';
 import { searchOutlets } from '@/lib/outlet-service';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import type { Outlet } from '@/types/domain';
 
 export async function GET(request: NextRequest) {
+  const clientIp = getClientIp(request.headers);
+  const rateLimit = checkRateLimit(`search:${clientIp}`, {
+    maxRequests: 60,
+    windowSeconds: 60,
+  });
+
+  if (!rateLimit.success) {
+    return NextResponse.json(
+      { error: 'Terlalu banyak pencarian outlet. Silakan tunggu beberapa saat.' },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': String(rateLimit.resetInSeconds),
+          'X-RateLimit-Limit': String(rateLimit.limit),
+          'X-RateLimit-Remaining': '0',
+        },
+      }
+    );
+  }
+
   try {
     const searchParams = request.nextUrl.searchParams;
     const keyword = (searchParams.get('q') || searchParams.get('keyword') || '').trim();

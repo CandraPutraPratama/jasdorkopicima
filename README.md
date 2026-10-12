@@ -1,94 +1,88 @@
 # jasdorkopicima
 
-Website layanan jasa titip (jastip) Kopi Kenangan. Membantu customer memilih outlet, menyusun menu/varian, dan otomatis menghasilkan draft pesanan WhatsApp ke pemilik.
+Website layanan jasa titip (jastip) Kopi Kenangan independen. Membantu customer mencari outlet, memesan menu dengan diskon 50% dari harga dasar, memilih varian flat-rate, dan menghasilkan draft pesanan WhatsApp secara terstruktur.
 
-## Tech Stack
-- **Framework**: Next.js 16 (App Router) + TypeScript
-- **Database / Cache**: Supabase (PostgreSQL with `pg_trgm` & Row Level Security)
-- **Deployment**: Cloudflare Workers via `@opennextjs/cloudflare`
-- **Domain**: `https://jasdor.cimagroup.my.id`
+> **Status Proyek**: **Tahap 6 (Production Ready & Launch Hardening Selesai)**.
 
 ---
 
-## 1. Persiapan Database Supabase (Tahap 4B)
+## 🏛️ Arsitektur Singkat
 
-Aplikasi membutuhkan dua tabel di Supabase: `outlets` dan `generic_cache`.
-
-### Langkah Menjalankan Migrasi SQL:
-1. Buka [Supabase Dashboard](https://supabase.com/dashboard) dan pilih project Anda.
-2. Masuk ke menu **SQL Editor** pada navigasi sisi kiri.
-3. Klik tombol **New Query**.
-4. Buka file migrasi [supabase/migrations/001_create_outlets_and_cache_tables.sql](file:///c:/Users/LENOVO/websitebisnis/jasdorkopicima/supabase/migrations/001_create_outlets_and_cache_tables.sql) di repositori ini, salin seluruh kodenya, dan paste ke SQL Editor.
-5. Klik **Run** (atau `Ctrl + Enter`).
-6. Verifikasi bahwa tabel `outlets` dan `generic_cache` telah berhasil dibuat dengan status **RLS Enabled** dan indeks `pg_trgm` aktif.
-
-### Migrasi 002: Penanda Brand & Ruang Lingkup (Revisi 5C)
-Untuk memfilter hanya outlet resmi Kopi Kenangan dan mengecualikan Kenangan Signature serta brand lain:
-1. Buka file [supabase/migrations/002_add_brand_and_scope_to_outlets.sql](file:///c:/Users/LENOVO/websitebisnis/jasdorkopicima/supabase/migrations/002_add_brand_and_scope_to_outlets.sql).
-2. Salin seluruh isi SQL ke **SQL Editor** di Supabase Dashboard, lalu klik **Run**.
-3. Kolom `brand` dan `is_in_scope` beserta indeksnya akan otomatis terpasang dan diperbarui.
+```
+[ Customer Browser ]
+       │
+       ▼ (HTTPS / Custom Domain)
+[ Cloudflare Workers Edge (Next.js 16 via @opennextjs/cloudflare) ]
+  ├── Rate Limiter (Sliding Window per IP)
+  ├── Edge Rendering (Mobile-first, Tailwind CSS, OpenGraph Preview)
+  ├── API Routes (/api/outlets, /menu, /options, /validate-cart, /sync-status)
+  └── Business Engine (Flat Pricing, Allowlist & Exclusion Rules, Margin Guard)
+       │                        │
+       ▼                        ▼
+[ Supabase PostgreSQL ]   [ Kopi Kenangan API ]
+  ├── outlets (pg_trgm)     ├── /create_web_token
+  └── generic_cache         ├── /store/query_store & get_store
+                            └── /product/query_web_order_product_menu
+```
 
 ---
 
-## 2. Persiapan Environment Variables
+## ⚙️ Variabel Lingkungan (Environment Variables)
 
-1. Salin `.env.example` ke `.env.local`:
-   ```bash
-   cp .env.example .env.local
-   ```
-2. Isi variabel yang diperlukan di `.env.local`:
-   - `KOPI_KENANGAN_PHONE`: Kosongkan `""` untuk mode sesi tamu terverifikasi.
-   - `NEXT_PUBLIC_SUPABASE_URL` / `SUPABASE_URL`: URL project Supabase Anda.
-   - `SUPABASE_SERVICE_ROLE_KEY`: Kunci service role Supabase (server-only, bypasses RLS).
-   - `SYNC_SECRET`: Secret token acak untuk melindungi endpoint sinkronisasi outlet.
-   - `NEXT_PUBLIC_WHATSAPP_PHONE`: Nomor WhatsApp pemilik jastip (`628xxx`).
+| Variabel | Lingkungan | Deskripsi |
+|---|---|---|
+| `KOPI_KENANGAN_API_BASE` | Local / Edge | URL dasar API Kopi Kenangan (`https://order.kopikenangan.com/web_order/api`) |
+| `KOPI_KENANGAN_PHONE` | Local / Edge | Nomor HP sesi tamu (dikosongkan `""` untuk guest order resmi) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Local / Client / Edge | URL project Supabase |
+| `SUPABASE_URL` | Server / Edge | URL project Supabase (untuk service role) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server / Edge | Kunci service role Supabase (server-only, bypass RLS) |
+| `SYNC_SECRET` | Server / Edge | Secret token acak untuk otorisasi endpoint sync outlet |
+| `NEXT_PUBLIC_WHATSAPP_PHONE`| Local / Client | Nomor WhatsApp pemilik penerima pesanan (`628xxx`) |
+| `ALLOW_SIMULATE` | Local Only | Diset `"true"` HANYA untuk debug simulasi buka/tutup lokal. Jangan diset di prod! |
 
-> **PENTING**: Jangan pernah melakukan commit file `.env` atau `.env.local` ke repositori git.
+---
 
-### Mengatur Secret di Cloudflare Workers:
-Di Cloudflare Workers, set secret yang sama via Wrangler CLI atau Dashboard:
+## 🛡️ Pengamanan & Fitur Tahap 6
+
+1. **Pengecekan Stok Segar (Fresh Stock Validation)**:
+   - `POST /api/outlets/[code]/validate-cart`: Memvalidasi ketersediaan produk & SKU di keranjang langsung ke KK sebelum redirect ke WhatsApp, sekaligus menyegarkan cache menu.
+   - Jika API KK timeout atau bermasalah, customer diberi modal peringatan ramah dan pilihan melanjutkan konfirmasi via WhatsApp tanpa memblokir pesanan.
+2. **Rate Limiting**:
+   - Membatasi request per IP di seluruh endpoint `/api/*` untuk mencegah eksploitasi dan scraping berlebih.
+3. **Observability & Status Sync**:
+   - `GET /api/sync-status`: Memeriksa waktu terakhir sinkronisasi dan jumlah outlet in-scope vs out-of-scope.
+   - Error log dari KK disanitasi agar tidak membocorkan token atau data sensitif.
+4. **Pengaman Margin (Margin Guard)**:
+   - Memantau selisih SKU KK untuk Large (>Rp10.000) serta Juwara/Oatside (>Rp3.000) dan mencatat log throttled peringatan jika biaya flat berpotensi merugikan pemilik.
+5. **WhatsApp & Social Share Preview**:
+   - Dilengkapi metadata OpenGraph, favicon, dan logo jastip resmi.
+
+---
+
+## 📖 Panduan Operasional Pemilik
+
+Untuk instruksi lengkap pengelolaan jastip (mengubah harga flat, mengubah nomor WA, rotasi secret, panduan penanganan error API KK, dan sync manual), baca:
+👉 [docs/RUNBOOK.md](file:///c:/Users/LENOVO/websitebisnis/jasdorkopicima/docs/RUNBOOK.md)
+
+---
+
+## 🚀 Perintah Pengembangan
+
 ```bash
-npx wrangler secret put SUPABASE_URL
-npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
-npx wrangler secret put SYNC_SECRET
-```
-
----
-
-## 3. Sinkronisasi Berkala Outlet (Cron Trigger / Manual)
-
-Daftar outlet Kopi Kenangan disinkronisasi ke database Supabase melalui endpoint yang dilindungi secret:
-```
-POST /api/cron/sync-outlets
-Header: Authorization: Bearer <SYNC_SECRET>
-(atau header x-sync-secret: <SYNC_SECRET>)
-```
-
-### Mekanisme Terpilih: Cloudflare Cron Triggers
-Mekanisme termudah dan paling efisien adalah memasang Cron Trigger di Cloudflare Workers yang memanggil fungsi sinkronisasi (misal 1 kali sehari pada jam 04:00 WIB), atau menggunakan service HTTP cron eksternal yang memanggil endpoint `POST /api/cron/sync-outlets` dengan menyertakan header authorization token.
-
----
-
-## 4. Menjalankan Proyek Secara Lokal & Pengujian
-
-Instalasi dependensi:
-```bash
+# Instalasi dependensi (otomatis menjalankan patch-package)
 npm install
-```
-*(Catatan: `patch-package` akan otomatis berjalan via `postinstall` untuk menjaga kompatibilitas OpenNext)*
 
-Jalankan test suite:
-```bash
+# Menjalankan unit test suite
 npm test
-```
 
-Jalankan server lokal Next.js:
-```bash
+# Menjalankan linter & type check
+npm run lint
+npx tsc --noEmit
+
+# Menjalankan server dev lokal
 npm run dev
-```
 
-Build & Deploy ke Cloudflare:
-```bash
+# Build dan deploy ke Cloudflare Workers
 npm run build:worker
 npm run deploy
 ```
