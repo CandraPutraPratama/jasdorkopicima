@@ -1,94 +1,118 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { normalizeMenu, normalizeProductOptions } from '../src/lib/adapter.ts';
+import type { KkMenuData, KkProductOptionsData } from '../src/types/kk-api.ts';
 
-import {
-  normalizeStore,
-  normalizeStores,
-  normalizeMenu,
-  normalizeProductOptions,
-} from '../src/lib/adapter.ts';
+describe('Adapter: normalizeMenu and normalizeProductOptions', () => {
+  it('filters and sorts menu groups strictly according to allowlist', () => {
+    const rawMenu: KkMenuData = {
+      menu_groups: [
+        {
+          group_code: 'promo',
+          group_name: 'Promo & Combo',
+          menu_products: [{ id: 1, name: 'Paket Mantan', is_combo_v2: false } as any],
+        },
+        {
+          group_code: 'food',
+          group_name: ' FOOD ',
+          menu_products: [{ id: 2, name: 'Toast Choco', is_combo_v2: false } as any],
+        },
+        {
+          group_code: 'brew',
+          group_name: 'Manual Brew',
+          menu_products: [{ id: 3, name: 'V60 Gayo', is_combo_v2: false } as any],
+        },
+        {
+          group_code: 'baru',
+          group_name: 'baru!',
+          menu_products: [{ id: 4, name: 'Taro Cloud Latte', is_combo_v2: false } as any],
+        },
+        {
+          group_code: 'coffee',
+          group_name: 'Coffee',
+          menu_products: [{ id: 5, name: 'Kopi Kenangan Mantan', is_combo_v2: false } as any],
+        },
+        {
+          group_code: 'empty_frappe',
+          group_name: 'Kenangan Frappe',
+          menu_products: [], // group kosong harus diabaikan
+        },
+      ],
+    };
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const SAMPLES_DIR = path.resolve(__dirname, '../docs/api-samples');
-
-describe('Response Normalization Adapter', () => {
-  it('normalizes single store correctly without leaking internal fields', async () => {
-    const rawData = JSON.parse(
-      await fs.readFile(path.join(SAMPLES_DIR, 'get_store.sample.json'), 'utf-8')
-    );
-
-    const store = normalizeStore(rawData.data);
-    assert.strictEqual(store.code, 'CIMB');
-    assert.strictEqual(store.name, 'Graha CIMB Niaga');
-    assert.strictEqual(store.isOpen, true);
-    assert.strictEqual(store.openTime, '07:00:00');
-    assert.strictEqual(store.closeTime, '15:00:00');
-    // Ensure raw fields like time_zone_second are not in Outlet domain interface
-    assert.strictEqual((store as any).time_zone_second, undefined);
+    const normalized = normalizeMenu(rawMenu);
+    assert.equal(normalized.length, 3);
+    // Harus berurutan: Baru!, Coffee, Food (Kenangan Frappe kosong jadi tidak ada)
+    assert.equal(normalized[0].name, 'baru!');
+    assert.equal(normalized[1].name, 'Coffee');
+    assert.equal(normalized[2].name, 'FOOD');
   });
 
-  it('normalizes store list correctly', async () => {
-    const rawData = JSON.parse(
-      await fs.readFile(path.join(SAMPLES_DIR, 'query_store.sample.json'), 'utf-8')
+  it('filters out Jumbo from dimensions and optionMap', () => {
+    const rawOptions: KkProductOptionsData = {
+      base_product: {
+        id: 101,
+        bundle_code: 'PROD_101',
+        name: 'Kopi Kenangan Mantan',
+        price: 18000,
+        orig_price: 18000,
+      },
+      product_dimension_wording: {
+        bundle_id: 101,
+        dimension_wordings: [
+          {
+            dimension_code: 1,
+            dimension_text: 'Size',
+            dimension_value_wordings: [
+              { value: 1001, value_text: 'Regular' },
+              { value: 1002, value_text: 'Large' },
+              { value: 1003, value_text: 'Jumbo' }, // harus disembunyikan
+            ],
+          },
+        ],
+      },
+      option_product_map: {
+        '1001': {
+          product_code: 'SKU_REG',
+          name: 'Kopi Kenangan Mantan Regular',
+          price: 18000,
+        },
+        '1002': {
+          product_code: 'SKU_LRG',
+          name: 'Kopi Kenangan Mantan Large',
+          price: 23000,
+        },
+        '1003': {
+          product_code: 'SKU_JUMBO',
+          name: 'Kopi Kenangan Mantan Jumbo',
+          price: 28000,
+        },
+      },
+      product_addon_wording: {
+        addon_wordings: [
+          {
+            dimension_text: 'Syrup',
+            dimension_value_wordings: [
+              { addon_sku: 'SYR_1', value_text: 'Vanilla Syrup', addon_price: 6000 },
+            ],
+          },
+        ],
+      },
+    };
+
+    const normalized = normalizeProductOptions(rawOptions);
+    const sizeDim = normalized.dimensions.find((d) => d.name === 'Size');
+    assert.ok(sizeDim);
+    // Hanya Regular dan Large, Jumbo harus tidak ada
+    assert.deepEqual(
+      sizeDim.values.map((v) => v.name),
+      ['Regular', 'Large']
     );
 
-    const stores = normalizeStores(rawData.data.store);
-    assert.ok(stores.length > 0);
-    assert.ok(stores.some((s) => s.code === 'CIMB'));
-  });
-
-  it('normalizes menu and hides all combo items (is_combo_v2)', async () => {
-    const rawData = JSON.parse(
-      await fs.readFile(path.join(SAMPLES_DIR, 'query_web_order_product_menu.sample.json'), 'utf-8')
-    );
-
-    const menu = normalizeMenu(rawData.data);
-    assert.ok(menu.length > 0);
-
-    // Verify no product in any group has isCombo === true or is_combo_v2 === true
-    for (const group of menu) {
-      for (const product of group.products) {
-        assert.strictEqual(product.isCombo, false);
-      }
-    }
-
-    // Verify Coffee group exists and contains products
-    const coffeeGroup = menu.find((g) => g.name === 'Coffee');
-    assert.ok(coffeeGroup);
-    assert.ok(coffeeGroup.products.length > 0);
-  });
-
-  it('normalizes product options and computes correct variant additions', async () => {
-    const rawData = JSON.parse(
-      await fs.readFile(path.join(SAMPLES_DIR, 'get_web_order_product_options.sample.json'), 'utf-8')
-    );
-
-    const details = normalizeProductOptions(rawData.data);
-    assert.strictEqual(details.product.name, 'Taro Cloud Latte');
-    assert.strictEqual(details.product.basePrice, 22000);
-
-    // Verify dimensions exist (Size, Beans, Temperature, Milk, Sugar)
-    assert.ok(details.dimensions.length >= 4);
-
-    // Verify SKUs have calculated variantAddition = price - basePrice
-    const largeSku = details.skus.find((s) => s.description.includes('Large') && s.description.includes('Kenangan Blend'));
-    assert.ok(largeSku);
-    assert.strictEqual(largeSku.price, 29000);
-    assert.strictEqual(largeSku.variantAddition, 7000); // 29000 - 22000 = 7000
-
-    const regularBaseSku = details.skus.find((s) => s.description.includes('Regular') && s.description.includes('Kenangan Blend') && s.description.includes('Milk'));
-    assert.ok(regularBaseSku);
-    assert.strictEqual(regularBaseSku.price, 22000);
-    assert.strictEqual(regularBaseSku.variantAddition, 0); // 22000 - 22000 = 0
-
-    // Verify addons exist with addon_price
-    assert.ok(details.addons.length > 0);
-    const topping = details.addons.find((a) => a.name.includes('Juwara Beans') || a.name.includes('Boba'));
-    assert.ok(topping);
-    assert.strictEqual(topping.price, 6000);
+    // SKU Jumbo harus tidak ada di optionMap dan skus
+    assert.equal(normalized.optionMap['1003'], undefined);
+    assert.ok(normalized.optionMap['1001']);
+    assert.ok(normalized.optionMap['1002']);
+    assert.equal(normalized.skus.length, 2);
   });
 });

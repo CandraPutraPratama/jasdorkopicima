@@ -17,6 +17,12 @@ import type {
 } from '../types/kk-api.ts';
 
 import { checkOutletOrderability } from './orderability.ts';
+import {
+  isAllowedMenuGroup,
+  getAllowedMenuGroupIndex,
+  isHiddenOptionValue,
+  classifyAddonGroup,
+} from '../config/business.ts';
 
 /**
  * Menormalkan data 1 store/outlet dari KK ke domain Outlet
@@ -81,6 +87,13 @@ export function normalizeMenu(raw: KkMenuData): MenuGroup[] {
   const groups: MenuGroup[] = [];
 
   for (const rawGroup of raw?.menu_groups || []) {
+    const groupName = (rawGroup.group_name || '').trim();
+
+    // Saring kelompok menu yang tidak ada di allowlist resmi
+    if (!isAllowedMenuGroup(groupName)) {
+      continue;
+    }
+
     // Saring keluar produk combo (is_combo_v2 === true)
     const filteredProducts = (rawGroup.menu_products || [])
       .filter((p) => !p.is_combo_v2)
@@ -90,11 +103,18 @@ export function normalizeMenu(raw: KkMenuData): MenuGroup[] {
     if (filteredProducts.length > 0) {
       groups.push({
         code: rawGroup.group_code || '',
-        name: (rawGroup.group_name || '').trim(),
+        name: groupName,
         products: filteredProducts,
       });
     }
   }
+
+  // Urutkan kelompok menu sesuai urutan allowlist
+  groups.sort((a, b) => {
+    const idxA = getAllowedMenuGroupIndex(a.name);
+    const idxB = getAllowedMenuGroupIndex(b.name);
+    return idxA - idxB;
+  });
 
   return groups;
 }
@@ -123,16 +143,30 @@ export function normalizeProductOptions(raw: KkProductOptionsData): ProductOptio
   // Dimensions (Size, Beans, Temperature, Milk, Sugar)
   const dimensions: VariantDimension[] = [];
   const rawDims = raw.product_dimension_wording?.dimension_wordings || [];
+  const hiddenValueIds = new Set<number>();
+
   for (const d of rawDims) {
-    dimensions.push({
-      code: d.dimension_code,
-      name: (d.dimension_text || '').trim(),
-      values: (d.dimension_value_wordings || []).map((v) => ({
+    const values = [];
+    for (const v of d.dimension_value_wordings || []) {
+      const vName = (v.value_text || '').trim();
+      if (isHiddenOptionValue(vName)) {
+        hiddenValueIds.add(v.value);
+        continue;
+      }
+      values.push({
         id: v.value,
-        name: (v.value_text || '').trim(),
+        name: vName,
         icon: v.icon || undefined,
-      })),
-    });
+      });
+    }
+
+    if (values.length > 0) {
+      dimensions.push({
+        code: d.dimension_code,
+        name: (d.dimension_text || '').trim(),
+        values,
+      });
+    }
   }
 
   // Variant SKUs & Option Product Map
@@ -141,13 +175,20 @@ export function normalizeProductOptions(raw: KkProductOptionsData): ProductOptio
   const rawSkus = raw.option_product_map || {};
 
   for (const [key, item] of Object.entries(rawSkus)) {
+    const keyParts = key.split(/[,_]/).map((s) => Number(s.trim()));
+    const hasHiddenVal = keyParts.some((id) => hiddenValueIds.has(id));
+    const skuName = (item.name || '').trim();
+    if (hasHiddenVal || isHiddenOptionValue(skuName)) {
+      continue;
+    }
+
     const skuPrice = item.price || 0;
     const variantAddition = Math.max(0, skuPrice - basePrice);
 
     const variantSku: VariantSku = {
       sku: String(item.product_code || ''),
       combinationKey: key,
-      name: (item.name || '').trim(),
+      name: skuName,
       description: (item.display_description || '').trim(),
       price: skuPrice,
       variantAddition,
@@ -166,12 +207,22 @@ export function normalizeProductOptions(raw: KkProductOptionsData): ProductOptio
   for (const addonGroup of rawAddonGroups) {
     const categoryName = (addonGroup.dimension_text || '').trim();
     for (const item of addonGroup.dimension_value_wordings || []) {
+      const aName = (item.value_text || '').trim();
+      const group = classifyAddonGroup(aName, categoryName);
+
+      // Addon yang tidak bisa dipetakan ke salah satu grup: JANGAN ditampilkan
+      if (!group) {
+        continue;
+      }
+
       addons.push({
         sku: String(item.addon_sku || ''),
-        name: (item.value_text || '').trim(),
+        name: aName,
         price: item.addon_price || 0,
         categoryName,
         icon: item.value_icon || undefined,
+        isSoldOut: Boolean((item as any).is_sold_out || (item as any).is_soldout),
+        group,
       });
     }
   }

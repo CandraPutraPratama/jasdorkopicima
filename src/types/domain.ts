@@ -69,6 +69,8 @@ export interface Addon {
   price: number;
   categoryName: string;
   icon?: string;
+  isSoldOut?: boolean;
+  group?: 'whipped_cream' | 'syrup' | 'topping' | null;
 }
 
 export interface ProductNoteGroup {
