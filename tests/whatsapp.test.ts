@@ -159,6 +159,38 @@ test('buildWhatsAppMessage produces exact required template string for Korea Ban
   );
 });
 
+test('buildWhatsAppMessage formats No Whipped Cream as Whipped Cream: Tanpa', () => {
+  const items: CartItem[] = [
+    {
+      id: 'item-frappe-nowhip',
+      bundleCode: '77123',
+      name: 'Butterscotch Kenangan Frappe',
+      basePrice: 28000,
+      variantAddition: 0,
+      toppingTotal: 0,
+      quantity: 1,
+      variantDescription: 'Ice, Regular, Normal Sugar, Normal Ice',
+      addons: [
+        { sku: 'WC-0', name: 'No Whipped Cream', price: 0, categoryName: 'Whipped Cream' },
+      ],
+      notes: '',
+    },
+  ];
+
+  const message = buildWhatsAppMessage({
+    customerName: 'Budi',
+    outletName: 'MERR Rungkut Surabaya (DT)',
+    pickupMode: 'now',
+    estimatedTime: '14:15',
+    items,
+  });
+
+  assert.match(
+    message,
+    /- 1x Butterscotch Kenangan Frappe \(Ice, Regular, Normal Sugar, Normal Ice, Whipped Cream: Tanpa\) Rp14\.000/
+  );
+});
+
 test('buildWhatsAppMessage formats toppings correctly inside parentheses with +Rp6.000', () => {
   const items: CartItem[] = [
     {

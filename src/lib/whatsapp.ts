@@ -76,8 +76,14 @@ export function formatItemDetails(item: CartItem): string {
     }
 
     if (whipped.length > 0) {
-      // Whipped cream gratis, tanpa harga. Hapus prefix redundant 'Whipped Cream ' jika ada
-      const names = whipped.map((w) => w.name.replace(/^Whipped Cream\s+/i, '').trim());
+      // Whipped cream gratis, tanpa harga. Jika 'No Whipped Cream' tampilkan 'Tanpa'. Hapus prefix redundant 'Whipped Cream ' jika ada
+      const names = whipped.map((w) => {
+        const clean = w.name.trim();
+        if (/^no\s+whipped\s+cream$/i.test(clean)) {
+          return 'Tanpa';
+        }
+        return clean.replace(/^Whipped Cream\s+/i, '').trim();
+      });
       parts.push(`Whipped Cream: ${names.join(', ')}`);
     }
 
