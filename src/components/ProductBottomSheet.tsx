@@ -138,7 +138,7 @@ export function ProductBottomSheet({
       }
     }
     return names;
-  }, [options?.dimensions, selectedDimensions]);
+  }, [options, selectedDimensions]);
 
   // SKU varian yang cocok dengan kombinasi terpilih (hanya untuk validasi stok)
   const matchedSku: VariantSku | null = options?.optionMap

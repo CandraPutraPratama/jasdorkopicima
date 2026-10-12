@@ -1,7 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  BUSINESS_CONFIG,
   getOptionAddition,
   classifyAddonGroup,
   isHiddenOptionValue,
