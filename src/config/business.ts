@@ -81,9 +81,13 @@ export const BUSINESS_CONFIG: BusinessConfig = {
   hiddenOptionValues: [
     'jumbo',
   ],
-  /** Pola nama produk yang disembunyikan di seluruh aplikasi (misal: Seliter) */
+  /** Pola nama produk yang disembunyikan di seluruh aplikasi (misal: Seliter, Chigo, FLIP) */
   hiddenProductPatterns: [
     'seliter',
+    'chigo',
+    'chimate',
+    'krunchi',
+    'flip',
   ],
   menuGroupAllowlist: [
     'Baru!',
@@ -131,7 +135,7 @@ export function isHiddenOptionValue(optionValueName: string): boolean {
 }
 
 /**
- * Mengecek apakah suatu produk disembunyikan berdasarkan pola nama (misal nama mengandung "Seliter").
+ * Mengecek apakah suatu produk disembunyikan berdasarkan pola nama (misal nama mengandung "Seliter", "Chigo", "FLIP").
  */
 export function isHiddenProduct(productName: string): boolean {
   if (!productName) return false;
@@ -143,7 +147,10 @@ export function isHiddenProduct(productName: string): boolean {
 
 /**
  * Mengecek apakah outlet berada dalam ruang lingkup resmi Kopi Kenangan.
- * Menolak outlet Kenangan Signature, Kenangan Heritage, Chigo / Chigo x Flip, dan booth non-resmi.
+ * Aturan Perbaikan Lingkup:
+ * - IN SCOPE: brand_and_image memuat brand_code 1 DAN tidak memuat brand_code 10 (Signature) atau 6 (Heritage).
+ * - Outlet gabungan Kopi Kenangan + Chigo (brand_code 1 dan 4/8) MASUK LINGKUP. Nama atau kode memuat "Chigo" tidak boleh menolak jika punya brand_code 1.
+ * - OUT OF SCOPE: Kenangan Signature, Kenangan Heritage, Chigo saja, booth/testing, dan outlet tanpa brand sama sekali.
  */
 export function isStoreInScope(store: {
   code?: string;
@@ -153,33 +160,32 @@ export function isStoreInScope(store: {
   const code = (store.code || '').trim().toLowerCase();
   const name = (store.name || '').trim().toLowerCase();
 
-  // 1. Pengecualian eksplisit berdasarkan kode outlet
-  if (code.startsWith('ks.') || code.startsWith('bcr.jab.') || code === 'jkt.kenhertg') {
+  // 1. Pengecualian mutlak: Kenangan Signature dan Kenangan Heritage
+  if (code.startsWith('ks.') || name.includes('signature')) {
+    return false;
+  }
+  if (code.startsWith('kh.') || code === 'jkt.kenhertg' || name.includes('heritage')) {
+    return false;
+  }
+  if (name.includes('internal testing') || code.startsWith('testposstores')) {
     return false;
   }
 
-  // 2. Pengecualian eksplisit berdasarkan nama outlet
-  if (name.includes('signature') || name.includes('heritage') || name.includes('chigo')) {
+  // 2. Wajib memiliki array brand_and_image dari API KK
+  if (!store.brand_and_image || !Array.isArray(store.brand_and_image) || store.brand_and_image.length === 0) {
+    return false; // Tanpa brand sama sekali -> di luar lingkup
+  }
+
+  const brandCodes = store.brand_and_image.map((b) => b.brand_code);
+
+  // Menolak jika terdapat brand_code 10 (Signature) atau 6 (Heritage)
+  if (brandCodes.includes(10) || brandCodes.includes(6)) {
     return false;
   }
 
-  // 3. Pengecekan array brand_and_image dari API KK jika tersedia
-  if (store.brand_and_image && Array.isArray(store.brand_and_image)) {
-    const brandCodes = store.brand_and_image.map((b) => b.brand_code);
-    // 10 = Kenangan Signature, 6 = Kenangan Heritage, 8 = Chigo x Flip, 4 = Chigo
-    if (
-      brandCodes.includes(10) ||
-      brandCodes.includes(6) ||
-      brandCodes.includes(8) ||
-      brandCodes.includes(4)
-    ) {
-      return false;
-    }
-
-    // Jika memiliki penanda brand tapi bukan brand_code 1 (Kopi Kenangan)
-    if (brandCodes.length > 0 && !brandCodes.includes(1)) {
-      return false;
-    }
+  // WAJIB memiliki brand_code 1 (Kopi Kenangan)
+  if (!brandCodes.includes(1)) {
+    return false;
   }
 
   return true;
@@ -199,26 +205,30 @@ export function getStoreBrandName(store: {
   if (code.startsWith('ks.') || name.includes('signature')) {
     return 'Kenangan Signature';
   }
-  if (code === 'jkt.kenhertg' || name.includes('heritage')) {
+  if (code.startsWith('kh.') || code === 'jkt.kenhertg' || name.includes('heritage')) {
     return 'Kenangan Heritage';
-  }
-  if (name.includes('chigo') || code.includes('.cg') || code.startsWith('tgr.cg')) {
-    return 'Chigo x Flip';
   }
 
   if (store.brand_and_image && Array.isArray(store.brand_and_image)) {
     const brandCodes = store.brand_and_image.map((b) => b.brand_code);
     if (brandCodes.includes(10)) return 'Kenangan Signature';
     if (brandCodes.includes(6)) return 'Kenangan Heritage';
-    if (brandCodes.includes(8) || brandCodes.includes(4)) return 'Chigo x Flip';
-    if (brandCodes.includes(1)) return 'Kopi Kenangan';
+    if (brandCodes.includes(1)) {
+      if (brandCodes.includes(4) || brandCodes.includes(8)) {
+        return 'Kopi Kenangan + Chigo';
+      }
+      return 'Kopi Kenangan';
+    }
+    if (brandCodes.includes(4) || brandCodes.includes(8)) {
+      return 'Chigo x Flip';
+    }
   }
 
-  if (code.startsWith('bcr.jab.')) {
-    return 'Other';
+  if (name.includes('chigo') || code.includes('.cg') || code.startsWith('tgr.cg')) {
+    return 'Chigo x Flip';
   }
 
-  return 'Kopi Kenangan';
+  return 'Tanpa Brand';
 }
 
 export type AddonGroupType = 'whipped_cream' | 'syrup' | 'topping';

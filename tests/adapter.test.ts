@@ -168,4 +168,47 @@ describe('Adapter: normalizeMenu and normalizeProductOptions', () => {
     assert.equal(normalized[0].code, 'S.ID.001');
     assert.equal(normalized[0].name, 'Kopi Kenangan - Senayan City');
   });
+
+  it('filters out Chigo / non-KK products from combined outlet menu in normalizeMenu', () => {
+    const rawMenu = {
+      menu_groups: [
+        {
+          group_code: 'baru',
+          group_name: 'Baru!',
+          menu_products: [
+            { id: 101, name: 'Taro Cloud Latte', is_combo_v2: false, brand: 'Kopi Kenangan' },
+            { id: 102, name: 'Krunchi Truffle Mushroom Sauce', is_combo_v2: false, brand: 'Chigo' },
+            { id: 103, name: 'ChiMate Chicken Burger Truffle Mushroom', is_combo_v2: false, brand: 'FLIP' },
+            { id: 104, name: 'Chicken Burger Truffle Mushroom Sauce', is_combo_v2: false, brand: 'Chigo' },
+          ],
+        },
+        {
+          group_code: 'chigo_combo',
+          group_name: 'ChiMate', // Not in allowlist
+          menu_products: [
+            { id: 201, name: 'Paket Ayam Chigo', is_combo_v2: false, brand: 'Chigo' },
+          ],
+        },
+        {
+          group_code: 'food',
+          group_name: 'Food',
+          menu_products: [
+            { id: 301, name: 'Roti Coklat Klasik', is_combo_v2: false, brand: 'Cerita Roti' },
+            { id: 302, name: 'Loaded Fries Truffle', is_combo_v2: false, brand: 'Chigo' },
+          ],
+        },
+      ],
+    } as unknown as KkMenuData;
+
+    const normalized = normalizeMenu(rawMenu);
+    assert.equal(normalized.length, 2); // Baru! and Food
+    assert.deepEqual(
+      normalized[0].products.map((p) => p.name),
+      ['Taro Cloud Latte']
+    );
+    assert.deepEqual(
+      normalized[1].products.map((p) => p.name),
+      ['Roti Coklat Klasik']
+    );
+  });
 });

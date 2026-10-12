@@ -85,46 +85,82 @@ describe('Business Configuration & Classification Helpers', () => {
     assert.equal(isHiddenProduct('Seliter Kenangan Mantan'), true);
     assert.equal(isHiddenProduct('seliter americano'), true);
     assert.equal(isHiddenProduct('SELITER LATTE'), true);
+    assert.equal(isHiddenProduct('Krunchi Truffle Mushroom Sauce'), true);
+    assert.equal(isHiddenProduct('ChiMate Chicken Burger Truffle Mushroom'), true);
+    assert.equal(isHiddenProduct('Chicken Burger Truffle Mushroom Sauce'), false); // filtered by brand 'Chigo'
     assert.equal(isHiddenProduct('Kopi Kenangan Mantan'), false);
     assert.equal(isHiddenProduct('Americano'), false);
     assert.equal(isHiddenProduct('Taro Cloud Latte'), false);
   });
 
-  it('filters brand scope: ONLY Kopi Kenangan in scope, Kenangan Signature and others out of scope', () => {
-    // Pure Kopi Kenangan
-    const kkStore = {
-      store_code: 'S.ID.123',
+  it('filters brand scope per Perbaikan Lingkup A rules', () => {
+    // 1. Kopi Kenangan murni (masuk)
+    const kkMurni = {
+      code: 'S.ID.123',
       name: 'Kopi Kenangan - MERR Rungkut',
       brand_and_image: [{ brand_code: 1, brand_name: 'Kopi Kenangan' }],
     };
-    assert.equal(isStoreInScope(kkStore), true);
-    assert.equal(getStoreBrandName(kkStore), 'Kopi Kenangan');
+    assert.equal(isStoreInScope(kkMurni), true);
+    assert.equal(getStoreBrandName(kkMurni), 'Kopi Kenangan');
 
-    // Kenangan Signature
-    const ksStore = {
-      store_code: 'KS.ID.001',
+    // 2. Kopi Kenangan + Chigo (masuk)
+    const kkPlusChigo = {
+      code: 'TANJUNGDUREN',
+      name: 'Ruko Tanjung Duren',
+      brand_and_image: [
+        { brand_code: 1, brand_name: 'Kopi Kenangan' },
+        { brand_code: 8, brand_name: 'Chigo x Flip' },
+      ],
+    };
+    assert.equal(isStoreInScope(kkPlusChigo), true);
+    assert.equal(getStoreBrandName(kkPlusChigo), 'Kopi Kenangan + Chigo');
+
+    // 3. Outlet gabungan yang namanya memuat "Chigo" (masuk karena memiliki brand_code 1)
+    const kkChigoName = {
+      code: 'BKS.CHIGO.KK',
+      name: 'Kopi Kenangan x Chigo Grand Galaxy',
+      brand_and_image: [
+        { brand_code: 1, brand_name: 'Kopi Kenangan' },
+        { brand_code: 4, brand_name: 'Chigo' },
+      ],
+    };
+    assert.equal(isStoreInScope(kkChigoName), true);
+    assert.equal(getStoreBrandName(kkChigoName), 'Kopi Kenangan + Chigo');
+
+    // 4. Chigo saja (keluar)
+    const chigoSaja = {
+      code: 'TGR.CGBPDLTNS',
+      name: 'Chigo BP Delatinos',
+      brand_and_image: [{ brand_code: 4, brand_name: 'Chigo' }],
+    };
+    assert.equal(isStoreInScope(chigoSaja), false);
+    assert.equal(getStoreBrandName(chigoSaja), 'Chigo x Flip');
+
+    // 5. Signature (keluar)
+    const signature = {
+      code: 'KS.ID.001',
       name: 'Kenangan Signature - Mall Kelapa Gading',
       brand_and_image: [{ brand_code: 10, brand_name: 'Kenangan Signature' }],
     };
-    assert.equal(isStoreInScope(ksStore), false);
-    assert.equal(getStoreBrandName(ksStore), 'Kenangan Signature');
+    assert.equal(isStoreInScope(signature), false);
+    assert.equal(getStoreBrandName(signature), 'Kenangan Signature');
 
-    // Chigo / Chigo x Flip
-    const chigoStore = {
-      store_code: 'CH.ID.002',
-      name: 'Chigo x Flip Burger - Grand Indonesia',
-      brand_and_image: [{ brand_code: 8, brand_name: 'Chigo x Flip' }],
-    };
-    assert.equal(isStoreInScope(chigoStore), false);
-    assert.equal(getStoreBrandName(chigoStore), 'Chigo x Flip');
-
-    // Kenangan Heritage
-    const heritageStore = {
-      store_code: 'KH.ID.001',
+    // 6. Heritage (keluar)
+    const heritage = {
+      code: 'KH.ID.001',
       name: 'Kenangan Heritage - Senayan City',
       brand_and_image: [{ brand_code: 6, brand_name: 'Kenangan Heritage' }],
     };
-    assert.equal(isStoreInScope(heritageStore), false);
-    assert.equal(getStoreBrandName(heritageStore), 'Kenangan Heritage');
+    assert.equal(isStoreInScope(heritage), false);
+    assert.equal(getStoreBrandName(heritage), 'Kenangan Heritage');
+
+    // 7. Tanpa brand (keluar)
+    const tanpaBrand = {
+      code: 'BCR.JAB.O0001',
+      name: 'KopKen Alfamid Subandi',
+      brand_and_image: [],
+    };
+    assert.equal(isStoreInScope(tanpaBrand), false);
+    assert.equal(getStoreBrandName(tanpaBrand), 'Tanpa Brand');
   });
 });

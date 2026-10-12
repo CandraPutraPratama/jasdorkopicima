@@ -47,6 +47,7 @@ export interface KkProductItem {
   orig_price: number;
   is_sold_out: boolean;
   is_combo_v2: boolean;
+  brand?: string;
 }
 
 export interface KkMenuGroupItem {

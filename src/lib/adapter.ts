@@ -98,9 +98,17 @@ export function normalizeMenu(raw: KkMenuData): MenuGroup[] {
       continue;
     }
 
-    // Saring keluar produk combo (is_combo_v2 === true) dan produk tersembunyi (misal Seliter)
+    // Saring keluar produk combo (is_combo_v2 === true), produk tersembunyi (Seliter/Chigo/FLIP), dan brand non-Kenangan
     const filteredProducts = (rawGroup.menu_products || [])
-      .filter((p) => !p.is_combo_v2 && !isHiddenProduct(p.name))
+      .filter((p) => {
+        if (p.is_combo_v2) return false;
+        if (isHiddenProduct(p.name)) return false;
+        const brand = (p.brand || '').trim().toLowerCase();
+        if (brand.includes('chigo') || brand.includes('flip')) {
+          return false;
+        }
+        return true;
+      })
       .map(normalizeProduct);
 
     // Hanya masukkan grup jika masih memiliki produk aktif
