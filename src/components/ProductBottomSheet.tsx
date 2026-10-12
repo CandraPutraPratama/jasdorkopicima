@@ -145,15 +145,16 @@ export function ProductBottomSheet({
     ? findMatchingSku(options.optionMap, selectedDimensions)
     : null;
 
-  // Hitung rincian harga dinamis flat
+  // Hitung rincian harga dinamis (harga coret dari SKU KK asli, promo tetap flat)
   const pricing = useMemo(() => {
     return calculateBottomSheetPricing(
       product.basePrice,
       selectedOptionNames,
       selectedAddons,
-      quantity
+      quantity,
+      matchedSku?.price
     );
-  }, [product.basePrice, selectedOptionNames, selectedAddons, quantity]);
+  }, [product.basePrice, selectedOptionNames, selectedAddons, quantity, matchedSku?.price]);
 
   // Cek apakah Whipped Cream wajib tapi belum dipilih
   const hasWhippedCreamOptions = whippedCreamAddons.length > 0;
@@ -218,6 +219,7 @@ export function ProductBottomSheet({
     onAddToCart({
       bundleCode: product.bundleCode,
       sku: matchedSku?.sku,
+      skuPrice: matchedSku?.price,
       name: product.name,
       image: product.image,
       basePrice: product.basePrice,

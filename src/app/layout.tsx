@@ -4,7 +4,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'jasdorkopicima - Jastip Kopi Kenangan',
   description:
-    'Layanan jasa titip independen jasdorkopicima untuk Kopi Kenangan. Diskon 50% dari harga dasar menu. Tambahan varian, topping, dan biaya jasa dibayar normal.',
+    'Layanan jasa titip independen jasdorkopicima untuk Kopi Kenangan. Harga promo 50% dari harga menu. Upsize Large +Rp5.000, Juwara Beans +Rp3.000, Oatside +Rp3.000, Syrup dan Topping +Rp6.000, dan biaya jasa Rp2.000 per item (Rp4.000 untuk 1 item).',
   icons: {
     icon: '/brand/logo-cima.webp',
   },

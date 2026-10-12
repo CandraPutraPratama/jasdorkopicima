@@ -121,6 +121,7 @@ export function buildWhatsAppMessage(input: BuildWhatsAppMessageInput): string {
     items.map((it) => ({
       name: it.name,
       basePrice: it.basePrice,
+      skuPrice: it.skuPrice,
       variantAddition: it.variantAddition,
       toppingTotal: it.toppingTotal,
       quantity: it.quantity,

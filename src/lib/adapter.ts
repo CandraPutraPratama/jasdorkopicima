@@ -21,6 +21,8 @@ import {
   isAllowedMenuGroup,
   getAllowedMenuGroupIndex,
   isHiddenOptionValue,
+  isHiddenProduct,
+  isStoreInScope,
   classifyAddonGroup,
 } from '../config/business.ts';
 
@@ -55,10 +57,12 @@ export function normalizeStore(raw: KkStoreItem): Outlet {
 }
 
 /**
- * Menormalkan daftar store/outlet dari KK
+ * Menormalkan daftar store/outlet dari KK (hanya yang masuk dalam ruang lingkup brand Kopi Kenangan)
  */
 export function normalizeStores(rawList: KkStoreItem[] = []): Outlet[] {
-  return rawList.map(normalizeStore);
+  return rawList
+    .filter((s) => isStoreInScope(s))
+    .map(normalizeStore);
 }
 
 /**
@@ -81,7 +85,7 @@ export function normalizeProduct(raw: KkProductItem): Product {
 
 /**
  * Menormalkan seluruh menu outlet dari KK ke domain MenuGroup[].
- * Sesuai keputusan: item combo (is_combo_v2 = true) DISEMBUNYIKAN untuk MVP.
+ * Sesuai keputusan: item combo (is_combo_v2 = true) dan produk tersembunyi (Seliter) DISEMBUNYIKAN di sisi server.
  */
 export function normalizeMenu(raw: KkMenuData): MenuGroup[] {
   const groups: MenuGroup[] = [];
@@ -94,9 +98,9 @@ export function normalizeMenu(raw: KkMenuData): MenuGroup[] {
       continue;
     }
 
-    // Saring keluar produk combo (is_combo_v2 === true)
+    // Saring keluar produk combo (is_combo_v2 === true) dan produk tersembunyi (misal Seliter)
     const filteredProducts = (rawGroup.menu_products || [])
-      .filter((p) => !p.is_combo_v2)
+      .filter((p) => !p.is_combo_v2 && !isHiddenProduct(p.name))
       .map(normalizeProduct);
 
     // Hanya masukkan grup jika masih memiliki produk aktif

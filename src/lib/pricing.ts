@@ -9,7 +9,9 @@ export interface OrderItemInput {
   name: string;
   /** Harga dasar menu dari respons KK */
   basePrice: number;
-  /** Tambahan harga dari varian SKU yang dipilih (harga SKU - harga dasar) */
+  /** Harga SKU KK asli dari option_product_map untuk kombinasi yang dipilih */
+  skuPrice?: number;
+  /** Tambahan harga dari varian SKU yang dipilih (aturan flat: Large +5k, Juwara +3k, Oatside +3k) */
   variantAddition?: number;
   /** Total harga dari addon / topping tambahan (dibayar penuh) */
   toppingTotal?: number;
@@ -18,7 +20,7 @@ export interface OrderItemInput {
 }
 
 export interface ItemPricingResult {
-  /** Harga normal/asli per item (harga coret): basePrice + variantAddition + toppingTotal */
+  /** Harga normal/asli per item (harga coret): actual SKU price (atau base + variant jika fallback) + topping */
   originalPricePerItem: number;
   /** Harga promo per item: (basePrice * (1 - discount)) + variantAddition + toppingTotal */
   promoPricePerItem: number;
@@ -47,8 +49,10 @@ export interface OrderPricingResult {
 
 /**
  * Menghitung harga per item secara murni.
- * Diskon hanya berlaku untuk harga dasar menu.
- * Tambahan varian (size/beans/milk) dan topping dibayar penuh tanpa diskon.
+ * - Harga asli yang dicoret = harga KK sebenarnya untuk kombinasi SKU terpilih + addon flat (Syrup/Topping: +Rp6.000, Whipped Cream: Rp0).
+ *   Jika SKU tidak ditemukan atau harganya tidak bisa dipastikan, fallback ke basePrice + variantAddition + toppingTotal dan catat log peringatan.
+ * - Harga promo tetap = (harga dasar / 2) + tambahan flat (Large +5k, Juwara +3k, Oatside +3k) + addon flat.
+ * - Penghematan (hemat) = originalPricePerItem - promoPricePerItem.
  */
 export function calculateItemPricing(
   item: OrderItemInput,
@@ -59,7 +63,16 @@ export function calculateItemPricing(
   const toppingTotal = Math.max(0, Math.round(item.toppingTotal || 0));
   const quantity = Math.max(1, Math.round(item.quantity));
 
-  const originalPricePerItem = basePrice + variantAddition + toppingTotal;
+  let originalPricePerItem: number;
+  if (typeof item.skuPrice === 'number' && !isNaN(item.skuPrice) && item.skuPrice > 0) {
+    originalPricePerItem = Math.round(item.skuPrice) + toppingTotal;
+  } else {
+    console.warn(
+      `[Pricing] Peringatan: skuPrice tidak ditemukan atau tidak valid untuk "${item.name}", fallback ke basePrice + variantAddition.`
+    );
+    originalPricePerItem = basePrice + variantAddition + toppingTotal;
+  }
+
   const discountedBasePrice = Math.round(basePrice * (1 - config.baseDiscountPercent));
   const promoPricePerItem = discountedBasePrice + variantAddition + toppingTotal;
   const savingsPerItem = originalPricePerItem - promoPricePerItem;

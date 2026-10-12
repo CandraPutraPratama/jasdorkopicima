@@ -34,6 +34,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   const [activeCategoryCode, setActiveCategoryCode] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isNotFound, setIsNotFound] = useState<boolean>(false);
 
   // Bottom Sheet state
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -46,14 +47,23 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     let isCancelled = false;
     setIsLoading(true);
     setErrorMessage(null);
+    setIsNotFound(false);
 
     // Ambil detail outlet (segar dari get_store) dan menu kelompok produk
     Promise.all([
       fetch(`/api/outlets/${encodeURIComponent(outletCode)}`).then((r) => {
-        if (!r.ok) throw new Error('Outlet tidak ditemukan');
+        if (r.status === 404) {
+          setIsNotFound(true);
+          throw new Error('Outlet tidak ditemukan atau di luar jangkauan');
+        }
+        if (!r.ok) throw new Error('Gagal memuat outlet');
         return r.json();
       }),
       fetch(`/api/outlets/${encodeURIComponent(outletCode)}/menu`).then((r) => {
+        if (r.status === 404) {
+          setIsNotFound(true);
+          throw new Error('Outlet tidak ditemukan atau di luar jangkauan');
+        }
         if (!r.ok) throw new Error('Gagal memuat menu outlet');
         return r.json();
       }),
@@ -135,8 +145,27 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
         </div>
       )}
 
-      {/* Error State */}
-      {errorMessage && !isLoading && (
+      {/* 404 Not Found State */}
+      {isNotFound && !isLoading && (
+        <div className="flex-1 p-6 flex flex-col items-center justify-center text-center">
+          <div className="w-16 h-16 bg-amber-50 text-amber-700 rounded-2xl flex items-center justify-center mb-3 border border-amber-200">
+            <span className="text-xl font-black">404</span>
+          </div>
+          <h1 className="text-base font-bold text-[#111111] mb-1">Outlet Tidak Ditemukan</h1>
+          <p className="text-xs text-stone-500 max-w-xs mb-5">
+            Outlet ini tidak terdaftar atau berada di luar jangkauan layanan Kopi Kenangan kami.
+          </p>
+          <Link
+            href="/"
+            className="min-h-[44px] px-6 py-2.5 bg-[#111111] text-[#D4AF37] font-bold text-xs rounded-xl flex items-center justify-center shadow-sm"
+          >
+            Cari Outlet Kopi Kenangan
+          </Link>
+        </div>
+      )}
+
+      {/* General Error State */}
+      {errorMessage && !isNotFound && !isLoading && (
         <div className="flex-1 p-6 flex flex-col items-center justify-center text-center">
           <div className="w-14 h-14 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mb-3">
             <svg

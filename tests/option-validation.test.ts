@@ -95,3 +95,23 @@ test('calculateBottomSheetPricing accurately calculates original, promo, and fla
   assert.equal(result.originalTotal, 108000);
   assert.equal(result.savingsTotal, 34000); // 17000 * 2
 });
+
+test('calculateBottomSheetPricing with actual SKU price applies exact strikethrough and savings', () => {
+  // Case 1: basePrice 20.000, Large SKU 30.000
+  const r1 = calculateBottomSheetPricing(20000, ['Large'], [], 1, 30000);
+  assert.equal(r1.originalPricePerItem, 30000);
+  assert.equal(r1.promoPricePerItem, 15000);
+  assert.equal(r1.savingsTotal, 15000);
+
+  // Case 2: basePrice 20.000, Large SKU 28.000
+  const r2 = calculateBottomSheetPricing(20000, ['Large'], [], 1, 28000);
+  assert.equal(r2.originalPricePerItem, 28000);
+  assert.equal(r2.promoPricePerItem, 15000);
+  assert.equal(r2.savingsTotal, 13000);
+
+  // Case 3: Regular 20.000, SKU 20.000
+  const r3 = calculateBottomSheetPricing(20000, ['Regular'], [], 1, 20000);
+  assert.equal(r3.originalPricePerItem, 20000);
+  assert.equal(r3.promoPricePerItem, 10000);
+  assert.equal(r3.savingsTotal, 10000);
+});

@@ -115,7 +115,7 @@ export default function HomePage() {
             Pilih Outlet Kopi Kenangan
           </h1>
           <p className="text-xs text-stone-300 mt-1 leading-relaxed">
-            Diskon 50% dari harga dasar menu. Tambahan varian, topping, dan biaya jasa dibayar normal.
+            Harga promo 50% dari harga menu. Upsize Large +Rp5.000, Juwara Beans +Rp3.000, Oatside +Rp3.000, Syrup dan Topping +Rp6.000, dan biaya jasa Rp2.000 per item (Rp4.000 untuk 1 item).
           </p>
         </div>
 

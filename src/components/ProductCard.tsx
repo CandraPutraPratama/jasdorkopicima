@@ -15,6 +15,7 @@ export function ProductCard({ product, onSelectProduct }: ProductCardProps) {
   const pricing = calculateItemPricing({
     name: product.name,
     basePrice: product.basePrice,
+    skuPrice: product.basePrice,
     quantity: 1,
   });
 

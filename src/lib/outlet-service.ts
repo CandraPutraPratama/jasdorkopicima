@@ -1,6 +1,7 @@
 import { getSupabaseServerClient } from './supabase-server.ts';
 import { kkApiClient } from './kk-client.ts';
 import { normalizeStores } from './adapter.ts';
+import { isStoreInScope, getStoreBrandName } from '../config/business.ts';
 import type { Outlet } from '../types/domain.ts';
 
 export interface SearchOutletsResult {
@@ -40,7 +41,7 @@ export async function searchOutlets(
     const items = normalizeStores(rawData.store || []);
     return {
       items,
-      total: rawData.total || items.length,
+      total: items.length,
       source: 'kk-api-fallback',
     };
   } catch (kkErr: any) {
@@ -55,10 +56,11 @@ export async function searchOutlets(
 
     const query = supabase
       .from('outlets')
-      .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active', {
+      .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope', {
         count: 'exact',
       })
       .eq('is_active', true)
+      .eq('is_in_scope', true)
       .or(`name.ilike.%${trimmed}%,address.ilike.%${trimmed}%`)
       .order('name', { ascending: true })
       .range(from, to);
@@ -135,6 +137,8 @@ export async function syncOutletsToDb(): Promise<{
         open_time: s.open || '',
         close_time: s.close || '',
         is_active: true,
+        brand: getStoreBrandName(s),
+        is_in_scope: isStoreInScope(s),
         updated_at: new Date().toISOString(),
       });
     }

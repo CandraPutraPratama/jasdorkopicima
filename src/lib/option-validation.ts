@@ -75,13 +75,16 @@ export function isDimensionValueAvailable(
 
 /**
  * Menghitung rincian harga untuk lembar detail produk (bottom sheet).
- * Menggunakan rumus resmi pricing.ts dengan tambahan harga FLAT di config.
+ * - Harga asli coret = actual KK sku price (+ flat addons) atau fallback ke basePrice + variantAddition (+ flat addons)
+ * - Harga promo = (basePrice / 2) + flatVariantAddition + flatAddonTotal
+ * - Hemat = original - promo
  */
 export function calculateBottomSheetPricing(
   basePrice: number,
   optionsOrSku: string[] | VariantSku | null,
   selectedAddons: Addon[],
-  quantity = 1
+  quantity = 1,
+  skuPrice?: number
 ): {
   originalPricePerItem: number;
   promoPricePerItem: number;
@@ -92,10 +95,15 @@ export function calculateBottomSheetPricing(
   savingsTotal: number;
 } {
   let variantAddition = 0;
+  let resolvedSkuPrice = skuPrice;
+
   if (Array.isArray(optionsOrSku)) {
     variantAddition = calculateFlatVariantAddition(optionsOrSku);
   } else if (optionsOrSku && typeof optionsOrSku === 'object') {
     variantAddition = optionsOrSku.variantAddition || 0;
+    if (resolvedSkuPrice == null && typeof optionsOrSku.price === 'number') {
+      resolvedSkuPrice = optionsOrSku.price;
+    }
   }
 
   const toppingTotal = calculateFlatAddonTotal(selectedAddons);
@@ -103,6 +111,7 @@ export function calculateBottomSheetPricing(
   const pricing = calculateItemPricing({
     name: 'Produk',
     basePrice,
+    skuPrice: resolvedSkuPrice,
     variantAddition,
     toppingTotal,
     quantity,

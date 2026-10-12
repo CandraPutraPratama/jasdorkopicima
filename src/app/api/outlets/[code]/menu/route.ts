@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { kkApiClient } from '@/lib/kk-client';
 import { normalizeMenu } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
-import { BUSINESS_CONFIG } from '@/config/business';
+import { BUSINESS_CONFIG, isStoreInScope } from '@/config/business';
 import type { MenuGroup } from '@/types/domain';
 
 export async function GET(
@@ -12,6 +12,24 @@ export async function GET(
   const { code } = await segmentData.params;
   if (!code) {
     return NextResponse.json({ error: 'Parameter code wajib disertakan' }, { status: 400 });
+  }
+
+  // Validasi apakah outlet berada dalam lingkup Kopi Kenangan resmi
+  try {
+    const rawStore = await kkApiClient.getStore(code);
+    if (!rawStore || !isStoreInScope(rawStore)) {
+      return NextResponse.json(
+        { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
+        { status: 404 }
+      );
+    }
+  } catch (storeErr: any) {
+    if (storeErr.message?.includes('404') || storeErr.message?.includes('tidak ditemukan')) {
+      return NextResponse.json(
+        { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
+        { status: 404 }
+      );
+    }
   }
 
   const cacheKey = cacheKeys.menu(code);

@@ -5,6 +5,7 @@ export interface CartItem {
   id: string;
   bundleCode: string;
   sku?: string;
+  skuPrice?: number;
   name: string;
   image?: string;
   basePrice: number;

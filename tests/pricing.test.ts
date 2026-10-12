@@ -190,4 +190,73 @@ describe('Pricing Engine (Pure Calculation)', () => {
     ];
     assert.strictEqual(calculateFlatAddonTotal(combo), 12000);
   });
+
+  describe('Revisi 5C Required Test Cases for Strikethrough & Savings', () => {
+    it('Case 1: basePrice Rp20.000, SKU Large Rp30.000 -> asli Rp30.000, promo Rp15.000, hemat Rp15.000', () => {
+      const item = {
+        name: 'Kopi Kenangan Mantan',
+        basePrice: 20000,
+        skuPrice: 30000,
+        variantAddition: 5000, // Large flat +5k
+        toppingTotal: 0,
+        quantity: 1,
+      };
+
+      const result = calculateItemPricing(item);
+      assert.strictEqual(result.originalPricePerItem, 30000);
+      assert.strictEqual(result.promoPricePerItem, 15000);
+      assert.strictEqual(result.savingsPerItem, 15000);
+    });
+
+    it('Case 2: basePrice Rp20.000, SKU Large Rp28.000 -> asli Rp28.000, promo Rp15.000, hemat Rp13.000', () => {
+      const item = {
+        name: 'Kopi Kenangan Mantan',
+        basePrice: 20000,
+        skuPrice: 28000,
+        variantAddition: 5000, // Large flat +5k
+        toppingTotal: 0,
+        quantity: 1,
+      };
+
+      const result = calculateItemPricing(item);
+      assert.strictEqual(result.originalPricePerItem, 28000);
+      assert.strictEqual(result.promoPricePerItem, 15000);
+      assert.strictEqual(result.savingsPerItem, 13000);
+    });
+
+    it('Case 3: Regular Rp20.000 -> asli Rp20.000, promo Rp10.000, hemat Rp10.000', () => {
+      const item = {
+        name: 'Kopi Kenangan Mantan',
+        basePrice: 20000,
+        skuPrice: 20000,
+        variantAddition: 0, // Regular flat 0
+        toppingTotal: 0,
+        quantity: 1,
+      };
+
+      const result = calculateItemPricing(item);
+      assert.strictEqual(result.originalPricePerItem, 20000);
+      assert.strictEqual(result.promoPricePerItem, 10000);
+      assert.strictEqual(result.savingsPerItem, 10000);
+    });
+
+    it('Fallback SKU: missing skuPrice falls back to basePrice + variantAddition + toppingTotal and logs warning', () => {
+      const item = {
+        name: 'Kopi Kenangan Mantan',
+        basePrice: 20000,
+        // skuPrice not provided
+        variantAddition: 5000, // Large flat +5k
+        toppingTotal: 6000, // 1 Syrup/Topping +6k
+        quantity: 1,
+      };
+
+      const result = calculateItemPricing(item);
+      // Fallback: 20000 + 5000 + 6000 = 31000
+      assert.strictEqual(result.originalPricePerItem, 31000);
+      // Promo: 10000 + 5000 + 6000 = 21000
+      assert.strictEqual(result.promoPricePerItem, 21000);
+      // Hemat: 31000 - 21000 = 10000
+      assert.strictEqual(result.savingsPerItem, 10000);
+    });
+  });
 });

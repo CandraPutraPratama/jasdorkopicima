@@ -22,6 +22,12 @@ Aplikasi membutuhkan dua tabel di Supabase: `outlets` dan `generic_cache`.
 5. Klik **Run** (atau `Ctrl + Enter`).
 6. Verifikasi bahwa tabel `outlets` dan `generic_cache` telah berhasil dibuat dengan status **RLS Enabled** dan indeks `pg_trgm` aktif.
 
+### Migrasi 002: Penanda Brand & Ruang Lingkup (Revisi 5C)
+Untuk memfilter hanya outlet resmi Kopi Kenangan dan mengecualikan Kenangan Signature serta brand lain:
+1. Buka file [supabase/migrations/002_add_brand_and_scope_to_outlets.sql](file:///c:/Users/LENOVO/websitebisnis/jasdorkopicima/supabase/migrations/002_add_brand_and_scope_to_outlets.sql).
+2. Salin seluruh isi SQL ke **SQL Editor** di Supabase Dashboard, lalu klik **Run**.
+3. Kolom `brand` dan `is_in_scope` beserta indeksnya akan otomatis terpasang dan diperbarui.
+
 ---
 
 ## 2. Persiapan Environment Variables

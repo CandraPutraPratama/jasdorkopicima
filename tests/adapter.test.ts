@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeMenu, normalizeProductOptions } from '../src/lib/adapter.ts';
+import { normalizeMenu, normalizeProductOptions, normalizeStores } from '../src/lib/adapter.ts';
 import type { KkMenuData, KkProductOptionsData } from '../src/types/kk-api.ts';
 
 describe('Adapter: normalizeMenu and normalizeProductOptions', () => {
@@ -114,5 +114,58 @@ describe('Adapter: normalizeMenu and normalizeProductOptions', () => {
     assert.ok(normalized.optionMap['1001']);
     assert.ok(normalized.optionMap['1002']);
     assert.equal(normalized.skus.length, 2);
+  });
+
+  it('filters out Seliter products from menu groups in normalizeMenu', () => {
+    const rawMenu = {
+      menu_groups: [
+        {
+          group_code: 'coffee',
+          group_name: 'Coffee',
+          menu_products: [
+            { id: 1, name: 'Kopi Kenangan Mantan', is_combo_v2: false },
+            { id: 2, name: 'Seliter Kenangan Mantan', is_combo_v2: false },
+            { id: 3, name: 'SELITER AMERICANO', is_combo_v2: false },
+            { id: 4, name: 'Americano', is_combo_v2: false },
+          ],
+        },
+      ],
+    } as unknown as KkMenuData;
+
+    const normalized = normalizeMenu(rawMenu);
+    assert.equal(normalized.length, 1);
+    const productNames = normalized[0].products.map((p) => p.name);
+    assert.deepEqual(productNames, ['Kopi Kenangan Mantan', 'Americano']);
+  });
+
+  it('filters out out-of-scope stores (Kenangan Signature, Chigo, etc.) in normalizeStores', () => {
+    const rawStores = [
+      {
+        id: 1,
+        code: 'S.ID.001',
+        name: 'Kopi Kenangan - Senayan City',
+        brand_and_image: [{ brand_code: 1, brand_name: 'Kopi Kenangan' }],
+        business_hours: [{ open_time: '08:00', close_time: '22:00' }],
+      },
+      {
+        id: 2,
+        code: 'KS.ID.001',
+        name: 'Kenangan Signature - Mall Kelapa Gading',
+        brand_and_image: [{ brand_code: 10, brand_name: 'Kenangan Signature' }],
+        business_hours: [{ open_time: '08:00', close_time: '22:00' }],
+      },
+      {
+        id: 3,
+        code: 'CH.ID.002',
+        name: 'Chigo x Flip Burger - Grand Indonesia',
+        brand_and_image: [{ brand_code: 8, brand_name: 'Chigo x Flip' }],
+        business_hours: [{ open_time: '08:00', close_time: '22:00' }],
+      },
+    ] as any;
+
+    const normalized = normalizeStores(rawStores);
+    assert.equal(normalized.length, 1);
+    assert.equal(normalized[0].code, 'S.ID.001');
+    assert.equal(normalized[0].name, 'Kopi Kenangan - Senayan City');
   });
 });
