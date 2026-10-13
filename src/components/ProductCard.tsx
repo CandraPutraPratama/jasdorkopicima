@@ -89,7 +89,7 @@ export function ProductCard({ product, onSelectProduct }: ProductCardProps) {
           </div>
 
           {product.description && (
-            <p className="text-[11px] text-stone-500 line-clamp-2 mt-0.5 leading-relaxed">
+            <p className="text-[11px] text-stone-600 line-clamp-2 mt-0.5 leading-relaxed">
               {product.description}
             </p>
           )}
@@ -103,13 +103,13 @@ export function ProductCard({ product, onSelectProduct }: ProductCardProps) {
               {formatRupiah(pricing.promoPricePerItem)}
             </span>
             {/* 2. Harga Asli Dicoret */}
-            <span className="text-[11px] text-stone-400 line-through">
+            <span className="text-[11px] text-stone-500 line-through font-medium">
               {formatRupiah(pricing.originalPricePerItem)}
             </span>
           </div>
 
           {/* 3. Keterangan Fee Jasa */}
-          <span className="text-[10px] font-medium text-stone-500 bg-stone-100 px-1.5 py-0.5 rounded border border-stone-200/80">
+          <span className="text-[10px] font-semibold text-stone-600 bg-stone-100 px-1.5 py-0.5 rounded border border-stone-200/80">
             fee {feeDescription}
           </span>
         </div>

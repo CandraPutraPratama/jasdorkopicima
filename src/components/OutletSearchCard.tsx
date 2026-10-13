@@ -39,7 +39,7 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
       </p>
 
       {outlet.openTime && outlet.closeTime && (
-        <div className="flex items-center gap-1.5 text-[11px] text-stone-400 mb-3">
+        <div className="flex items-center gap-1.5 text-[11px] text-stone-600 mb-3">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-3.5 w-3.5"
@@ -67,7 +67,7 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
       )}
 
       <div className="pt-2 border-t border-stone-100 flex items-center justify-between">
-        <span className="text-[11px] text-stone-400">
+        <span className="text-[11px] text-stone-600 font-medium">
           {isOrderable ? 'Pickup tersedia' : 'Tidak menerima pesanan'}
         </span>
 
@@ -96,7 +96,7 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
           <button
             type="button"
             disabled
-            className="min-h-[44px] px-4 py-2 bg-stone-200 text-stone-400 text-xs font-semibold rounded-xl cursor-not-allowed opacity-75"
+            className="min-h-[44px] px-4 py-2 bg-stone-200 text-stone-600 text-xs font-semibold rounded-xl cursor-not-allowed opacity-75"
           >
             Tidak Tersedia
           </button>

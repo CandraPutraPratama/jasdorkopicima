@@ -25,7 +25,7 @@ export function MenuCategoryNav({
               key={category.code}
               type="button"
               onClick={() => onSelectCategory(category.code)}
-              className={`min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition active:scale-95 shrink-0 ${
+              className={`min-h-[44px] px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition active:scale-95 shrink-0 ${
                 isActive
                   ? 'bg-[#111111] text-[#D4AF37] shadow-xs'
                   : 'bg-stone-100 text-stone-700 hover:bg-stone-200'

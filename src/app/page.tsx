@@ -198,17 +198,17 @@ export default function HomePage() {
             <h2 className="text-base font-bold text-[#111111] mb-1">
               Cari Outlet Terdekat
             </h2>
-            <p className="text-xs text-stone-500 leading-relaxed max-w-xs mb-4">
+            <p className="text-xs text-stone-600 leading-relaxed max-w-xs mb-4">
               Ketik nama outlet, nama mall, atau area jalan pada kolom di atas untuk melihat ketersediaan menu.
             </p>
             <div className="flex flex-wrap justify-center gap-1.5">
-              <span className="text-[11px] text-stone-400 self-center mr-1">Contoh:</span>
+              <span className="text-[11px] text-stone-600 font-medium self-center mr-1">Contoh:</span>
               {['Rungkut', 'Grand Indonesia', 'Puri', 'Senayan'].map((sample) => (
                 <button
                   key={sample}
                   type="button"
                   onClick={() => setQuery(sample)}
-                  className="px-2.5 py-1 text-xs font-medium bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg transition min-h-[36px]"
+                  className="px-2.5 py-1 text-xs font-medium bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg transition min-h-[36px]"
                 >
                   {sample}
                 </button>
@@ -244,17 +244,17 @@ export default function HomePage() {
         {!isLoadingOutlets && !searchError && hasSearched && (
           <div>
             <div className="flex items-center justify-between mb-3 px-1">
-              <span className="text-xs text-stone-500 font-medium">
+              <span className="text-xs text-stone-600 font-medium">
                 Ditemukan {outlets.length} outlet
               </span>
-              <span className="text-[11px] text-stone-400">
+              <span className="text-[11px] text-stone-600 font-medium">
                 Pilih yang berstatus Buka
               </span>
             </div>
 
             {outlets.length === 0 ? (
               <div className="p-8 bg-white border border-stone-200 rounded-2xl text-center shadow-xs">
-                <div className="w-12 h-12 bg-stone-100 text-stone-400 rounded-full flex items-center justify-center mx-auto mb-2">
+                <div className="w-12 h-12 bg-stone-100 text-stone-500 rounded-full flex items-center justify-center mx-auto mb-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
@@ -273,7 +273,7 @@ export default function HomePage() {
                 <h3 className="text-sm font-bold text-[#111111]">
                   Outlet Tidak Ditemukan
                 </h3>
-                <p className="text-xs text-stone-500 mt-1 max-w-xs mx-auto leading-relaxed">
+                <p className="text-xs text-stone-600 mt-1 max-w-xs mx-auto leading-relaxed">
                   Tidak ada outlet Kopi Kenangan yang cocok dengan kata kunci &quot;{debouncedQuery}&quot;. Coba gunakan nama jalan atau mall terdekat lainnya.
                 </p>
               </div>

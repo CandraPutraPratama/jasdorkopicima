@@ -40,8 +40,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   themeColor: '#111111',
 };
 
@@ -58,7 +56,7 @@ export default function RootLayout({
             {children}
           </div>
           <footer className="mt-auto py-4 px-4 text-center border-t border-stone-200/70 bg-stone-50">
-            <p className="text-[11px] text-stone-500 font-medium leading-relaxed">
+            <p className="text-[11px] text-stone-600 font-medium leading-relaxed">
               Layanan jasa titip independen, bukan afiliasi resmi Kopi Kenangan.
             </p>
           </footer>

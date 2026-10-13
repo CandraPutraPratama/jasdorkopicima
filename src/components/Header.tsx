@@ -43,6 +43,7 @@ export function Header({
                 src="/brand/logo-cima.webp"
                 alt="Jasdor Logo"
                 fill
+                sizes="32px"
                 className="object-contain"
                 priority
               />

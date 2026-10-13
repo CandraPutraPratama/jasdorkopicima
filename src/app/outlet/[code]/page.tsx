@@ -106,7 +106,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-white">
         <div className="w-8 h-8 border-3 border-amber-400 border-t-transparent rounded-full animate-spin" />
-        <p className="mt-3 text-xs text-stone-500 font-medium">Memeriksa operasional...</p>
+        <p className="mt-3 text-xs text-stone-600 font-medium">Memeriksa operasional...</p>
       </div>
     );
   }
@@ -152,7 +152,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
             <span className="text-xl font-black">404</span>
           </div>
           <h1 className="text-base font-bold text-[#111111] mb-1">Outlet Tidak Ditemukan</h1>
-          <p className="text-xs text-stone-500 max-w-xs mb-5">
+          <p className="text-xs text-stone-600 max-w-xs mb-5">
             Outlet ini tidak terdaftar atau berada di luar jangkauan layanan Kopi Kenangan kami.
           </p>
           <Link
@@ -184,7 +184,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
             </svg>
           </div>
           <h2 className="text-base font-bold text-[#111111] mb-1">Gagal Memuat Outlet</h2>
-          <p className="text-xs text-stone-500 max-w-xs mb-4">{errorMessage}</p>
+          <p className="text-xs text-stone-600 max-w-xs mb-4">{errorMessage}</p>
           <Link
             href="/"
             className="min-h-[44px] px-5 py-2.5 bg-[#111111] text-[#D4AF37] font-semibold text-xs rounded-xl flex items-center justify-center"
@@ -219,7 +219,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
             </p>
 
             {outlet.openTime && outlet.closeTime && (
-              <div className="flex items-center gap-2 mt-2 pt-2 border-t border-stone-100 text-[11px] text-stone-500">
+              <div className="flex items-center gap-2 mt-2 pt-2 border-t border-stone-100 text-[11px] text-stone-600">
                 <span>
                   Jam buka: {outlet.openTime.slice(0, 5)} - {outlet.closeTime.slice(0, 5)} WIB
                 </span>
@@ -244,7 +244,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           <div className="p-4 space-y-6 pb-28">
             {menuGroups.length === 0 ? (
               <div className="p-8 bg-white rounded-2xl border border-stone-200 text-center">
-                <p className="text-xs text-stone-500">
+                <p className="text-xs text-stone-600">
                   Tidak ada menu aktif yang tersedia di outlet ini saat ini.
                 </p>
               </div>

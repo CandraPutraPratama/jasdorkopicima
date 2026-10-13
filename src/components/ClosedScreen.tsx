@@ -24,6 +24,7 @@ export function ClosedScreen({
             src="/brand/logo-cima.webp"
             alt="Logo Jasdor Kopi Cima"
             fill
+            sizes="112px"
             className="object-contain"
             priority
           />
@@ -64,12 +65,12 @@ export function ClosedScreen({
 
         {/* Operating Hours Box */}
         <div className="bg-white rounded-xl p-3 border border-stone-200 text-sm">
-          <div className="text-xs text-stone-500 font-medium">Jam Operasional:</div>
+          <div className="text-xs text-stone-600 font-medium">Jam Operasional:</div>
           <div className="text-base font-bold text-[#111111] mt-0.5">
             {openTime.replace(':', '.')} - {closeTime.replace(':', '.')} WIB
           </div>
           {currentWibTime && (
-            <div className="text-[11px] text-stone-400 mt-1">
+            <div className="text-[11px] text-stone-600 mt-1">
               Waktu server sekarang: {currentWibTime.replace(':', '.')} WIB
             </div>
           )}
@@ -102,7 +103,7 @@ export function ClosedScreen({
 
       {/* Footer Info */}
       <div className="pb-4 text-center">
-        <p className="text-xs text-stone-400">
+        <p className="text-xs text-stone-600 font-medium">
           Cek status diperbarui otomatis setiap 60 detik
         </p>
       </div>
