@@ -186,3 +186,77 @@ Jika di masa mendatang Kopi Kenangan menaikkan selisih harga Large atau beans di
 - Sistem memiliki **In-Memory Fallback Cache** di level Worker, sehingga menu yang sedang aktif tetap dapat diakses.
 - Jika pencarian database gagal, sistem otomatis beralih memanggil `kkApiClient.queryStore` secara real-time.
 - Periksa status koneksi di dashboard Supabase (Status Page & Compute Usage).
+
+---
+
+## 8. Panduan Pembatasan Laju (Rate Limiting) WAF Cloudflare
+
+### A. Kejujuran Mengenai Rate Limiter In-Memory Bawaan Kode
+Rate limiter yang saat ini aktif di dalam kode aplikasi ([`src/lib/rate-limit.ts`](file:///c:/Users/LENOVO/websitebisnis/jasdorkopicima/src/lib/rate-limit.ts)) berjalan secara *in-memory* di dalam setiap isolate/instance Worker.
+- **Kelebihan**: Berjalan tanpa biaya tambahan dan tanpa perlu database eksternal.
+- **Keterbatasan**: Bersifat *per-instance* (tidak terbagi secara global di seluruh edge Cloudflare). Jika request pengguna diarahkan ke PoP/datacenter Cloudflare yang berbeda (misalnya antara Jakarta, Singapura, atau instance worker yang baru aktif), memori pelacaknya terpisah. Data hitungan juga akan ter-reset setiap kali Worker melakukan restart atau deployment baru.
+- **Solusi Ideal**: Untuk proteksi global di level edge jaringan sebelum request menyentuh kode Worker, disarankan mengaktifkan **Cloudflare WAF Rate Limiting Rule** di dashboard Cloudflare (tersedia di paket Cloudflare).
+
+---
+
+### B. Analisis Pola Pemakaian Wajar Pelanggan Asli
+Berdasarkan alur pemesanan di antarmuka web, satu sesi pemesanan normal seorang pelanggan menghasilkan rentetan request API sebagai berikut:
+1. **Membuka Halaman Beranda**:
+   - `GET /api/operational-status` (1x request)
+2. **Mencari Outlet**:
+   - Mengetik nama outlet/daerah (fitur debounce 300ms): rata-rata 2 s/d 4x request `GET /api/outlets?q=...`
+3. **Membuka Detail & Menu Outlet**:
+   - `GET /api/outlets/[code]` (1x request)
+   - `GET /api/outlets/[code]/menu` (1x request)
+4. **Melihat Varian & Opsi Produk (Membuka Bottom Sheet)**:
+   - Pelanggan melihat-lihat dan mengklik 2 s/d 6 produk berbeda: 2 s/d 6x request `GET /api/outlets/[code]/products/[bundleCode]/options`
+5. **Checkout & Validasi Keranjang**:
+   - Menekan tombol pesan via WhatsApp: 1x request `POST /api/outlets/[code]/validate-cart`
+
+**Total Pemakaian Wajar**:
+- Per sesi pemesanan: **7 s/d 14 request** (tersebar dalam rentang 1 s/d 3 menit).
+- Puncak aktivitas per menit: **5 s/d 10 request per menit per IP**.
+
+---
+
+### C. Usulan Ambang Batas (Threshold) WAF
+Dengan konteks skala operasional **20–30 pesanan per hari**, ambang batas yang disarankan adalah:
+👉 **100 request per 1 menit per IP** (10x lipat dari pemakaian wajar 10 req/menit).
+
+**Alasan Pemilihan Angka 100 req/menit**:
+1. Tidak mungkin terpicu oleh pelanggan asli, bahkan jika pelanggan mengklik menu dengan sangat cepat atau bolak-balik memeriksa opsi minuman.
+2. Memberikan toleransi aman jika ada beberapa pelanggan yang memesan bersamaan dari satu jaringan kantor atau kafe yang menggunakan satu IP publik bersama (NAT).
+3. Sangat efektif memblokir bot scraper, script spammer, atau serangan brute force yang mencoba menembus API dengan ratusan request per detik.
+
+---
+
+### D. Panduan Langkah demi Langkah Pembuatan Aturan di Cloudflare Dashboard
+1. Buka [Cloudflare Dashboard](https://dash.cloudflare.com/) dan pilih domain/zona Anda (`cimagroup.my.id`).
+2. Masuk ke navigasi sebelah kiri: **Security** > **WAF** > pilih tab **Rate limiting rules**.
+3. Klik tombol **Create rule**.
+4. Beri nama aturan: `Rate Limit API Jasdor`.
+5. Pada bagian **If incoming requests match (Filter Expression)**:
+   - **Field**: `URI Path`
+   - **Operator**: `starts with`
+   - **Value**: `/api/`
+   - *(Opsional pengaman cron)*: Tambahkan `AND` -> `Header` (`Authorization`) -> `does not contain` -> `Bearer`.
+6. Pada bagian **Rate limiting criteria**:
+   - **Characteristics**: Pilih `IP` (default).
+   - **Requests**: Isi `100`.
+   - **Period**: Pilih `1 minute` (atau 60 seconds).
+7. Pada bagian **Choose action (Saat Terlampaui)**:
+   - Pilih aksi: **Managed Challenge** (Sangat Disarankan) atau **Block**.
+   - Jika memilih Block: tentukan durasi mitigasi, misalnya `10 minutes`.
+8. Klik **Deploy** untuk mengaktifkan aturan di seluruh edge server Cloudflare.
+
+---
+
+### E. Perbedaan Aksi untuk Pelanggan Asli: Managed Challenge vs Block
+- **Managed Challenge (Rekomendasi)**:
+  - *Cara Kerja*: Menampilkan verifikasi interaktif non-intrusif (Cloudflare Turnstile centang otomatis).
+  - *Dampak Pelanggan Asli*: Jika terjadi *false positive* (misalnya 5 karyawan di 1 kantor memesan jastip berbarengan dari Wi-Fi yang sama dan total request mencapai 100 dalam semenit), pelanggan hanya diminta menyelesaikan verifikasi singkat lalu dapat langsung melanjutkan pesanan tanpa terganggu.
+  - *Dampak Bot*: Bot atau skrip otomatis tanpa browser engine akan gagal melewati challenge dan otomatis terhenti.
+- **Block (Blokir Sementara)**:
+  - *Cara Kerja*: Cloudflare langsung mengembalikan kode status HTTP 429 atau halaman error "Access Denied".
+  - *Dampak Pelanggan Asli*: Jika pelanggan terkena batas, mereka akan mengalami error total selama 10 menit dan gagal memesan. Karena itu, aksi Block hanya disarankan jika sistem sedang mengalami serangan DDoS/scraping masif yang jelas-jelas berniat jahat.
+
