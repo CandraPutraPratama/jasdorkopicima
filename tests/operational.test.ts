@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { isJasdorOpen, getJasdorOperationalStatus } from '../src/lib/operational.ts';
+import { isJasdorOpen, getJasdorOperationalStatus, resolveOperationalStatusWithSimulation } from '../src/lib/operational.ts';
 
 describe('Jasdor Operational Hours Checker', () => {
   // WIB is UTC+7.
@@ -54,5 +54,53 @@ describe('Jasdor Operational Hours Checker', () => {
     assert.strictEqual(isJasdorOpen(new Date('2026-10-11T01:00:00.000Z')), true);
     assert.strictEqual(isJasdorOpen(new Date('2026-10-11T16:20:00.000Z')), true);
     assert.strictEqual(isJasdorOpen(new Date('2026-10-11T16:21:00.000Z')), false);
+  });
+
+  describe('resolveOperationalStatusWithSimulation Hardening', () => {
+    const closedStatus = getJasdorOperationalStatus(new Date('2026-10-11T00:59:00.000Z'));
+    const openStatus = getJasdorOperationalStatus(new Date('2026-10-11T01:00:00.000Z'));
+
+    it('PRODUKSI: mutlak mengabaikan ?simulate=open apa pun nilai ALLOW_SIMULATE', () => {
+      const res = resolveOperationalStatusWithSimulation(closedStatus, 'open', {
+        nodeEnv: 'production',
+        allowSimulate: 'true',
+      });
+      assert.strictEqual(res.isOpen, false);
+      assert.strictEqual(res.message.includes('Simulasi'), false);
+    });
+
+    it('PRODUKSI: mutlak mengabaikan ?simulate=closed apa pun nilai ALLOW_SIMULATE', () => {
+      const res = resolveOperationalStatusWithSimulation(openStatus, 'closed', {
+        nodeEnv: 'production',
+        allowSimulate: 'true',
+      });
+      assert.strictEqual(res.isOpen, true);
+      assert.strictEqual(res.message.includes('Simulasi'), false);
+    });
+
+    it('NON-PRODUKSI: mengabaikan simulasi jika ALLOW_SIMULATE false', () => {
+      const res = resolveOperationalStatusWithSimulation(closedStatus, 'open', {
+        nodeEnv: 'development',
+        allowSimulate: 'false',
+      });
+      assert.strictEqual(res.isOpen, false);
+      assert.strictEqual(res.message.includes('Simulasi'), false);
+    });
+
+    it('NON-PRODUKSI: mengaktifkan simulasi jika ALLOW_SIMULATE true', () => {
+      const resOpen = resolveOperationalStatusWithSimulation(closedStatus, 'open', {
+        nodeEnv: 'development',
+        allowSimulate: 'true',
+      });
+      assert.strictEqual(resOpen.isOpen, true);
+      assert.strictEqual(resOpen.message.includes('(Simulasi Buka Aktif)'), true);
+
+      const resClosed = resolveOperationalStatusWithSimulation(openStatus, 'closed', {
+        nodeEnv: 'development',
+        allowSimulate: 'true',
+      });
+      assert.strictEqual(resClosed.isOpen, false);
+      assert.strictEqual(resClosed.message.includes('(Simulasi Tutup Aktif)'), true);
+    });
   });
 });

@@ -91,3 +91,45 @@ export function isJasdorOpen(
 ): boolean {
   return getJasdorOperationalStatus(date, config).isOpen;
 }
+
+/**
+ * Mengevaluasi status operasional dengan mempertimbangkan parameter simulasi (?simulate=open / closed).
+ *
+ * PENJAGA KERAS DUA LAPIS (SECURITY HARDENING):
+ * 1. Di lingkungan production (process.env.NODE_ENV === 'production'), mode simulasi
+ *    MUTLAK DILARANG dan parameter simulasi diabaikan sepenuhnya, apa pun nilai env-nya.
+ * 2. Di lingkungan non-production, simulasi hanya aktif jika ALLOW_SIMULATE bernilai persis "true".
+ */
+export function resolveOperationalStatusWithSimulation(
+  baseStatus: OperationalStatusResult,
+  simulateParam: string | null,
+  env: { nodeEnv?: string; allowSimulate?: string } = {
+    nodeEnv: process.env.NODE_ENV,
+    allowSimulate: process.env.ALLOW_SIMULATE,
+  }
+): OperationalStatusResult {
+  const isProduction = env.nodeEnv === 'production';
+  const isSimulationAllowed = !isProduction && env.allowSimulate === 'true';
+
+  if (!isSimulationAllowed || !simulateParam) {
+    return baseStatus;
+  }
+
+  if (simulateParam === 'open') {
+    return {
+      ...baseStatus,
+      isOpen: true,
+      message: `${baseStatus.message} (Simulasi Buka Aktif)`,
+    };
+  }
+
+  if (simulateParam === 'closed') {
+    return {
+      ...baseStatus,
+      isOpen: false,
+      message: `${baseStatus.message} (Simulasi Tutup Aktif)`,
+    };
+  }
+
+  return baseStatus;
+}

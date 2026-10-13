@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getJasdorOperationalStatus } from '@/lib/operational';
+import { getJasdorOperationalStatus, resolveOperationalStatusWithSimulation } from '@/lib/operational';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 
 export async function GET(request: NextRequest) {
@@ -23,30 +23,9 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const status = getJasdorOperationalStatus();
-
-  // Mode simulasi HANYA aktif jika variabel lingkungan ALLOW_SIMULATE === "true"
-  // Di production Cloudflare, variabel ini TIDAK diset sehingga URL parameter diabaikan sepenuhnya.
-  const allowSimulate = process.env.ALLOW_SIMULATE === 'true';
-
-  if (allowSimulate) {
-    const simulate = request.nextUrl.searchParams.get('simulate');
-    if (simulate === 'open') {
-      return NextResponse.json({
-        ...status,
-        isOpen: true,
-        message: `${status.message} (Simulasi Buka Aktif)`,
-      });
-    }
-
-    if (simulate === 'closed') {
-      return NextResponse.json({
-        ...status,
-        isOpen: false,
-        message: `${status.message} (Simulasi Tutup Aktif)`,
-      });
-    }
-  }
+  const baseStatus = getJasdorOperationalStatus();
+  const simulateParam = request.nextUrl.searchParams.get('simulate');
+  const status = resolveOperationalStatusWithSimulation(baseStatus, simulateParam);
 
   return NextResponse.json(status);
 }
