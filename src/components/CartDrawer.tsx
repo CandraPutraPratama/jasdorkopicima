@@ -10,6 +10,11 @@ import { calculateAvailableScheduleSlots } from '@/lib/schedule-slots';
 import { getWibTimeParts } from '@/lib/operational';
 import { buildWhatsAppMessage, buildWhatsAppUrl } from '@/lib/whatsapp';
 import { BUSINESS_CONFIG } from '@/config/business';
+import {
+  createOrderSummarySnapshot,
+  formatOrderSummaryDetail,
+  type OrderSummarySnapshot,
+} from '@/lib/order-snapshot';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -52,6 +57,7 @@ export function CartDrawer({
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [showUncertainModal, setShowUncertainModal] = useState(false);
   const [orderCompleted, setOrderCompleted] = useState(false);
+  const [orderSnapshot, setOrderSnapshot] = useState<OrderSummarySnapshot | null>(null);
 
   // Hitung slot pick up yang tersedia secara dinamis
   const scheduleSlots = useMemo(() => {
@@ -73,6 +79,12 @@ export function CartDrawer({
 
   // Layar sukses setelah pesan WhatsApp terkirim dan dikonfirmasi
   if (orderCompleted) {
+    const activeSnapshot = orderSnapshot ?? createOrderSummarySnapshot({
+      customerName,
+      pricing,
+      outletName: effectiveOutletName,
+    });
+
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-2xs animate-in fade-in">
         <div className="w-full max-w-sm bg-white rounded-3xl p-6 text-center space-y-4 shadow-2xl">
@@ -94,20 +106,21 @@ export function CartDrawer({
               Pesanan Terkirim!
             </h3>
             <p className="text-xs text-stone-500 leading-relaxed">
-              Terima kasih, Kak <span className="font-semibold text-stone-800">{customerName}</span>. Tim jasdor akan segera mengonfirmasi pesananmu di WhatsApp.
+              Terima kasih, Kak <span className="font-semibold text-stone-800">{activeSnapshot.customerName || customerName}</span>. Tim jasdor akan segera mengonfirmasi pesananmu di WhatsApp.
             </p>
           </div>
 
           <div className="bg-stone-50 p-3 rounded-xl border border-stone-200 text-xs text-stone-600">
             <p className="font-semibold text-[#111111]">Detail Ringkas:</p>
-            <p className="mt-0.5">{pricing.totalQuantity} item • {formatRupiah(pricing.total)}</p>
-            <p className="text-[11px] text-stone-400 mt-0.5">Outlet: {effectiveOutletName}</p>
+            <p className="mt-0.5">{formatOrderSummaryDetail(activeSnapshot)}</p>
+            <p className="text-[11px] text-stone-400 mt-0.5">Outlet: {activeSnapshot.outletName}</p>
           </div>
 
           <button
             type="button"
             onClick={() => {
               setOrderCompleted(false);
+              setOrderSnapshot(null);
               onClose();
             }}
             className="w-full min-h-[44px] px-4 py-2.5 bg-[#111111] text-[#D4AF37] font-bold text-xs rounded-xl shadow-xs"
@@ -231,6 +244,13 @@ export function CartDrawer({
   };
 
   const dispatchWhatsAppOrder = (message: string) => {
+    setOrderSnapshot(
+      createOrderSummarySnapshot({
+        customerName,
+        pricing,
+        outletName: effectiveOutletName,
+      })
+    );
     const waInfo = buildWhatsAppUrl(BUSINESS_CONFIG.whatsappNumber, message);
     window.open(waInfo.url, '_blank', 'noopener,noreferrer');
     setShowSuccessDialog(true);
@@ -250,6 +270,15 @@ export function CartDrawer({
   };
 
   const handleConfirmWhatsAppSent = () => {
+    if (!orderSnapshot) {
+      setOrderSnapshot(
+        createOrderSummarySnapshot({
+          customerName,
+          pricing,
+          outletName: effectiveOutletName,
+        })
+      );
+    }
     onClearCart();
     setShowSuccessDialog(false);
     setShowCopyModal(false);
