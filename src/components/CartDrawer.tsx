@@ -6,7 +6,7 @@ import type { CartItem } from '@/lib/cart-reducer';
 import type { OrderPricingResult } from '@/lib/pricing';
 import type { Outlet } from '@/types/domain';
 import { formatRupiah } from '@/lib/currency';
-import { calculateAvailableScheduleSlots } from '@/lib/schedule-slots';
+import { calculateAvailableScheduleSlots, isValidScheduleSlot } from '@/lib/schedule-slots';
 import { getWibTimeParts } from '@/lib/operational';
 import { buildWhatsAppMessage, buildWhatsAppUrl } from '@/lib/whatsapp';
 import { BUSINESS_CONFIG } from '@/config/business';
@@ -70,9 +70,11 @@ export function CartDrawer({
     });
   }, [outlet?.openTime, outlet?.closeTime]);
 
-  // Set default slot jika pick up terjadwal dipilih
-  if (pickupMode === 'scheduled' && !selectedSlot && scheduleSlots.slots.length > 0) {
-    setSelectedSlot(scheduleSlots.slots[0]);
+  // Set default slot jika pick up terjadwal dipilih atau slot sebelumnya tidak lagi tersedia
+  if (pickupMode === 'scheduled' && scheduleSlots.slots.length > 0) {
+    if (!selectedSlot || !scheduleSlots.slots.includes(selectedSlot)) {
+      setSelectedSlot(scheduleSlots.slots[0]);
+    }
   }
 
   if (!isOpen) return null;
@@ -152,9 +154,15 @@ export function CartDrawer({
       return;
     }
 
-    if (pickupMode === 'scheduled' && !selectedSlot) {
-      setErrorMessage('Silakan pilih jam jadwal pick up.');
-      return;
+    if (pickupMode === 'scheduled') {
+      if (!selectedSlot) {
+        setErrorMessage('Silakan pilih jam jadwal pick up.');
+        return;
+      }
+      if (!isValidScheduleSlot(selectedSlot) || !scheduleSlots.slots.includes(selectedSlot)) {
+        setErrorMessage('Jam jadwal pick up yang dipilih tidak valid atau sudah lewat.');
+        return;
+      }
     }
 
     setIsSubmitting(true);

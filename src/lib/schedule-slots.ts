@@ -24,10 +24,22 @@ function parseTimeToMinutes(timeStr?: string, defaultMinutes = 0): number {
 }
 
 /**
+ * Validasi apakah sebuah slot waktu pick up memenuhi grid kelipatan 15 menit:
+ * Menit yang sah HANYA :00, :15, :30, :45 (HH:00, HH:15, HH:30, HH:45).
+ */
+export function isValidScheduleSlot(slotStr?: string): boolean {
+  if (!slotStr || typeof slotStr !== 'string') return false;
+  const match = slotStr.match(/^(\d{2}):(00|15|30|45)$/);
+  if (!match) return false;
+  const hour = parseInt(match[1], 10);
+  return hour >= 0 && hour <= 23;
+}
+
+/**
  * Menghitung slot waktu jadwal pick up:
- * - Kelipatan 5 menit
+ * - Kelipatan 15 menit (menit yang sah hanya :00, :15, :30, :45)
  * - Hari ini saja
- * - Minimal 10 menit dari waktu saat ini
+ * - Slot paling awal adalah slot grid 15 menit pertama yang >= waktu sekarang + 10 menit
  * - Dalam jam buka jasdor (08.00 - 23.20 WIB) dan jam buka outlet dari get_store
  * - Jika tidak ada slot valid, kembalikan isAvailable: false dan alasannya.
  */
@@ -50,12 +62,14 @@ export function calculateAvailableScheduleSlots(
   const outletStart = outletOpen ? parseTimeToMinutes(outletOpen, 0) : 0;
   const outletEnd = outletClose ? parseTimeToMinutes(outletClose, 24 * 60) : 24 * 60;
 
-  // Minimal 10 menit dari sekarang, dibulatkan ke atas ke kelipatan 5 menit
+  // Minimal 10 menit dari sekarang, dibulatkan ke atas ke kelipatan 15 menit
   const minRequiredMinutes = currentMinutes + 10;
-  const roundedNextSlot = Math.ceil(minRequiredMinutes / 5) * 5;
+  const roundedNextSlot = Math.ceil(minRequiredMinutes / 15) * 15;
 
-  // Jam mulai paling awal yang memenuhi seluruh batasan
-  const earliestAllowed = Math.max(jasdorStart, outletStart, roundedNextSlot);
+  // Jam mulai paling awal yang memenuhi seluruh batasan dan berada pada grid 15 menit
+  const rawEarliest = Math.max(jasdorStart, outletStart, roundedNextSlot);
+  const earliestAllowed = Math.ceil(rawEarliest / 15) * 15;
+
   // Jam tutup paling akhir
   const latestAllowed = Math.min(jasdorEnd, outletEnd);
 
@@ -68,7 +82,7 @@ export function calculateAvailableScheduleSlots(
   }
 
   const slots: string[] = [];
-  for (let m = earliestAllowed; m <= latestAllowed; m += 5) {
+  for (let m = earliestAllowed; m <= latestAllowed; m += 15) {
     const h = Math.floor(m / 60);
     const min = m % 60;
     slots.push(`${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`);
