@@ -50,3 +50,6 @@ next-env.d.ts
 
 # survey and data scripts output
 scripts/*.json
+
+# codegraph index
+.codegraph/
