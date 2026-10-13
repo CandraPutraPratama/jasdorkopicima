@@ -10,6 +10,9 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  "vars": {
+    "IMAGE_SOURCE": "r2"
+  },
   "routes": [
     {
       "pattern": "jasdor.cimagroup.my.id",

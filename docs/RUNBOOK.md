@@ -333,3 +333,42 @@ Jika Worker Next.js memerlukan akses langsung via SDK Cloudflare binding:
   ]
   ```
 
+---
+
+### C. Saklar IMAGE_SOURCE & Prosedur Rollback Cepat
+
+Sistem dilengkapi saklar konfigurasi `IMAGE_SOURCE` untuk mengendalikan asal URL foto produk di katalog:
+- **`IMAGE_SOURCE="r2"` (Aktif)**: URL foto produk diarahkan ke CDN R2 milik sendiri (`https://gambar.cimagroup.my.id/product/<uuid>.jpg`). Jika terdapat URL yang UUID-nya tidak dikenali, sistem otomatis mempertahankan URL asal CDN Kopi Kenangan sehingga tidak akan pernah terjadi gambar pecah.
+- **`IMAGE_SOURCE="kk"` (Fallback Asal)**: URL foto produk 100% menunjuk ke CDN resmi Kopi Kenangan (`cdn.kopikenangan.com`).
+
+#### Prosedur Rollback Darurat (Jika R2 / Domain Gambar Mengalami Gangguan):
+Jika terjadi kendala pada bucket R2 atau domain gambar:
+1. Buka file [`wrangler.jsonc`](file:///c:/Users/LENOVO/websitebisnis/jasdorkopicima/wrangler.jsonc), ubah nilai:
+   ```jsonc
+   "vars": {
+     "IMAGE_SOURCE": "kk"
+   }
+   ```
+   *(atau set env `IMAGE_SOURCE=kk` di Dashboard Cloudflare Workers)*.
+2. Jalankan deploy ulang:
+   ```bash
+   npm run deploy
+   ```
+3. Seluruh URL foto produk akan langsung kembali menggunakan CDN Kopi Kenangan asli seketika setelah deploy selesai.
+
+#### Skrip Pengelolaan Objek R2:
+- **Sinkronisasi / Mirror Ulang**:
+  ```bash
+  node --env-file=.env.local --experimental-strip-types scripts/mirror-images.mjs
+  ```
+  *(Bersifat idempotent: hanya mengunggah file baru/berubah, file yang sudah ada otomatis dilewati)*.
+- **Hapus Darurat Objek Mirror**:
+  ```bash
+  # Simulasi (Dry Run) tanpa menghapus apa pun:
+  node scripts/purge-mirror.mjs
+
+  # Eksekusi penghapusan sungguhan (hanya prefix product/):
+  node scripts/purge-mirror.mjs --confirm
+  ```
+
+

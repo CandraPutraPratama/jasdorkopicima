@@ -1,0 +1,957 @@
+{
+  "generatedAt": "2026-10-13T07:16:52.797Z",
+  "bucket": "jasdorkopicima",
+  "mirrorBaseUrl": "https://gambar.cimagroup.my.id/product",
+  "totalUnique": 118,
+  "uploaded": 0,
+  "skipped": 118,
+  "failed": 0,
+  "unmatchedCount": 0,
+  "unmatchedUrls": [],
+  "items": [
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/ace3b7e3-7320-4adb-b9cb-61752ff91dea?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/ace3b7e3-7320-4adb-b9cb-61752ff91dea.jpg",
+      "uuid": "ace3b7e3-7320-4adb-b9cb-61752ff91dea",
+      "targetKey": "product/ace3b7e3-7320-4adb-b9cb-61752ff91dea.jpg",
+      "sizeBytes": 14249,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/d388cac3-16df-4519-9e80-f8ef633048b9?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/d388cac3-16df-4519-9e80-f8ef633048b9.jpg",
+      "uuid": "d388cac3-16df-4519-9e80-f8ef633048b9",
+      "targetKey": "product/d388cac3-16df-4519-9e80-f8ef633048b9.jpg",
+      "sizeBytes": 14332,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/73af63fc-8f5c-48c0-aece-da0307e77af8?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/73af63fc-8f5c-48c0-aece-da0307e77af8.jpg",
+      "uuid": "73af63fc-8f5c-48c0-aece-da0307e77af8",
+      "targetKey": "product/73af63fc-8f5c-48c0-aece-da0307e77af8.jpg",
+      "sizeBytes": 14271,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/72c9b4d3-a487-457d-8e94-060d3aee9b1e?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/72c9b4d3-a487-457d-8e94-060d3aee9b1e.jpg",
+      "uuid": "72c9b4d3-a487-457d-8e94-060d3aee9b1e",
+      "targetKey": "product/72c9b4d3-a487-457d-8e94-060d3aee9b1e.jpg",
+      "sizeBytes": 13243,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/186b5436-c2a5-4b4e-bef4-319943616c12?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/186b5436-c2a5-4b4e-bef4-319943616c12.jpg",
+      "uuid": "186b5436-c2a5-4b4e-bef4-319943616c12",
+      "targetKey": "product/186b5436-c2a5-4b4e-bef4-319943616c12.jpg",
+      "sizeBytes": 13302,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/f5239e58-8fa7-4eac-84d9-3c66b8cd059e?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/f5239e58-8fa7-4eac-84d9-3c66b8cd059e.jpg",
+      "uuid": "f5239e58-8fa7-4eac-84d9-3c66b8cd059e",
+      "targetKey": "product/f5239e58-8fa7-4eac-84d9-3c66b8cd059e.jpg",
+      "sizeBytes": 14456,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/63681082-b5b6-4943-b58b-96c6b8c64734?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/63681082-b5b6-4943-b58b-96c6b8c64734.jpg",
+      "uuid": "63681082-b5b6-4943-b58b-96c6b8c64734",
+      "targetKey": "product/63681082-b5b6-4943-b58b-96c6b8c64734.jpg",
+      "sizeBytes": 13162,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/abf8f929-2d72-42ef-a05d-ebeadec7bb75?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/abf8f929-2d72-42ef-a05d-ebeadec7bb75.jpg",
+      "uuid": "abf8f929-2d72-42ef-a05d-ebeadec7bb75",
+      "targetKey": "product/abf8f929-2d72-42ef-a05d-ebeadec7bb75.jpg",
+      "sizeBytes": 15924,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/c0442198-2f86-4d81-9a55-9aaf35019b92?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/c0442198-2f86-4d81-9a55-9aaf35019b92.jpg",
+      "uuid": "c0442198-2f86-4d81-9a55-9aaf35019b92",
+      "targetKey": "product/c0442198-2f86-4d81-9a55-9aaf35019b92.jpg",
+      "sizeBytes": 17134,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/10c984f9-994b-4d97-8e29-164354598e22?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/10c984f9-994b-4d97-8e29-164354598e22.jpg",
+      "uuid": "10c984f9-994b-4d97-8e29-164354598e22",
+      "targetKey": "product/10c984f9-994b-4d97-8e29-164354598e22.jpg",
+      "sizeBytes": 12267,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/7c81b141-162c-4d41-8285-674283926e56?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/7c81b141-162c-4d41-8285-674283926e56.jpg",
+      "uuid": "7c81b141-162c-4d41-8285-674283926e56",
+      "targetKey": "product/7c81b141-162c-4d41-8285-674283926e56.jpg",
+      "sizeBytes": 12788,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/392219eb-08e1-daf9-69d6-a12a8242e5be",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/392219eb-08e1-daf9-69d6-a12a8242e5be.jpg",
+      "uuid": "392219eb-08e1-daf9-69d6-a12a8242e5be",
+      "targetKey": "product/392219eb-08e1-daf9-69d6-a12a8242e5be.jpg",
+      "sizeBytes": 29188,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/4c582a52-fbc8-2d9e-0007-f6a1c0b5fed6",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/4c582a52-fbc8-2d9e-0007-f6a1c0b5fed6.jpg",
+      "uuid": "4c582a52-fbc8-2d9e-0007-f6a1c0b5fed6",
+      "targetKey": "product/4c582a52-fbc8-2d9e-0007-f6a1c0b5fed6.jpg",
+      "sizeBytes": 619744,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/da484154-47b1-a756-54a4-8b3490fb0eae",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/da484154-47b1-a756-54a4-8b3490fb0eae.jpg",
+      "uuid": "da484154-47b1-a756-54a4-8b3490fb0eae",
+      "targetKey": "product/da484154-47b1-a756-54a4-8b3490fb0eae.jpg",
+      "sizeBytes": 505443,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/630c892e-17a7-0d8c-301f-9e2d33bf1de8",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/630c892e-17a7-0d8c-301f-9e2d33bf1de8.jpg",
+      "uuid": "630c892e-17a7-0d8c-301f-9e2d33bf1de8",
+      "targetKey": "product/630c892e-17a7-0d8c-301f-9e2d33bf1de8.jpg",
+      "sizeBytes": 438844,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/82e14825-c028-65d6-0c70-c352639bcf23",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/82e14825-c028-65d6-0c70-c352639bcf23.jpg",
+      "uuid": "82e14825-c028-65d6-0c70-c352639bcf23",
+      "targetKey": "product/82e14825-c028-65d6-0c70-c352639bcf23.jpg",
+      "sizeBytes": 448762,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/821509a2-815f-3349-896c-9d15f787ab37",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/821509a2-815f-3349-896c-9d15f787ab37.jpg",
+      "uuid": "821509a2-815f-3349-896c-9d15f787ab37",
+      "targetKey": "product/821509a2-815f-3349-896c-9d15f787ab37.jpg",
+      "sizeBytes": 491574,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/5ac8e750-455e-dcf6-a4e4-5fb398bb25bb",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/5ac8e750-455e-dcf6-a4e4-5fb398bb25bb.jpg",
+      "uuid": "5ac8e750-455e-dcf6-a4e4-5fb398bb25bb",
+      "targetKey": "product/5ac8e750-455e-dcf6-a4e4-5fb398bb25bb.jpg",
+      "sizeBytes": 401216,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/2ba99b9b-7912-397a-9fea-a21d4073a197",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/2ba99b9b-7912-397a-9fea-a21d4073a197.jpg",
+      "uuid": "2ba99b9b-7912-397a-9fea-a21d4073a197",
+      "targetKey": "product/2ba99b9b-7912-397a-9fea-a21d4073a197.jpg",
+      "sizeBytes": 176563,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/20738f57-23ed-ea72-85f3-cdd8bc468352",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/20738f57-23ed-ea72-85f3-cdd8bc468352.jpg",
+      "uuid": "20738f57-23ed-ea72-85f3-cdd8bc468352",
+      "targetKey": "product/20738f57-23ed-ea72-85f3-cdd8bc468352.jpg",
+      "sizeBytes": 209377,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/6831574a-3d7f-d543-9a0c-bd68e7dcb54a",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/6831574a-3d7f-d543-9a0c-bd68e7dcb54a.jpg",
+      "uuid": "6831574a-3d7f-d543-9a0c-bd68e7dcb54a",
+      "targetKey": "product/6831574a-3d7f-d543-9a0c-bd68e7dcb54a.jpg",
+      "sizeBytes": 443236,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/24081765-c705-34a8-eccb-ebccf7f7ae5a",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/24081765-c705-34a8-eccb-ebccf7f7ae5a.jpg",
+      "uuid": "24081765-c705-34a8-eccb-ebccf7f7ae5a",
+      "targetKey": "product/24081765-c705-34a8-eccb-ebccf7f7ae5a.jpg",
+      "sizeBytes": 458219,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/e3aa23b8-278d-54a0-0769-0de6e82b4d60",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/e3aa23b8-278d-54a0-0769-0de6e82b4d60.jpg",
+      "uuid": "e3aa23b8-278d-54a0-0769-0de6e82b4d60",
+      "targetKey": "product/e3aa23b8-278d-54a0-0769-0de6e82b4d60.jpg",
+      "sizeBytes": 559753,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/34ac251c-14e6-44b7-d2b9-b4c63f6e2136",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/34ac251c-14e6-44b7-d2b9-b4c63f6e2136.jpg",
+      "uuid": "34ac251c-14e6-44b7-d2b9-b4c63f6e2136",
+      "targetKey": "product/34ac251c-14e6-44b7-d2b9-b4c63f6e2136.jpg",
+      "sizeBytes": 44146,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/a1cb7272-f6e2-bb69-950d-59bc87515fd2",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/a1cb7272-f6e2-bb69-950d-59bc87515fd2.jpg",
+      "uuid": "a1cb7272-f6e2-bb69-950d-59bc87515fd2",
+      "targetKey": "product/a1cb7272-f6e2-bb69-950d-59bc87515fd2.jpg",
+      "sizeBytes": 151105,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/e72f731f-d24e-7fed-372b-86eb398a0d22",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/e72f731f-d24e-7fed-372b-86eb398a0d22.jpg",
+      "uuid": "e72f731f-d24e-7fed-372b-86eb398a0d22",
+      "targetKey": "product/e72f731f-d24e-7fed-372b-86eb398a0d22.jpg",
+      "sizeBytes": 113893,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/36155ddd-784d-a7d9-4d02-13d596417078",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/36155ddd-784d-a7d9-4d02-13d596417078.jpg",
+      "uuid": "36155ddd-784d-a7d9-4d02-13d596417078",
+      "targetKey": "product/36155ddd-784d-a7d9-4d02-13d596417078.jpg",
+      "sizeBytes": 529096,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/8a0d42d0-4801-ca84-48e9-7b434b22aee4",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/8a0d42d0-4801-ca84-48e9-7b434b22aee4.jpg",
+      "uuid": "8a0d42d0-4801-ca84-48e9-7b434b22aee4",
+      "targetKey": "product/8a0d42d0-4801-ca84-48e9-7b434b22aee4.jpg",
+      "sizeBytes": 364744,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/7b33aac1-3e8a-f15d-bb58-158692adf173",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/7b33aac1-3e8a-f15d-bb58-158692adf173.jpg",
+      "uuid": "7b33aac1-3e8a-f15d-bb58-158692adf173",
+      "targetKey": "product/7b33aac1-3e8a-f15d-bb58-158692adf173.jpg",
+      "sizeBytes": 445126,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/4890326b-b307-b2f8-a6f1-1a6ae4b15804",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/4890326b-b307-b2f8-a6f1-1a6ae4b15804.jpg",
+      "uuid": "4890326b-b307-b2f8-a6f1-1a6ae4b15804",
+      "targetKey": "product/4890326b-b307-b2f8-a6f1-1a6ae4b15804.jpg",
+      "sizeBytes": 454859,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/c651acb8-3df7-7b75-45e2-f207926d863a",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/c651acb8-3df7-7b75-45e2-f207926d863a.jpg",
+      "uuid": "c651acb8-3df7-7b75-45e2-f207926d863a",
+      "targetKey": "product/c651acb8-3df7-7b75-45e2-f207926d863a.jpg",
+      "sizeBytes": 468399,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/dda71d19-28a8-4737-95da-fdb94a44892e?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/dda71d19-28a8-4737-95da-fdb94a44892e.jpg",
+      "uuid": "dda71d19-28a8-4737-95da-fdb94a44892e",
+      "targetKey": "product/dda71d19-28a8-4737-95da-fdb94a44892e.jpg",
+      "sizeBytes": 16545,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/4f6889ec-6103-4fa0-a447-b7b3ee2742c9?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/4f6889ec-6103-4fa0-a447-b7b3ee2742c9.jpg",
+      "uuid": "4f6889ec-6103-4fa0-a447-b7b3ee2742c9",
+      "targetKey": "product/4f6889ec-6103-4fa0-a447-b7b3ee2742c9.jpg",
+      "sizeBytes": 11383,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/6663aa38-c764-4ead-9db4-5a79634e9a77?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/6663aa38-c764-4ead-9db4-5a79634e9a77.jpg",
+      "uuid": "6663aa38-c764-4ead-9db4-5a79634e9a77",
+      "targetKey": "product/6663aa38-c764-4ead-9db4-5a79634e9a77.jpg",
+      "sizeBytes": 10910,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/31e167f1-1598-481d-adb9-48669769854b?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/31e167f1-1598-481d-adb9-48669769854b.jpg",
+      "uuid": "31e167f1-1598-481d-adb9-48669769854b",
+      "targetKey": "product/31e167f1-1598-481d-adb9-48669769854b.jpg",
+      "sizeBytes": 12684,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/032d2ddc-8df7-6d63-4101-1ccb50298085",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/032d2ddc-8df7-6d63-4101-1ccb50298085.jpg",
+      "uuid": "032d2ddc-8df7-6d63-4101-1ccb50298085",
+      "targetKey": "product/032d2ddc-8df7-6d63-4101-1ccb50298085.jpg",
+      "sizeBytes": 292704,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/d27c63d0-4931-60fd-5eec-0963bdf095fc",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/d27c63d0-4931-60fd-5eec-0963bdf095fc.jpg",
+      "uuid": "d27c63d0-4931-60fd-5eec-0963bdf095fc",
+      "targetKey": "product/d27c63d0-4931-60fd-5eec-0963bdf095fc.jpg",
+      "sizeBytes": 342755,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/afd5cdf3-964b-a63a-6db2-fb8c08410c61",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/afd5cdf3-964b-a63a-6db2-fb8c08410c61.jpg",
+      "uuid": "afd5cdf3-964b-a63a-6db2-fb8c08410c61",
+      "targetKey": "product/afd5cdf3-964b-a63a-6db2-fb8c08410c61.jpg",
+      "sizeBytes": 237964,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/a68ad5fc-839b-e7b4-c502-8535f7e76e55",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/a68ad5fc-839b-e7b4-c502-8535f7e76e55.jpg",
+      "uuid": "a68ad5fc-839b-e7b4-c502-8535f7e76e55",
+      "targetKey": "product/a68ad5fc-839b-e7b4-c502-8535f7e76e55.jpg",
+      "sizeBytes": 510527,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/b5179af7-1dd7-aa4e-09f6-e1a1c8295602",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/b5179af7-1dd7-aa4e-09f6-e1a1c8295602.jpg",
+      "uuid": "b5179af7-1dd7-aa4e-09f6-e1a1c8295602",
+      "targetKey": "product/b5179af7-1dd7-aa4e-09f6-e1a1c8295602.jpg",
+      "sizeBytes": 90411,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/9f2e7aa5-3c8a-24cf-5944-84a5cc8d4cc8",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/9f2e7aa5-3c8a-24cf-5944-84a5cc8d4cc8.jpg",
+      "uuid": "9f2e7aa5-3c8a-24cf-5944-84a5cc8d4cc8",
+      "targetKey": "product/9f2e7aa5-3c8a-24cf-5944-84a5cc8d4cc8.jpg",
+      "sizeBytes": 77248,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/c241a3f5-7e20-25be-a067-76170345d684",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/c241a3f5-7e20-25be-a067-76170345d684.jpg",
+      "uuid": "c241a3f5-7e20-25be-a067-76170345d684",
+      "targetKey": "product/c241a3f5-7e20-25be-a067-76170345d684.jpg",
+      "sizeBytes": 90067,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/3be29e5b-7a9d-8cb5-1d97-9667d92378f9",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/3be29e5b-7a9d-8cb5-1d97-9667d92378f9.jpg",
+      "uuid": "3be29e5b-7a9d-8cb5-1d97-9667d92378f9",
+      "targetKey": "product/3be29e5b-7a9d-8cb5-1d97-9667d92378f9.jpg",
+      "sizeBytes": 86226,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/5a15d4ef-582c-1391-5e58-e523d6b87398",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/5a15d4ef-582c-1391-5e58-e523d6b87398.jpg",
+      "uuid": "5a15d4ef-582c-1391-5e58-e523d6b87398",
+      "targetKey": "product/5a15d4ef-582c-1391-5e58-e523d6b87398.jpg",
+      "sizeBytes": 84029,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/658f1737-546d-133b-ac36-aea2f524920c",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/658f1737-546d-133b-ac36-aea2f524920c.jpg",
+      "uuid": "658f1737-546d-133b-ac36-aea2f524920c",
+      "targetKey": "product/658f1737-546d-133b-ac36-aea2f524920c.jpg",
+      "sizeBytes": 30137,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/8c0d86d6-3c45-8c5e-4679-ae4f6d935583",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/8c0d86d6-3c45-8c5e-4679-ae4f6d935583.jpg",
+      "uuid": "8c0d86d6-3c45-8c5e-4679-ae4f6d935583",
+      "targetKey": "product/8c0d86d6-3c45-8c5e-4679-ae4f6d935583.jpg",
+      "sizeBytes": 117034,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/615287c4-c7a7-272c-c38e-df0c89886391",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/615287c4-c7a7-272c-c38e-df0c89886391.jpg",
+      "uuid": "615287c4-c7a7-272c-c38e-df0c89886391",
+      "targetKey": "product/615287c4-c7a7-272c-c38e-df0c89886391.jpg",
+      "sizeBytes": 108440,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/97f5cfe8-ad68-1598-9430-1b5f732deedc",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/97f5cfe8-ad68-1598-9430-1b5f732deedc.jpg",
+      "uuid": "97f5cfe8-ad68-1598-9430-1b5f732deedc",
+      "targetKey": "product/97f5cfe8-ad68-1598-9430-1b5f732deedc.jpg",
+      "sizeBytes": 215994,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/d048cf0f-ed3f-8b76-26b0-75f651fe5dc7",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/d048cf0f-ed3f-8b76-26b0-75f651fe5dc7.jpg",
+      "uuid": "d048cf0f-ed3f-8b76-26b0-75f651fe5dc7",
+      "targetKey": "product/d048cf0f-ed3f-8b76-26b0-75f651fe5dc7.jpg",
+      "sizeBytes": 159839,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/36ac278e-5212-00b3-ce73-e347a88b0372",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/36ac278e-5212-00b3-ce73-e347a88b0372.jpg",
+      "uuid": "36ac278e-5212-00b3-ce73-e347a88b0372",
+      "targetKey": "product/36ac278e-5212-00b3-ce73-e347a88b0372.jpg",
+      "sizeBytes": 61607,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/f3c9aacf-fbae-370a-082d-9e719e4909e7",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/f3c9aacf-fbae-370a-082d-9e719e4909e7.jpg",
+      "uuid": "f3c9aacf-fbae-370a-082d-9e719e4909e7",
+      "targetKey": "product/f3c9aacf-fbae-370a-082d-9e719e4909e7.jpg",
+      "sizeBytes": 63843,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/18899b9c-b242-468f-1839-c096e27b0225",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/18899b9c-b242-468f-1839-c096e27b0225.jpg",
+      "uuid": "18899b9c-b242-468f-1839-c096e27b0225",
+      "targetKey": "product/18899b9c-b242-468f-1839-c096e27b0225.jpg",
+      "sizeBytes": 38546,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/839fa121-427c-110e-6550-479d604d1f2d",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/839fa121-427c-110e-6550-479d604d1f2d.jpg",
+      "uuid": "839fa121-427c-110e-6550-479d604d1f2d",
+      "targetKey": "product/839fa121-427c-110e-6550-479d604d1f2d.jpg",
+      "sizeBytes": 24863,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/0bf0ec79-18a9-414f-4b7e-e50b940495bf",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/0bf0ec79-18a9-414f-4b7e-e50b940495bf.jpg",
+      "uuid": "0bf0ec79-18a9-414f-4b7e-e50b940495bf",
+      "targetKey": "product/0bf0ec79-18a9-414f-4b7e-e50b940495bf.jpg",
+      "sizeBytes": 62507,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/bccc5e24-0e25-1a67-1361-5b22783c1833",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/bccc5e24-0e25-1a67-1361-5b22783c1833.jpg",
+      "uuid": "bccc5e24-0e25-1a67-1361-5b22783c1833",
+      "targetKey": "product/bccc5e24-0e25-1a67-1361-5b22783c1833.jpg",
+      "sizeBytes": 1039440,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/79146711-94ca-c5cf-8b18-11205acac4b7",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/79146711-94ca-c5cf-8b18-11205acac4b7.jpg",
+      "uuid": "79146711-94ca-c5cf-8b18-11205acac4b7",
+      "targetKey": "product/79146711-94ca-c5cf-8b18-11205acac4b7.jpg",
+      "sizeBytes": 1102928,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/9844851e-1ef8-dc73-309f-24bad50dffab",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/9844851e-1ef8-dc73-309f-24bad50dffab.jpg",
+      "uuid": "9844851e-1ef8-dc73-309f-24bad50dffab",
+      "targetKey": "product/9844851e-1ef8-dc73-309f-24bad50dffab.jpg",
+      "sizeBytes": 1174481,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/c45258b8-74b3-fb41-090d-b9f3a58cc343",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/c45258b8-74b3-fb41-090d-b9f3a58cc343.jpg",
+      "uuid": "c45258b8-74b3-fb41-090d-b9f3a58cc343",
+      "targetKey": "product/c45258b8-74b3-fb41-090d-b9f3a58cc343.jpg",
+      "sizeBytes": 201431,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/c1f26135-eacc-4eca-0444-8356c507e0db",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/c1f26135-eacc-4eca-0444-8356c507e0db.jpg",
+      "uuid": "c1f26135-eacc-4eca-0444-8356c507e0db",
+      "targetKey": "product/c1f26135-eacc-4eca-0444-8356c507e0db.jpg",
+      "sizeBytes": 152414,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/6eb95cd8-4dc2-2f07-c77b-78a5789f1c89",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/6eb95cd8-4dc2-2f07-c77b-78a5789f1c89.jpg",
+      "uuid": "6eb95cd8-4dc2-2f07-c77b-78a5789f1c89",
+      "targetKey": "product/6eb95cd8-4dc2-2f07-c77b-78a5789f1c89.jpg",
+      "sizeBytes": 209194,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/8ee8824b-5f64-470c-57aa-d6b81a7ba9f1",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/8ee8824b-5f64-470c-57aa-d6b81a7ba9f1.jpg",
+      "uuid": "8ee8824b-5f64-470c-57aa-d6b81a7ba9f1",
+      "targetKey": "product/8ee8824b-5f64-470c-57aa-d6b81a7ba9f1.jpg",
+      "sizeBytes": 172924,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/05eb553f-d71c-4fef-aa17-d21c58d62ff1?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/05eb553f-d71c-4fef-aa17-d21c58d62ff1.jpg",
+      "uuid": "05eb553f-d71c-4fef-aa17-d21c58d62ff1",
+      "targetKey": "product/05eb553f-d71c-4fef-aa17-d21c58d62ff1.jpg",
+      "sizeBytes": 23734,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/690b5282-8bfe-4066-b34e-8091c54e7914?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/690b5282-8bfe-4066-b34e-8091c54e7914.jpg",
+      "uuid": "690b5282-8bfe-4066-b34e-8091c54e7914",
+      "targetKey": "product/690b5282-8bfe-4066-b34e-8091c54e7914.jpg",
+      "sizeBytes": 23115,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/bf2761e1-0e2f-4e6d-9fd6-3c573c1648c9?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/bf2761e1-0e2f-4e6d-9fd6-3c573c1648c9.jpg",
+      "uuid": "bf2761e1-0e2f-4e6d-9fd6-3c573c1648c9",
+      "targetKey": "product/bf2761e1-0e2f-4e6d-9fd6-3c573c1648c9.jpg",
+      "sizeBytes": 23983,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/2f10db5e-dc25-4c95-ab40-f9a68703d27f?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/2f10db5e-dc25-4c95-ab40-f9a68703d27f.jpg",
+      "uuid": "2f10db5e-dc25-4c95-ab40-f9a68703d27f",
+      "targetKey": "product/2f10db5e-dc25-4c95-ab40-f9a68703d27f.jpg",
+      "sizeBytes": 11543,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/e3421782-2267-41fa-993c-6892401687e8?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/e3421782-2267-41fa-993c-6892401687e8.jpg",
+      "uuid": "e3421782-2267-41fa-993c-6892401687e8",
+      "targetKey": "product/e3421782-2267-41fa-993c-6892401687e8.jpg",
+      "sizeBytes": 11706,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/856c89ab-af73-4fd8-a990-58013c896c6c?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/856c89ab-af73-4fd8-a990-58013c896c6c.jpg",
+      "uuid": "856c89ab-af73-4fd8-a990-58013c896c6c",
+      "targetKey": "product/856c89ab-af73-4fd8-a990-58013c896c6c.jpg",
+      "sizeBytes": 14742,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/573912ec-701c-4e99-802e-affd7eef6e9b?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/573912ec-701c-4e99-802e-affd7eef6e9b.jpg",
+      "uuid": "573912ec-701c-4e99-802e-affd7eef6e9b",
+      "targetKey": "product/573912ec-701c-4e99-802e-affd7eef6e9b.jpg",
+      "sizeBytes": 14348,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/207e4c8e-2d59-4bdd-8c15-a5c4176dce1a?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/207e4c8e-2d59-4bdd-8c15-a5c4176dce1a.jpg",
+      "uuid": "207e4c8e-2d59-4bdd-8c15-a5c4176dce1a",
+      "targetKey": "product/207e4c8e-2d59-4bdd-8c15-a5c4176dce1a.jpg",
+      "sizeBytes": 16003,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/13fe0b4c-b159-4b60-91ae-b3a6f6552746?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/13fe0b4c-b159-4b60-91ae-b3a6f6552746.jpg",
+      "uuid": "13fe0b4c-b159-4b60-91ae-b3a6f6552746",
+      "targetKey": "product/13fe0b4c-b159-4b60-91ae-b3a6f6552746.jpg",
+      "sizeBytes": 13263,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/6436c2b7-a0af-46cd-9f39-697d6a7c279b?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/6436c2b7-a0af-46cd-9f39-697d6a7c279b.jpg",
+      "uuid": "6436c2b7-a0af-46cd-9f39-697d6a7c279b",
+      "targetKey": "product/6436c2b7-a0af-46cd-9f39-697d6a7c279b.jpg",
+      "sizeBytes": 13910,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/ee829769-9e58-4125-b31f-7aa1e8dbfad2?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/ee829769-9e58-4125-b31f-7aa1e8dbfad2.jpg",
+      "uuid": "ee829769-9e58-4125-b31f-7aa1e8dbfad2",
+      "targetKey": "product/ee829769-9e58-4125-b31f-7aa1e8dbfad2.jpg",
+      "sizeBytes": 12586,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/133d50a5-fb4b-4777-94c7-00b8f9c76089?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/133d50a5-fb4b-4777-94c7-00b8f9c76089.jpg",
+      "uuid": "133d50a5-fb4b-4777-94c7-00b8f9c76089",
+      "targetKey": "product/133d50a5-fb4b-4777-94c7-00b8f9c76089.jpg",
+      "sizeBytes": 15179,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/b10ffd87-6f6e-fb75-8a37-2b1e993bdc8a",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/b10ffd87-6f6e-fb75-8a37-2b1e993bdc8a.jpg",
+      "uuid": "b10ffd87-6f6e-fb75-8a37-2b1e993bdc8a",
+      "targetKey": "product/b10ffd87-6f6e-fb75-8a37-2b1e993bdc8a.jpg",
+      "sizeBytes": 35146,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/c84c79bb-893d-c83d-3562-c48b40c66aa8",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/c84c79bb-893d-c83d-3562-c48b40c66aa8.jpg",
+      "uuid": "c84c79bb-893d-c83d-3562-c48b40c66aa8",
+      "targetKey": "product/c84c79bb-893d-c83d-3562-c48b40c66aa8.jpg",
+      "sizeBytes": 27870,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/682e9719-e692-1872-c174-d634a34ff67d",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/682e9719-e692-1872-c174-d634a34ff67d.jpg",
+      "uuid": "682e9719-e692-1872-c174-d634a34ff67d",
+      "targetKey": "product/682e9719-e692-1872-c174-d634a34ff67d.jpg",
+      "sizeBytes": 30728,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/a5bbc92a-9abe-d2f3-daf9-b00dca1ac336",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/a5bbc92a-9abe-d2f3-daf9-b00dca1ac336.jpg",
+      "uuid": "a5bbc92a-9abe-d2f3-daf9-b00dca1ac336",
+      "targetKey": "product/a5bbc92a-9abe-d2f3-daf9-b00dca1ac336.jpg",
+      "sizeBytes": 164596,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/4974032d-c48d-eac4-93a9-a5d47eaf5f60",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/4974032d-c48d-eac4-93a9-a5d47eaf5f60.jpg",
+      "uuid": "4974032d-c48d-eac4-93a9-a5d47eaf5f60",
+      "targetKey": "product/4974032d-c48d-eac4-93a9-a5d47eaf5f60.jpg",
+      "sizeBytes": 172187,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/94e34498-1f57-c04a-c44b-8eb1043ffdf4",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/94e34498-1f57-c04a-c44b-8eb1043ffdf4.jpg",
+      "uuid": "94e34498-1f57-c04a-c44b-8eb1043ffdf4",
+      "targetKey": "product/94e34498-1f57-c04a-c44b-8eb1043ffdf4.jpg",
+      "sizeBytes": 2909735,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/bf62a77f-41cf-babb-97e1-4dfc6a889487",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/bf62a77f-41cf-babb-97e1-4dfc6a889487.jpg",
+      "uuid": "bf62a77f-41cf-babb-97e1-4dfc6a889487",
+      "targetKey": "product/bf62a77f-41cf-babb-97e1-4dfc6a889487.jpg",
+      "sizeBytes": 267538,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/2c86e33d-72e9-432f-abdd-e2019b4fda7a?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/2c86e33d-72e9-432f-abdd-e2019b4fda7a.jpg",
+      "uuid": "2c86e33d-72e9-432f-abdd-e2019b4fda7a",
+      "targetKey": "product/2c86e33d-72e9-432f-abdd-e2019b4fda7a.jpg",
+      "sizeBytes": 17094,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/92fe7698-7b99-9b4b-39db-8b01557fecb3",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/92fe7698-7b99-9b4b-39db-8b01557fecb3.jpg",
+      "uuid": "92fe7698-7b99-9b4b-39db-8b01557fecb3",
+      "targetKey": "product/92fe7698-7b99-9b4b-39db-8b01557fecb3.jpg",
+      "sizeBytes": 392072,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/6ea1cf28-bb9f-40f7-9b6d-94b24f1da329?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/6ea1cf28-bb9f-40f7-9b6d-94b24f1da329.jpg",
+      "uuid": "6ea1cf28-bb9f-40f7-9b6d-94b24f1da329",
+      "targetKey": "product/6ea1cf28-bb9f-40f7-9b6d-94b24f1da329.jpg",
+      "sizeBytes": 17344,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/9766bcc9-55b8-aa14-2a02-6c94e24ddaf4",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/9766bcc9-55b8-aa14-2a02-6c94e24ddaf4.jpg",
+      "uuid": "9766bcc9-55b8-aa14-2a02-6c94e24ddaf4",
+      "targetKey": "product/9766bcc9-55b8-aa14-2a02-6c94e24ddaf4.jpg",
+      "sizeBytes": 91609,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/e7dfc639-f112-28b7-4cff-8e1cda6f82b5",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/e7dfc639-f112-28b7-4cff-8e1cda6f82b5.jpg",
+      "uuid": "e7dfc639-f112-28b7-4cff-8e1cda6f82b5",
+      "targetKey": "product/e7dfc639-f112-28b7-4cff-8e1cda6f82b5.jpg",
+      "sizeBytes": 88373,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/d1e575af-ee5a-bbf7-0e41-915c0e5f93d6",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/d1e575af-ee5a-bbf7-0e41-915c0e5f93d6.jpg",
+      "uuid": "d1e575af-ee5a-bbf7-0e41-915c0e5f93d6",
+      "targetKey": "product/d1e575af-ee5a-bbf7-0e41-915c0e5f93d6.jpg",
+      "sizeBytes": 87367,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/9717e724-83d5-7c5f-55b9-efbb1b2a7864",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/9717e724-83d5-7c5f-55b9-efbb1b2a7864.jpg",
+      "uuid": "9717e724-83d5-7c5f-55b9-efbb1b2a7864",
+      "targetKey": "product/9717e724-83d5-7c5f-55b9-efbb1b2a7864.jpg",
+      "sizeBytes": 91198,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/091b6b3e-dd10-45fc-9d49-a905dc713228?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/091b6b3e-dd10-45fc-9d49-a905dc713228.jpg",
+      "uuid": "091b6b3e-dd10-45fc-9d49-a905dc713228",
+      "targetKey": "product/091b6b3e-dd10-45fc-9d49-a905dc713228.jpg",
+      "sizeBytes": 15339,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/8802c8aa-f66a-40bc-95ad-b34bab6fd59f?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/8802c8aa-f66a-40bc-95ad-b34bab6fd59f.jpg",
+      "uuid": "8802c8aa-f66a-40bc-95ad-b34bab6fd59f",
+      "targetKey": "product/8802c8aa-f66a-40bc-95ad-b34bab6fd59f.jpg",
+      "sizeBytes": 11953,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/a05ec204-65cd-2025-adcf-c7f141ce21c3",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/a05ec204-65cd-2025-adcf-c7f141ce21c3.jpg",
+      "uuid": "a05ec204-65cd-2025-adcf-c7f141ce21c3",
+      "targetKey": "product/a05ec204-65cd-2025-adcf-c7f141ce21c3.jpg",
+      "sizeBytes": 12911,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/facc106d-0fa8-4909-8ff8-ea08bb2bc3ed?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/facc106d-0fa8-4909-8ff8-ea08bb2bc3ed.jpg",
+      "uuid": "facc106d-0fa8-4909-8ff8-ea08bb2bc3ed",
+      "targetKey": "product/facc106d-0fa8-4909-8ff8-ea08bb2bc3ed.jpg",
+      "sizeBytes": 12282,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/7beea5fa-f9ca-45fc-8f1a-fbe09c76c62c?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/7beea5fa-f9ca-45fc-8f1a-fbe09c76c62c.jpg",
+      "uuid": "7beea5fa-f9ca-45fc-8f1a-fbe09c76c62c",
+      "targetKey": "product/7beea5fa-f9ca-45fc-8f1a-fbe09c76c62c.jpg",
+      "sizeBytes": 12133,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/8ac7ac26-3849-49a7-ac2a-9a9189009eea?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/8ac7ac26-3849-49a7-ac2a-9a9189009eea.jpg",
+      "uuid": "8ac7ac26-3849-49a7-ac2a-9a9189009eea",
+      "targetKey": "product/8ac7ac26-3849-49a7-ac2a-9a9189009eea.jpg",
+      "sizeBytes": 12739,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/c4dac7ee-aaf7-cf83-715a-cc3c0f9a5725",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/c4dac7ee-aaf7-cf83-715a-cc3c0f9a5725.jpg",
+      "uuid": "c4dac7ee-aaf7-cf83-715a-cc3c0f9a5725",
+      "targetKey": "product/c4dac7ee-aaf7-cf83-715a-cc3c0f9a5725.jpg",
+      "sizeBytes": 602241,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/d45952aa-9f21-24f8-9ef4-5dfe87fda33d",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/d45952aa-9f21-24f8-9ef4-5dfe87fda33d.jpg",
+      "uuid": "d45952aa-9f21-24f8-9ef4-5dfe87fda33d",
+      "targetKey": "product/d45952aa-9f21-24f8-9ef4-5dfe87fda33d.jpg",
+      "sizeBytes": 726419,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/6176a4f6-6e9a-1385-4af0-fd603114fdcf",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/6176a4f6-6e9a-1385-4af0-fd603114fdcf.jpg",
+      "uuid": "6176a4f6-6e9a-1385-4af0-fd603114fdcf",
+      "targetKey": "product/6176a4f6-6e9a-1385-4af0-fd603114fdcf.jpg",
+      "sizeBytes": 626846,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/ffc634eb-9bf9-6258-c541-b2407581cd4c",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/ffc634eb-9bf9-6258-c541-b2407581cd4c.jpg",
+      "uuid": "ffc634eb-9bf9-6258-c541-b2407581cd4c",
+      "targetKey": "product/ffc634eb-9bf9-6258-c541-b2407581cd4c.jpg",
+      "sizeBytes": 527215,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/c96dd180-921d-4b2b-8967-97bc60af7f8d?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/c96dd180-921d-4b2b-8967-97bc60af7f8d.jpg",
+      "uuid": "c96dd180-921d-4b2b-8967-97bc60af7f8d",
+      "targetKey": "product/c96dd180-921d-4b2b-8967-97bc60af7f8d.jpg",
+      "sizeBytes": 16324,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/f19ebfd0-7c6f-437a-bcc0-7f74f6925058?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/f19ebfd0-7c6f-437a-bcc0-7f74f6925058.jpg",
+      "uuid": "f19ebfd0-7c6f-437a-bcc0-7f74f6925058",
+      "targetKey": "product/f19ebfd0-7c6f-437a-bcc0-7f74f6925058.jpg",
+      "sizeBytes": 13082,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/11a1051f-649c-4fd7-b951-e44b4e121ec4?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/11a1051f-649c-4fd7-b951-e44b4e121ec4.jpg",
+      "uuid": "11a1051f-649c-4fd7-b951-e44b4e121ec4",
+      "targetKey": "product/11a1051f-649c-4fd7-b951-e44b4e121ec4.jpg",
+      "sizeBytes": 14534,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/dead644e-d8e3-41a9-bad8-22b9ca70a9fb?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/dead644e-d8e3-41a9-bad8-22b9ca70a9fb.jpg",
+      "uuid": "dead644e-d8e3-41a9-bad8-22b9ca70a9fb",
+      "targetKey": "product/dead644e-d8e3-41a9-bad8-22b9ca70a9fb.jpg",
+      "sizeBytes": 17213,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/aa26bf93-45a0-4256-ac80-f7bbb5d83658?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/aa26bf93-45a0-4256-ac80-f7bbb5d83658.jpg",
+      "uuid": "aa26bf93-45a0-4256-ac80-f7bbb5d83658",
+      "targetKey": "product/aa26bf93-45a0-4256-ac80-f7bbb5d83658.jpg",
+      "sizeBytes": 16207,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/c761a199-5d80-442e-83d9-25d6ce0f88f6?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/c761a199-5d80-442e-83d9-25d6ce0f88f6.jpg",
+      "uuid": "c761a199-5d80-442e-83d9-25d6ce0f88f6",
+      "targetKey": "product/c761a199-5d80-442e-83d9-25d6ce0f88f6.jpg",
+      "sizeBytes": 15034,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/b2ef4bb3-8f8f-5b0f-bbb4-70121852ba28",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/b2ef4bb3-8f8f-5b0f-bbb4-70121852ba28.jpg",
+      "uuid": "b2ef4bb3-8f8f-5b0f-bbb4-70121852ba28",
+      "targetKey": "product/b2ef4bb3-8f8f-5b0f-bbb4-70121852ba28.jpg",
+      "sizeBytes": 98829,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/908ec35f-76a2-4e97-8239-4c75ac6d2222?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/908ec35f-76a2-4e97-8239-4c75ac6d2222.jpg",
+      "uuid": "908ec35f-76a2-4e97-8239-4c75ac6d2222",
+      "targetKey": "product/908ec35f-76a2-4e97-8239-4c75ac6d2222.jpg",
+      "sizeBytes": 17686,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/d20c625d-fd4c-43be-af08-029f33c7d414?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/d20c625d-fd4c-43be-af08-029f33c7d414.jpg",
+      "uuid": "d20c625d-fd4c-43be-af08-029f33c7d414",
+      "targetKey": "product/d20c625d-fd4c-43be-af08-029f33c7d414.jpg",
+      "sizeBytes": 17261,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/80983770-c86b-4f42-87d3-baf19a89475a?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/80983770-c86b-4f42-87d3-baf19a89475a.jpg",
+      "uuid": "80983770-c86b-4f42-87d3-baf19a89475a",
+      "targetKey": "product/80983770-c86b-4f42-87d3-baf19a89475a.jpg",
+      "sizeBytes": 15994,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/13e13e9b-7bf3-4669-a3e6-43570a8828c7?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/13e13e9b-7bf3-4669-a3e6-43570a8828c7.jpg",
+      "uuid": "13e13e9b-7bf3-4669-a3e6-43570a8828c7",
+      "targetKey": "product/13e13e9b-7bf3-4669-a3e6-43570a8828c7.jpg",
+      "sizeBytes": 11333,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/410c7306-c66a-42c7-a3d6-fcc558dad1cb?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/410c7306-c66a-42c7-a3d6-fcc558dad1cb.jpg",
+      "uuid": "410c7306-c66a-42c7-a3d6-fcc558dad1cb",
+      "targetKey": "product/410c7306-c66a-42c7-a3d6-fcc558dad1cb.jpg",
+      "sizeBytes": 16748,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/8518d6e1-d2e6-6981-057a-25840dea62b3",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/8518d6e1-d2e6-6981-057a-25840dea62b3.jpg",
+      "uuid": "8518d6e1-d2e6-6981-057a-25840dea62b3",
+      "targetKey": "product/8518d6e1-d2e6-6981-057a-25840dea62b3.jpg",
+      "sizeBytes": 80448,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/b38584e6-4307-277c-0aec-7dad003d977b",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/b38584e6-4307-277c-0aec-7dad003d977b.jpg",
+      "uuid": "b38584e6-4307-277c-0aec-7dad003d977b",
+      "targetKey": "product/b38584e6-4307-277c-0aec-7dad003d977b.jpg",
+      "sizeBytes": 83936,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/260392da-f8b0-429e-a3a7-508012149cfc?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/260392da-f8b0-429e-a3a7-508012149cfc.jpg",
+      "uuid": "260392da-f8b0-429e-a3a7-508012149cfc",
+      "targetKey": "product/260392da-f8b0-429e-a3a7-508012149cfc.jpg",
+      "sizeBytes": 14115,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/392f5ade-0e7e-fbf8-f285-bc1b723d7bbf",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/392f5ade-0e7e-fbf8-f285-bc1b723d7bbf.jpg",
+      "uuid": "392f5ade-0e7e-fbf8-f285-bc1b723d7bbf",
+      "targetKey": "product/392f5ade-0e7e-fbf8-f285-bc1b723d7bbf.jpg",
+      "sizeBytes": 286281,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/25b1744f-b919-bd7c-f760-50fc9ab18534",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/25b1744f-b919-bd7c-f760-50fc9ab18534.jpg",
+      "uuid": "25b1744f-b919-bd7c-f760-50fc9ab18534",
+      "targetKey": "product/25b1744f-b919-bd7c-f760-50fc9ab18534.jpg",
+      "sizeBytes": 97432,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/ac6ad7a6-539b-3e88-87ed-81b36161fbc8",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/ac6ad7a6-539b-3e88-87ed-81b36161fbc8.jpg",
+      "uuid": "ac6ad7a6-539b-3e88-87ed-81b36161fbc8",
+      "targetKey": "product/ac6ad7a6-539b-3e88-87ed-81b36161fbc8.jpg",
+      "sizeBytes": 93429,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/public/0296d4ef-25c9-387b-f5b6-83e8c423872c",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/0296d4ef-25c9-387b-f5b6-83e8c423872c.jpg",
+      "uuid": "0296d4ef-25c9-387b-f5b6-83e8c423872c",
+      "targetKey": "product/0296d4ef-25c9-387b-f5b6-83e8c423872c.jpg",
+      "sizeBytes": 41494,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/aa9afa47-1937-4282-b13c-6cc04fc69d75?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/aa9afa47-1937-4282-b13c-6cc04fc69d75.jpg",
+      "uuid": "aa9afa47-1937-4282-b13c-6cc04fc69d75",
+      "targetKey": "product/aa9afa47-1937-4282-b13c-6cc04fc69d75.jpg",
+      "sizeBytes": 16351,
+      "status": "SKIPPED"
+    },
+    {
+      "sourceUrl": "https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/251f632c-6528-4197-9bdb-1131108ad203?",
+      "mirrorUrl": "https://gambar.cimagroup.my.id/product/251f632c-6528-4197-9bdb-1131108ad203.jpg",
+      "uuid": "251f632c-6528-4197-9bdb-1131108ad203",
+      "targetKey": "product/251f632c-6528-4197-9bdb-1131108ad203.jpg",
+      "sizeBytes": 14525,
+      "status": "SKIPPED"
+    }
+  ]
+}

@@ -124,7 +124,7 @@ export const BUSINESS_CONFIG: BusinessConfig = {
     politeDelayMs: 250,
   },
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '6287793420768',
-  imageSource: (process.env.IMAGE_SOURCE || 'kk').toLowerCase() === 'r2' ? 'r2' : 'kk',
+  imageSource: (process.env.IMAGE_SOURCE || 'r2').toLowerCase() === 'kk' ? 'kk' : 'r2',
   r2ImageBaseUrl: 'https://gambar.cimagroup.my.id/product',
 };
 

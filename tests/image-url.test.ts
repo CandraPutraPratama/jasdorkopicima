@@ -87,8 +87,11 @@ describe('Image URL & Mirroring (Tahap 7-B)', () => {
       };
 
       const normalized = normalizeProduct(rawProduct as any);
-      // Saat default (IMAGE_SOURCE=kk), tetap menunjuk ke cdn.kopikenangan.com
-      assert.strictEqual(normalized.image, rawProduct.image);
+      // Saat default (IMAGE_SOURCE=r2), menunjuk ke R2 gambar.cimagroup.my.id
+      assert.strictEqual(
+        normalized.image,
+        'https://gambar.cimagroup.my.id/product/ace3b7e3-7320-4adb-b9cb-61752ff91dea.jpg'
+      );
     });
   });
 });

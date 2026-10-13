@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-import { existsSync, writeFileSync, unlinkSync } from 'node:fs';
+import { existsSync, writeFileSync, unlinkSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
@@ -87,25 +87,6 @@ async function collectUniqueImageUrls() {
   return Array.from(images);
 }
 
-async function checkRemoteExists(mirrorUrl, expectedSize) {
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
-    const res = await fetch(mirrorUrl, { method: 'HEAD', signal: controller.signal });
-    clearTimeout(timeoutId);
-
-    if (res.status === 200) {
-      const contentLength = Number(res.headers.get('content-length')) || 0;
-      if (contentLength > 0 && Math.abs(contentLength - expectedSize) <= 10) {
-        return { exists: true, size: contentLength };
-      }
-    }
-    return { exists: false };
-  } catch {
-    return { exists: false };
-  }
-}
-
 async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -146,7 +127,25 @@ async function main() {
     console.log(`   ✅ 100% URL (${validItems.length}/${rawUrls.length}) memiliki format UUID yang valid.\n`);
   }
 
-  // 3. Proses Unduh & Unggah Idempotent
+  // 3. Muat manifest lama jika ada untuk idempotency
+  const existingManifestMap = new Map();
+  if (existsSync(MANIFEST_FILE)) {
+    try {
+      const oldManifest = JSON.parse(readFileSync(MANIFEST_FILE, 'utf-8'));
+      if (Array.isArray(oldManifest.items)) {
+        for (const it of oldManifest.items) {
+          if (it.uuid && it.status === 'UPLOADED' && it.sizeBytes > 0) {
+            existingManifestMap.set(it.uuid, it);
+          }
+        }
+      }
+      console.log(`   Memuat manifest lama: ${existingManifestMap.size} objek telah tercatat terunggah.\n`);
+    } catch {
+      // abaikan jika file manifest lama rusak
+    }
+  }
+
+  // 4. Proses Unduh & Unggah Idempotent
   console.log('▶ 3. Memulai proses mirror foto ke Cloudflare R2 (idempotent)...');
   const manifestItems = [];
   let uploadedCount = 0;
@@ -156,6 +155,22 @@ async function main() {
   for (let i = 0; i < validItems.length; i++) {
     const item = validItems[i];
     const indexStr = `[${i + 1}/${validItems.length}]`;
+
+    // Cek idempotency: jika sudah tercatat UPLOADED di manifest lama
+    if (existingManifestMap.has(item.uuid)) {
+      const prev = existingManifestMap.get(item.uuid);
+      skippedCount++;
+      console.log(`   ${indexStr} ⏭️ LEWATI: ${item.uuid}.jpg (${prev.sizeBytes} bytes, sudah tercatat di manifest R2)`);
+      manifestItems.push({
+        sourceUrl: item.sourceUrl,
+        mirrorUrl: item.mirrorUrl,
+        uuid: item.uuid,
+        targetKey: item.targetKey,
+        sizeBytes: prev.sizeBytes,
+        status: 'SKIPPED',
+      });
+      continue;
+    }
 
     try {
       // a. Unduh foto dari CDN KK
@@ -177,23 +192,7 @@ async function main() {
         throw new Error('Ukuran file foto 0 byte (kosong)');
       }
 
-      // b. Cek Idempotency: apakah sudah ada di R2 dengan ukuran yang sama?
-      const check = await checkRemoteExists(item.mirrorUrl, sizeBytes);
-      if (check.exists) {
-        skippedCount++;
-        console.log(`   ${indexStr} ⏭️ LEWATI: ${item.uuid}.jpg (${sizeBytes} bytes, sudah ada di R2)`);
-        manifestItems.push({
-          sourceUrl: item.sourceUrl,
-          mirrorUrl: item.mirrorUrl,
-          uuid: item.uuid,
-          targetKey: item.targetKey,
-          sizeBytes,
-          status: 'SKIPPED',
-        });
-        continue;
-      }
-
-      // c. Tulis file sementara untuk diunggah via wrangler
+      // b. Tulis file sementara untuk diunggah via wrangler
       const tmpPath = path.resolve(__dirname, `.tmp-${item.uuid}.jpg`);
       writeFileSync(tmpPath, buffer);
 
@@ -222,9 +221,9 @@ async function main() {
         }
       }
 
-      // d. Verifikasi ulang via custom domain
+      // c. Verifikasi via custom domain (dengan query parameter cache-buster agar tidak terhalang edge cache lama)
       await sleep(150);
-      const verifyRes = await fetch(item.mirrorUrl, { method: 'HEAD' });
+      const verifyRes = await fetch(`${item.mirrorUrl}?_t=${Date.now()}`, { method: 'HEAD' });
       if (verifyRes.status !== 200) {
         throw new Error(`Verifikasi HTTP HEAD mirror mengembalikan status ${verifyRes.status}`);
       }
