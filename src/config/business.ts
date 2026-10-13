@@ -40,6 +40,8 @@ export interface BusinessConfig {
   menuGroupAllowlist: string[];
   /** Daftar brand produk resmi yang diizinkan tampil di katalog */
   allowedProductBrands: string[];
+  /** Daftar kode outlet eksplisit yang diizinkan masuk lingkup jika tidak memiliki data brand */
+  explicitInScopeOutletCodes: string[];
   cache: {
     /** TTL cache menu outlet dalam detik (15 menit) */
     menuTtlSeconds: number;
@@ -104,6 +106,9 @@ export const BUSINESS_CONFIG: BusinessConfig = {
     'Cerita Roti',
     'Kenangan Manis',
   ],
+  explicitInScopeOutletCodes: [
+    'KK.BTM.RKTNJGUNCG',
+  ],
   cache: {
     menuTtlSeconds: 15 * 60, // 15 menit
     optionsTtlSeconds: 60 * 60, // 1 jam
@@ -121,6 +126,7 @@ export const addonPrices = BUSINESS_CONFIG.pricing.addonPrices;
 export const flatOptionAdditions = BUSINESS_CONFIG.pricing.flatOptionAdditions;
 export const menuGroupAllowlist = BUSINESS_CONFIG.menuGroupAllowlist;
 export const allowedProductBrands = BUSINESS_CONFIG.allowedProductBrands;
+export const explicitInScopeOutletCodes = BUSINESS_CONFIG.explicitInScopeOutletCodes;
 export const hiddenOptionValues = BUSINESS_CONFIG.hiddenOptionValues;
 export const hiddenProductPatterns = BUSINESS_CONFIG.hiddenProductPatterns;
 
@@ -174,13 +180,14 @@ export function isHiddenProduct(productName: string): boolean {
  * Mengecek apakah outlet berada dalam ruang lingkup resmi Kopi Kenangan.
  * Aturan Perbaikan Lingkup:
  * - IN SCOPE: brand_and_image memuat brand_code 1 DAN tidak memuat brand_code 10 (Signature) atau 6 (Heritage).
- * - Outlet gabungan Kopi Kenangan + Chigo (brand_code 1 dan 4/8) MASUK LINGKUP. Nama atau kode memuat "Chigo" tidak boleh menolak jika punya brand_code 1.
- * - OUT OF SCOPE: Kenangan Signature, Kenangan Heritage, Chigo saja, booth/testing, dan outlet tanpa brand sama sekali.
+ * - Outlet gabungan Kopi Kenangan + Chigo (brand_code 1 dan 4/8) MASUK LINGKUP.
+ * - OUT OF SCOPE: Kenangan Signature, Kenangan Heritage, Chigo saja, booth/testing.
+ * - Outlet tanpa data brand (brand_and_image null/kosong): HANYA masuk lingkup jika kodenya ada dalam explicitInScopeOutletCodes (KK.BTM.RKTNJGUNCG).
  */
 export function isStoreInScope(store: {
   code?: string;
   name?: string;
-  brand_and_image?: Array<{ brand_code: number; brand_name?: string }>;
+  brand_and_image?: Array<{ brand_code: number; brand_name?: string }> | null;
 }): boolean {
   const code = (store.code || '').trim().toLowerCase();
   const name = (store.name || '').trim().toLowerCase();
@@ -196,12 +203,15 @@ export function isStoreInScope(store: {
     return false;
   }
 
-  // 2. Wajib memiliki array brand_and_image dari API KK
-  if (!store.brand_and_image || !Array.isArray(store.brand_and_image) || store.brand_and_image.length === 0) {
-    return false; // Tanpa brand sama sekali -> di luar lingkup
+  // 2. Evaluasi data brand
+  const hasBrandData = Array.isArray(store.brand_and_image) && store.brand_and_image.length > 0;
+  if (!hasBrandData) {
+    // Outlet tanpa data brand: HANYA diizinkan jika kodenya ada di explicitInScopeOutletCodes
+    const rawCode = (store.code || '').trim().toUpperCase();
+    return BUSINESS_CONFIG.explicitInScopeOutletCodes.includes(rawCode);
   }
 
-  const brandCodes = store.brand_and_image.map((b) => b.brand_code);
+  const brandCodes = store.brand_and_image!.map((b) => b.brand_code);
 
   // Menolak jika terdapat brand_code 10 (Signature) atau 6 (Heritage)
   if (brandCodes.includes(10) || brandCodes.includes(6)) {
@@ -222,7 +232,7 @@ export function isStoreInScope(store: {
 export function getStoreBrandName(store: {
   code?: string;
   name?: string;
-  brand_and_image?: Array<{ brand_code: number; brand_name?: string }>;
+  brand_and_image?: Array<{ brand_code: number; brand_name?: string }> | null;
 }): string {
   const code = (store.code || '').trim().toLowerCase();
   const name = (store.name || '').trim().toLowerCase();
@@ -234,7 +244,7 @@ export function getStoreBrandName(store: {
     return 'Kenangan Heritage';
   }
 
-  if (store.brand_and_image && Array.isArray(store.brand_and_image)) {
+  if (store.brand_and_image && Array.isArray(store.brand_and_image) && store.brand_and_image.length > 0) {
     const brandCodes = store.brand_and_image.map((b) => b.brand_code);
     if (brandCodes.includes(10)) return 'Kenangan Signature';
     if (brandCodes.includes(6)) return 'Kenangan Heritage';
@@ -247,6 +257,11 @@ export function getStoreBrandName(store: {
     if (brandCodes.includes(4) || brandCodes.includes(8)) {
       return 'Chigo x Flip';
     }
+  }
+
+  const rawCode = (store.code || '').trim().toUpperCase();
+  if (BUSINESS_CONFIG.explicitInScopeOutletCodes.includes(rawCode)) {
+    return 'Kopi Kenangan';
   }
 
   if (name.includes('chigo') || code.includes('.cg') || code.startsWith('tgr.cg')) {

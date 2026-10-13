@@ -155,7 +155,7 @@ describe('Business Configuration & Classification Helpers', () => {
     assert.equal(isStoreInScope(heritage), false);
     assert.equal(getStoreBrandName(heritage), 'Kenangan Heritage');
 
-    // 7. Tanpa brand (keluar)
+    // 7. Tanpa brand yang TIDAK ada di daftar izin eksplisit (tetap keluar)
     const tanpaBrand = {
       code: 'BCR.JAB.O0001',
       name: 'KopKen Alfamid Subandi',
@@ -163,6 +163,32 @@ describe('Business Configuration & Classification Helpers', () => {
     };
     assert.equal(isStoreInScope(tanpaBrand), false);
     assert.equal(getStoreBrandName(tanpaBrand), 'Tanpa Brand');
+
+    const tanpaBrand2 = {
+      code: 'BCR.JAB.O0002',
+      name: 'KopKen Alfamart Kutabumi',
+      brand_and_image: null,
+    };
+    assert.equal(isStoreInScope(tanpaBrand2), false);
+    assert.equal(getStoreBrandName(tanpaBrand2), 'Tanpa Brand');
+
+    // 8. Tanjung Uncang (tanpa brand_and_image tapi ada di explicitInScopeOutletCodes -> MASUK LINGKUP)
+    const tanjungUncang = {
+      code: 'KK.BTM.RKTNJGUNCG',
+      name: 'Ruko Tanjung Uncang',
+      brand_and_image: null,
+    };
+    assert.equal(isStoreInScope(tanjungUncang), true);
+    assert.equal(getStoreBrandName(tanjungUncang), 'Kopi Kenangan');
+
+    // Case-insensitive code check
+    const tanjungUncangLower = {
+      code: 'kk.btm.rktnjguncg',
+      name: 'Ruko Tanjung Uncang',
+      brand_and_image: [],
+    };
+    assert.equal(isStoreInScope(tanjungUncangLower), true);
+    assert.equal(getStoreBrandName(tanjungUncangLower), 'Kopi Kenangan');
   });
 
   it('validates allowedProductBrands allowlist strictly (case-insensitive) and empty brand rules', () => {
