@@ -146,7 +146,7 @@ export function normalizeProductOptions(raw: KkProductOptionsData): ProductOptio
     productCode: '',
     name: (base.name || '').trim(),
     description: (base.description || '').trim(),
-    image: base.image || '',
+    image: rewriteProductImageUrl(base.image || ''),
     basePrice,
     originalPrice: base.orig_price || basePrice,
     isSoldOut: Boolean(base.is_soldout),
@@ -169,7 +169,7 @@ export function normalizeProductOptions(raw: KkProductOptionsData): ProductOptio
       values.push({
         id: v.value,
         name: vName,
-        icon: v.icon || undefined,
+        icon: v.icon ? rewriteProductImageUrl(v.icon) : undefined,
       });
     }
 
@@ -233,7 +233,7 @@ export function normalizeProductOptions(raw: KkProductOptionsData): ProductOptio
         name: aName,
         price: item.addon_price || 0,
         categoryName,
-        icon: item.value_icon || undefined,
+        icon: item.value_icon ? rewriteProductImageUrl(item.value_icon) : undefined,
         isSoldOut: Boolean((item as any).is_sold_out || (item as any).is_soldout),
         group,
       });

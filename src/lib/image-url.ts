@@ -1,9 +1,10 @@
 import { BUSINESS_CONFIG } from '../config/business.ts';
+import { IMAGE_MANIFEST } from './image-manifest.ts';
 
 export type ImageSource = 'kk' | 'r2';
 
 /**
- * Ekstraksi UUID dari URL foto produk Kopi Kenangan.
+ * Ekstraksi UUID dari URL foto produk atau ikon addon Kopi Kenangan.
  * Menangani 2 pola path yang sah:
  * 1. /ID/release/pub/kk-api-management/product/<uuid>
  * 2. /public/<uuid>
@@ -16,11 +17,34 @@ export function extractProductImageUuid(url?: string | null): string | null {
 }
 
 /**
- * Menulis ulang URL foto produk berdasarkan saklar IMAGE_SOURCE.
+ * Mencari URL mirror di runtime manifest.
+ * Menangani variasi query parameter trailing '?' atau whitespace.
+ */
+export function lookupManifestMirrorUrl(url?: string | null): string | null {
+  if (!url || typeof url !== 'string') return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+
+  if (IMAGE_MANIFEST[trimmed]) {
+    return IMAGE_MANIFEST[trimmed];
+  }
+  if (trimmed.endsWith('?') && IMAGE_MANIFEST[trimmed.slice(0, -1)]) {
+    return IMAGE_MANIFEST[trimmed.slice(0, -1)];
+  }
+  if (!trimmed.endsWith('?') && IMAGE_MANIFEST[`${trimmed}?`]) {
+    return IMAGE_MANIFEST[`${trimmed}?`];
+  }
+  return null;
+}
+
+/**
+ * Menulis ulang URL gambar (menu, foto produk opsi, ikon addon, dan ikon attribute)
+ * berdasarkan saklar IMAGE_SOURCE dan runtime IMAGE_MANIFEST.
  * - Saat source === 'kk' (default): URL asli dipertahankan tanpa perubahan.
  * - Saat source === 'r2':
- *   - Jika UUID bisa diekstrak: mengembalikan https://gambar.cimagroup.my.id/product/<uuid>.jpg
- *   - Jika UUID TIDAK bisa diekstrak: PERTAHANKAN URL asal (fallback aman, tidak ada gambar rusak).
+ *   - Dicari di IMAGE_MANIFEST: jika ditemukan, mengembalikan URL mirror Cloudflare R2.
+ *   - Jika TIDAK ditemukan di manifest: WAJIB dibiarkan apa adanya (URL KK).
+ *     Dilarang menebak / menyusun URL R2 di luar manifest agar tidak pernah menunjuk ke objek yang belum termirror.
  */
 export function rewriteProductImageUrl(url?: string | null, sourceOverride?: ImageSource): string {
   const rawUrl = (url || '').trim();
@@ -31,11 +55,12 @@ export function rewriteProductImageUrl(url?: string | null, sourceOverride?: Ima
     return rawUrl;
   }
 
-  const uuid = extractProductImageUuid(rawUrl);
-  if (!uuid) {
-    // Fallback URL asal bila UUID tidak dikenali
-    return rawUrl;
+  const mirrorUrl = lookupManifestMirrorUrl(rawUrl);
+  if (mirrorUrl) {
+    return mirrorUrl;
   }
 
-  return `${BUSINESS_CONFIG.r2ImageBaseUrl}/${uuid}.jpg`;
+  // URL yang tidak ada di manifest WAJIB dibiarkan apa adanya (fallback ke URL KK)
+  return rawUrl;
 }
+

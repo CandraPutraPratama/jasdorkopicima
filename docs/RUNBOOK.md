@@ -373,6 +373,23 @@ Jika terjadi kendala pada bucket R2 atau domain gambar:
 
 ---
 
+### D. Penanganan Cache 404 Edge (Custom Purge by URL)
+
+Bila terdapat URL mirror yang mengembalikan status HTTP 404 di domain publik (`https://gambar.cimagroup.my.id/...`) padahal objeknya sebenarnya **sudah ada di bucket R2**:
+Hal ini terjadi karena Cloudflare Edge secara default menyimpan cache respons 404 hingga beberapa jam jika URL tersebut pernah diakses publik *sebelum* objek selesai diunggah ke R2.
+
+#### Langkah Purge URL di Dashboard Cloudflare:
+1. Buka [Cloudflare Dashboard](https://dash.cloudflare.com) > pilih zona domain `cimagroup.my.id`.
+2. Buka menu **Caching** > **Configuration** (atau tab **Purge Cache**).
+3. Klik tombol **Purge Cache** > pilih opsi **Custom Purge** (Purge by URL).
+4. Masukkan URL mirror spesifik yang mengalami cache 404:
+   - URL yang diketahui sempat ter-probe publik sebelum termirror pada Tahap 7-B/7-C:
+     `https://gambar.cimagroup.my.id/product/6c925d17-6b7f-4952-9831-b0032ffd62e0.jpg`
+     *(Disarankan pemilik melakukan Custom Purge pada URL ini setelah Langkah 2 selesai, untuk berjaga-jaga agar cache 404 lama di edge langsung bersih)*.
+5. Klik tombol **Purge**. Cache edge akan langsung terhapus seketika dan request berikutnya akan langsung mengambil objek valid dari R2.
+
+---
+
 ## 10. Repositori GitHub, Otomasi Sinkronisasi, & Pemulihan Bencana (Disaster Recovery)
 
 ### A. Repositori Proyek
