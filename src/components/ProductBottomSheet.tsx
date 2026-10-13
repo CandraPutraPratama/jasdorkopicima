@@ -11,6 +11,7 @@ import {
 } from '@/lib/option-validation';
 import { formatRupiah } from '@/lib/currency';
 import { getOptionAddition, BUSINESS_CONFIG } from '@/config/business';
+import { cleanNotes } from '@/lib/sanitizer';
 
 interface ProductBottomSheetProps {
   outletCode: string;
@@ -228,7 +229,7 @@ export function ProductBottomSheet({
       quantity,
       variantDescription,
       addons: selectedAddons,
-      notes: customerNotes,
+      notes: cleanNotes(customerNotes),
     });
 
     onClose();
@@ -579,6 +580,7 @@ export function ProductBottomSheet({
             <input
               id="customer-notes"
               type="text"
+              maxLength={100}
               value={customerNotes}
               onChange={(e) => setCustomerNotes(e.target.value)}
               placeholder="Contoh: Jangan terlalu manis, es batu dipisah jika bisa"

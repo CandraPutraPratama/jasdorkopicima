@@ -15,6 +15,7 @@ import {
   formatOrderSummaryDetail,
   type OrderSummarySnapshot,
 } from '@/lib/order-snapshot';
+import { validateCustomerName, cleanCustomerName } from '@/lib/sanitizer';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -137,17 +138,14 @@ export function CartDrawer({
   // Handle validasi pra-kirim ke WhatsApp
   const handleProceedToWhatsApp = async () => {
     setErrorMessage(null);
-    const trimmedName = customerName.trim();
+    const nameValidation = validateCustomerName(customerName);
 
-    if (!trimmedName) {
-      setErrorMessage('Silakan isi nama pemesan terlebih dahulu.');
+    if (!nameValidation.isValid) {
+      setErrorMessage(nameValidation.errorMessage || 'Silakan isi nama pemesan terlebih dahulu.');
       return;
     }
 
-    if (trimmedName.length > 40) {
-      setErrorMessage('Nama pemesan maksimal 40 karakter.');
-      return;
-    }
+    const trimmedName = nameValidation.sanitized;
 
     if (items.length === 0) {
       setErrorMessage('Keranjang pesanan masih kosong.');
@@ -254,7 +252,7 @@ export function CartDrawer({
   const dispatchWhatsAppOrder = (message: string) => {
     setOrderSnapshot(
       createOrderSummarySnapshot({
-        customerName,
+        customerName: cleanCustomerName(customerName),
         pricing,
         outletName: effectiveOutletName,
       })
@@ -281,7 +279,7 @@ export function CartDrawer({
     if (!orderSnapshot) {
       setOrderSnapshot(
         createOrderSummarySnapshot({
-          customerName,
+          customerName: cleanCustomerName(customerName),
           pricing,
           outletName: effectiveOutletName,
         })
@@ -473,7 +471,11 @@ export function CartDrawer({
                   type="text"
                   maxLength={40}
                   value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
+                  onChange={(e) => {
+                    const cleaned = e.target.value.replace(/[\r\n\u2028\u2029\x00-\x1F\x7F]/g, ' ');
+                    setCustomerName(cleaned);
+                    if (errorMessage) setErrorMessage(null);
+                  }}
                   placeholder="Contoh: Budi Prasetyo"
                   className="w-full min-h-[44px] px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs text-[#1F2937] placeholder-stone-400 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-hidden transition"
                 />

@@ -18,17 +18,9 @@ export interface BuildWhatsAppMessageInput {
   items: CartItem[];
 }
 
-/**
- * Membersihkan catatan dari karakter kontrol dan membatasi maksimal 100 karakter.
- */
-export function cleanNotes(notes?: string): string {
-  if (!notes) return '';
-  return notes
-    .replace(/[\x00-\x1F\x7F]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 100);
-}
+import { cleanNotes, cleanCustomerName } from './sanitizer.ts';
+
+export { cleanNotes, cleanCustomerName };
 
 /**
  * Format rincian varian flat dan addon per grup di dalam kurung:
@@ -132,7 +124,7 @@ export function buildWhatsAppMessage(input: BuildWhatsAppMessageInput): string {
   lines.push('Halo Kak, saya ingin memesan:');
   lines.push('');
   lines.push('Brand: Kopi Kenangan');
-  lines.push(`Nama: ${customerName.trim()}`);
+  lines.push(`Nama: ${cleanCustomerName(customerName)}`);
   lines.push(`Lokasi: ${outletName.trim()}`);
   lines.push(pickupLine);
   lines.push('');

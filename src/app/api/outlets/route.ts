@@ -3,6 +3,7 @@ import { searchOutlets } from '@/lib/outlet-service';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { cleanSearchQuery } from '@/lib/sanitizer';
 import type { Outlet } from '@/types/domain';
 
 export async function GET(request: NextRequest) {
@@ -28,7 +29,8 @@ export async function GET(request: NextRequest) {
 
   try {
     const searchParams = request.nextUrl.searchParams;
-    const keyword = (searchParams.get('q') || searchParams.get('keyword') || '').trim();
+    const rawKeyword = searchParams.get('q') || searchParams.get('keyword') || '';
+    const keyword = cleanSearchQuery(rawKeyword);
     const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
     const pageSize = Math.min(50, Math.max(1, parseInt(searchParams.get('pageSize') || '20', 10)));
 
