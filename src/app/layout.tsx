@@ -3,37 +3,50 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://jasdor.cimagroup.my.id'),
-  title: 'jasdorkopicima - Jastip Kopi Kenangan',
+  title: {
+    default: 'Jasdor — Jastip Kopi Kenangan Promo Setengah Harga',
+    template: '%s | Jasdor — Jastip Kopi Kenangan',
+  },
   description:
-    'Layanan jasa titip independen jasdorkopicima untuk Kopi Kenangan. Harga promo 50% dari harga menu. Upsize Large +Rp5.000, Juwara Beans +Rp3.000, Oatside +Rp3.000, Syrup dan Topping +Rp6.000, dan biaya jasa Rp2.000 per item (Rp4.000 untuk 1 item).',
+    'Jastip Kopi Kenangan hemat promo setengah harga (diskon 50%). Pesan mudah langsung dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
+  applicationName: 'Jasdor',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Jasdor',
+  },
+  manifest: '/manifest.webmanifest',
   icons: {
-    icon: '/brand/logo-cima.webp',
-    shortcut: '/brand/logo-cima.webp',
-    apple: '/brand/logo-cima.webp',
+    icon: [
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    shortcut: '/icons/icon-192x192.png',
+    apple: '/icons/apple-touch-icon.png',
   },
   openGraph: {
-    title: 'jasdorkopicima - Jastip Kopi Kenangan Promo 50%',
+    title: 'Jasdor — Jastip Kopi Kenangan Promo Setengah Harga',
     description:
-      'Pesan Kopi Kenangan hemat promo 50%. Biaya jasa mulai Rp2.000/item. Cek menu dan kirim pesanan otomatis via WhatsApp!',
+      'Jastip Kopi Kenangan hemat promo setengah harga (diskon 50%). Pesan mudah langsung dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
     url: 'https://jasdor.cimagroup.my.id',
-    siteName: 'jasdorkopicima',
+    siteName: 'Jasdor',
     images: [
       {
-        url: '/brand/logo-cima.webp',
-        width: 512,
-        height: 512,
-        alt: 'Logo Resmi Jasdor Kopi Cima',
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Jasdor — Jastip Kopi Kenangan Promo Setengah Harga',
       },
     ],
     locale: 'id_ID',
     type: 'website',
   },
   twitter: {
-    card: 'summary',
-    title: 'jasdorkopicima - Jastip Kopi Kenangan Promo 50%',
+    card: 'summary_large_image',
+    title: 'Jasdor — Jastip Kopi Kenangan Promo Setengah Harga',
     description:
-      'Pesan Kopi Kenangan hemat promo 50%. Biaya jasa mulai Rp2.000/item. Cek menu dan kirim pesanan otomatis via WhatsApp!',
-    images: ['/brand/logo-cima.webp'],
+      'Jastip Kopi Kenangan hemat promo setengah harga (diskon 50%). Pesan mudah langsung dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
+    images: ['/og-image.png'],
   },
 };
 
@@ -48,8 +61,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const cfAnalyticsToken = process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN;
+
   return (
     <html lang="id">
+      <head>
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <meta name="theme-color" content="#111111" />
+      </head>
       <body className="bg-stone-100 text-stone-800 antialiased selection:bg-amber-400 selection:text-black">
         <div className="min-h-screen max-w-md mx-auto bg-white shadow-2xl flex flex-col relative overflow-x-hidden">
           <div className="flex-1 flex flex-col">
@@ -61,6 +81,22 @@ export default function RootLayout({
             </p>
           </footer>
         </div>
+
+        {/* Minimal PWA Service Worker Registration (Installability Only) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}`,
+          }}
+        />
+
+        {/* Cloudflare Web Analytics (HANYA bila token terisi di env) */}
+        {cfAnalyticsToken ? (
+          <script
+            defer
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={JSON.stringify({ token: cfAnalyticsToken })}
+          />
+        ) : null}
       </body>
     </html>
   );
