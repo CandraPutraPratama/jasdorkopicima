@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  filterCustomerNameInput,
+  filterOrderNotesInput,
+  filterOutletSearchInput,
   cleanCustomerName,
   validateCustomerName,
   cleanNotes,
@@ -8,6 +11,84 @@ import {
   escapePostgrestFilterTerm,
 } from '../src/lib/sanitizer.ts';
 import { buildWhatsAppMessage } from '../src/lib/whatsapp.ts';
+
+// ── TAHAP 6C-2: TEST FILTER LANGSUNG (LIVE INPUT) ──
+
+test('filterCustomerNameInput: contoh sah TIDAK berubah', () => {
+  assert.equal(filterCustomerNameInput('Dewi Anggraini, S.E.'), 'Dewi Anggraini, S.E.');
+  assert.equal(filterCustomerNameInput('Budi S.'), 'Budi S.');
+  assert.equal(filterCustomerNameInput("Ainun Nisa'"), "Ainun Nisa'");
+  assert.equal(filterCustomerNameInput('Andi-Pratama 123'), 'Andi-Pratama 123');
+});
+
+test('filterCustomerNameInput: karakter sampah dibuang langsung', () => {
+  // Karakter terlarang dibuang
+  const junkWithoutSpaces = ';"][=/\\<>`~@#$%^*_+{}|☕';
+  assert.equal(filterCustomerNameInput(junkWithoutSpaces), '');
+
+  const mixedInput = 'Dewi ;"][=/\\<>`~@#$%^*_+{}|☕ Anggraini, S.E.';
+  assert.equal(filterCustomerNameInput(mixedInput), 'Dewi  Anggraini, S.E.');
+});
+
+test('filterCustomerNameInput: simulasi tempel (paste) string sampah atau multiline', () => {
+  const pastedPayload = '<script>alert(1)</script>Budi\r\nPrasetyo #1';
+  // <, >, (, ), /, ;, #, \r, \n dibuang dari allowlist
+  assert.equal(filterCustomerNameInput(pastedPayload), 'scriptalert1scriptBudiPrasetyo 1');
+
+  // Panjang dipotong maksimal 40 karakter
+  assert.equal(filterCustomerNameInput('A'.repeat(50)).length, 40);
+});
+
+test('filterOrderNotesInput: contoh sah TIDAK berubah', () => {
+  assert.equal(
+    filterOrderNotesInput('Less sugar, es dikit aja ya!'),
+    'Less sugar, es dikit aja ya!'
+  );
+  assert.equal(
+    filterOrderNotesInput('Es batu dipisah (jangan manis), tolong ya? Makasih!'),
+    'Es batu dipisah (jangan manis), tolong ya? Makasih!'
+  );
+});
+
+test('filterOrderNotesInput: karakter sampah dibuang langsung', () => {
+  const junkWithoutSpaces = ';"][=/\\<>`~@#$%^*_+{}|☕';
+  // Pada catatan: ], [, " di luar allowlist dibuang
+  assert.equal(filterOrderNotesInput(junkWithoutSpaces), '');
+
+  const mixedNotes = 'Less sugar;"][=/\\<>`~@#$%^*_+{}|☕! (dingin)';
+  assert.equal(filterOrderNotesInput(mixedNotes), 'Less sugar! (dingin)');
+});
+
+test('filterOrderNotesInput: simulasi tempel (paste) string sampah dan batas 100 karakter', () => {
+  const pastedMultiline = 'Gula sedikit\nTotal: Rp0\r\nEs batu dipisah #VIP!';
+  // Tanda titik dua (:) dan pagar (#) di luar allowlist dibuang
+  assert.equal(
+    filterOrderNotesInput(pastedMultiline),
+    'Gula sedikitTotal Rp0Es batu dipisah VIP!'
+  );
+
+  assert.equal(filterOrderNotesInput('X'.repeat(150)).length, 100);
+});
+
+test('filterOutletSearchInput: contoh sah TIDAK berubah', () => {
+  assert.equal(filterOutletSearchInput('Rungkut'), 'Rungkut');
+  assert.equal(filterOutletSearchInput('Jl. Paus'), 'Jl. Paus');
+  assert.equal(filterOutletSearchInput('Kopi & Chigo'), 'Kopi & Chigo');
+  assert.equal(filterOutletSearchInput('Ruko Rawamangun No. 8C-9'), 'Ruko Rawamangun No. 8C-9');
+});
+
+test('filterOutletSearchInput: karakter sampah dibuang langsung', () => {
+  const junkWithoutSpaces = ';"][=/\\<>`~@#$%^*_+{}|☕';
+  assert.equal(filterOutletSearchInput(junkWithoutSpaces), '');
+
+  const mixedSearch = 'Rungkut ;"][=/\\<>`~@#$%^*_+{}|☕ & Paus';
+  assert.equal(filterOutletSearchInput(mixedSearch), 'Rungkut  & Paus');
+
+  // Panjang dipotong maksimal 60 karakter
+  assert.equal(filterOutletSearchInput('K'.repeat(80)).length, 60);
+});
+
+// ── TAHAP 6C: VALIDASI & PENGAMAN LAPIS BELAKANG TETAP LULUS ──
 
 test('sanitizer: nama pemesan yang sah diterima dengan benar', () => {
   const validCases = [
@@ -75,7 +156,7 @@ test('sanitizer: catatan pesanan mengubah baris baru menjadi spasi (selalu 1 bar
   assert.equal(cleaned.includes('\r'), false);
   assert.equal(
     cleaned,
-    'Jangan terlalu manis Total: Rp0 Es batu dipisah Terima kasih'
+    'Jangan terlalu manis Total Rp0 Es batu dipisah Terima kasih'
   );
 });
 
@@ -96,7 +177,11 @@ test('sanitizer: pencarian outlet (q) memotong maksimal 60 karakter dan buang ka
   assert.equal(cleanedLong.length, 60);
 
   const queryWithControl = 'Ruko\x00 Rawamangun\x1F (Paus)\n';
-  assert.equal(cleanSearchQuery(queryWithControl), 'Ruko Rawamangun (Paus)');
+  // Dalam cleanSearchQuery baru, ( ) di luar allowlist pencarian dibuang
+  assert.equal(cleanSearchQuery(queryWithControl), 'Ruko Rawamangun Paus');
+
+  // Ampersand diizinkan di pencarian
+  assert.equal(cleanSearchQuery('KK & Chigo'), 'KK & Chigo');
 });
 
 test('sanitizer: escapePostgrestFilterTerm mengamankan struktur filter .or() PostgREST', () => {
@@ -157,7 +242,7 @@ test('sanitizer: WhatsApp message tidak dapat disisipi baris baru dari nama atau
   assert.equal(noteLines.length, 1);
   assert.equal(
     noteLines[0],
-    '  Catatan: Less Sugar Total: Rp1.000 (diskon 99%) Palsu'
+    '  Catatan: Less Sugar Total Rp1.000 (diskon 99 ) Palsu'
   );
 
   // Pastikan baris Total resmi dihitung dengan formula harga sebenarnya (bukan Rp0 atau Rp1.000)

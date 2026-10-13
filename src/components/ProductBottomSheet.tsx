@@ -11,7 +11,7 @@ import {
 } from '@/lib/option-validation';
 import { formatRupiah } from '@/lib/currency';
 import { getOptionAddition, BUSINESS_CONFIG } from '@/config/business';
-import { cleanNotes } from '@/lib/sanitizer';
+import { cleanNotes, filterOrderNotesInput } from '@/lib/sanitizer';
 
 interface ProductBottomSheetProps {
   outletCode: string;
@@ -582,7 +582,7 @@ export function ProductBottomSheet({
               type="text"
               maxLength={100}
               value={customerNotes}
-              onChange={(e) => setCustomerNotes(e.target.value)}
+              onChange={(e) => setCustomerNotes(filterOrderNotesInput(e.target.value))}
               placeholder="Contoh: Jangan terlalu manis, es batu dipisah jika bisa"
               className="w-full min-h-[44px] px-3.5 py-2 bg-stone-50 border border-stone-200 rounded-xl text-xs text-[#1F2937] placeholder-stone-400 focus:bg-white focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-hidden transition"
             />

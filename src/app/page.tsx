@@ -6,6 +6,7 @@ import { ClosedScreen } from '@/components/ClosedScreen';
 import { Header } from '@/components/Header';
 import { OutletSearchCard } from '@/components/OutletSearchCard';
 import { OutletCardSkeleton } from '@/components/Skeleton';
+import { filterOutletSearchInput } from '@/lib/sanitizer';
 import type { Outlet } from '@/types/domain';
 
 export default function HomePage() {
@@ -140,8 +141,9 @@ export default function HomePage() {
           <input
             id="outlet-search-input"
             type="text"
+            maxLength={60}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => setQuery(filterOutletSearchInput(e.target.value))}
             placeholder="Cari nama outlet, mall, atau jalan..."
             className="w-full min-h-[48px] pl-11 pr-10 py-2.5 bg-white border border-stone-300 focus:border-[#D4AF37] focus:ring-2 focus:ring-amber-200/50 rounded-xl text-sm text-[#1F2937] placeholder-stone-400 transition shadow-xs outline-hidden"
           />

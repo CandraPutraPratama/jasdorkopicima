@@ -15,7 +15,11 @@ import {
   formatOrderSummaryDetail,
   type OrderSummarySnapshot,
 } from '@/lib/order-snapshot';
-import { validateCustomerName, cleanCustomerName } from '@/lib/sanitizer';
+import {
+  validateCustomerName,
+  cleanCustomerName,
+  filterCustomerNameInput,
+} from '@/lib/sanitizer';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -472,8 +476,8 @@ export function CartDrawer({
                   maxLength={40}
                   value={customerName}
                   onChange={(e) => {
-                    const cleaned = e.target.value.replace(/[\r\n\u2028\u2029\x00-\x1F\x7F]/g, ' ');
-                    setCustomerName(cleaned);
+                    const filtered = filterCustomerNameInput(e.target.value);
+                    setCustomerName(filtered);
                     if (errorMessage) setErrorMessage(null);
                   }}
                   placeholder="Contoh: Budi Prasetyo"
