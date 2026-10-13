@@ -26,6 +26,7 @@ import {
   classifyAddonGroup,
   isAllowedProductBrand,
 } from '../config/business.ts';
+import { rewriteProductImageUrl } from './image-url.ts';
 
 /**
  * Menormalkan data 1 store/outlet dari KK ke domain Outlet
@@ -76,7 +77,7 @@ export function normalizeProduct(raw: KkProductItem): Product {
     productCode: String(raw.product_code || ''),
     name: (raw.name || '').trim(),
     description: (raw.description || '').trim(),
-    image: raw.image || '',
+    image: rewriteProductImageUrl(raw.image || ''),
     basePrice: raw.price || 0,
     originalPrice: raw.orig_price || raw.price || 0,
     isSoldOut: Boolean(raw.is_sold_out),

@@ -59,6 +59,10 @@ export interface BusinessConfig {
     politeDelayMs: number;
   };
   whatsappNumber: string;
+  /** Sumber foto produk: 'kk' (CDN Kopi Kenangan) atau 'r2' (Cloudflare R2) */
+  imageSource: 'kk' | 'r2';
+  /** Base URL gambar R2 */
+  r2ImageBaseUrl: string;
 }
 
 export const BUSINESS_CONFIG: BusinessConfig = {
@@ -120,6 +124,8 @@ export const BUSINESS_CONFIG: BusinessConfig = {
     politeDelayMs: 250,
   },
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '6287793420768',
+  imageSource: (process.env.IMAGE_SOURCE || 'kk').toLowerCase() === 'r2' ? 'r2' : 'kk',
+  r2ImageBaseUrl: 'https://gambar.cimagroup.my.id/product',
 };
 
 export const addonPrices = BUSINESS_CONFIG.pricing.addonPrices;
