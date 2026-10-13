@@ -24,6 +24,7 @@ import {
   isHiddenProduct,
   isStoreInScope,
   classifyAddonGroup,
+  isAllowedProductBrand,
 } from '../config/business.ts';
 
 /**
@@ -87,7 +88,7 @@ export function normalizeProduct(raw: KkProductItem): Product {
  * Menormalkan seluruh menu outlet dari KK ke domain MenuGroup[].
  * Sesuai keputusan: item combo (is_combo_v2 = true) dan produk tersembunyi (Seliter) DISEMBUNYIKAN di sisi server.
  */
-export function normalizeMenu(raw: KkMenuData): MenuGroup[] {
+export function normalizeMenu(raw: KkMenuData, isOutletInScope = true): MenuGroup[] {
   const groups: MenuGroup[] = [];
 
   for (const rawGroup of raw?.menu_groups || []) {
@@ -98,13 +99,12 @@ export function normalizeMenu(raw: KkMenuData): MenuGroup[] {
       continue;
     }
 
-    // Saring keluar produk combo (is_combo_v2 === true), produk tersembunyi (Seliter/Chigo/FLIP), dan brand non-Kenangan
+    // Saring keluar produk combo (is_combo_v2 === true), produk tersembunyi (Seliter/dll), dan brand yang tidak diizinkan
     const filteredProducts = (rawGroup.menu_products || [])
       .filter((p) => {
         if (p.is_combo_v2) return false;
         if (isHiddenProduct(p.name)) return false;
-        const brand = (p.brand || '').trim().toLowerCase();
-        if (brand.includes('chigo') || brand.includes('flip')) {
+        if (!isAllowedProductBrand(p.brand, isOutletInScope)) {
           return false;
         }
         return true;

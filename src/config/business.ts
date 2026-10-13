@@ -38,6 +38,8 @@ export interface BusinessConfig {
   hiddenProductPatterns: string[];
   /** Allowlist kelompok menu resmi yang ditampilkan (sesuai urutan) */
   menuGroupAllowlist: string[];
+  /** Daftar brand produk resmi yang diizinkan tampil di katalog */
+  allowedProductBrands: string[];
   cache: {
     /** TTL cache menu outlet dalam detik (15 menit) */
     menuTtlSeconds: number;
@@ -97,6 +99,11 @@ export const BUSINESS_CONFIG: BusinessConfig = {
     'Kenangan Toast',
     'Food',
   ],
+  allowedProductBrands: [
+    'Kopi Kenangan',
+    'Cerita Roti',
+    'Kenangan Manis',
+  ],
   cache: {
     menuTtlSeconds: 15 * 60, // 15 menit
     optionsTtlSeconds: 60 * 60, // 1 jam
@@ -113,8 +120,26 @@ export const BUSINESS_CONFIG: BusinessConfig = {
 export const addonPrices = BUSINESS_CONFIG.pricing.addonPrices;
 export const flatOptionAdditions = BUSINESS_CONFIG.pricing.flatOptionAdditions;
 export const menuGroupAllowlist = BUSINESS_CONFIG.menuGroupAllowlist;
+export const allowedProductBrands = BUSINESS_CONFIG.allowedProductBrands;
 export const hiddenOptionValues = BUSINESS_CONFIG.hiddenOptionValues;
 export const hiddenProductPatterns = BUSINESS_CONFIG.hiddenProductPatterns;
+
+/**
+ * Mengecek apakah brand produk diizinkan untuk tampil di menu (allowedProductBrands).
+ * - Pencocokan dilakukan TANPA peka huruf besar/kecil (case-insensitive).
+ * - Brand resmi diizinkan: "Kopi Kenangan", "Cerita Roti", "Kenangan Manis".
+ * - Brand non-KK (Chigo, CHIGO, FLIP, Satu Kenangan, dll): mengembalikan false.
+ * - Produk tanpa field brand: diizinkan tampil HANYA jika outlet-nya in-scope.
+ */
+export function isAllowedProductBrand(brand?: string | null, isOutletInScope = true): boolean {
+  if (!brand || typeof brand !== 'string' || brand.trim() === '') {
+    return isOutletInScope;
+  }
+  const cleanBrand = brand.trim().toLowerCase();
+  return BUSINESS_CONFIG.allowedProductBrands.some(
+    (allowed) => allowed.trim().toLowerCase() === cleanBrand
+  );
+}
 
 /**
  * Mengambil tambahan harga flat dari nama nilai opsi (misal "Large" -> 5000, "Juwara Beans" -> 3000, "Oatside" -> 3000, lainnya 0).

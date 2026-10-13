@@ -9,6 +9,7 @@ import {
   isHiddenProduct,
   isStoreInScope,
   getStoreBrandName,
+  isAllowedProductBrand,
 } from '../src/config/business.ts';
 
 describe('Business Configuration & Classification Helpers', () => {
@@ -163,4 +164,36 @@ describe('Business Configuration & Classification Helpers', () => {
     assert.equal(isStoreInScope(tanpaBrand), false);
     assert.equal(getStoreBrandName(tanpaBrand), 'Tanpa Brand');
   });
+
+  it('validates allowedProductBrands allowlist strictly (case-insensitive) and empty brand rules', () => {
+    // Official allowed brands (case-insensitive)
+    assert.equal(isAllowedProductBrand('Kopi Kenangan'), true);
+    assert.equal(isAllowedProductBrand('kopi kenangan'), true);
+    assert.equal(isAllowedProductBrand('KOPI KENANGAN'), true);
+    assert.equal(isAllowedProductBrand('Cerita Roti'), true);
+    assert.equal(isAllowedProductBrand('cerita roti'), true);
+    assert.equal(isAllowedProductBrand('CERITA ROTI'), true);
+    assert.equal(isAllowedProductBrand('Kenangan Manis'), true);
+    assert.equal(isAllowedProductBrand('kenangan manis'), true);
+
+    // Disallowed brands
+    assert.equal(isAllowedProductBrand('Chigo'), false);
+    assert.equal(isAllowedProductBrand('CHIGO'), false);
+    assert.equal(isAllowedProductBrand('FLIP'), false);
+    assert.equal(isAllowedProductBrand('Flip'), false);
+    assert.equal(isAllowedProductBrand('Satu Kenangan'), false);
+    assert.equal(isAllowedProductBrand('Random Brand'), false);
+
+    // Empty brand handling based on outlet in-scope status
+    assert.equal(isAllowedProductBrand('', true), true);
+    assert.equal(isAllowedProductBrand(undefined, true), true);
+    assert.equal(isAllowedProductBrand(null, true), true);
+    assert.equal(isAllowedProductBrand('   ', true), true);
+
+    assert.equal(isAllowedProductBrand('', false), false);
+    assert.equal(isAllowedProductBrand(undefined, false), false);
+    assert.equal(isAllowedProductBrand(null, false), false);
+    assert.equal(isAllowedProductBrand('   ', false), false);
+  });
 });
+
