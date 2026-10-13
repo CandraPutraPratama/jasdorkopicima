@@ -371,4 +371,71 @@ Jika terjadi kendala pada bucket R2 atau domain gambar:
   node scripts/purge-mirror.mjs --confirm
   ```
 
+---
+
+## 10. Repositori GitHub, Otomasi Sinkronisasi, & Pemulihan Bencana (Disaster Recovery)
+
+### A. Repositori Proyek
+- **URL Repositori**: `https://github.com/CandraPutraPratama/jasdorkopicima`
+- **Visibilitas**: Private (hanya dapat diakses oleh pemilik akun).
+- **Branch Utama**: `main`
+
+### B. Otomasi Sinkronisasi Outlet (GitHub Actions)
+- **Workflow File**: [`.github/workflows/sync-outlets.yml`](file:///c:/Users/LENOVO/websitebisnis/jasdorkopicima/.github/workflows/sync-outlets.yml)
+- **Jadwal Cron Terjadwal**:
+  - Pola: `0 21 * * *` (21:00 UTC = **04:00 WIB setiap hari**).
+  - *Catatan Verifikasi*: Bukti eksekusi otomatis run **TERJADWAL** pertama baru dapat diverifikasi keesokan harinya setelah pukul 04:00 WIB di tab Actions GitHub. Jangan mengklaim run terjadwal sudah terbukti sebelum jam tersebut terlewati.
+- **Daftar Nama Secret GitHub Actions**:
+  - `SYNC_SECRET`: Secret token otorisasi yang dikirimkan via header `Authorization: Bearer <SYNC_SECRET>` ke endpoint `https://jasdor.cimagroup.my.id/api/cron/sync-outlets`. (Dikonfigurasi di *Settings > Secrets and variables > Actions*).
+
+### C. Cara Menjalankan Sinkronisasi Manual
+Terdapat dua cara untuk memicu sinkronisasi manual:
+1. **Lewat Antarmuka GitHub Actions (Tanpa Terminal)**:
+   - Buka repositori GitHub > klik tab **Actions**.
+   - Pilih workflow **Sync Outlets Kopi Kenangan** di menu sebelah kiri.
+   - Klik tombol dropdown **Run workflow** di sebelah kanan.
+   - Pastikan branch terpilih adalah `main`, lalu klik tombol hijau **Run workflow**.
+   - Pantau status job hingga selesai (ikon centang hijau).
+2. **Lewat Terminal / cURL**:
+   ```bash
+   curl -X POST https://jasdor.cimagroup.my.id/api/cron/sync-outlets \
+     -H "Authorization: Bearer <SYNC_SECRET_MILIKMU>"
+   ```
+3. **Verifikasi Pembaruan**:
+   Periksa endpoint status: `https://jasdor.cimagroup.my.id/api/sync-status` dan pastikan `lastSyncedAt` telah berganti ke waktu run terbaru.
+
+### D. Prosedur Pemulihan Bencana (Jika Laptop Pemilik Hilang / Rusak)
+Jika perangkat kerja utama rusak, hilang, atau berganti ke laptop baru, berikut langkah pemulihan menyeluruh hingga sistem siap deploy kembali:
+
+1. **Clone Repositori**:
+   ```bash
+   git clone https://github.com/CandraPutraPratama/jasdorkopicima.git
+   cd jasdorkopicima
+   ```
+2. **Pasang Dependensi**:
+   ```bash
+   npm install
+   ```
+3. **Buat File Konfigurasi `.env.local`**:
+   Buat file `.env.local` di root proyek dan isi nilai-nilai rahasia berdasarkan daftar acuan di `.env.example`:
+   - `NEXT_PUBLIC_SUPABASE_URL`: Diambil dari Dashboard Supabase (*Project Settings > API*).
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Diambil dari Dashboard Supabase (*Project Settings > API*).
+   - `SUPABASE_SERVICE_ROLE_KEY`: Diambil dari Dashboard Supabase (*Project Settings > API*).
+   - `SYNC_SECRET`: Token acak yang sama dengan yang terdaftar di GitHub Secrets dan Cloudflare Worker secrets.
+   - `NEXT_PUBLIC_WHATSAPP_PHONE`: Nomor WhatsApp bisnis (default `6287793420768`).
+   - `ALLOW_SIMULATE`: Diset ke `0` (mode simulasi nonaktif).
+4. **Verifikasi Integritas Kode**:
+   ```bash
+   npm test
+   npx tsc --noEmit
+   npm run lint
+   ```
+5. **Login Cloudflare & Deploy Ulang**:
+   ```bash
+   npx wrangler login
+   npm run build:worker
+   npx wrangler deploy
+   ```
+   *(Sistem akan langsung aktif kembali di domain `https://jasdor.cimagroup.my.id` tanpa kehilangan data, karena database outlet tetap tersimpan aman di Supabase dan foto tersimpan di Cloudflare R2)*.
+
 
