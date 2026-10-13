@@ -260,3 +260,76 @@ Dengan konteks skala operasional **20–30 pesanan per hari**, ambang batas yang
   - *Cara Kerja*: Cloudflare langsung mengembalikan kode status HTTP 429 atau halaman error "Access Denied".
   - *Dampak Pelanggan Asli*: Jika pelanggan terkena batas, mereka akan mengalami error total selama 10 menit dan gagal memesan. Karena itu, aksi Block hanya disarankan jika sistem sedang mengalami serangan DDoS/scraping masif yang jelas-jelas berniat jahat.
 
+---
+
+## 9. Panduan Penyiapan & Pemeliharaan Cloudflare R2 (Tahap 7)
+
+Panduan ini mencakup langkah manual yang **HANYA bisa dilakukan oleh pemilik di Dashboard Cloudflare** untuk mengelola penyimpanan mandiri aset foto menu di Cloudflare R2.
+
+### A. Status Konfigurasi R2 Saat Ini
+- **Bucket R2**: `jasdorkopicima` (sudah dibuat pada 10 Oktober 2026, lokasi: APAC, storage class: Standard).
+- **Domain Publik Custom**: `gambar.cimagroup.my.id` (sudah terhubung dan berstatus aktif dengan SSL Cloudflare).
+- **Public dev-url (`r2.dev`)**: Dinonaktifkan (`Disabled`) demi keamanan (akses publik hanya melalui domain custom milik sendiri).
+- **Binding Worker**: Belum terhubung di `wrangler.jsonc` (akan ditambahkan saat implementasi Tahap 7-B).
+
+---
+
+### B. Langkah Manual Pemilik di Dashboard Cloudflare
+
+Langkah-langkah berikut memerlukan hak akses akun Cloudflare pemilik:
+
+#### 1. Verifikasi Custom Domain & SSL Bucket
+1. Buka [Cloudflare Dashboard](https://dash.cloudflare.com/) > Navigasi ke **R2** > Pilih bucket `jasdorkopicima`.
+2. Klik tab **Settings** > Gulir ke bagian **Public Access**.
+3. Pastikan domain `gambar.cimagroup.my.id` tercantum dengan status:
+   - **Ownership status**: `Active`
+   - **SSL status**: `Active`
+4. Jika status belum aktif, klik **Connect Domain**, masukkan `gambar.cimagroup.my.id`, dan konfirmasi penambahan record DNS CNAME otomatis.
+
+#### 2. Konfigurasi Kebijakan CORS (Jika Diperlukan untuk Fetch/Canvas)
+Secara bawaan, elemen HTML `<img>` atau `<Image>` Next.js dapat menampilkan gambar tanpa CORS. Namun, jika aset gambar akan diakses via JavaScript `fetch()` dari origin web:
+1. Di halaman bucket `jasdorkopicima` > tab **Settings** > gulir ke **CORS Policy**.
+2. Klik **Add CORS Policy** dan masukkan konfigurasi JSON:
+   ```json
+   [
+     {
+       "AllowedOrigins": [
+         "https://jasdor.cimagroup.my.id",
+         "http://localhost:3000"
+       ],
+       "AllowedMethods": [
+         "GET",
+         "HEAD"
+       ],
+       "AllowedHeaders": [
+         "*"
+       ],
+       "MaxAgeSeconds": 86400
+     }
+   ]
+   ```
+3. Simpan perubahan.
+
+#### 3. Pembuatan R2 API Token (Untuk Skrip Sinkronisasi Foto dari Luar Worker)
+Jika proses pengunduhan & penyalinan foto dari CDN KK ke R2 dijalankan lewat skrip audit / background worker di server:
+1. Di halaman utama Cloudflare Dashboard > **R2** > klik **Manage R2 API Tokens** di sebelah kanan.
+2. Klik **Create API token**.
+3. Beri nama token: `jasdor-r2-sync`.
+4. Beri izin (Permissions): **Object Read & Write**.
+5. Batasi cakupan (Apply to specific buckets): Pilih hanya bucket `jasdorkopicima`.
+6. Tentukan TTL token atau biarkan tanpa batas sesuai kebutuhan.
+7. Simpan **Access Key ID**, **Secret Access Key**, dan **Endpoint S3 URL** ke pengelola rahasia Anda (JANGAN commit ke git).
+
+#### 4. Menghubungkan R2 Binding ke Worker (Untuk Tahap 7-B)
+Jika Worker Next.js memerlukan akses langsung via SDK Cloudflare binding:
+- Dapat dihubungkan via Dashboard: **Workers & Pages** > `jasdorkopicima` > **Settings** > **Variables and Secrets / Bindings** > **Add binding** (Type: `R2 Bucket`, Variable name: `R2_BUCKET`, Bucket: `jasdorkopicima`).
+- Atau otomatis saat deploy via konfigurasi `wrangler.jsonc`:
+  ```jsonc
+  "r2_buckets": [
+    {
+      "binding": "R2_BUCKET",
+      "bucket_name": "jasdorkopicima"
+    }
+  ]
+  ```
+
