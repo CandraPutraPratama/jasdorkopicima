@@ -3,6 +3,7 @@ import { kkApiClient } from './kk-client.ts';
 import { normalizeStores } from './adapter.ts';
 import { isStoreInScope, getStoreBrandName, BUSINESS_CONFIG } from '../config/business.ts';
 import { cacheService, cacheKeys } from './cache.ts';
+import { cleanSearchQuery, escapePostgrestFilterTerm } from './sanitizer.ts';
 import type { Outlet } from '../types/domain.ts';
 
 export interface SearchOutletsResult {
@@ -22,7 +23,7 @@ export async function searchOutlets(
   page = 1,
   pageSize = 20
 ): Promise<SearchOutletsResult> {
-  const trimmed = keyword.trim();
+  const trimmed = cleanSearchQuery(keyword);
   if (!trimmed) {
     return {
       items: [],
@@ -57,6 +58,15 @@ export async function searchOutlets(
 
   // 2. Fallback ke database Supabase
   try {
+    const safeTerm = escapePostgrestFilterTerm(trimmed);
+    if (!safeTerm) {
+      return {
+        items: [],
+        total: 0,
+        source: 'database',
+      };
+    }
+
     const supabase = getSupabaseServerClient();
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
@@ -68,7 +78,7 @@ export async function searchOutlets(
       })
       .eq('is_active', true)
       .eq('is_in_scope', true)
-      .or(`name.ilike.%${trimmed}%,address.ilike.%${trimmed}%`)
+      .or(`name.ilike.%${safeTerm}%,address.ilike.%${safeTerm}%`)
       .order('name', { ascending: true })
       .range(from, to);
 
