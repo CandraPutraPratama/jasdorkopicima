@@ -4,6 +4,13 @@ import { getEnvVar } from './env.ts';
 let serverClientInstance: SupabaseClient | null = null;
 
 /**
+ * Menyimpan instance khusus (misal untuk mock dalam unit testing).
+ */
+export function setSupabaseServerClientInstance(client: SupabaseClient | null) {
+  serverClientInstance = client;
+}
+
+/**
  * Mengembalikan Supabase client dengan Service Role Key untuk operasi server-only.
  * Kunci ini mem-bypass Row Level Security (RLS) di database Supabase.
  * JANGAN PERNAH mengekspos client ini ke sisi browser/client component!

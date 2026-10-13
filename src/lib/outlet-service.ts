@@ -1,7 +1,8 @@
 import { getSupabaseServerClient } from './supabase-server.ts';
 import { kkApiClient } from './kk-client.ts';
 import { normalizeStores } from './adapter.ts';
-import { isStoreInScope, getStoreBrandName } from '../config/business.ts';
+import { isStoreInScope, getStoreBrandName, BUSINESS_CONFIG } from '../config/business.ts';
+import { cacheService, cacheKeys } from './cache.ts';
 import type { Outlet } from '../types/domain.ts';
 
 export interface SearchOutletsResult {
@@ -109,38 +110,138 @@ export async function searchOutlets(
  * Menggunakan database Supabase (yang disinkronkan berkala dengan data brand_and_image lengkap)
  * serta pengaman berbasis prefix kode dan nama outlet.
  */
+/**
+ * Memeriksa apakah suatu kode outlet berada dalam ruang lingkup resmi Kopi Kenangan.
+ * Alur pengamanan berlapis tahan gangguan (Fault-Tolerant):
+ * 1. Pengecualian mutlak untuk Signature, Heritage, dan internal testing.
+ * 2. Cek database Supabase untuk status is_in_scope hasil sync resmi (timeout 5s).
+ * 3. Jika Supabase tidak terjangkau / timeout:
+ *    - Ambil status lingkup terakhir dari cache bila ada.
+ *    - Bila tidak ada di cache, TOLAK outlet (jangan pernah menampilkan outlet yang belum terverifikasi).
+ * 4. Jika outlet belum ada di tabel outlets:
+ *    - Cari lewat KK API queryStore.
+ *    - Evaluasi dengan isStoreInScope (termasuk explicitInScopeOutletCodes).
+ *    - Upsert ke Supabase agar tersimpan untuk request berikutnya.
+ *    - Bila tidak ditemukan di KK API, tolak.
+ */
 export async function verifyStoreScope(code: string, rawStore?: any): Promise<boolean> {
   const normCode = (code || '').trim().toLowerCase();
+  const upperCode = (code || '').trim().toUpperCase();
   const normName = (rawStore?.name || '').trim().toLowerCase();
 
-  // 1. Pengecualian mutlak untuk Signature & Heritage
+  // 1. Pengecualian mutlak untuk Signature & Heritage & testing
   if (normCode.startsWith('ks.') || normName.includes('signature')) return false;
   if (normCode.startsWith('kh.') || normCode === 'jkt.kenhertg' || normName.includes('heritage')) return false;
   if (normName.includes('internal testing') || normCode.startsWith('testposstores')) return false;
 
-  // 2. Jika rawStore memiliki brand_and_image langsung (misal dari queryStore)
-  if (rawStore?.brand_and_image && Array.isArray(rawStore.brand_and_image) && rawStore.brand_and_image.length > 0) {
-    return isStoreInScope(rawStore);
-  }
+  const scopeKey = cacheKeys.storeScope(upperCode);
 
-  // 3. Cek database Supabase yang memiliki status is_in_scope hasil sync resmi
+  // 2. Cek database Supabase dengan pengaman batas waktu 5 detik
+  let supabaseError: any = null;
+  let dbRecord: { is_in_scope: boolean } | null = null;
+  let dbFound = false;
+
   try {
     const supabase = getSupabaseServerClient();
-    const { data } = await supabase
+    const queryPromise = supabase
       .from('outlets')
       .select('is_in_scope')
-      .eq('code', code)
+      .ilike('code', upperCode)
       .maybeSingle();
 
-    if (data) {
-      return Boolean(data.is_in_scope);
+    let timer: any;
+    const timeoutPromise = new Promise<{ data: null; error: Error }>((_, reject) => {
+      timer = setTimeout(() => reject(new Error('Supabase request timeout (5000ms)')), 5000);
+      if (timer && typeof timer.unref === 'function') {
+        timer.unref();
+      }
+    });
+
+    try {
+      const result: any = await Promise.race([queryPromise, timeoutPromise]);
+      if (result.error) {
+        supabaseError = result.error;
+      } else if (result.data) {
+        dbFound = true;
+        dbRecord = result.data;
+      } else {
+        dbFound = false;
+      }
+    } finally {
+      if (timer) clearTimeout(timer);
     }
-  } catch (err) {
-    console.warn(`[verifyStoreScope] Gagal cek Supabase: ${err}`);
+  } catch (err: any) {
+    supabaseError = err;
   }
 
-  // 4. Fallback jika database tidak dapat diakses
-  return !normName.includes('chigo') && !normCode.includes('.cg');
+  // Kasus (a): Supabase tidak terjangkau atau timeout
+  if (supabaseError) {
+    console.warn(`[verifyStoreScope] Supabase error/timeout untuk "${upperCode}": ${supabaseError.message}. Memeriksa fallback cache.`);
+    const cachedScope = await cacheService.getStale<{ isInScope: boolean }>(scopeKey);
+    if (cachedScope && typeof cachedScope.isInScope === 'boolean') {
+      return cachedScope.isInScope;
+    }
+    // Jika tidak ada di cache, TOLAK outlet demi keamanan (jangan izinkan outlet tak terverifikasi)
+    console.error(`[verifyStoreScope] Supabase tidak terjangkau dan tidak ada data cache untuk "${upperCode}". Outlet ditolak.`);
+    return false;
+  }
+
+  // Kasus jika record ditemukan di database Supabase
+  if (dbFound && dbRecord) {
+    const inScope = Boolean(dbRecord.is_in_scope);
+    await cacheService.set(scopeKey, { isInScope: inScope }, BUSINESS_CONFIG.cache.storesTtlSeconds);
+    return inScope;
+  }
+
+  // Kasus (b): Outlet belum ada di tabel outlets -> cari lewat query_store KK API
+  try {
+    console.info(`[verifyStoreScope] Outlet "${upperCode}" belum ada di database, mencari via KK query_store...`);
+    const kkData = await kkApiClient.queryStore({
+      keyword: upperCode,
+      pageSize: 20,
+    });
+
+    const foundStore = (kkData?.store || []).find(
+      (s) => (s.code || '').trim().toUpperCase() === upperCode
+    );
+
+    if (!foundStore) {
+      console.warn(`[verifyStoreScope] Outlet "${upperCode}" tidak ditemukan di KK API. Ditolak.`);
+      return false;
+    }
+
+    const inScope = isStoreInScope(foundStore);
+    const brandName = getStoreBrandName(foundStore);
+
+    // Upsert ke Supabase agar tersimpan permanen
+    try {
+      const supabase = getSupabaseServerClient();
+      await supabase.from('outlets').upsert(
+        {
+          code: foundStore.code,
+          name: (foundStore.name || '').trim(),
+          address: (foundStore.address || '').trim(),
+          latitude: foundStore.latitude ? parseFloat(foundStore.latitude) : null,
+          longitude: foundStore.longitude ? parseFloat(foundStore.longitude) : null,
+          open_time: foundStore.open || '',
+          close_time: foundStore.close || '',
+          is_active: true,
+          brand: brandName,
+          is_in_scope: inScope,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: 'code' }
+      );
+    } catch (upsertErr: any) {
+      console.warn(`[verifyStoreScope] Gagal upsert outlet baru ke Supabase: ${upsertErr.message}`);
+    }
+
+    await cacheService.set(scopeKey, { isInScope: inScope }, BUSINESS_CONFIG.cache.storesTtlSeconds);
+    return inScope;
+  } catch (kkQueryErr: any) {
+    console.warn(`[verifyStoreScope] Gagal mencari outlet di KK API: ${kkQueryErr.message}`);
+    return false;
+  }
 }
 
 /**

@@ -246,6 +246,7 @@ export const cacheKeys = {
   storeList: (keyword: string, page: number, pageSize: number) =>
     `stores:${keyword.toLowerCase()}:${page}:${pageSize}`,
   storeDetail: (storeCode: string) => `store:${storeCode.toUpperCase()}`,
+  storeScope: (storeCode: string) => `scope:${storeCode.toUpperCase()}`,
 };
 
 /** Default CacheService aktif menggunakan Supabase dengan fallback in-memory */
