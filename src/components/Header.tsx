@@ -9,6 +9,9 @@ interface HeaderProps {
   backLabel?: string;
   isOpen?: boolean;
   sticky?: boolean;
+  title?: string;
+  badgeText?: string;
+  badgeVariant?: 'emerald' | 'rose' | 'amber';
 }
 
 export function Header({
@@ -17,18 +20,21 @@ export function Header({
   backLabel = 'Kembali',
   isOpen,
   sticky = true,
+  title,
+  badgeText,
+  badgeVariant = 'emerald',
 }: HeaderProps) {
   return (
     <header
       className={`${
-        sticky ? 'sticky top-0 z-30' : 'relative z-10'
-      } bg-[#FBF8F4]/95 backdrop-blur-md border-b border-[#EFE5D8] px-4 py-2.5 flex items-center justify-between min-h-[58px] transition-colors`}
+        sticky ? 'sticky top-0 z-20' : 'relative z-10'
+      } bg-[#FBF8F4]/98 backdrop-blur-md border-b border-[#EFE5D8] px-3 py-1.5 flex items-center justify-between min-h-[50px] h-[50px] transition-colors`}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 flex-1 min-w-0">
         {showBack ? (
           <Link
             href={backHref}
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#4A3225] hover:text-[#26150B] active:scale-95 transition -ml-2 rounded-xl"
+            className="min-h-[40px] min-w-[40px] flex items-center justify-center text-[#4A3225] hover:text-[#26150B] active:scale-95 transition -ml-1 rounded-xl shrink-0"
             aria-label={backLabel}
           >
             <svg
@@ -64,9 +70,18 @@ export function Header({
             </div>
           </Link>
         )}
+
+        {/* Jika ada title khusus (misalnya nama outlet pada compact sticky header) */}
+        {title && (
+          <div className="flex-1 min-w-0 pr-1">
+            <h1 className="font-display font-bold text-sm text-[#26150B] truncate leading-tight">
+              {title}
+            </h1>
+          </div>
+        )}
       </div>
 
-      {showBack && (
+      {showBack && !title && (
         <Link href="/" className="flex items-center gap-2">
           <div className="relative w-7 h-7 rounded-full overflow-hidden border border-[#D9A74A]/40 bg-[#26150B] shrink-0">
             <Image
@@ -80,7 +95,17 @@ export function Header({
         </Link>
       )}
 
-      {isOpen !== undefined && (
+      {badgeText ? (
+        <span
+          className={`shrink-0 px-2.5 py-0.5 text-[10px] font-bold rounded-full border ${
+            badgeVariant === 'emerald'
+              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+              : 'bg-rose-50 text-rose-700 border-rose-200'
+          }`}
+        >
+          {badgeText}
+        </span>
+      ) : isOpen !== undefined ? (
         <div className="flex items-center gap-1.5 px-3 py-1 bg-[#F4EDE3] rounded-full border border-[#E5DACB]">
           <span
             className={`w-2 h-2 rounded-full ${
@@ -91,7 +116,7 @@ export function Header({
             {isOpen ? 'Buka' : 'Tutup'}
           </span>
         </div>
-      )}
+      ) : null}
     </header>
   );
 }

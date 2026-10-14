@@ -7,12 +7,14 @@ interface MenuCategoryNavProps {
   categories: MenuGroup[];
   activeCategoryCode: string;
   onSelectCategory: (categoryCode: string) => void;
+  stickyTopClass?: string;
 }
 
 export function MenuCategoryNav({
   categories,
   activeCategoryCode,
   onSelectCategory,
+  stickyTopClass,
 }: MenuCategoryNavProps) {
   const [canScrollRight, setCanScrollRight] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -63,7 +65,8 @@ export function MenuCategoryNav({
   return (
     <nav
       aria-label="Kategori Menu"
-      className="sticky top-0 z-20 bg-[#FBF8F4]/95 backdrop-blur-md border-b border-[#EFE5D8] shadow-2xs"
+      /* sticky top-0 z-20 */
+      className={`sticky ${stickyTopClass || 'top-0'} z-20 bg-[#FBF8F4]/98 backdrop-blur-md border-b border-[#EFE5D8] shadow-2xs`}
     >
       <div className="relative">
         {/* Deretan Chip Kategori dengan scroll horizontal tanpa scrollbar */}

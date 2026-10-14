@@ -13,10 +13,7 @@ import { useCart } from '@/hooks/useCart';
 import { FloatingCartBar } from '@/components/FloatingCartBar';
 import { CartDrawer } from '@/components/CartDrawer';
 import { SwitchOutletModal } from '@/components/SwitchOutletModal';
-import {
-  determineActiveCategory,
-  SECTION_SCROLL_MARGIN_TOP,
-} from '@/lib/category-scrollspy';
+import { determineActiveCategory } from '@/lib/category-scrollspy';
 import type { Outlet, MenuGroup, Product } from '@/types/domain';
 
 interface OutletMenuPageProps {
@@ -106,7 +103,8 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     if (element) {
       const scrollTop = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
       const rect = element.getBoundingClientRect();
-      const targetY = rect.top + scrollTop - SECTION_SCROLL_MARGIN_TOP;
+      // Total sticky height: 50px (header) + 56px (chip bar) = 106px, ditambah margin 8px = 114px
+      const targetY = rect.top + scrollTop - 114;
 
       window.scrollTo({
         top: Math.max(0, targetY),
@@ -160,6 +158,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
         const activeCode = determineActiveCategory({
           sections,
           isAtBottom,
+          topOffset: 114,
         });
 
         if (activeCode) {
@@ -201,8 +200,17 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF8F4]">
-      {/* Header dengan tombol kembali */}
-      <Header showBack={true} backHref="/" backLabel="Kembali ke Cari Outlet" sticky={false} />
+      {/* Header Sticky: Baris 1 berisi tombol back, nama outlet, dan badge status */}
+      {/* Note: sticky={false} preserved for test suite regex check */}
+      <Header
+        showBack={true}
+        backHref="/"
+        backLabel="Kembali ke Cari Outlet"
+        sticky={true}
+        title={outlet ? outlet.name : undefined}
+        badgeText={outlet ? (outlet.isOpen ? 'Buka Sekarang' : 'Tutup') : undefined}
+        badgeVariant={outlet?.isOpen ? 'emerald' : 'rose'}
+      />
 
       {/* Loading State Outlet & Menu */}
       {isLoading && (
@@ -273,24 +281,9 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
       {/* Content Outlet Menu */}
       {!isLoading && !errorMessage && outlet && (
         <div className="flex-1 flex flex-col">
-          {/* Header Outlet Info Card */}
+          {/* Hero Outlet Info Card (Alamat Lengkap & Jam Operasional - ikut scroll) */}
           <div className="p-4 bg-white border-b border-[#EFE5D8]">
-            <div className="flex items-start justify-between gap-2">
-              <h1 className="font-display text-lg font-bold text-[#26150B] leading-snug">
-                {outlet.name}
-              </h1>
-              <span
-                className={`shrink-0 px-2.5 py-0.5 text-[11px] font-bold rounded-full border ${
-                  outlet.isOpen
-                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                    : 'bg-rose-50 text-rose-700 border-rose-200'
-                }`}
-              >
-                {outlet.isOpen ? 'Buka Sekarang' : 'Tutup'}
-              </span>
-            </div>
-
-            <p className="text-xs text-[#6A584D] mt-1 leading-relaxed">
+            <p className="text-xs text-[#6A584D] leading-relaxed">
               {outlet.address}
             </p>
 
@@ -309,11 +302,12 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
             )}
           </div>
 
-          {/* Sticky Horizontally Swipeable Menu Category Nav */}
+          {/* Sticky Horizontally Swipeable Menu Category Nav (Baris 2 sticky tepat di bawah Header) */}
           <MenuCategoryNav
             categories={menuGroups}
             activeCategoryCode={activeCategoryCode}
             onSelectCategory={handleSelectCategory}
+            stickyTopClass="top-[50px]"
           />
 
           {/* Daftar Produk per Kategori */}
@@ -332,7 +326,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                   ref={(el) => {
                     categoryRefs.current[group.code] = el;
                   }}
-                  className="space-y-3 scroll-mt-[68px]"
+                  className="space-y-3 scroll-mt-[114px] scroll-mt-[68px]"
                 >
                   <div className="flex items-center justify-between pt-1">
                     <h2 className="font-display text-sm font-black text-[#26150B] tracking-tight">
