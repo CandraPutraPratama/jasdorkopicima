@@ -34,7 +34,7 @@ export function Header({
     <header
       className={`${
         sticky ? 'sticky top-0 z-20' : 'relative z-10'
-      } bg-[#FBF8F4]/98 backdrop-blur-md border-b border-[#EFE5D8] px-3 py-1.5 flex items-center justify-between min-h-[50px] h-[50px] transition-colors`}
+      } bg-[#FBF8F4] border-b border-[#EFE5D8] px-3 py-1.5 flex items-center justify-between min-h-[50px] h-[50px] transition-colors`}
     >
       <div className="flex items-center gap-2 flex-1 min-w-0">
         {showBack ? (

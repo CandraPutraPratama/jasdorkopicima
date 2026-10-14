@@ -158,7 +158,7 @@ export default function HomePage() {
             </p>
 
             {/* 3 Langkah Cara Order Cepat (Trust Section) */}
-            <div className="mt-4 pt-3 border-t border-white/10 grid grid-cols-3 gap-2 text-center">
+            <div className="mt-4 pt-3.5 border-t border-white/10 grid grid-cols-3 gap-2 text-center">
               <div className="bg-white/5 rounded-xl p-2 border border-white/5">
                 <span className="text-[10px] font-black text-[#FBBF24] block">1. PILIH OUTLET</span>
                 <span className="text-[10px] text-[#D4C3B2] leading-tight block mt-0.5">Cari mall / cabang terdekat</span>
@@ -172,28 +172,31 @@ export default function HomePage() {
                 <span className="text-[10px] text-[#D4C3B2] leading-tight block mt-0.5">Kirim & ambil pesanan</span>
               </div>
             </div>
-
-            {/* Quick Chat Admin CTA Bar */}
-            <div className="mt-3.5 pt-3 border-t border-white/10 flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2.5 bg-black/20 -mx-1 px-3 py-2.5 rounded-2xl border border-white/5">
-              <div className="min-w-0">
-                <p className="text-xs font-bold text-white leading-tight">
-                  Ada pertanyaan sebelum pesan?
-                </p>
-                <p className="text-[11px] text-[#D4C3B2] leading-tight mt-0.5">
-                  Admin siap bantu via WhatsApp ({NOMOR_WHATSAPP_ADMIN_FORMATTED}) • {JADWAL_OPERASIONAL_RINGKAS}
-                </p>
-              </div>
-              <a
-                href={getAdminWhatsAppUrl('Halo Admin Jasdor, saya ingin bertanya tentang layanan jasa order Kopi Kenangan.')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold rounded-xl shadow-xs transition active:scale-95 shrink-0"
-              >
-                <WhatsAppIcon className="w-4 h-4 fill-white shrink-0" />
-                <span>Chat Admin</span>
-              </a>
-            </div>
           </div>
+        </div>
+
+        {/* Section Kontak Admin Terpisah — Ringkas & Lega */}
+        <div className="mb-4 bg-white border border-[#EFE5D8] rounded-2xl p-3.5 shadow-xs flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#25D366] shrink-0 animate-pulse" />
+              <p className="text-xs font-bold text-[#26150B] leading-tight">
+                Ada pertanyaan sebelum pesan?
+              </p>
+            </div>
+            <p className="text-[11px] text-[#735F52] leading-tight mt-1 truncate">
+              Admin siap bantu via WhatsApp ({NOMOR_WHATSAPP_ADMIN_FORMATTED}) • {JADWAL_OPERASIONAL_RINGKAS}
+            </p>
+          </div>
+          <a
+            href={getAdminWhatsAppUrl('Halo Admin Jasdor, saya ingin bertanya tentang layanan jasa order Kopi Kenangan.')}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold rounded-xl shadow-xs transition active:scale-95 shrink-0"
+          >
+            <WhatsAppIcon className="w-4 h-4 fill-white shrink-0" />
+            <span>Chat Admin</span>
+          </a>
         </div>
 
         {/* Input Pencarian Outlet */}

@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState, useEffect, useRef } from 'react';
+import { use, useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { useOperationalStatus } from '@/hooks/useOperationalStatus';
 import { ClosedScreen } from '@/components/ClosedScreen';
@@ -10,6 +10,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { ProductBottomSheet } from '@/components/ProductBottomSheet';
 import { ProductCardSkeleton, CategoryTabSkeleton } from '@/components/Skeleton';
 import { useCart } from '@/hooks/useCart';
+import { useFavorites } from '@/hooks/useFavorites';
 import { FloatingCartBar } from '@/components/FloatingCartBar';
 import { CartDrawer } from '@/components/CartDrawer';
 import { SwitchOutletModal } from '@/components/SwitchOutletModal';
@@ -28,6 +29,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     useOperationalStatus();
 
   const cart = useCart();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState<boolean>(false);
 
   const [outlet, setOutlet] = useState<Outlet | null>(null);
@@ -36,6 +38,32 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isNotFound, setIsNotFound] = useState<boolean>(false);
+
+  // Filter menu favorit khusus yang tersedia di outlet saat ini
+  const favoriteProducts = useMemo(() => {
+    const seenIds = new Set<number>();
+    const list: Product[] = [];
+    for (const group of menuGroups) {
+      for (const product of group.products) {
+        if (!seenIds.has(product.id) && isFavorite(product.id)) {
+          seenIds.add(product.id);
+          list.push(product);
+        }
+      }
+    }
+    return list;
+  }, [menuGroups, isFavorite]);
+
+  // Kelompokkan dengan chip "Favorit" sebagai kategori paling kiri sebelum "Baru!"
+  const displayedGroups = useMemo<MenuGroup[]>(() => {
+    if (menuGroups.length === 0) return [];
+    const favGroup: MenuGroup = {
+      code: 'favorit',
+      name: 'Favoritku',
+      products: favoriteProducts,
+    };
+    return [favGroup, ...menuGroups];
+  }, [menuGroups, favoriteProducts]);
 
   // Bottom Sheet state
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -123,7 +151,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
 
   // Penanda aktif mengikuti scroll manual (scrollspy)
   useEffect(() => {
-    if (menuGroups.length === 0) return;
+    if (displayedGroups.length === 0) return;
 
     let ticking = false;
 
@@ -148,7 +176,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
 
         const isAtBottom = windowHeight + scrollTop >= docHeight - 30;
 
-        const sections = menuGroups
+        const sections = displayedGroups
           .map((group) => {
             const el = categoryRefs.current[group.code];
             return el ? { code: group.code, top: el.getBoundingClientRect().top } : null;
@@ -174,7 +202,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
         clearTimeout(clickTimeoutRef.current);
       }
     };
-  }, [menuGroups]);
+  }, [displayedGroups]);
 
   // 1. Loading Jam Operasional
   if (isJasdorLoading) {
@@ -304,50 +332,86 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
 
           {/* Sticky Horizontally Swipeable Menu Category Nav (Baris 2 sticky tepat di bawah Header) */}
           <MenuCategoryNav
-            categories={menuGroups}
+            categories={displayedGroups}
             activeCategoryCode={activeCategoryCode}
             onSelectCategory={handleSelectCategory}
-            stickyTopClass="top-[50px]"
+            stickyTopClass="top-[49px]"
           />
 
           {/* Daftar Produk per Kategori */}
           <div className="p-4 space-y-6 pb-28">
-            {menuGroups.length === 0 ? (
+            {displayedGroups.length === 0 ? (
               <div className="p-8 bg-white rounded-3xl border border-[#EFE5D8] text-center">
                 <p className="text-xs text-[#6A584D]">
                   Tidak ada menu aktif yang tersedia di outlet ini saat ini.
                 </p>
               </div>
             ) : (
-              menuGroups.map((group) => (
-                <section
-                  key={group.code}
-                  id={`cat-${group.code}`}
-                  ref={(el) => {
-                    categoryRefs.current[group.code] = el;
-                  }}
-                  className="space-y-3 scroll-mt-[114px] scroll-mt-[68px]"
-                >
-                  <div className="flex items-center justify-between pt-1">
-                    <h2 className="font-display text-sm font-black text-[#26150B] tracking-tight">
-                      {group.name}
-                    </h2>
-                    <span className="text-[11px] text-[#8C7667] font-semibold">
-                      {group.products.length} menu
-                    </span>
-                  </div>
+              displayedGroups.map((group) => {
+                const isFavoritSection = group.code === 'favorit';
+                const isFavoritEmpty = isFavoritSection && group.products.length === 0;
 
-                  <div className="space-y-2.5">
-                    {group.products.map((product) => (
-                      <ProductCard
-                        key={product.bundleCode || product.id}
-                        product={product}
-                        onSelectProduct={(p) => setSelectedProduct(p)}
-                      />
-                    ))}
-                  </div>
-                </section>
-              ))
+                return (
+                  <section
+                    key={group.code}
+                    id={`cat-${group.code}`}
+                    ref={(el) => {
+                      categoryRefs.current[group.code] = el;
+                    }}
+                    className="space-y-3 scroll-mt-[114px] scroll-mt-[68px]"
+                  >
+                    <div className="flex items-center justify-between pt-1">
+                      <h2 className="font-display text-sm font-black text-[#26150B] tracking-tight">
+                        {isFavoritSection
+                          ? `Favoritku — ${group.products.length} menu`
+                          : group.name}
+                      </h2>
+                      {!isFavoritSection && (
+                        <span className="text-[11px] text-[#8C7667] font-semibold">
+                          {group.products.length} menu
+                        </span>
+                      )}
+                    </div>
+
+                    {isFavoritEmpty ? (
+                      <div className="p-5 bg-white rounded-2xl border border-dashed border-[#D9C8B5] text-center shadow-2xs">
+                        <div className="w-10 h-10 rounded-full bg-[#FFF1F2] text-[#E11D48] flex items-center justify-center mx-auto mb-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-5 h-5 fill-none stroke-current"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                            />
+                          </svg>
+                        </div>
+                        <p className="text-xs font-bold text-[#26150B] mb-0.5">
+                          Belum ada menu favorit
+                        </p>
+                        <p className="text-[11px] text-[#735F52]">
+                          Ketuk ikon hati untuk menyimpan favoritmu
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2.5">
+                        {group.products.map((product) => (
+                          <ProductCard
+                            key={`${group.code}-${product.bundleCode || product.id}`}
+                            product={product}
+                            isFavorite={isFavorite(product.id)}
+                            onToggleFavorite={() => toggleFavorite(product.id)}
+                            onSelectProduct={(p) => setSelectedProduct(p)}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </section>
+                );
+              })
             )}
           </div>
         </div>

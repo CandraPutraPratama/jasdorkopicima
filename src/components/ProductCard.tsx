@@ -9,9 +9,16 @@ import { BUSINESS_CONFIG } from '@/config/business';
 interface ProductCardProps {
   product: Product;
   onSelectProduct: (product: Product) => void;
+  isFavorite?: boolean;
+  onToggleFavorite?: (product: Product) => void;
 }
 
-export function ProductCard({ product, onSelectProduct }: ProductCardProps) {
+export function ProductCard({
+  product,
+  onSelectProduct,
+  isFavorite = false,
+  onToggleFavorite,
+}: ProductCardProps) {
   const pricing = calculateItemPricing({
     name: product.name,
     basePrice: product.basePrice,
@@ -29,10 +36,10 @@ export function ProductCard({ product, onSelectProduct }: ProductCardProps) {
           onSelectProduct(product);
         }
       }}
-      className={`p-3.5 bg-white border rounded-2xl flex gap-3 transition shadow-xs ${
+      className={`p-3.5 bg-white border rounded-2xl flex gap-3 transition shadow-xs relative ${
         isSoldOut
           ? 'border-[#EFE5D8]/60 bg-[#FAF7F2]/60 opacity-65 cursor-not-allowed'
-          : 'border-[#EFE5D8] hover:border-[#D9A74A]/60 hover:shadow-md cursor-pointer active:scale-99'
+          : 'border-[#EFE5D8] hover:border-[#D9A74A]/60 hover:shadow-md cursor-pointer active:scale-[0.99]'
       }`}
     >
       {/* Gambar Produk */}
@@ -75,17 +82,51 @@ export function ProductCard({ product, onSelectProduct }: ProductCardProps) {
       </div>
 
       {/* Konten Detail Produk */}
-      <div className="flex-1 flex flex-col justify-between">
+      <div className="flex-1 flex flex-col justify-between min-w-0">
         <div>
-          <div className="flex items-start justify-between gap-1">
-            <h4 className="font-display text-sm font-bold text-[#26150B] leading-snug line-clamp-1">
+          <div className="flex items-start justify-between gap-1.5">
+            <h4 className="font-display text-sm font-bold text-[#26150B] leading-snug line-clamp-1 pr-1">
               {product.name}
             </h4>
-            {isSoldOut && (
-              <span className="shrink-0 text-[10px] font-bold text-[#735F52] px-1.5 py-0.2 bg-[#F2EAE0] border border-[#E3D6C5] rounded">
-                Habis
-              </span>
-            )}
+
+            <div className="flex items-center gap-1 shrink-0">
+              {isSoldOut && (
+                <span className="text-[10px] font-bold text-[#735F52] px-1.5 py-0.2 bg-[#F2EAE0] border border-[#E3D6C5] rounded">
+                  Habis
+                </span>
+              )}
+
+              {/* Ikon Hati / Favorit di Kanan Atas */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleFavorite?.(product);
+                }}
+                aria-label={
+                  isFavorite
+                    ? `Hapus ${product.name} dari favorit`
+                    : `Simpan ${product.name} ke favorit`
+                }
+                className="p-1 -mr-1 -mt-0.5 text-[#8C7667] hover:text-[#E11D48] active:scale-90 transition rounded-full z-10"
+              >
+                <svg
+                  className={`w-4 h-4 transition-colors ${
+                    isFavorite
+                      ? 'fill-[#E11D48] text-[#E11D48]'
+                      : 'fill-none stroke-current hover:stroke-[#E11D48]'
+                  }`}
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
 
           {product.description && (
@@ -95,27 +136,52 @@ export function ProductCard({ product, onSelectProduct }: ProductCardProps) {
           )}
         </div>
 
-        {/* Baris Harga Promo Punch & Fee */}
-        <div className="mt-2 pt-2 border-t border-[#F2EAE0] flex items-center justify-between gap-1.5 flex-wrap">
-          <div className="flex items-baseline gap-1.5">
-            {/* 1. Harga Promo (Punch Merah) */}
-            <span className="font-display text-sm font-black text-[#DC2626]">
-              {formatRupiah(pricing.promoPricePerItem)}
-            </span>
-            {/* 2. Harga Asli Dicoret */}
-            <span className="text-[11px] text-[#9C897B] line-through font-medium">
-              {formatRupiah(pricing.originalPricePerItem)}
-            </span>
-            {/* 3. Badge Diskon 50% (Punch Merah) */}
-            <span className="text-[9px] font-extrabold text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] px-1 py-0.2 rounded">
-              -50%
+        {/* Baris Harga Promo Punch & Tombol Plus */}
+        <div className="mt-2 pt-2 border-t border-[#F2EAE0] flex items-center justify-between gap-2">
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-baseline gap-1.5 flex-wrap">
+              {/* 1. Harga Promo (Punch Merah) */}
+              <span className="font-display text-sm font-black text-[#DC2626]">
+                {formatRupiah(pricing.promoPricePerItem)}
+              </span>
+              {/* 2. Harga Asli Dicoret */}
+              <span className="text-[11px] text-[#9C897B] line-through font-medium">
+                {formatRupiah(pricing.originalPricePerItem)}
+              </span>
+              {/* 3. Badge Diskon 50% (Punch Merah) */}
+              <span className="text-[9px] font-extrabold text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] px-1 py-0.2 rounded">
+                -50%
+              </span>
+            </div>
+
+            {/* 4. Keterangan Fee Jasa */}
+            <span className="text-[10px] font-medium text-[#735F52] mt-0.5">
+              fee {feeDescription}
             </span>
           </div>
 
-          {/* 4. Keterangan Fee Jasa */}
-          <span className="text-[10px] font-medium text-[#735F52] bg-[#F5EFEB] px-1.5 py-0.5 rounded border border-[#E5DACB]">
-            fee {feeDescription}
-          </span>
+          {/* 5. Tombol Lingkaran Hijau Plus (Kanan Bawah) */}
+          {!isSoldOut && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectProduct(product);
+              }}
+              aria-label={`Tambah dan kustomisasi ${product.name}`}
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white flex items-center justify-center shadow-xs transition active:scale-90 shrink-0"
+            >
+              <svg
+                className="w-4 h-4 stroke-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2.8}
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+          )}
         </div>
       </div>
     </div>
