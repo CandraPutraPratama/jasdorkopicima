@@ -63,7 +63,7 @@ export function MenuCategoryNav({
   return (
     <nav
       aria-label="Kategori Menu"
-      className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-2xs"
+      className="sticky top-0 z-20 bg-[#FBF8F4]/95 backdrop-blur-md border-b border-[#EFE5D8] shadow-2xs"
     >
       <div className="relative">
         {/* Deretan Chip Kategori dengan scroll horizontal tanpa scrollbar */}
@@ -85,10 +85,10 @@ export function MenuCategoryNav({
                 onClick={() => onSelectCategory(category.code)}
                 aria-pressed={isActive}
                 style={{ touchAction: 'manipulation' }}
-                className={`min-h-[44px] px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap active:scale-95 shrink-0 ${
+                className={`min-h-[44px] px-4 py-2 rounded-full font-display text-xs font-bold whitespace-nowrap active:scale-95 shrink-0 ${
                   isActive
-                    ? 'bg-[#111111] text-[#D4AF37] shadow-xs'
-                    : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
+                    ? 'bg-[#26150B] text-[#FBBF24] shadow-xs'
+                    : 'bg-[#F2EAE0] text-[#5C4638] hover:bg-[#EAE0D3]'
                 }`}
               >
                 {category.name}
@@ -97,10 +97,10 @@ export function MenuCategoryNav({
           })}
         </div>
 
-        {/* Fade gradient kanan: HANYA saat masih ada chip tersembunyi di kanan (Langkah 4) */}
+        {/* Fade gradient kanan: HANYA saat masih ada chip tersembunyi di kanan */}
         <div
           aria-hidden="true"
-          className={`pointer-events-none absolute right-0 inset-y-0 w-10 bg-gradient-to-l from-white via-white/80 to-transparent transition-opacity duration-200 z-10 ${
+          className={`pointer-events-none absolute right-0 inset-y-0 w-10 bg-gradient-to-l from-[#FBF8F4] via-[#FBF8F4]/80 to-transparent transition-opacity duration-200 z-10 ${
             canScrollRight ? 'opacity-100' : 'opacity-0'
           }`}
         />

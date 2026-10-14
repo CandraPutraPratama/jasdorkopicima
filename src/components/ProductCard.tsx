@@ -31,23 +31,23 @@ export function ProductCard({ product, onSelectProduct }: ProductCardProps) {
       }}
       className={`p-3.5 bg-white border rounded-2xl flex gap-3 transition shadow-xs ${
         isSoldOut
-          ? 'border-stone-200/60 bg-stone-50/70 opacity-65 cursor-not-allowed'
-          : 'border-stone-200 hover:border-amber-400 hover:shadow-md cursor-pointer active:scale-99'
+          ? 'border-[#EFE5D8]/60 bg-[#FAF7F2]/60 opacity-65 cursor-not-allowed'
+          : 'border-[#EFE5D8] hover:border-[#D9A74A]/60 hover:shadow-md cursor-pointer active:scale-99'
       }`}
     >
       {/* Gambar Produk */}
-      <div className="relative w-20 h-20 bg-stone-100 rounded-xl overflow-hidden shrink-0 border border-stone-100">
+      <div className="relative w-22 h-22 bg-[#F4EDE3] rounded-2xl overflow-hidden shrink-0 border border-[#EAE0D3]">
         {product.image ? (
           <Image
             src={product.image}
             alt={product.name}
             fill
-            sizes="80px"
+            sizes="88px"
             loading="lazy"
             className={`object-cover ${isSoldOut ? 'grayscale' : ''}`}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-stone-300">
+          <div className="w-full h-full flex items-center justify-center text-[#BFAFA0]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-8 w-8"
@@ -66,8 +66,8 @@ export function ProductCard({ product, onSelectProduct }: ProductCardProps) {
         )}
 
         {isSoldOut && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span className="px-2 py-0.5 bg-rose-600 text-white text-[10px] font-bold rounded-md uppercase tracking-wider">
+          <div className="absolute inset-0 bg-[#26150B]/60 flex items-center justify-center">
+            <span className="px-2 py-0.5 bg-[#4A3225] text-white text-[10px] font-bold rounded-md uppercase tracking-wider">
               Habis
             </span>
           </div>
@@ -78,38 +78,42 @@ export function ProductCard({ product, onSelectProduct }: ProductCardProps) {
       <div className="flex-1 flex flex-col justify-between">
         <div>
           <div className="flex items-start justify-between gap-1">
-            <h4 className="text-sm font-bold text-[#111111] leading-snug line-clamp-1">
+            <h4 className="font-display text-sm font-bold text-[#26150B] leading-snug line-clamp-1">
               {product.name}
             </h4>
             {isSoldOut && (
-              <span className="shrink-0 text-[10px] font-bold text-rose-600 px-1.5 py-0.2 bg-rose-50 border border-rose-200 rounded">
+              <span className="shrink-0 text-[10px] font-bold text-[#735F52] px-1.5 py-0.2 bg-[#F2EAE0] border border-[#E3D6C5] rounded">
                 Habis
               </span>
             )}
           </div>
 
           {product.description && (
-            <p className="text-[11px] text-stone-600 line-clamp-2 mt-0.5 leading-relaxed">
+            <p className="text-[11px] text-[#6A584D] line-clamp-2 mt-0.5 leading-relaxed">
               {product.description}
             </p>
           )}
         </div>
 
-        {/* Baris 3 Harga */}
-        <div className="mt-2 pt-1.5 border-t border-stone-100 flex items-baseline justify-between gap-2">
+        {/* Baris Harga Promo Punch & Fee */}
+        <div className="mt-2 pt-2 border-t border-[#F2EAE0] flex items-center justify-between gap-1.5 flex-wrap">
           <div className="flex items-baseline gap-1.5">
-            {/* 1. Harga Promo */}
-            <span className="text-sm font-bold text-amber-700">
+            {/* 1. Harga Promo (Punch Merah) */}
+            <span className="font-display text-sm font-black text-[#DC2626]">
               {formatRupiah(pricing.promoPricePerItem)}
             </span>
             {/* 2. Harga Asli Dicoret */}
-            <span className="text-[11px] text-stone-500 line-through font-medium">
+            <span className="text-[11px] text-[#9C897B] line-through font-medium">
               {formatRupiah(pricing.originalPricePerItem)}
+            </span>
+            {/* 3. Badge Diskon 50% (Punch Merah) */}
+            <span className="text-[9px] font-extrabold text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] px-1 py-0.2 rounded">
+              -50%
             </span>
           </div>
 
-          {/* 3. Keterangan Fee Jasa */}
-          <span className="text-[10px] font-semibold text-stone-600 bg-stone-100 px-1.5 py-0.5 rounded border border-stone-200/80">
+          {/* 4. Keterangan Fee Jasa */}
+          <span className="text-[10px] font-medium text-[#735F52] bg-[#F5EFEB] px-1.5 py-0.5 rounded border border-[#E5DACB]">
             fee {feeDescription}
           </span>
         </div>

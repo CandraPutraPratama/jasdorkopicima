@@ -114,7 +114,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
       });
     }
 
-    // Kunci manual scroll sementara untuk menghindari konflik/kedip scrollspy tepat setelah lompat (400ms memastikan stabil)
+    // Kunci manual scroll sementara untuk menghindari konflik/kedip scrollspy tepat setelah lompat
     if (clickTimeoutRef.current) {
       clearTimeout(clickTimeoutRef.current);
     }
@@ -123,7 +123,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     }, 400);
   };
 
-  // Penanda aktif mengikuti scroll manual (scrollspy) (Langkah 3)
+  // Penanda aktif mengikuti scroll manual (scrollspy)
   useEffect(() => {
     if (menuGroups.length === 0) return;
 
@@ -180,9 +180,9 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   // 1. Loading Jam Operasional
   if (isJasdorLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-white">
-        <div className="w-8 h-8 border-3 border-amber-400 border-t-transparent rounded-full animate-spin" />
-        <p className="mt-3 text-xs text-stone-600 font-medium">Memeriksa operasional...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#FBF8F4]">
+        <div className="w-8 h-8 border-3 border-[#C67D0A] border-t-transparent rounded-full animate-spin" />
+        <p className="mt-3 text-xs text-[#735F52] font-semibold">Memeriksa operasional...</p>
       </div>
     );
   }
@@ -200,17 +200,17 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-stone-50">
-      {/* Header dengan tombol kembali (tidak sticky di halaman outlet agar bar chip menempel tepat di tepi atas viewport) */}
+    <div className="min-h-screen flex flex-col bg-[#FBF8F4]">
+      {/* Header dengan tombol kembali */}
       <Header showBack={true} backHref="/" backLabel="Kembali ke Cari Outlet" sticky={false} />
 
       {/* Loading State Outlet & Menu */}
       {isLoading && (
         <div className="p-4 space-y-4">
-          <div className="p-4 bg-white rounded-2xl border border-stone-200 animate-pulse">
-            <div className="h-6 bg-stone-200 rounded w-2/3 mb-2" />
-            <div className="h-4 bg-stone-100 rounded w-full mb-2" />
-            <div className="h-4 bg-stone-100 rounded w-1/3" />
+          <div className="p-4 bg-white rounded-3xl border border-[#EFE5D8] animate-pulse">
+            <div className="h-6 bg-[#EFE5D8] rounded w-2/3 mb-2" />
+            <div className="h-4 bg-[#F7F1E8] rounded w-full mb-2" />
+            <div className="h-4 bg-[#F7F1E8] rounded w-1/3" />
           </div>
           <CategoryTabSkeleton />
           <div className="space-y-3">
@@ -224,16 +224,16 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
       {/* 404 Not Found State */}
       {isNotFound && !isLoading && (
         <div className="flex-1 p-6 flex flex-col items-center justify-center text-center">
-          <div className="w-16 h-16 bg-amber-50 text-amber-700 rounded-2xl flex items-center justify-center mb-3 border border-amber-200">
-            <span className="text-xl font-black">404</span>
+          <div className="w-16 h-16 bg-[#FEF3C7] text-[#B45309] rounded-2xl flex items-center justify-center mb-3 border border-[#FDE68A]">
+            <span className="font-display text-xl font-black">404</span>
           </div>
-          <h1 className="text-base font-bold text-[#111111] mb-1">Outlet Tidak Ditemukan</h1>
-          <p className="text-xs text-stone-600 max-w-xs mb-5">
+          <h1 className="font-display text-base font-bold text-[#26150B] mb-1">Outlet Tidak Ditemukan</h1>
+          <p className="text-xs text-[#6A584D] max-w-xs mb-5 leading-relaxed">
             Outlet ini tidak terdaftar atau berada di luar jangkauan layanan Kopi Kenangan kami.
           </p>
           <Link
             href="/"
-            className="min-h-[44px] px-6 py-2.5 bg-[#111111] text-[#D4AF37] font-bold text-xs rounded-xl flex items-center justify-center shadow-sm"
+            className="min-h-[44px] px-6 py-2.5 bg-[#26150B] text-[#FBBF24] font-display font-bold text-xs rounded-xl flex items-center justify-center shadow-xs"
           >
             Cari Outlet Kopi Kenangan
           </Link>
@@ -259,11 +259,11 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
               />
             </svg>
           </div>
-          <h2 className="text-base font-bold text-[#111111] mb-1">Gagal Memuat Outlet</h2>
-          <p className="text-xs text-stone-600 max-w-xs mb-4">{errorMessage}</p>
+          <h2 className="font-display text-base font-bold text-[#26150B] mb-1">Gagal Memuat Outlet</h2>
+          <p className="text-xs text-[#6A584D] max-w-xs mb-4 leading-relaxed">{errorMessage}</p>
           <Link
             href="/"
-            className="min-h-[44px] px-5 py-2.5 bg-[#111111] text-[#D4AF37] font-semibold text-xs rounded-xl flex items-center justify-center"
+            className="min-h-[44px] px-5 py-2.5 bg-[#26150B] text-[#FBBF24] font-display font-bold text-xs rounded-xl flex items-center justify-center"
           >
             Pilih Outlet Lain
           </Link>
@@ -274,13 +274,13 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
       {!isLoading && !errorMessage && outlet && (
         <div className="flex-1 flex flex-col">
           {/* Header Outlet Info Card */}
-          <div className="p-4 bg-white border-b border-stone-200">
+          <div className="p-4 bg-white border-b border-[#EFE5D8]">
             <div className="flex items-start justify-between gap-2">
-              <h1 className="text-lg font-bold text-[#111111] leading-snug">
+              <h1 className="font-display text-lg font-bold text-[#26150B] leading-snug">
                 {outlet.name}
               </h1>
               <span
-                className={`shrink-0 px-2.5 py-0.5 text-[11px] font-semibold rounded-full border ${
+                className={`shrink-0 px-2.5 py-0.5 text-[11px] font-bold rounded-full border ${
                   outlet.isOpen
                     ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                     : 'bg-rose-50 text-rose-700 border-rose-200'
@@ -290,18 +290,18 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
               </span>
             </div>
 
-            <p className="text-xs text-stone-600 mt-1 leading-relaxed">
+            <p className="text-xs text-[#6A584D] mt-1 leading-relaxed">
               {outlet.address}
             </p>
 
             {outlet.openTime && outlet.closeTime && (
-              <div className="flex items-center gap-2 mt-2 pt-2 border-t border-stone-100 text-[11px] text-stone-600">
+              <div className="flex items-center gap-2 mt-2 pt-2 border-t border-[#F2EAE0] text-[11px] text-[#735F52]">
                 <span>
                   Jam buka: {outlet.openTime.slice(0, 5)} - {outlet.closeTime.slice(0, 5)} WIB
                 </span>
                 {outlet.phone && (
                   <>
-                    <span>•</span>
+                    <span className="text-[#C8B8A6]">•</span>
                     <span>Telp: {outlet.phone}</span>
                   </>
                 )}
@@ -319,8 +319,8 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           {/* Daftar Produk per Kategori */}
           <div className="p-4 space-y-6 pb-28">
             {menuGroups.length === 0 ? (
-              <div className="p-8 bg-white rounded-2xl border border-stone-200 text-center">
-                <p className="text-xs text-stone-600">
+              <div className="p-8 bg-white rounded-3xl border border-[#EFE5D8] text-center">
+                <p className="text-xs text-[#6A584D]">
                   Tidak ada menu aktif yang tersedia di outlet ini saat ini.
                 </p>
               </div>
@@ -335,10 +335,10 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                   className="space-y-3 scroll-mt-[68px]"
                 >
                   <div className="flex items-center justify-between pt-1">
-                    <h2 className="text-sm font-bold text-[#111111] tracking-tight">
+                    <h2 className="font-display text-sm font-black text-[#26150B] tracking-tight">
                       {group.name}
                     </h2>
-                    <span className="text-[11px] text-stone-400">
+                    <span className="text-[11px] text-[#8C7667] font-semibold">
                       {group.products.length} menu
                     </span>
                   </div>
