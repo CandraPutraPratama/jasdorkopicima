@@ -33,7 +33,7 @@ export function ClosedScreen({
           jasdorkopicima
         </h1>
         <p className="text-xs uppercase tracking-widest text-[#A66908] font-bold mt-1">
-          Layanan Jastip Kopi Kenangan
+          Layanan Jasa Order Kopi Kenangan
         </p>
       </div>
 
@@ -60,7 +60,7 @@ export function ClosedScreen({
           Jasdor Sedang Tutup
         </h2>
         <p className="text-xs text-[#6A584D] leading-relaxed mb-4">
-          Kami sedang beristirahat. Pemesanan jastip hanya dapat diproses pada jam operasional.
+          Kami sedang beristirahat. Pemesanan jasa order hanya dapat diproses pada jam operasional.
         </p>
 
         {/* Operating Hours Box */}

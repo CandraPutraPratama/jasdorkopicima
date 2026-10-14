@@ -1,6 +1,6 @@
 # Panduan Operasional & Pemeliharaan (Runbook) — Jasdor Kopi Cima
 
-Panduan ini ditujukan bagi pemilik dan pengelola teknis untuk mengoperasikan, mengonfigurasi, dan menangani insiden pada layanan jastip **jasdorkopicima**.
+Panduan ini ditujukan bagi pemilik dan pengelola teknis untuk mengoperasikan, mengonfigurasi, dan menangani insiden pada layanan jasa order **jasdorkopicima**.
 
 ---
 
@@ -161,7 +161,7 @@ Jika token atau kunci API bocor atau perlu diganti berkala:
 ## 6. Pengaman Margin & Cara Membaca Log Peringatan
 
 ### Batas Impas Bisnis
-- Tambahan Large flat adalah **+Rp5.000**. Karena promo dasar 50%, tambahan ini **impas bila selisih Large di KK adalah Rp10.000** (50% dari Rp10.000 = Rp5.000), dan **menguntungkan pemilik bila selisih di KK di bawah Rp10.000** (contoh Taro Cloud Latte: selisih KK Rp7.000, jastip menarik Rp5.000 dari promo Rp11.000 -> impas/untung).
+- Tambahan Large flat adalah **+Rp5.000**. Karena promo dasar 50%, tambahan ini **impas bila selisih Large di KK adalah Rp10.000** (50% dari Rp10.000 = Rp5.000), dan **menguntungkan pemilik bila selisih di KK di bawah Rp10.000** (contoh Taro Cloud Latte: selisih KK Rp7.000, jasa order menarik Rp5.000 dari promo Rp11.000 -> impas/untung).
 - Tambahan Juwara Beans flat: **+Rp3.000** (impas pada selisih KK Rp3.000).
 - Tambahan Oatside flat: **+Rp3.000** (impas pada selisih KK Rp3.000).
 
@@ -254,7 +254,7 @@ Dengan konteks skala operasional **20–30 pesanan per hari**, ambang batas yang
 ### E. Perbedaan Aksi untuk Pelanggan Asli: Managed Challenge vs Block
 - **Managed Challenge (Rekomendasi)**:
   - *Cara Kerja*: Menampilkan verifikasi interaktif non-intrusif (Cloudflare Turnstile centang otomatis).
-  - *Dampak Pelanggan Asli*: Jika terjadi *false positive* (misalnya 5 karyawan di 1 kantor memesan jastip berbarengan dari Wi-Fi yang sama dan total request mencapai 100 dalam semenit), pelanggan hanya diminta menyelesaikan verifikasi singkat lalu dapat langsung melanjutkan pesanan tanpa terganggu.
+  - *Dampak Pelanggan Asli*: Jika terjadi *false positive* (misalnya 5 karyawan di 1 kantor memesan jasa order berbarengan dari Wi-Fi yang sama dan total request mencapai 100 dalam semenit), pelanggan hanya diminta menyelesaikan verifikasi singkat lalu dapat langsung melanjutkan pesanan tanpa terganggu.
   - *Dampak Bot*: Bot atau skrip otomatis tanpa browser engine akan gagal melewati challenge dan otomatis terhenti.
 - **Block (Blokir Sementara)**:
   - *Cara Kerja*: Cloudflare langsung mengembalikan kode status HTTP 429 atau halaman error "Access Denied".

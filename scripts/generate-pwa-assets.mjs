@@ -101,7 +101,7 @@ async function main() {
 
       <!-- Tag Badge -->
       <rect x="80" y="80" width="310" height="42" rx="21" fill="#292524" stroke="#D4AF37" stroke-width="1" />
-      <text x="100" y="107" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#D4AF37" letter-spacing="1.5">JASTIP KOPI KENANGAN</text>
+      <text x="100" y="107" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#D4AF37" letter-spacing="1.5">JASA ORDER KOPI KENANGAN</text>
 
       <!-- Nama Brand Utama -->
       <text x="80" y="195" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="900" fill="#FFFFFF" letter-spacing="-1">

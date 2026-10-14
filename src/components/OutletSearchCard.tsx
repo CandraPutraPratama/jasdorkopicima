@@ -76,7 +76,7 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
 
       <div className="pt-2.5 border-t border-[#F2EAE0] flex items-center justify-between">
         <span className="text-[11px] text-[#735F52] font-medium">
-          {isOrderable ? 'Pickup jastip tersedia' : 'Tidak menerima pesanan'}
+          {isOrderable ? 'Pickup jasa order tersedia' : 'Tidak menerima pesanan'}
         </span>
 
         {isOrderable ? (

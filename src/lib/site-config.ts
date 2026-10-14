@@ -6,7 +6,7 @@ import { BUSINESS_CONFIG } from '@/config/business';
  * Digunakan oleh halaman FAQ, Syarat & Ketentuan, Kebijakan Privasi, Kontak, Footer, dan Header.
  *
  * ATURAN BISNIS:
- * - Brand: Jasa Order (bukan jastip)
+ * - Brand: Jasa Order
  * - Hari Pasti Buka: Jumat, Sabtu, Minggu (08:00 – 23:20 WIB)
  * - Hari Tentatif: Selasa (konfirmasi admin via WhatsApp terlebih dahulu)
  * - Hari Libur: Senin, Rabu, Kamis

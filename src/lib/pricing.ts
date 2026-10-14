@@ -37,7 +37,7 @@ export interface OrderPricingResult {
   totalQuantity: number;
   /** Subtotal pesanan (akumulasi harga promo x kuantitas) */
   subtotal: number;
-  /** Biaya jasa jastip */
+  /** Biaya jasa order */
   fee: number;
   /** Total akhir tagihan ke customer: subtotal + fee */
   total: number;

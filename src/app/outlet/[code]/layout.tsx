@@ -33,13 +33,13 @@ export async function generateMetadata({
       const address = (outlet.address || '').trim();
       const description = `Pesan Kopi Kenangan di ${outletName}${
         address ? ` (${address})` : ''
-      }. Jastip promo hemat setengah harga (50%), biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.`;
+      }. Jasa order promo hemat setengah harga (50%), biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.`;
 
       return {
         title: outletName,
         description,
         openGraph: {
-          title: `${outletName} | Jasdor — Jastip Kopi Kenangan`,
+          title: `${outletName} | Jasdor — Jasa Order Kopi Kenangan`,
           description,
           url: `https://jasdor.cimagroup.my.id/outlet/${encodeURIComponent(cleanCode)}`,
           images: [
@@ -53,7 +53,7 @@ export async function generateMetadata({
         },
         twitter: {
           card: 'summary_large_image',
-          title: `${outletName} | Jasdor — Jastip Kopi Kenangan`,
+          title: `${outletName} | Jasdor — Jasa Order Kopi Kenangan`,
           description,
           images: ['/og-image.png'],
         },
@@ -65,7 +65,7 @@ export async function generateMetadata({
 
   return {
     title: `Outlet ${cleanCode}`,
-    description: `Pesan Kopi Kenangan di outlet ${cleanCode}. Promo jastip hemat setengah harga (50%) via Jasdor.`,
+    description: `Pesan Kopi Kenangan di outlet ${cleanCode}. Promo jasa order hemat setengah harga (50%) via Jasdor.`,
   };
 }
 

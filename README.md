@@ -1,6 +1,6 @@
 # jasdorkopicima
 
-Website layanan jasa titip (jastip) Kopi Kenangan independen. Membantu customer mencari outlet, memesan menu dengan diskon 50% dari harga dasar, memilih varian flat-rate, dan menghasilkan draft pesanan WhatsApp secara terstruktur.
+Website layanan jasa order Kopi Kenangan independen. Membantu customer mencari outlet, memesan menu dengan diskon 50% dari harga dasar, memilih varian flat-rate, dan menghasilkan draft pesanan WhatsApp secara terstruktur.
 
 > **Status Proyek**: **Tahap 6 (Production Ready & Launch Hardening Selesai)**.
 
@@ -52,16 +52,14 @@ Website layanan jasa titip (jastip) Kopi Kenangan independen. Membantu customer 
 3. **Observability & Status Sync**:
    - `GET /api/sync-status`: Memeriksa waktu terakhir sinkronisasi dan jumlah outlet in-scope vs out-of-scope.
    - Error log dari KK disanitasi agar tidak membocorkan token atau data sensitif.
-4. **Pengaman Margin (Margin Guard)**:
-   - Memantau selisih SKU KK untuk Large (>Rp10.000) serta Juwara/Oatside (>Rp3.000) dan mencatat log throttled peringatan jika biaya flat berpotensi merugikan pemilik.
 5. **WhatsApp & Social Share Preview**:
-   - Dilengkapi metadata OpenGraph, favicon, dan logo jastip resmi.
+   - Dilengkapi metadata OpenGraph, favicon, dan logo jasa order resmi.
 
 ---
 
 ## 📖 Panduan Operasional Pemilik
 
-Untuk instruksi lengkap pengelolaan jastip (mengubah harga flat, mengubah nomor WA, rotasi secret, panduan penanganan error API KK, dan sync manual), baca:
+Untuk instruksi lengkap pengelolaan jasa order (mengubah harga flat, mengubah nomor WA, rotasi secret, panduan penanganan error API KK, dan sync manual), baca:
 👉 [docs/RUNBOOK.md](file:///c:/Users/LENOVO/websitebisnis/jasdorkopicima/docs/RUNBOOK.md)
 
 ---

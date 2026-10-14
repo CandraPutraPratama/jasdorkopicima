@@ -21,11 +21,11 @@ import { Footer } from '@/components/Footer';
 export const metadata: Metadata = {
   metadataBase: new URL('https://jasdor.cimagroup.my.id'),
   title: {
-    default: 'Jasdor — Jastip Kopi Kenangan Promo Setengah Harga',
-    template: '%s | Jasdor — Jastip Kopi Kenangan',
+    default: 'Jasdor — Jasa Order Kopi Kenangan Promo Setengah Harga',
+    template: '%s | Jasdor — Jasa Order Kopi Kenangan',
   },
   description:
-    'Jastip Kopi Kenangan hemat promo setengah harga (diskon 50%). Pesan mudah langsung dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
+    'Jasa order Kopi Kenangan hemat promo setengah harga (diskon 50%). Pesan mudah langsung dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
   applicationName: 'Jasdor',
   appleWebApp: {
     capable: true,
@@ -42,9 +42,9 @@ export const metadata: Metadata = {
     apple: '/icons/apple-touch-icon.png',
   },
   openGraph: {
-    title: 'Jasdor — Jastip Kopi Kenangan Promo Setengah Harga',
+    title: 'Jasdor — Jasa Order Kopi Kenangan Promo Setengah Harga',
     description:
-      'Jastip Kopi Kenangan hemat promo setengah harga (diskon 50%). Pesan mudah langsung dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
+      'Jasa order Kopi Kenangan hemat promo setengah harga (diskon 50%). Pesan mudah langsung dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
     url: 'https://jasdor.cimagroup.my.id',
     siteName: 'Jasdor',
     images: [
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Jasdor — Jastip Kopi Kenangan Promo Setengah Harga',
+        alt: 'Jasdor — Jasa Order Kopi Kenangan Promo Setengah Harga',
       },
     ],
     locale: 'id_ID',
@@ -60,9 +60,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Jasdor — Jastip Kopi Kenangan Promo Setengah Harga',
+    title: 'Jasdor — Jasa Order Kopi Kenangan Promo Setengah Harga',
     description:
-      'Jastip Kopi Kenangan hemat promo setengah harga (diskon 50%). Pesan mudah langsung dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
+      'Jasa order Kopi Kenangan hemat promo setengah harga (diskon 50%). Pesan mudah langsung dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
     images: ['/og-image.png'],
   },
 };

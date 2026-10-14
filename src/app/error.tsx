@@ -90,7 +90,7 @@ export default function ErrorBoundary({
 
       <div className="pb-4">
         <p className="text-[11px] text-stone-400">
-          jasdorkopicima • Jastip Kopi Kenangan
+          jasdorkopicima • Jasa Order Kopi Kenangan
         </p>
       </div>
     </div>
