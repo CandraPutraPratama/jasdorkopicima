@@ -9,21 +9,24 @@ const FAVORITES_STORAGE_KEY = 'jasdor_favorite_products';
  * Tersimpan persisten antar sesi browser.
  */
 export function useFavorites() {
-  const [favoriteIds, setFavoriteIds] = useState<string[]>(() => {
-    if (typeof window === 'undefined') return [];
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
     try {
       const stored = localStorage.getItem(FAVORITES_STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed)) {
-          return parsed.map((id) => String(id));
+          setFavoriteIds(parsed.map((id) => String(id)));
         }
       }
     } catch (err) {
       console.warn('Gagal membaca favorit dari localStorage:', err);
+    } finally {
+      setIsLoaded(true);
     }
-    return [];
-  });
+  }, []);
 
   // Tambah / Hapus menu dari daftar favorit
   const toggleFavorite = useCallback((productId: number | string) => {
