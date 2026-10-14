@@ -15,10 +15,40 @@ export default function HomePage() {
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [outlets, setOutlets] = useState<Outlet[]>([]);
+  const [featuredOutlets, setFeaturedOutlets] = useState<Outlet[]>([]);
+  const [isLoadingFeatured, setIsLoadingFeatured] = useState(true);
   const [isLoadingOutlets, setIsLoadingOutlets] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [, startTransition] = useTransition();
+
+  // Load default featured outlets saat pertama kali homepage dibuka
+  useEffect(() => {
+    let isCancelled = false;
+
+    fetch('/api/outlets?featured=true')
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error('Gagal memuat outlet unggulan');
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (!isCancelled) {
+          setFeaturedOutlets(data.items || []);
+          setIsLoadingFeatured(false);
+        }
+      })
+      .catch(() => {
+        if (!isCancelled) {
+          setIsLoadingFeatured(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   // Debounce search query 300ms
   useEffect(() => {
@@ -195,50 +225,84 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* State 1: Petunjuk sebelum mengetik */}
+        {/* Quick Suggestion Chips */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 mb-4 text-xs">
+          <span className="text-[11px] text-[#735F52] font-semibold shrink-0">Cari cepat:</span>
+          {['Grand Indonesia', 'Puri', 'Kokas', 'Rungkut', 'Senayan'].map((sample) => (
+            <button
+              key={sample}
+              type="button"
+              onClick={() => setQuery(sample)}
+              className="px-2.5 py-1 text-xs font-semibold bg-white border border-[#EAE0D3] hover:border-[#C67D0A] text-[#4A3225] rounded-xl transition shrink-0 active:scale-95 shadow-2xs"
+            >
+              {sample}
+            </button>
+          ))}
+        </div>
+
+        {/* State 1: Daftar Outlet Unggulan Default (Sebelum pengguna mencari) */}
         {!hasSearched && (
-          <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-white rounded-3xl border border-[#EFE5D8] shadow-xs my-auto">
-            <div className="w-14 h-14 bg-[#FEF3C7] text-[#B45309] rounded-2xl flex items-center justify-center mb-3 border border-[#FDE68A]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-7 w-7"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.8}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.8}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
+          <div>
+            <div className="flex items-center justify-between mb-3 px-1">
+              <div className="flex items-center gap-2">
+                <h2 className="font-display font-bold text-sm text-[#26150B]">
+                  Outlet Pilihan & Terpopuler
+                </h2>
+                <span className="px-2 py-0.5 bg-[#FEF3C7] text-[#92400E] text-[10px] font-bold rounded-full border border-[#FDE68A]">
+                  Rekomendasi
+                </span>
+              </div>
+              {!isLoadingFeatured && featuredOutlets.length > 0 && (
+                <span className="text-[11px] text-[#8C7667] font-medium">
+                  {featuredOutlets.length} outlet
+                </span>
+              )}
             </div>
-            <h2 className="font-display text-base font-bold text-[#26150B] mb-1">
-              Cari Outlet Kopi Kenangan
-            </h2>
-            <p className="text-xs text-[#6A584D] leading-relaxed max-w-xs mb-4">
-              Ketik nama outlet, mall, atau area jalan di atas untuk mulai memesan jastip promo setengah harga.
-            </p>
-            <div className="flex flex-wrap justify-center gap-1.5">
-              <span className="text-[11px] text-[#735F52] font-semibold self-center mr-1">Contoh:</span>
-              {['Rungkut', 'Grand Indonesia', 'Puri', 'Senayan'].map((sample) => (
-                <button
-                  key={sample}
-                  type="button"
-                  onClick={() => setQuery(sample)}
-                  className="px-3 py-1.5 text-xs font-semibold bg-[#F2EAE0] hover:bg-[#EAE0D3] text-[#4A3225] rounded-xl transition min-h-[36px] active:scale-95"
-                >
-                  {sample}
-                </button>
-              ))}
-            </div>
+
+            {isLoadingFeatured ? (
+              <div className="space-y-3 pb-6">
+                <OutletCardSkeleton />
+                <OutletCardSkeleton />
+                <OutletCardSkeleton />
+              </div>
+            ) : featuredOutlets.length > 0 ? (
+              <div className="space-y-3 pb-6">
+                {featuredOutlets.map((outlet) => (
+                  <OutletSearchCard key={outlet.code || outlet.id} outlet={outlet} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-white rounded-3xl border border-[#EFE5D8] shadow-xs my-auto">
+                <div className="w-14 h-14 bg-[#FEF3C7] text-[#B45309] rounded-2xl flex items-center justify-center mb-3 border border-[#FDE68A]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-7 w-7"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.8}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.8}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </div>
+                <h2 className="font-display text-base font-bold text-[#26150B] mb-1">
+                  Cari Outlet Kopi Kenangan
+                </h2>
+                <p className="text-xs text-[#6A584D] leading-relaxed max-w-xs mb-2">
+                  Ketik nama outlet, mall, atau area jalan di atas untuk mulai memesan jastip promo setengah harga.
+                </p>
+              </div>
+            )}
           </div>
         )}
 

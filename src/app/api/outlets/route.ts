@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { searchOutlets } from '@/lib/outlet-service';
+import { searchOutlets, getFeaturedOutlets } from '@/lib/outlet-service';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
@@ -29,10 +29,38 @@ export async function GET(request: NextRequest) {
 
   try {
     const searchParams = request.nextUrl.searchParams;
+    const isFeatured = searchParams.get('featured') === 'true';
     const rawKeyword = searchParams.get('q') || searchParams.get('keyword') || '';
     const keyword = cleanSearchQuery(rawKeyword);
     const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
     const pageSize = Math.min(50, Math.max(1, parseInt(searchParams.get('pageSize') || '20', 10)));
+
+    // Jika parameter featured diminta atau tidak ada query pencarian sama sekali
+    if (isFeatured || (!keyword && !searchParams.has('q') && !searchParams.has('keyword'))) {
+      const limit = Math.min(12, Math.max(1, parseInt(searchParams.get('limit') || '8', 10)));
+      const cacheKey = cacheKeys.storeList('__featured__', 1, limit);
+      const cached = await cacheService.get<{
+        total: number;
+        page: number;
+        pageSize: number;
+        items: Outlet[];
+      }>(cacheKey);
+
+      if (cached) {
+        return NextResponse.json(cached);
+      }
+
+      const { items, total } = await getFeaturedOutlets(limit);
+      const responsePayload = {
+        total,
+        page: 1,
+        pageSize: limit,
+        items,
+      };
+
+      await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.storeOpenStatusTtlSeconds);
+      return NextResponse.json(responsePayload);
+    }
 
     if (!keyword) {
       return NextResponse.json({

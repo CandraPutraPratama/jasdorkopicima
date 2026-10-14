@@ -116,6 +116,79 @@ export async function searchOutlets(
 }
 
 /**
+ * Mengambil daftar outlet unggulan/populer (default untuk homepage sebelum pencarian).
+ * Mengutamakan outlet yang sedang buka (canOrder: true) lalu disusul outlet populer,
+ * dengan batas jumlah (default 8 outlet).
+ */
+export async function getFeaturedOutlets(limit = 8): Promise<SearchOutletsResult> {
+  // 1. Ambil dari KK API queryStore dengan keyword kosong untuk status real-time
+  try {
+    const rawData = await kkApiClient.queryStore({
+      pageNum: 1,
+      pageSize: 16,
+      keyword: '',
+    });
+
+    const normalized = normalizeStores(rawData.store || []);
+    // Prioritaskan outlet yang sedang buka/dapat dipesan (canOrder === true)
+    const sorted = [...normalized].sort((a, b) => {
+      if (a.canOrder && !b.canOrder) return -1;
+      if (!a.canOrder && b.canOrder) return 1;
+      return 0;
+    });
+
+    const items = sorted.slice(0, limit);
+    return {
+      items,
+      total: items.length,
+      source: 'kk-api-fallback',
+    };
+  } catch (err: any) {
+    console.warn(`[OutletService] KK API getFeaturedOutlets error (${err.message}). Fallback ke Supabase.`);
+  }
+
+  // 2. Fallback ke database Supabase jika KK API bermasalah
+  try {
+    const supabase = getSupabaseServerClient();
+    const { data, error } = await supabase
+      .from('outlets')
+      .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope')
+      .eq('is_active', true)
+      .eq('is_in_scope', true)
+      .limit(limit);
+
+    if (!error && data) {
+      const items: Outlet[] = data.map((row) => ({
+        id: Number(row.id),
+        code: row.code,
+        name: row.name,
+        address: row.address,
+        isOpen: true,
+        openTime: row.open_time || '',
+        closeTime: row.close_time || '',
+        timeZone: 7,
+        canOrder: false,
+        orderReason: 'Status real-time tidak tersedia',
+      }));
+
+      return {
+        items,
+        total: items.length,
+        source: 'database',
+      };
+    }
+  } catch (dbErr: any) {
+    console.warn(`[OutletService] Supabase fallback getFeaturedOutlets error: ${dbErr.message}`);
+  }
+
+  return {
+    items: [],
+    total: 0,
+    source: 'database',
+  };
+}
+
+/**
  * Memeriksa apakah suatu kode outlet berada dalam ruang lingkup resmi Kopi Kenangan.
  * Menggunakan database Supabase (yang disinkronkan berkala dengan data brand_and_image lengkap)
  * serta pengaman berbasis prefix kode dan nama outlet.

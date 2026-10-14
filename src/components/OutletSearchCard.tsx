@@ -39,10 +39,16 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
       </p>
 
       {outlet.openTime && outlet.closeTime && (
-        <div className="flex items-center gap-1.5 text-[11px] text-[#735F52] mb-3">
+        <div
+          className={`flex items-center gap-1.5 text-[11px] mb-3 ${
+            isOrderable ? 'text-[#735F52]' : 'text-[#3D2817]'
+          }`}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-3.5 w-3.5 text-[#A66908]"
+            className={`h-3.5 w-3.5 ${
+              isOrderable ? 'text-[#A66908]' : 'text-[#5C4028]'
+            }`}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -54,13 +60,15 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span className="font-medium">
+          <span className={isOrderable ? 'font-medium' : 'font-semibold text-[#3D2817]'}>
             {outlet.openTime.slice(0, 5)} - {outlet.closeTime.slice(0, 5)} WIB
           </span>
           {outlet.distanceStr && (
             <>
-              <span className="text-[#C8B8A6]">•</span>
-              <span className="font-medium">{outlet.distanceStr}</span>
+              <span className={isOrderable ? 'text-[#C8B8A6]' : 'text-[#6A584D]'}>•</span>
+              <span className={isOrderable ? 'font-medium' : 'font-semibold text-[#3D2817]'}>
+                {outlet.distanceStr}
+              </span>
             </>
           )}
         </div>
