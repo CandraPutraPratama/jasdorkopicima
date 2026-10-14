@@ -35,7 +35,7 @@ export function MenuCategoryNav({
     };
   }, [categories]);
 
-  // Geser deretan chip secara mandiri agar chip aktif terlihat tanpa pernah men-scroll window (Sprint 2 Item 3.1)
+  // Sprint 2 Item 3.2 — Chip aktif selalu di tengah, instan tanpa smooth (behavior: 'auto')
   useEffect(() => {
     if (!activeCategoryCode) return;
     const container = scrollContainerRef.current;
@@ -45,26 +45,17 @@ export function MenuCategoryNav({
     const containerWidth = container.clientWidth;
     const chipLeft = chip.offsetLeft;
     const chipWidth = chip.offsetWidth;
-    const currentScrollLeft = container.scrollLeft;
+    const maxScroll = container.scrollWidth - containerWidth;
 
-    // Buffer padding samping agar chip tidak mepet persis tepi
-    const padding = 20;
+    // Hitung posisi tengah: chip berada di tengah viewport container
+    const targetLeft = chipLeft - (containerWidth - chipWidth) / 2;
+    // Jepit ke [0, maxScroll] agar tidak melampaui batas
+    const clampedLeft = Math.max(0, Math.min(targetLeft, maxScroll));
 
-    // Jika chip berada di sebelah kiri atau terpotong di kiri
-    if (chipLeft < currentScrollLeft + padding) {
-      container.scrollTo({
-        left: Math.max(0, chipLeft - padding),
-        behavior: 'smooth',
-      });
-    }
-    // Jika chip berada di sebelah kanan atau terpotong di kanan
-    else if (chipLeft + chipWidth > currentScrollLeft + containerWidth - padding) {
-      const targetLeft = chipLeft + chipWidth - containerWidth + padding;
-      container.scrollTo({
-        left: targetLeft,
-        behavior: 'smooth',
-      });
-    }
+    container.scrollTo({
+      left: clampedLeft,
+      behavior: 'auto', // INSTAN — tidak ada animasi smooth (Sprint 2 Item 3.2)
+    });
   }, [activeCategoryCode]);
 
   if (!categories || categories.length === 0) return null;
@@ -79,7 +70,7 @@ export function MenuCategoryNav({
         <div
           ref={scrollContainerRef}
           onScroll={checkScrollability}
-          className="flex gap-2 overflow-x-auto p-2.5 no-scrollbar scroll-smooth"
+          className="flex gap-2 overflow-x-auto p-2.5 no-scrollbar"
         >
           {categories.map((category) => {
             const isActive = category.code === activeCategoryCode;
@@ -93,7 +84,8 @@ export function MenuCategoryNav({
                 type="button"
                 onClick={() => onSelectCategory(category.code)}
                 aria-pressed={isActive}
-                className={`min-h-[44px] px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition active:scale-95 shrink-0 ${
+                style={{ touchAction: 'manipulation' }}
+                className={`min-h-[44px] px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap active:scale-95 shrink-0 ${
                   isActive
                     ? 'bg-[#111111] text-[#D4AF37] shadow-xs'
                     : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
