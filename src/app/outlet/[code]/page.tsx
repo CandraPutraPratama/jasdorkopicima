@@ -13,6 +13,10 @@ import { useCart } from '@/hooks/useCart';
 import { FloatingCartBar } from '@/components/FloatingCartBar';
 import { CartDrawer } from '@/components/CartDrawer';
 import { SwitchOutletModal } from '@/components/SwitchOutletModal';
+import {
+  determineActiveCategory,
+  SECTION_SCROLL_MARGIN_TOP,
+} from '@/lib/category-scrollspy';
 import type { Outlet, MenuGroup, Product } from '@/types/domain';
 
 interface OutletMenuPageProps {
@@ -40,6 +44,8 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const categoryRefs = useRef<Record<string, HTMLElement | null>>({});
+  const isManualClickRef = useRef<boolean>(false);
+  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (!outletCode) return;
@@ -91,15 +97,76 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     };
   }, [outletCode]);
 
+  // Klik chip = lompat instan ke awal bagian kategori (Langkah 2)
   const handleSelectCategory = (code: string) => {
+    isManualClickRef.current = true;
     setActiveCategoryCode(code);
+
     const element = categoryRefs.current[code];
     if (element) {
-      const yOffset = -115; // Offset untuk sticky header dan navigation tabs
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      if (typeof element.scrollIntoView === 'function') {
+        element.scrollIntoView({ behavior: 'auto', block: 'start' });
+      } else {
+        const top = element.getBoundingClientRect().top + window.pageYOffset - SECTION_SCROLL_MARGIN_TOP;
+        window.scrollTo({ top, behavior: 'auto' });
+      }
     }
+
+    // Kunci manual scroll sementara untuk menghindari konflik/kedip scrollspy tepat setelah lompat
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+    }
+    clickTimeoutRef.current = setTimeout(() => {
+      isManualClickRef.current = false;
+    }, 200);
   };
+
+  // Penanda aktif mengikuti scroll manual (scrollspy) (Langkah 3)
+  useEffect(() => {
+    if (menuGroups.length === 0) return;
+
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (isManualClickRef.current) return;
+      if (ticking) return;
+
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        if (isManualClickRef.current) return;
+
+        // Cek apakah scroll sudah mencapai paling bawah dokumen
+        const isAtBottom =
+          window.innerHeight + window.scrollY >=
+          document.documentElement.scrollHeight - 30;
+
+        const sections = menuGroups
+          .map((group) => {
+            const el = categoryRefs.current[group.code];
+            return el ? { code: group.code, top: el.getBoundingClientRect().top } : null;
+          })
+          .filter(Boolean) as { code: string; top: number }[];
+
+        const activeCode = determineActiveCategory({
+          sections,
+          isAtBottom,
+        });
+
+        if (activeCode) {
+          setActiveCategoryCode(activeCode);
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (clickTimeoutRef.current) {
+        clearTimeout(clickTimeoutRef.current);
+      }
+    };
+  }, [menuGroups]);
 
   // 1. Loading Jam Operasional
   if (isJasdorLoading) {
@@ -125,8 +192,8 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-50">
-      {/* Header dengan tombol kembali */}
-      <Header showBack={true} backHref="/" backLabel="Kembali ke Cari Outlet" />
+      {/* Header dengan tombol kembali (tidak sticky di halaman outlet agar bar chip menempel tepat di tepi atas viewport) */}
+      <Header showBack={true} backHref="/" backLabel="Kembali ke Cari Outlet" sticky={false} />
 
       {/* Loading State Outlet & Menu */}
       {isLoading && (
@@ -252,10 +319,11 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
               menuGroups.map((group) => (
                 <section
                   key={group.code}
+                  id={`cat-${group.code}`}
                   ref={(el) => {
                     categoryRefs.current[group.code] = el;
                   }}
-                  className="space-y-3"
+                  className="space-y-3 scroll-mt-[68px]"
                 >
                   <div className="flex items-center justify-between pt-1">
                     <h2 className="text-sm font-bold text-[#111111] tracking-tight">

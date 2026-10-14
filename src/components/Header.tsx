@@ -8,6 +8,7 @@ interface HeaderProps {
   backHref?: string;
   backLabel?: string;
   isOpen?: boolean;
+  sticky?: boolean;
 }
 
 export function Header({
@@ -15,9 +16,10 @@ export function Header({
   backHref = '/',
   backLabel = 'Kembali',
   isOpen,
+  sticky = true,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-stone-200 px-4 py-3 flex items-center justify-between min-h-[58px]">
+    <header className={`${sticky ? 'sticky top-0 z-30' : 'relative z-10'} bg-white/95 backdrop-blur border-b border-stone-200 px-4 py-3 flex items-center justify-between min-h-[58px]`}>
       <div className="flex items-center gap-3">
         {showBack ? (
           <Link
