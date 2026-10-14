@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import type { CartItem } from '@/lib/cart-reducer';
 import type { OrderPricingResult } from '@/lib/pricing';
@@ -20,6 +20,7 @@ import {
   cleanCustomerName,
   filterCustomerNameInput,
 } from '@/lib/sanitizer';
+import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -48,6 +49,7 @@ export function CartDrawer({
 }: CartDrawerProps) {
   const effectiveOutletCode = cartOutletCode || outlet?.code;
   const effectiveOutletName = cartOutletName || outlet?.name || 'Kopi Kenangan';
+
   // Form checkout state
   const [customerName, setCustomerName] = useState('');
   const [pickupMode, setPickupMode] = useState<'now' | 'scheduled'>('now');
@@ -64,6 +66,52 @@ export function CartDrawer({
   const [orderCompleted, setOrderCompleted] = useState(false);
   const [orderSnapshot, setOrderSnapshot] = useState<OrderSummarySnapshot | null>(null);
 
+  // UX & Validation Attention states (Sprint 2 Item 1)
+  const [nameHighlight, setNameHighlight] = useState(false);
+  const [slotHighlight, setSlotHighlight] = useState(false);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+
+  // Element Refs for scroll & focus control
+  const itemsScrollRef = useRef<HTMLDivElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const slotSelectRef = useRef<HTMLSelectElement>(null);
+  const highlightTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Deteksi petunjuk scroll fade gradient pada daftar item
+  const updateScrollIndicator = useCallback(() => {
+    const el = itemsScrollRef.current;
+    if (!el) {
+      setCanScrollDown(false);
+      return;
+    }
+    // Toleransi 4px untuk rounding subpixel di browser mobile
+    const hasMore = el.scrollHeight - el.scrollTop - el.clientHeight > 4;
+    setCanScrollDown(hasMore);
+  }, []);
+
+  useEffect(() => {
+    updateScrollIndicator();
+  }, [items, updateScrollIndicator]);
+
+  useEffect(() => {
+    const el = itemsScrollRef.current;
+    if (!el) return;
+    updateScrollIndicator();
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(() => updateScrollIndicator());
+      ro.observe(el);
+      return () => ro.disconnect();
+    }
+  }, [updateScrollIndicator]);
+
+  useEffect(() => {
+    return () => {
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+      }
+    };
+  }, []);
+
   // Hitung slot pick up yang tersedia secara dinamis
   const scheduleSlots = useMemo(() => {
     const { hour, minute } = getWibTimeParts(new Date());
@@ -75,12 +123,14 @@ export function CartDrawer({
     });
   }, [outlet?.openTime, outlet?.closeTime]);
 
-  // Set default slot jika pick up terjadwal dipilih atau slot sebelumnya tidak lagi tersedia
-  if (pickupMode === 'scheduled' && scheduleSlots.slots.length > 0) {
-    if (!selectedSlot || !scheduleSlots.slots.includes(selectedSlot)) {
-      setSelectedSlot(scheduleSlots.slots[0]);
+  // Slot efektif yang aktif: jika slot yang dipilih masih valid dalam daftar slot, gunakan slot tersebut; bila belum ada atau sudah lewat, default ke slot pertama yang tersedia
+  const effectiveSelectedSlot = useMemo(() => {
+    if (!scheduleSlots.slots.length) return '';
+    if (selectedSlot && scheduleSlots.slots.includes(selectedSlot)) {
+      return selectedSlot;
     }
-  }
+    return scheduleSlots.slots[0];
+  }, [scheduleSlots.slots, selectedSlot]);
 
   if (!isOpen) return null;
 
@@ -139,6 +189,24 @@ export function CartDrawer({
     );
   }
 
+  // Helper untuk memicu scroll halus, highlight visual, dan fokus pada input bermasalah (Langkah 3)
+  const triggerFieldAttention = (field: 'name' | 'slot') => {
+    if (highlightTimerRef.current) {
+      clearTimeout(highlightTimerRef.current);
+    }
+    if (field === 'name') {
+      setNameHighlight(true);
+      nameInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      nameInputRef.current?.focus();
+      highlightTimerRef.current = setTimeout(() => setNameHighlight(false), 2000);
+    } else if (field === 'slot') {
+      setSlotHighlight(true);
+      slotSelectRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      slotSelectRef.current?.focus();
+      highlightTimerRef.current = setTimeout(() => setSlotHighlight(false), 2000);
+    }
+  };
+
   // Handle validasi pra-kirim ke WhatsApp
   const handleProceedToWhatsApp = async () => {
     setErrorMessage(null);
@@ -146,6 +214,7 @@ export function CartDrawer({
 
     if (!nameValidation.isValid) {
       setErrorMessage(nameValidation.errorMessage || 'Silakan isi nama pemesan terlebih dahulu.');
+      triggerFieldAttention('name');
       return;
     }
 
@@ -157,12 +226,14 @@ export function CartDrawer({
     }
 
     if (pickupMode === 'scheduled') {
-      if (!selectedSlot) {
+      if (!effectiveSelectedSlot) {
         setErrorMessage('Silakan pilih jam jadwal pick up.');
+        triggerFieldAttention('slot');
         return;
       }
-      if (!isValidScheduleSlot(selectedSlot) || !scheduleSlots.slots.includes(selectedSlot)) {
+      if (!isValidScheduleSlot(effectiveSelectedSlot) || !scheduleSlots.slots.includes(effectiveSelectedSlot)) {
         setErrorMessage('Jam jadwal pick up yang dipilih tidak valid atau sudah lewat.');
+        triggerFieldAttention('slot');
         return;
       }
     }
@@ -231,7 +302,7 @@ export function CartDrawer({
           outletName: effectiveOutletName,
           pickupMode,
           estimatedTime,
-          scheduledTime: selectedSlot,
+          scheduledTime: effectiveSelectedSlot,
           items,
         });
 
@@ -300,8 +371,8 @@ export function CartDrawer({
       <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
 
       <div className="relative w-full max-w-md max-h-[92vh] bg-white rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300">
-        {/* Header Drawer */}
-        <div className="sticky top-0 z-10 bg-white/95 backdrop-blur px-5 py-3.5 border-b border-stone-200 flex items-center justify-between">
+        {/* ZONA A: Header Tetap di Atas */}
+        <div className="shrink-0 bg-white/95 backdrop-blur px-5 py-3.5 border-b border-stone-200 flex items-center justify-between z-10">
           <div>
             <h3 className="font-bold text-base text-[#111111] leading-tight">
               Keranjang Belanja
@@ -329,311 +400,333 @@ export function CartDrawer({
           </button>
         </div>
 
-        {/* Isi Drawer */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-5">
-          {/* Daftar Item Keranjang */}
-          {items.length === 0 ? (
-            <div className="p-8 text-center text-stone-400">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12 mx-auto mb-2 text-stone-300"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
-              <p className="text-sm font-semibold">Keranjang masih kosong</p>
-              <p className="text-xs mt-1">Pilih menu favoritmu di atas.</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {items.map((item, index) => {
-                const itemPricing = pricing.items[index];
-                return (
-                  <div
-                    key={item.id}
-                    className="p-3 bg-stone-50 rounded-2xl border border-stone-200/80 flex gap-3 items-start"
-                  >
-                    {item.image && (
-                      <div className="relative w-14 h-14 bg-stone-200 rounded-xl overflow-hidden shrink-0 border border-stone-100">
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          fill
-                          sizes="56px"
-                          className="object-cover"
-                        />
-                      </div>
-                    )}
+        {/* ZONA B: Zona Tengah - DAFTAR ITEM SAJA yang bisa di-scroll */}
+        <div className="relative flex-1 min-h-0 flex flex-col bg-stone-50/40">
+          <div
+            ref={itemsScrollRef}
+            onScroll={updateScrollIndicator}
+            className="flex-1 overflow-y-auto p-4 space-y-3 overscroll-contain"
+          >
+            {items.length === 0 ? (
+              <div className="py-12 text-center text-stone-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12 w-12 mx-auto mb-2 text-stone-300"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  />
+                </svg>
+                <p className="text-sm font-semibold">Keranjang masih kosong</p>
+                <p className="text-xs mt-1">Pilih menu favoritmu di atas.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {items.map((item, index) => {
+                  const itemPricing = pricing.items[index];
+                  return (
+                    <div
+                      key={item.id}
+                      className="p-3 bg-white rounded-2xl border border-stone-200/90 shadow-2xs flex gap-3 items-start"
+                    >
+                      {item.image && (
+                        <div className="relative w-14 h-14 bg-stone-200 rounded-xl overflow-hidden shrink-0 border border-stone-100">
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            sizes="56px"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-1">
-                        <h4 className="font-bold text-xs text-[#111111] leading-snug line-clamp-1">
-                          {item.name}
-                        </h4>
-                        <button
-                          type="button"
-                          onClick={() => onRemoveItem(item.id)}
-                          className="text-stone-400 hover:text-rose-500 p-1 -mr-1"
-                          aria-label={`Hapus ${item.name}`}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-1">
+                          <h4 className="font-bold text-xs text-[#111111] leading-snug line-clamp-1">
+                            {item.name}
+                          </h4>
+                          <button
+                            type="button"
+                            onClick={() => onRemoveItem(item.id)}
+                            className="text-stone-400 hover:text-rose-500 p-1 -mr-1"
+                            aria-label={`Hapus ${item.name}`}
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-
-                      {item.variantDescription && (
-                        <p className="text-[11px] text-stone-500 line-clamp-2 mt-0.5">
-                          {item.variantDescription}
-                        </p>
-                      )}
-
-                      {item.addons && item.addons.length > 0 && (
-                        <p className="text-[10px] text-amber-700 mt-0.5">
-                          Topping: {item.addons.map((a) => a.name).join(', ')}
-                        </p>
-                      )}
-
-                      {item.notes && (
-                        <p className="text-[10px] text-stone-400 italic mt-0.5">
-                          Catatan: &quot;{item.notes}&quot;
-                        </p>
-                      )}
-
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-stone-200/60">
-                        <div className="flex items-baseline gap-1.5">
-                          <span className="text-xs font-bold text-amber-800">
-                            {formatRupiah(itemPricing ? itemPricing.subtotalItem : 0)}
-                          </span>
-                          <span className="text-[10px] text-stone-400 line-through">
-                            {formatRupiah(itemPricing ? itemPricing.originalPricePerItem * item.quantity : 0)}
-                          </span>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
+                            </svg>
+                          </button>
                         </div>
 
-                        {/* Kontrol Kuantitas */}
-                        <div className="flex items-center gap-2 bg-white px-2 py-0.5 rounded-lg border border-stone-200">
-                          <button
-                            type="button"
-                            onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-                            className="text-stone-600 font-bold text-sm px-1.5 min-h-[30px]"
-                            aria-label="Kurangi kuantitas"
-                          >
-                            -
-                          </button>
-                          <span className="text-xs font-bold text-[#111111]">
-                            {item.quantity}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                            className="text-stone-600 font-bold text-sm px-1.5 min-h-[30px]"
-                            aria-label="Tambah kuantitas"
-                          >
-                            +
-                          </button>
+                        {item.variantDescription && (
+                          <p className="text-[11px] text-stone-500 line-clamp-2 mt-0.5">
+                            {item.variantDescription}
+                          </p>
+                        )}
+
+                        {item.addons && item.addons.length > 0 && (
+                          <p className="text-[10px] text-amber-700 mt-0.5">
+                            Topping: {item.addons.map((a) => a.name).join(', ')}
+                          </p>
+                        )}
+
+                        {item.notes && (
+                          <p className="text-[10px] text-stone-400 italic mt-0.5">
+                            Catatan: &quot;{item.notes}&quot;
+                          </p>
+                        )}
+
+                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-stone-200/60">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-xs font-bold text-amber-800">
+                              {formatRupiah(itemPricing ? itemPricing.subtotalItem : 0)}
+                            </span>
+                            <span className="text-[10px] text-stone-400 line-through">
+                              {formatRupiah(itemPricing ? itemPricing.originalPricePerItem * item.quantity : 0)}
+                            </span>
+                          </div>
+
+                          {/* Kontrol Kuantitas */}
+                          <div className="flex items-center gap-2 bg-stone-50 px-2 py-0.5 rounded-lg border border-stone-200">
+                            <button
+                              type="button"
+                              onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+                              className="text-stone-600 font-bold text-sm px-1.5 min-h-[30px]"
+                              aria-label="Kurangi kuantitas"
+                            >
+                              -
+                            </button>
+                            <span className="text-xs font-bold text-[#111111]">
+                              {item.quantity}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                              className="text-stone-600 font-bold text-sm px-1.5 min-h-[30px]"
+                              aria-label="Tambah kuantitas"
+                            >
+                              +
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Form Checkout */}
-          {items.length > 0 && (
-            <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200 space-y-4">
-              <h4 className="text-xs font-bold text-[#111111] uppercase tracking-wide">
-                Informasi Pick Up
-              </h4>
-
-              {/* Input Nama */}
-              <div className="space-y-1">
-                <label htmlFor="checkout-name" className="text-xs font-semibold text-stone-700 block">
-                  Nama Pemesan <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  id="checkout-name"
-                  type="text"
-                  maxLength={40}
-                  value={customerName}
-                  onChange={(e) => {
-                    const filtered = filterCustomerNameInput(e.target.value);
-                    setCustomerName(filtered);
-                    if (errorMessage) setErrorMessage(null);
-                  }}
-                  placeholder="Contoh: Budi Prasetyo"
-                  className="w-full min-h-[44px] px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs text-[#1F2937] placeholder-stone-400 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] outline-hidden transition"
-                />
-              </div>
-
-              {/* Pilihan Waktu Pick Up */}
-              <div className="space-y-2">
-                <span className="text-xs font-semibold text-stone-700 block">
-                  Waktu Pengambilan
-                </span>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPickupMode('now')}
-                    className={`min-h-[44px] p-2.5 rounded-xl border text-left text-xs font-medium transition ${
-                      pickupMode === 'now'
-                        ? 'border-[#111111] bg-[#111111] text-[#D4AF37] font-bold shadow-xs'
-                        : 'border-stone-200 bg-white text-stone-700 hover:border-stone-300'
-                    }`}
-                  >
-                    <span className="block leading-tight">Pick up Sekarang</span>
-                    <span className="text-[10px] opacity-80 block mt-0.5">Siap ~10 menit</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    disabled={!scheduleSlots.isAvailable}
-                    onClick={() => {
-                      if (scheduleSlots.isAvailable) setPickupMode('scheduled');
-                    }}
-                    className={`min-h-[44px] p-2.5 rounded-xl border text-left text-xs font-medium transition ${
-                      pickupMode === 'scheduled'
-                        ? 'border-[#111111] bg-[#111111] text-[#D4AF37] font-bold shadow-xs'
-                        : scheduleSlots.isAvailable
-                        ? 'border-stone-200 bg-white text-stone-700 hover:border-stone-300'
-                        : 'border-stone-100 bg-stone-100 text-stone-300 cursor-not-allowed opacity-60'
-                    }`}
-                  >
-                    <span className="block leading-tight">Jadwalkan Jam</span>
-                    <span className="text-[10px] opacity-80 block mt-0.5">Hari ini saja</span>
-                  </button>
-                </div>
-
-                {/* Dropdown Jam Terjadwal */}
-                {pickupMode === 'scheduled' && scheduleSlots.isAvailable && (
-                  <div className="pt-1">
-                    <label htmlFor="schedule-slot-select" className="text-[11px] text-stone-500 block mb-1">
-                      Pilih Jam Ambil (WIB):
-                    </label>
-                    <select
-                      id="schedule-slot-select"
-                      value={selectedSlot}
-                      onChange={(e) => setSelectedSlot(e.target.value)}
-                      className="w-full min-h-[44px] px-3.5 py-2 bg-white border border-stone-300 rounded-xl text-xs text-[#1F2937] focus:border-[#D4AF37] outline-hidden"
-                    >
-                      {scheduleSlots.slots.map((slot) => (
-                        <option key={slot} value={slot}>
-                          Pukul {slot} WIB
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                {!scheduleSlots.isAvailable && (
-                  <p className="text-[10px] text-amber-600">
-                    {scheduleSlots.reason}
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Rincian Harga Lengkap */}
-          {items.length > 0 && (
-            <div className="p-4 bg-white rounded-2xl border border-stone-200 space-y-2 text-xs">
-              <h4 className="font-bold text-[#111111] uppercase tracking-wide text-[11px] pb-1 border-b border-stone-100">
-                Ringkasan Pembayaran
-              </h4>
-
-              <div className="flex justify-between text-stone-600">
-                <span>Sub Total ({pricing.totalQuantity} item)</span>
-                <span className="font-semibold text-stone-900">{formatRupiah(pricing.subtotal)}</span>
-              </div>
-
-              <div className="flex justify-between text-stone-600">
-                <span>
-                  {pricing.totalQuantity === 1
-                    ? 'Biaya Jasa (1 item)'
-                    : `Biaya Jasa (Rp2.000 x ${pricing.totalQuantity} item)`}
-                </span>
-                <span className="font-semibold text-stone-900">{formatRupiah(pricing.fee)}</span>
-              </div>
-
-              <div className="flex justify-between text-stone-400 line-through text-[11px]">
-                <span>Total Harga Asli KK</span>
-                <span>{formatRupiah(pricing.totalSavings + pricing.subtotal)}</span>
-              </div>
-
-              <div className="pt-2 border-t border-stone-100 flex justify-between items-baseline font-bold text-sm">
-                <span className="text-[#111111]">Total Tagihan</span>
-                <span className="text-amber-800 text-base">{formatRupiah(pricing.total)}</span>
-              </div>
-
-              <div className="pt-1 text-center">
-                <span className="inline-block text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                  Kamu hemat {formatRupiah(pricing.totalSavings)} dari harga normal!
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Pesan Error Validasi */}
-          {errorMessage && (
-            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs">
-              {errorMessage}
-            </div>
-          )}
-        </div>
-
-        {/* Footer Tombol Kirim ke WhatsApp */}
-        {items.length > 0 && (
-          <div className="sticky bottom-0 bg-white border-t border-stone-200 p-4 space-y-2 shadow-lg">
-            {errorMessage && (
-              <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs">
-                {errorMessage}
+                  );
+                })}
               </div>
             )}
-            <button
-              type="button"
-              disabled={isSubmitting}
-              onClick={handleProceedToWhatsApp}
-              className="w-full min-h-[50px] px-4 py-3 bg-[#111111] hover:bg-stone-900 active:scale-98 text-[#D4AF37] font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md disabled:opacity-60"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
-                  <span>Memvalidasi Pesanan...</span>
-                </>
-              ) : (
-                <>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z" />
+          </div>
+
+          {/* Fade gradient petunjuk scroll: HANYA saat masih ada isi di bawahnya */}
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-stone-100 to-transparent transition-opacity duration-200 ${
+              canScrollDown ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        </div>
+
+        {/* ZONA C: Zona Bawah SELALU MENEMPEL (STICKY/PINNED) */}
+        {items.length > 0 && (
+          <div className="shrink-0 bg-white border-t border-stone-200 shadow-xl z-20 flex flex-col max-h-[65vh] overflow-y-auto">
+            <div className="p-3.5 space-y-2.5">
+              {/* 1. Informasi Pick Up (Ringkas) */}
+              <div className="bg-stone-50 rounded-xl p-3 border border-stone-200/80 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-[11px] font-bold text-[#111111] uppercase tracking-wide">
+                    Informasi Pick Up
+                  </h4>
+                </div>
+
+                {/* Input Nama */}
+                <div className="space-y-1">
+                  <label htmlFor="checkout-name" className="text-[11px] font-semibold text-stone-700 block">
+                    Nama Pemesan <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    ref={nameInputRef}
+                    id="checkout-name"
+                    type="text"
+                    maxLength={40}
+                    value={customerName}
+                    onChange={(e) => {
+                      const filtered = filterCustomerNameInput(e.target.value);
+                      setCustomerName(filtered);
+                      if (nameHighlight) setNameHighlight(false);
+                      if (errorMessage) setErrorMessage(null);
+                    }}
+                    placeholder="Contoh: Budi Prasetyo"
+                    className={`w-full min-h-[40px] px-3.5 py-2 bg-white border rounded-xl text-xs text-[#1F2937] placeholder-stone-400 outline-hidden transition ${
+                      nameHighlight
+                        ? 'border-rose-500 ring-2 ring-rose-400/50 bg-rose-50/40'
+                        : 'border-stone-300 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]'
+                    }`}
+                  />
+                </div>
+
+                {/* Pilihan Waktu Pick Up */}
+                <div className="space-y-1.5">
+                  <span className="text-[11px] font-semibold text-stone-700 block">
+                    Waktu Pengambilan
+                  </span>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPickupMode('now')}
+                      className={`min-h-[40px] p-2 rounded-xl border text-left text-xs font-medium transition ${
+                        pickupMode === 'now'
+                          ? 'border-[#111111] bg-[#111111] text-[#D4AF37] font-bold shadow-2xs'
+                          : 'border-stone-200 bg-white text-stone-700 hover:border-stone-300'
+                      }`}
+                    >
+                      <span className="block text-[11px] leading-tight">Pick up Sekarang</span>
+                      <span className="text-[10px] opacity-80 block mt-0.5 leading-tight">Siap ~10 menit</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={!scheduleSlots.isAvailable}
+                      onClick={() => {
+                        if (scheduleSlots.isAvailable) setPickupMode('scheduled');
+                      }}
+                      className={`min-h-[40px] p-2 rounded-xl border text-left text-xs font-medium transition ${
+                        pickupMode === 'scheduled'
+                          ? 'border-[#111111] bg-[#111111] text-[#D4AF37] font-bold shadow-2xs'
+                          : scheduleSlots.isAvailable
+                          ? 'border-stone-200 bg-white text-stone-700 hover:border-stone-300'
+                          : 'border-stone-100 bg-stone-100 text-stone-300 cursor-not-allowed opacity-60'
+                      }`}
+                    >
+                      <span className="block text-[11px] leading-tight">Jadwalkan Jam</span>
+                      <span className="text-[10px] opacity-80 block mt-0.5 leading-tight">Hari ini saja</span>
+                    </button>
+                  </div>
+
+                  {/* Dropdown Jam Terjadwal */}
+                  {pickupMode === 'scheduled' && scheduleSlots.isAvailable && (
+                    <div className="pt-1">
+                      <label htmlFor="schedule-slot-select" className="text-[11px] text-stone-500 block mb-1">
+                        Pilih Jam Ambil (WIB):
+                      </label>
+                      <select
+                        ref={slotSelectRef}
+                        id="schedule-slot-select"
+                        value={effectiveSelectedSlot}
+                        onChange={(e) => {
+                          setSelectedSlot(e.target.value);
+                          if (slotHighlight) setSlotHighlight(false);
+                          if (errorMessage) setErrorMessage(null);
+                        }}
+                        className={`w-full min-h-[40px] px-3.5 py-2 bg-white border rounded-xl text-xs text-[#1F2937] outline-hidden ${
+                          slotHighlight
+                            ? 'border-rose-500 ring-2 ring-rose-400/50 bg-rose-50/40'
+                            : 'border-stone-300 focus:border-[#D4AF37]'
+                        }`}
+                      >
+                        {scheduleSlots.slots.map((slot) => (
+                          <option key={slot} value={slot}>
+                            Pukul {slot} WIB
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {!scheduleSlots.isAvailable && (
+                    <p className="text-[10px] text-amber-600">
+                      {scheduleSlots.reason}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* 2. Rincian Ringkasan Pembayaran */}
+              <div className="bg-stone-50/60 rounded-xl p-2.5 border border-stone-200/70 text-xs space-y-1">
+                <h4 className="font-bold text-[#111111] uppercase tracking-wide text-[10px] pb-1 border-b border-stone-200/60">
+                  Ringkasan Pembayaran
+                </h4>
+
+                <div className="flex justify-between text-stone-600 text-[11px]">
+                  <span>Sub Total ({pricing.totalQuantity} item)</span>
+                  <span className="font-semibold text-stone-900">{formatRupiah(pricing.subtotal)}</span>
+                </div>
+
+                <div className="flex justify-between text-stone-600 text-[11px]">
+                  <span>
+                    {pricing.totalQuantity === 1
+                      ? 'Biaya Jasa (1 item)'
+                      : `Biaya Jasa (Rp2.000 x ${pricing.totalQuantity} item)`}
+                  </span>
+                  <span className="font-semibold text-stone-900">{formatRupiah(pricing.fee)}</span>
+                </div>
+
+                <div className="flex justify-between text-stone-400 line-through text-[10px]">
+                  <span>Total Harga Asli KK</span>
+                  <span>{formatRupiah(pricing.totalSavings + pricing.subtotal)}</span>
+                </div>
+
+                <div className="pt-1.5 border-t border-stone-200/60 flex justify-between items-baseline font-bold text-sm">
+                  <span className="text-[#111111] text-xs">Total Tagihan</span>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                      Hemat {formatRupiah(pricing.totalSavings)}
+                    </span>
+                    <span className="text-amber-800 text-sm font-extrabold">{formatRupiah(pricing.total)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Pesan Error Validasi */}
+              {errorMessage && (
+                <div
+                  role="alert"
+                  className="p-2.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs flex items-start gap-2 animate-in fade-in"
+                >
+                  <svg className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
-                  <span>Kirim Pesanan ke WhatsApp • {formatRupiah(pricing.total)}</span>
-                </>
+                  <span className="leading-tight flex-1">{errorMessage}</span>
+                </div>
               )}
-            </button>
+
+              {/* 4. Tombol Kirim Pesanan ke WhatsApp */}
+              <button
+                type="button"
+                disabled={isSubmitting}
+                onClick={handleProceedToWhatsApp}
+                className="w-full min-h-[48px] px-4 py-3 bg-[#111111] hover:bg-stone-900 active:scale-98 text-[#D4AF37] font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md disabled:opacity-60"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+                    <span>Memvalidasi Pesanan...</span>
+                  </>
+                ) : (
+                  <>
+                    <WhatsAppIcon className="h-4.5 w-4.5 text-[#25D366] shrink-0" />
+                    <span>Kirim Pesanan ke WhatsApp • {formatRupiah(pricing.total)}</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         )}
       </div>
