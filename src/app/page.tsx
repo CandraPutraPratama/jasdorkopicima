@@ -75,9 +75,9 @@ export default function HomePage() {
   // 1. Loading status operasional pertama kali
   if (isStatusLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-white">
-        <div className="w-8 h-8 border-3 border-amber-400 border-t-transparent rounded-full animate-spin" />
-        <p className="mt-3 text-xs text-stone-500 font-medium">
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#FBF8F4]">
+        <div className="w-9 h-9 border-3 border-[#C67D0A] border-t-transparent rounded-full animate-spin" />
+        <p className="mt-3 text-xs text-[#735F52] font-semibold">
           Memeriksa jam operasional Jasdor...
         </p>
       </div>
@@ -98,31 +98,54 @@ export default function HomePage() {
 
   // 3. Tampilan BUKA: Halaman Pencarian Outlet
   return (
-    <div className="min-h-screen flex flex-col bg-stone-50">
+    <div className="min-h-screen flex flex-col bg-[#FBF8F4]">
       <Header isOpen={true} />
 
       <main className="flex-1 p-4 flex flex-col">
-        {/* Banner Promo Ringkas */}
-        <div className="bg-gradient-to-r from-[#111111] to-stone-900 rounded-2xl p-4 text-white mb-4 shadow-sm border border-stone-800">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#D4AF37]">
-              Jastip Independen Kopi Cima
-            </span>
-            <span className="px-2 py-0.5 bg-amber-500/20 text-[#D4AF37] border border-amber-500/30 text-[10px] font-semibold rounded-full">
-              Diskon Menu Dasar
-            </span>
+        {/* Banner Promo Ringkas & Appetizing */}
+        <div className="bg-gradient-to-br from-[#26150B] via-[#351F14] to-[#1C0D06] rounded-3xl p-5 text-white mb-4 shadow-md border border-[#D9A74A]/30 relative overflow-hidden">
+          {/* Subtle warm glow background accent */}
+          <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#C67D0A]/15 rounded-full blur-2xl pointer-events-none" />
+
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FBBF24]">
+                Jastip Independen Kopi Cima
+              </span>
+              <span className="px-2.5 py-0.5 bg-[#DC2626] text-white text-[10px] font-black rounded-full uppercase tracking-wide shadow-xs">
+                Hemat 50%
+              </span>
+            </div>
+
+            <h1 className="font-display text-xl font-black tracking-tight text-white leading-tight">
+              Kopi Kenangan Favoritmu, Setengah Harga
+            </h1>
+
+            <p className="text-xs text-[#E3D6C5] mt-1.5 leading-relaxed">
+              Diskon 50% menu dasar Kopi Kenangan. Biaya jastip transparan Rp2.000/item (Rp4.000 untuk 1 item). Pesan praktis, checkout via WhatsApp!
+            </p>
+
+            {/* 3 Langkah Cara Order Cepat (Trust Section) */}
+            <div className="mt-4 pt-3 border-t border-white/10 grid grid-cols-3 gap-2 text-center">
+              <div className="bg-white/5 rounded-xl p-2 border border-white/5">
+                <span className="text-[10px] font-black text-[#FBBF24] block">1. PILIH OUTLET</span>
+                <span className="text-[10px] text-[#D4C3B2] leading-tight block mt-0.5">Cari mall / cabang terdekat</span>
+              </div>
+              <div className="bg-white/5 rounded-xl p-2 border border-white/5">
+                <span className="text-[10px] font-black text-[#FBBF24] block">2. PILIH MENU</span>
+                <span className="text-[10px] text-[#D4C3B2] leading-tight block mt-0.5">Kustomisasi cup & topping</span>
+              </div>
+              <div className="bg-white/5 rounded-xl p-2 border border-white/5">
+                <span className="text-[10px] font-black text-[#FBBF24] block">3. WHATSAPP</span>
+                <span className="text-[10px] text-[#D4C3B2] leading-tight block mt-0.5">Kirim & ambil pesanan</span>
+              </div>
+            </div>
           </div>
-          <h1 className="text-lg font-bold tracking-tight text-white">
-            Pilih Outlet Kopi Kenangan
-          </h1>
-          <p className="text-xs text-stone-300 mt-1 leading-relaxed">
-            Harga promo 50% dari harga menu. Upsize Large +Rp5.000, Juwara Beans +Rp3.000, Oatside +Rp3.000, Syrup dan Topping +Rp6.000, dan biaya jasa Rp2.000 per item (Rp4.000 untuk 1 item).
-          </p>
         </div>
 
         {/* Input Pencarian Outlet */}
         <div className="relative mb-4">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#8C7667]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -133,7 +156,7 @@ export default function HomePage() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={2.2}
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
@@ -145,13 +168,13 @@ export default function HomePage() {
             value={query}
             onChange={(e) => setQuery(filterOutletSearchInput(e.target.value))}
             placeholder="Cari nama outlet, mall, atau jalan..."
-            className="w-full min-h-[48px] pl-11 pr-10 py-2.5 bg-white border border-stone-300 focus:border-[#D4AF37] focus:ring-2 focus:ring-amber-200/50 rounded-xl text-sm text-[#1F2937] placeholder-stone-400 transition shadow-xs outline-hidden"
+            className="w-full min-h-[48px] pl-11 pr-10 py-2.5 bg-white border border-[#E0D4C5] focus:border-[#C67D0A] focus:ring-2 focus:ring-[#C67D0A]/20 rounded-2xl text-sm text-[#26150B] placeholder-[#9C897B] transition shadow-xs outline-hidden"
           />
           {query && (
             <button
               onClick={() => setQuery('')}
               type="button"
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 min-h-[44px] min-w-[44px] justify-center"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#8C7667] hover:text-[#26150B] min-h-[44px] min-w-[44px] justify-center"
               aria-label="Hapus kata kunci pencarian"
             >
               <svg
@@ -164,7 +187,7 @@ export default function HomePage() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={2.2}
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
@@ -174,8 +197,8 @@ export default function HomePage() {
 
         {/* State 1: Petunjuk sebelum mengetik */}
         {!hasSearched && (
-          <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-white rounded-2xl border border-stone-200/70 shadow-xs my-auto">
-            <div className="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mb-3">
+          <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-white rounded-3xl border border-[#EFE5D8] shadow-xs my-auto">
+            <div className="w-14 h-14 bg-[#FEF3C7] text-[#B45309] rounded-2xl flex items-center justify-center mb-3 border border-[#FDE68A]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-7 w-7"
@@ -197,20 +220,20 @@ export default function HomePage() {
                 />
               </svg>
             </div>
-            <h2 className="text-base font-bold text-[#111111] mb-1">
-              Cari Outlet Terdekat
+            <h2 className="font-display text-base font-bold text-[#26150B] mb-1">
+              Cari Outlet Kopi Kenangan
             </h2>
-            <p className="text-xs text-stone-600 leading-relaxed max-w-xs mb-4">
-              Ketik nama outlet, nama mall, atau area jalan pada kolom di atas untuk melihat ketersediaan menu.
+            <p className="text-xs text-[#6A584D] leading-relaxed max-w-xs mb-4">
+              Ketik nama outlet, mall, atau area jalan di atas untuk mulai memesan jastip promo setengah harga.
             </p>
             <div className="flex flex-wrap justify-center gap-1.5">
-              <span className="text-[11px] text-stone-600 font-medium self-center mr-1">Contoh:</span>
+              <span className="text-[11px] text-[#735F52] font-semibold self-center mr-1">Contoh:</span>
               {['Rungkut', 'Grand Indonesia', 'Puri', 'Senayan'].map((sample) => (
                 <button
                   key={sample}
                   type="button"
                   onClick={() => setQuery(sample)}
-                  className="px-2.5 py-1 text-xs font-medium bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg transition min-h-[36px]"
+                  className="px-3 py-1.5 text-xs font-semibold bg-[#F2EAE0] hover:bg-[#EAE0D3] text-[#4A3225] rounded-xl transition min-h-[36px] active:scale-95"
                 >
                   {sample}
                 </button>
@@ -235,7 +258,7 @@ export default function HomePage() {
             <button
               onClick={() => setDebouncedQuery(query.trim())}
               type="button"
-              className="mt-2 text-xs text-rose-900 underline font-medium min-h-[44px]"
+              className="mt-2 text-xs text-rose-900 underline font-semibold min-h-[44px]"
             >
               Coba Cari Lagi
             </button>
@@ -246,17 +269,17 @@ export default function HomePage() {
         {!isLoadingOutlets && !searchError && hasSearched && (
           <div>
             <div className="flex items-center justify-between mb-3 px-1">
-              <span className="text-xs text-stone-600 font-medium">
+              <span className="text-xs text-[#735F52] font-semibold">
                 Ditemukan {outlets.length} outlet
               </span>
-              <span className="text-[11px] text-stone-600 font-medium">
-                Pilih yang berstatus Buka
+              <span className="text-[11px] text-[#8C7667] font-medium">
+                Pilih cabang yang Buka
               </span>
             </div>
 
             {outlets.length === 0 ? (
-              <div className="p-8 bg-white border border-stone-200 rounded-2xl text-center shadow-xs">
-                <div className="w-12 h-12 bg-stone-100 text-stone-500 rounded-full flex items-center justify-center mx-auto mb-2">
+              <div className="p-8 bg-white border border-[#EFE5D8] rounded-3xl text-center shadow-xs">
+                <div className="w-12 h-12 bg-[#F4EDE3] text-[#8C7667] rounded-full flex items-center justify-center mx-auto mb-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
@@ -272,11 +295,11 @@ export default function HomePage() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-sm font-bold text-[#111111]">
+                <h3 className="font-display text-sm font-bold text-[#26150B]">
                   Outlet Tidak Ditemukan
                 </h3>
-                <p className="text-xs text-stone-600 mt-1 max-w-xs mx-auto leading-relaxed">
-                  Tidak ada outlet Kopi Kenangan yang cocok dengan kata kunci &quot;{debouncedQuery}&quot;. Coba gunakan nama jalan atau mall terdekat lainnya.
+                <p className="text-xs text-[#6A584D] mt-1 max-w-xs mx-auto leading-relaxed">
+                  Tidak ada outlet Kopi Kenangan yang cocok dengan &quot;{debouncedQuery}&quot;. Coba gunakan nama jalan atau mall terdekat lainnya.
                 </p>
               </div>
             ) : (
