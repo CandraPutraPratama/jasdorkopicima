@@ -64,23 +64,44 @@ test('Konstanta margin scroll: SECTION_SCROLL_MARGIN_TOP harus lebih besar dari 
   );
 });
 
-test('MenuCategoryNav.tsx menerapkan sticky top-0, fade gradient kanan, dan auto-scroll chip', () => {
+test('MenuCategoryNav.tsx: sticky top-0, fade gradient, dan penggeseran chip mandiri tanpa scrollIntoView', () => {
   const navCode = fs.readFileSync(path.resolve('src/components/MenuCategoryNav.tsx'), 'utf-8');
 
   assert.ok(navCode.includes('sticky top-0 z-20'), 'MenuCategoryNav harus sticky top-0 dengan z-index 20');
   assert.ok(navCode.includes('no-scrollbar'), 'Deretan chip harus menggunakan no-scrollbar');
   assert.ok(navCode.includes('canScrollRight'), 'MenuCategoryNav harus melacak status canScrollRight');
   assert.ok(navCode.includes('bg-gradient-to-l'), 'Harus memuat fade gradient di tepi kanan');
-  assert.ok(navCode.includes("inline: 'nearest'"), 'Auto-scroll chip harus menggunakan inline: nearest');
+
+  // Syarat keras Item 3.1: Dilarang memakai scrollIntoView pada chip yang menyeret window
+  assert.ok(
+    !navCode.includes('scrollIntoView'),
+    'Dilarang menggunakan scrollIntoView pada chip karena menyeret window'
+  );
+  assert.ok(
+    navCode.includes('container.scrollTo'),
+    'Penggeseran chip harus dilakukan manual pada scroll container'
+  );
 });
 
 test('page.tsx dan Header.tsx mendukung sticky chip bar di tepi atas dan lompat instan', () => {
   const pageCode = fs.readFileSync(path.resolve('src/app/outlet/[code]/page.tsx'), 'utf-8');
   assert.ok(pageCode.includes('sticky={false}'), 'Header di halaman outlet harus non-sticky agar bar chip menempel di tepi atas');
+  assert.ok(pageCode.includes('window.scrollTo'), 'Klik chip harus melompat menggunakan window.scrollTo');
   assert.ok(pageCode.includes("behavior: 'auto'"), 'Klik chip harus melompat instan (behavior: auto)');
   assert.ok(pageCode.includes('scroll-mt-[68px]'), 'Setiap section kategori harus memiliki scroll-margin-top 68px');
   assert.ok(pageCode.includes('isManualClickRef'), 'Harus ada mekanisme penahan scrollspy sesaat setelah klik chip');
 
   const headerCode = fs.readFileSync(path.resolve('src/components/Header.tsx'), 'utf-8');
   assert.ok(headerCode.includes('sticky = true'), 'Header harus mendukung prop sticky opsional (default true)');
+});
+
+test('globals.css dan layout.tsx menggunakan overflow-x: clip agar sticky tidak rusak di desktop', () => {
+  const cssCode = fs.readFileSync(path.resolve('src/app/globals.css'), 'utf-8');
+  assert.ok(cssCode.includes('overflow-x: clip'), 'globals.css harus menggunakan overflow-x: clip pada html, body');
+
+  const layoutCode = fs.readFileSync(path.resolve('src/app/layout.tsx'), 'utf-8');
+  assert.ok(
+    layoutCode.includes('overflow-x-clip'),
+    'layout.tsx wrapper harus menggunakan overflow-x-clip (bukan overflow-x-hidden)'
+  );
 });

@@ -97,28 +97,30 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     };
   }, [outletCode]);
 
-  // Klik chip = lompat instan ke awal bagian kategori (Langkah 2)
+  // Klik chip = lompat instan ke awal bagian kategori (Sprint 2 Item 3.1)
   const handleSelectCategory = (code: string) => {
     isManualClickRef.current = true;
     setActiveCategoryCode(code);
 
     const element = categoryRefs.current[code];
     if (element) {
-      if (typeof element.scrollIntoView === 'function') {
-        element.scrollIntoView({ behavior: 'auto', block: 'start' });
-      } else {
-        const top = element.getBoundingClientRect().top + window.pageYOffset - SECTION_SCROLL_MARGIN_TOP;
-        window.scrollTo({ top, behavior: 'auto' });
-      }
+      const scrollTop = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+      const rect = element.getBoundingClientRect();
+      const targetY = rect.top + scrollTop - SECTION_SCROLL_MARGIN_TOP;
+
+      window.scrollTo({
+        top: Math.max(0, targetY),
+        behavior: 'auto', // INSTAN tanpa smooth scroll di window
+      });
     }
 
-    // Kunci manual scroll sementara untuk menghindari konflik/kedip scrollspy tepat setelah lompat
+    // Kunci manual scroll sementara untuk menghindari konflik/kedip scrollspy tepat setelah lompat (400ms memastikan stabil)
     if (clickTimeoutRef.current) {
       clearTimeout(clickTimeoutRef.current);
     }
     clickTimeoutRef.current = setTimeout(() => {
       isManualClickRef.current = false;
-    }, 200);
+    }, 400);
   };
 
   // Penanda aktif mengikuti scroll manual (scrollspy) (Langkah 3)
@@ -137,9 +139,16 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
         if (isManualClickRef.current) return;
 
         // Cek apakah scroll sudah mencapai paling bawah dokumen
-        const isAtBottom =
-          window.innerHeight + window.scrollY >=
-          document.documentElement.scrollHeight - 30;
+        const scrollTop = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+        const windowHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+        const docHeight = Math.max(
+          document.body.scrollHeight,
+          document.documentElement.scrollHeight,
+          document.body.offsetHeight,
+          document.documentElement.offsetHeight
+        );
+
+        const isAtBottom = windowHeight + scrollTop >= docHeight - 30;
 
         const sections = menuGroups
           .map((group) => {

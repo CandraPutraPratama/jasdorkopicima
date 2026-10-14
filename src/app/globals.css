@@ -21,7 +21,11 @@ html, body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
-  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+.overflow-x-clip {
+  overflow-x: clip;
 }
 
 /* Scrollbar styling for sticky tabs */

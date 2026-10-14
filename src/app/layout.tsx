@@ -71,7 +71,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#111111" />
       </head>
       <body className="bg-stone-100 text-stone-800 antialiased selection:bg-amber-400 selection:text-black">
-        <div className="min-h-screen max-w-md mx-auto bg-white shadow-2xl flex flex-col relative overflow-x-hidden">
+        <div className="min-h-screen max-w-md mx-auto bg-white shadow-2xl flex flex-col relative overflow-x-clip">
           <div className="flex-1 flex flex-col">
             {children}
           </div>

@@ -35,15 +35,34 @@ export function MenuCategoryNav({
     };
   }, [categories]);
 
-  // Geser deretan chip secara halus bila chip aktif berada di luar pandangan (Langkah 3)
+  // Geser deretan chip secara mandiri agar chip aktif terlihat tanpa pernah men-scroll window (Sprint 2 Item 3.1)
   useEffect(() => {
     if (!activeCategoryCode) return;
-    const activeChip = chipRefs.current[activeCategoryCode];
-    if (activeChip && typeof activeChip.scrollIntoView === 'function') {
-      activeChip.scrollIntoView({
+    const container = scrollContainerRef.current;
+    const chip = chipRefs.current[activeCategoryCode];
+    if (!container || !chip) return;
+
+    const containerWidth = container.clientWidth;
+    const chipLeft = chip.offsetLeft;
+    const chipWidth = chip.offsetWidth;
+    const currentScrollLeft = container.scrollLeft;
+
+    // Buffer padding samping agar chip tidak mepet persis tepi
+    const padding = 20;
+
+    // Jika chip berada di sebelah kiri atau terpotong di kiri
+    if (chipLeft < currentScrollLeft + padding) {
+      container.scrollTo({
+        left: Math.max(0, chipLeft - padding),
         behavior: 'smooth',
-        inline: 'nearest',
-        block: 'nearest',
+      });
+    }
+    // Jika chip berada di sebelah kanan atau terpotong di kanan
+    else if (chipLeft + chipWidth > currentScrollLeft + containerWidth - padding) {
+      const targetLeft = chipLeft + chipWidth - containerWidth + padding;
+      container.scrollTo({
+        left: targetLeft,
+        behavior: 'smooth',
       });
     }
   }, [activeCategoryCode]);
