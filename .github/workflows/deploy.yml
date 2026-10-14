@@ -1,0 +1,55 @@
+name: Deploy ke Cloudflare Workers
+
+# Setiap push ke main menjalankan seluruh gerbang kualitas dulu
+# (test -> lint -> typecheck -> build). Deploy HANYA terjadi bila
+# semuanya hijau; build merah = tidak ada yang ter-deploy.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Bisa dijalankan manual dari tab Actions
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false # Deploy yang sedang jalan tidak dibatalkan di tengah
+
+jobs:
+  deploy:
+    name: Test, Build & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit test
+        run: npm test
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Build Worker (OpenNext)
+        run: npm run build:worker
+        env:
+          # Token Web Analytics bersifat publik (tertera di HTML production),
+          # jadi disimpan sebagai Actions Variable, bukan Secret.
+          NEXT_PUBLIC_CF_ANALYTICS_TOKEN: ${{ vars.NEXT_PUBLIC_CF_ANALYTICS_TOKEN }}
+
+      - name: Deploy ke Cloudflare Workers
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
