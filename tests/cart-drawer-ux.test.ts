@@ -48,3 +48,17 @@ test('Logika jadwal pickup: memverifikasi slot valid dan kelipatan 15 menit', ()
   assert.strictEqual(slotsResult.slots[0], '10:15');
   assert.strictEqual(isValidScheduleSlot(slotsResult.slots[0]), true);
 });
+
+test('globals.css mendefinisikan kelas .cart-items-scroll lintas browser (Firefox & WebKit)', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const css = fs.readFileSync(path.resolve('src/app/globals.css'), 'utf-8');
+
+  assert.ok(css.includes('.cart-items-scroll'), 'Harus memuat definisi kelas .cart-items-scroll');
+  assert.ok(css.includes('scrollbar-width: thin'), 'Harus memuat scrollbar-width: thin untuk Firefox');
+  assert.ok(css.includes('scrollbar-color: #a8a29e transparent'), 'Harus memuat scrollbar-color stone-400 transparent');
+  assert.ok(css.includes('.cart-items-scroll::-webkit-scrollbar'), 'Harus memuat ::-webkit-scrollbar');
+  assert.ok(css.includes('.cart-items-scroll::-webkit-scrollbar-thumb'), 'Harus memuat ::-webkit-scrollbar-thumb');
+  assert.ok(css.includes('#a8a29e'), 'Warna thumb harus stone-400 (#a8a29e)');
+});
+

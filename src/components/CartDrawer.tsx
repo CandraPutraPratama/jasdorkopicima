@@ -405,7 +405,7 @@ export function CartDrawer({
           <div
             ref={itemsScrollRef}
             onScroll={updateScrollIndicator}
-            className="flex-1 overflow-y-auto p-4 space-y-3 overscroll-contain"
+            className="cart-items-scroll flex-1 overflow-y-auto p-4 space-y-3 overscroll-contain"
           >
             {items.length === 0 ? (
               <div className="py-12 text-center text-stone-400">
