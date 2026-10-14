@@ -1,5 +1,20 @@
 import type { Metadata, Viewport } from 'next';
+import { Outfit, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-outfit',
+  weight: ['500', '600', '700', '800', '900'],
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-jakarta',
+  weight: ['400', '500', '600', '700'],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://jasdor.cimagroup.my.id'),
@@ -64,20 +79,20 @@ export default function RootLayout({
   const cfAnalyticsToken = process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN;
 
   return (
-    <html lang="id">
+    <html lang="id" className={`${outfit.variable} ${plusJakartaSans.variable}`}>
       <head>
         <link rel="manifest" href="/manifest.webmanifest" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-        <meta name="theme-color" content="#111111" />
+        <meta name="theme-color" content="#26150B" />
       </head>
-      <body className="bg-stone-100 text-stone-800 antialiased selection:bg-amber-400 selection:text-black">
-        <div className="min-h-screen max-w-md mx-auto bg-white shadow-2xl flex flex-col relative overflow-x-clip">
+      <body className="bg-[#F5EFEB] text-[#26150B] font-sans antialiased selection:bg-amber-300 selection:text-amber-950">
+        <div className="min-h-screen max-w-md mx-auto bg-[#FBF8F4] shadow-2xl flex flex-col relative overflow-x-clip border-x border-[#EDE3D6]/70">
           <div className="flex-1 flex flex-col">
             {children}
           </div>
-          <footer className="mt-auto py-4 px-4 text-center border-t border-stone-200/70 bg-stone-50">
-            <p className="text-[11px] text-stone-600 font-medium leading-relaxed">
-              Layanan jasa titip independen, bukan afiliasi resmi Kopi Kenangan.
+          <footer className="mt-auto py-5 px-4 text-center border-t border-[#EFE5D8] bg-[#F7F1E8]/80">
+            <p className="text-[11px] text-[#735F52] font-medium leading-relaxed">
+              Jasdor adalah layanan jasa titip independen • Bukan afiliasi resmi Kopi Kenangan.
             </p>
           </footer>
         </div>
