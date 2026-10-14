@@ -22,6 +22,7 @@ import {
 } from '@/lib/sanitizer';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { useScrollLock } from '@/hooks/useScrollLock';
+import { OPERATIONAL_GATE_ENABLED } from '@/lib/feature-flags';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -249,19 +250,21 @@ export function CartDrawer({
     setIsSubmitting(true);
 
     try {
-      // 1. Cek jam buka jasdor secara real-time ke server
-      let simulateParam = '';
-      if (typeof window !== 'undefined') {
-        const urlParams = new URLSearchParams(window.location.search);
-        const sim = urlParams.get('simulate');
-        if (sim === 'open' || sim === 'closed') {
-          simulateParam = `?simulate=${sim}`;
+      // 1. Cek jam buka jasdor secara real-time ke server (hanya saat gerbang operasional aktif)
+      if (OPERATIONAL_GATE_ENABLED) {
+        let simulateParam = '';
+        if (typeof window !== 'undefined') {
+          const urlParams = new URLSearchParams(window.location.search);
+          const sim = urlParams.get('simulate');
+          if (sim === 'open' || sim === 'closed') {
+            simulateParam = `?simulate=${sim}`;
+          }
         }
-      }
-      const opRes = await fetch(`/api/operational-status${simulateParam}`, { cache: 'no-store' });
-      const opData = await opRes.json();
-      if (!opData.isOpen) {
-        throw new Error('Jasdor sedang tutup saat ini. Pesanan tidak dapat dikirim.');
+        const opRes = await fetch(`/api/operational-status${simulateParam}`, { cache: 'no-store' });
+        const opData = await opRes.json();
+        if (!opData.isOpen) {
+          throw new Error('Jasdor sedang tutup saat ini. Pesanan tidak dapat dikirim.');
+        }
       }
 
       // 2. Cek status buka outlet terbaru dari get_store
