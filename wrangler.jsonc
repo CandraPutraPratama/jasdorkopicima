@@ -11,7 +11,8 @@
     "binding": "ASSETS"
   },
   "vars": {
-    "IMAGE_SOURCE": "r2"
+    "IMAGE_SOURCE": "r2",
+    "NEXT_PUBLIC_CF_ANALYTICS_TOKEN": "e2df28ebcd454d6ca4f467570d8e7f60"
   },
   "routes": [
     {
