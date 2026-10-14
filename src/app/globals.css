@@ -71,7 +71,7 @@ html, body {
 /* Scrollbar yang selalu terlihat untuk daftar item keranjang (Sprint 2 Item 1.1) */
 .cart-items-scroll {
   scrollbar-width: thin;
-  scrollbar-color: #d6c7b7 transparent;
+  scrollbar-color: #a8a29e transparent;
 }
 
 .cart-items-scroll::-webkit-scrollbar {
@@ -84,10 +84,10 @@ html, body {
 }
 
 .cart-items-scroll::-webkit-scrollbar-thumb {
-  background-color: #d6c7b7;
+  background-color: #a8a29e;
   border-radius: 9999px;
 }
 
 .cart-items-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: #b5a290;
+  background-color: #78716c;
 }
