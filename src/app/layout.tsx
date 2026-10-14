@@ -16,6 +16,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   weight: ['400', '500', '600', '700'],
 });
 
+import { Footer } from '@/components/Footer';
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://jasdor.cimagroup.my.id'),
   title: {
@@ -90,11 +92,7 @@ export default function RootLayout({
           <div className="flex-1 flex flex-col">
             {children}
           </div>
-          <footer className="mt-auto py-5 px-4 text-center border-t border-[#EFE5D8] bg-[#F7F1E8]/80">
-            <p className="text-[11px] text-[#735F52] font-medium leading-relaxed">
-              Jasdor adalah layanan jasa titip independen • Bukan afiliasi resmi Kopi Kenangan.
-            </p>
-          </footer>
+          <Footer />
         </div>
 
         {/* Minimal PWA Service Worker Registration (Installability Only) */}
