@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Header } from '@/components/Header';
+import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import {
   SITE_CONFIG,
   JAM_LAYANAN,
@@ -11,11 +12,13 @@ import {
 export const metadata: Metadata = {
   title: 'Kontak — Hubungi Customer Service Jasdor',
   description:
-    'Hubungi admin layanan jastip Kopi Kenangan Jasdor via WhatsApp resmi. Siap melayani pemesanan, pertanyaan promo, kendala stok, dan refund.',
+    'Hubungi admin layanan jasa order Kopi Kenangan Jasdor via WhatsApp resmi. Siap melayani pemesanan, ketersediaan outlet, konfirmasi pembayaran, dan refund.',
 };
 
 export default function ContactPage() {
-  const waChatUrl = getAdminWhatsAppUrl('Halo Admin Jasdor, saya ingin bertanya tentang pemesanan jastip Kopi Kenangan.');
+  const waChatUrl = getAdminWhatsAppUrl(
+    'Halo Admin Jasdor, saya ingin bertanya tentang pemesanan jasa order Kopi Kenangan.'
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF8F4]">
@@ -37,129 +40,145 @@ export default function ContactPage() {
               Customer Support
             </span>
             <h1 className="font-display text-xl font-black text-white tracking-tight leading-tight">
-              Hubungi Kami
+              Hubungi Admin Jasdor
             </h1>
             <p className="text-xs text-[#E3D6C5] mt-1.5 leading-relaxed">
-              Tim admin Jasdor siap membantu Anda untuk pertanyaan menu, ketersediaan outlet, konfirmasi pembayaran, maupun kendala order.
+              Admin kami siap membantu Anda seputar ketersediaan outlet, pertanyaan promo, kendala pembayaran, atau konfirmasi pesanan.
             </p>
           </div>
         </div>
 
-        {/* Card Utama: WhatsApp CS Resmi */}
-        <div className="p-5 bg-white rounded-3xl border border-[#EFE5D8] shadow-xs space-y-4 text-center">
-          <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto border border-emerald-100 shadow-2xs">
-            <svg
-              className="w-9 h-9 fill-[#15803D]"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-            </svg>
+        {/* Card Utama: WhatsApp CS Resmi dengan Logo Resmi */}
+        <div className="p-5 bg-white rounded-3xl border border-[#EFE5D8] shadow-xs space-y-4 text-center relative overflow-hidden">
+          {/* Subtle warm accent bar top */}
+          <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#25D366] via-[#128C7E] to-[#075E54]" />
+
+          <div className="w-16 h-16 bg-[#25D366]/10 text-[#25D366] rounded-2xl flex items-center justify-center mx-auto border border-[#25D366]/30 shadow-2xs mt-1">
+            <WhatsAppIcon className="w-9 h-9 fill-[#25D366]" />
           </div>
 
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#C67D0A] block">
-              Saluran Resmi Customer Service
-            </span>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[#15803D] text-[11px] font-bold mb-1">
+              <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse" />
+              <span>Customer Service WhatsApp</span>
+            </div>
             <h2 className="font-display font-black text-xl text-[#26150B] mt-1">
-              WhatsApp Admin
+              Admin Jasdor Kopi Cima
             </h2>
-            <p className="font-display font-extrabold text-base text-[#15803D] mt-0.5">
+            <p className="font-display font-black text-lg text-[#15803D] tracking-wide mt-0.5">
               {NOMOR_WHATSAPP_ADMIN_FORMATTED}
             </p>
           </div>
 
-          <p className="text-xs text-[#6A584D] leading-relaxed max-w-xs mx-auto">
-            Hubungi kami untuk konfirmasi pesanan, menanyakan menu yang tidak ada di katalog, atau informasi jadwal pickup.
+          <p className="text-xs text-[#5C4A3E] leading-relaxed max-w-xs mx-auto">
+            Klik tombol di bawah untuk langsung terhubung dengan admin kami via WhatsApp resmi (tanpa perlu simpan nomor).
           </p>
 
           <a
             href={waChatUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full min-h-[48px] px-6 py-3 bg-[#15803D] hover:bg-[#166534] text-white font-display font-bold text-sm rounded-2xl flex items-center justify-center gap-2 transition active:scale-95 shadow-md"
+            className="w-full min-h-[48px] px-6 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-display font-bold text-sm rounded-2xl flex items-center justify-center gap-2.5 transition active:scale-95 shadow-md"
           >
-            <svg
-              className="w-5 h-5 fill-white"
-              viewBox="0 0 24 24"
-            >
-              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
-            </svg>
+            <WhatsAppIcon className="w-5 h-5 fill-white shrink-0" />
             <span>Chat Admin WhatsApp Sekarang</span>
           </a>
         </div>
 
-        {/* Info Jam Operasional & Layanan */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="p-3.5 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-1">
-            <span className="text-[10px] font-bold text-[#8C7667] uppercase block">
-              Jam Layanan
-            </span>
-            <span className="font-display font-bold text-sm text-[#26150B] block leading-tight">
-              {JAM_LAYANAN}
-            </span>
-            <span className="text-[10px] text-emerald-700 font-medium block">
-              Setiap Hari (Senin – Minggu)
-            </span>
+        {/* Info Jadwal Operasional Lengkap */}
+        <div className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-[#FEF3C7] text-[#B45309] flex items-center justify-center font-black text-xs shrink-0">
+              ⏱
+            </div>
+            <div>
+              <h3 className="font-display font-bold text-xs text-[#26150B] uppercase tracking-wider">
+                Jadwal Layanan Pemesanan
+              </h3>
+              <p className="text-[11px] text-[#735F52]">
+                Jam aktif operasional kasir & respon admin
+              </p>
+            </div>
           </div>
 
-          <div className="p-3.5 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-1">
-            <span className="text-[10px] font-bold text-[#8C7667] uppercase block">
-              Kecepatan Respon
-            </span>
-            <span className="font-display font-bold text-sm text-[#26150B] block leading-tight">
-              &lt; 5 Menit
-            </span>
-            <span className="text-[10px] text-[#735F52] block">
-              Pada jam operasional
-            </span>
-          </div>
-        </div>
+          <div className="space-y-2 pt-2 border-t border-[#F2EAE0] text-xs">
+            <div className="p-2.5 bg-emerald-50/70 border border-emerald-200/80 rounded-xl flex items-start justify-between gap-2">
+              <div>
+                <span className="font-bold text-[#15803D] block">
+                  Jumat, Sabtu, Minggu (Pasti Buka)
+                </span>
+                <span className="text-[11px] text-[#2C5E3B] block mt-0.5">
+                  Layanan aktif penuh untuk seluruh outlet Kopi Kenangan yang buka.
+                </span>
+              </div>
+              <span className="shrink-0 text-[11px] font-extrabold text-[#15803D] bg-white px-2 py-0.5 rounded-md border border-emerald-200">
+                {JAM_LAYANAN}
+              </span>
+            </div>
 
-        {/* Navigasi ke FAQ & Ketentuan */}
-        <div className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2">
-          <span className="text-[11px] font-bold text-[#8C7667] uppercase tracking-wider block">
-            Bantuan Mandiri Cepat
-          </span>
-          <div className="divide-y divide-[#F2EAE0]">
-            <Link
-              href="/faq"
-              className="py-2.5 flex items-center justify-between text-xs font-bold text-[#26150B] hover:text-[#C67D0A] transition"
-            >
-              <span>Pertanyaan yang Sering Diajukan (FAQ)</span>
-              <svg className="w-4 h-4 text-[#8C7667]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-            <Link
-              href="/syarat-ketentuan"
-              className="py-2.5 flex items-center justify-between text-xs font-bold text-[#26150B] hover:text-[#C67D0A] transition"
-            >
-              <span>Syarat & Ketentuan Layanan</span>
-              <svg className="w-4 h-4 text-[#8C7667]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-            <Link
-              href="/kebijakan-privasi"
-              className="py-2.5 flex items-center justify-between text-xs font-bold text-[#26150B] hover:text-[#C67D0A] transition"
-            >
-              <span>Kebijakan Privasi Data</span>
-              <svg className="w-4 h-4 text-[#8C7667]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
+            <div className="p-2.5 bg-amber-50/70 border border-amber-200/80 rounded-xl flex items-start justify-between gap-2">
+              <div>
+                <span className="font-bold text-[#92400E] block">
+                  Selasa (Tentatif)
+                </span>
+                <span className="text-[11px] text-[#78350F] block mt-0.5">
+                  Buka tentatif. Silakan chat admin WhatsApp terlebih dahulu untuk konfirmasi.
+                </span>
+              </div>
+              <span className="shrink-0 text-[10px] font-bold text-[#92400E] bg-white px-2 py-0.5 rounded-md border border-amber-200">
+                Hubungi Admin
+              </span>
+            </div>
+
+            <div className="p-2.5 bg-[#FAF7F2] border border-[#E8DEC0] rounded-xl flex items-start justify-between gap-2">
+              <div>
+                <span className="font-bold text-[#735F52] block">
+                  Senin, Rabu, Kamis (Libur)
+                </span>
+                <span className="text-[11px] text-[#8C7667] block mt-0.5">
+                  Layanan tutup sementara. Pesan yang masuk akan dibalas saat jam buka berikutnya.
+                </span>
+              </div>
+              <span className="shrink-0 text-[10px] font-bold text-[#735F52] bg-white px-2 py-0.5 rounded-md border border-[#E8DEC0]">
+                Tutup
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Disclaimer */}
-        <div className="text-center pt-2">
-          <p className="text-[11px] text-[#735F52] leading-relaxed max-w-xs mx-auto">
+        {/* Apa Saja yang Bisa Dibantu Admin? */}
+        <div className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2.5">
+          <h3 className="font-display font-bold text-xs text-[#26150B] uppercase tracking-wider">
+            Apa Saja yang Bisa Dibantu Admin?
+          </h3>
+          <ul className="space-y-2 text-xs text-[#4A3525]">
+            <li className="flex items-start gap-2">
+              <span className="text-[#C67D0A] font-bold">✓</span>
+              <span><strong>Ketersediaan Menu</strong>: Memeriksa apakah varian atau topping favorit masih tersedia di outlet tujuan.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-[#C67D0A] font-bold">✓</span>
+              <span><strong>Metode Bayar</strong>: Panduan pembayaran via QRIS, Bank Jago, Blu by BCA, atau e-wallet (GoPay, DANA, ShopeePay, SeaBank).</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-[#C67D0A] font-bold">✓</span>
+              <span><strong>Pesanan Khusus / Kantor</strong>: Pemesanan jumlah banyak untuk rapat atau acara kantor.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-[#C67D0A] font-bold">✓</span>
+              <span><strong>Garansi Refund 100%</strong>: Pengembalian dana cepat jika stok menu habis di gerai.</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Penegasan Disclaimer */}
+        <div className="p-3 bg-[#FAF7F2] rounded-xl border border-[#EDE3D6] text-center">
+          <p className="text-[11px] text-[#735F52] leading-relaxed">
             {SITE_CONFIG.disclaimer}
           </p>
         </div>
 
-        {/* Link Kembali */}
+        {/* Link Kembali ke Beranda */}
         <div className="text-center pt-2">
           <Link
             href="/"

@@ -1,21 +1,24 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Header } from '@/components/Header';
+import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import {
   SITE_CONFIG,
-  JAM_LAYANAN,
+  JADWAL_OPERASIONAL_LENGKAP,
   NOMOR_WHATSAPP_ADMIN_FORMATTED,
   getAdminWhatsAppUrl,
 } from '@/lib/site-config';
 
 export const metadata: Metadata = {
-  title: 'Syarat & Ketentuan — Aturan Layanan Jastip',
+  title: 'Syarat & Ketentuan — Aturan Layanan Jasa Order',
   description:
-    'Syarat dan ketentuan penggunaan layanan jasa titip Kopi Kenangan Jasdor: alur pemesanan, pembayaran, garansi refund, dan batas tanggung jawab layanan.',
+    'Syarat dan ketentuan penggunaan layanan jasa order Kopi Kenangan Jasdor: alur pemesanan, pembayaran, garansi refund, dan batas tanggung jawab layanan.',
 };
 
 export default function TermsPage() {
-  const waContactUrl = getAdminWhatsAppUrl('Halo Admin Jasdor, saya ingin berkonsultasi mengenai syarat & ketentuan pesanan.');
+  const waContactUrl = getAdminWhatsAppUrl(
+    'Halo Admin Jasdor, saya ingin berkonsultasi mengenai syarat & ketentuan pesanan jasa order.'
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF8F4]">
@@ -40,118 +43,153 @@ export default function TermsPage() {
               Syarat & Ketentuan Jasdor
             </h1>
             <p className="text-xs text-[#E3D6C5] mt-1.5 leading-relaxed">
-              Harap membaca ketentuan berikut sebelum melakukan pemesanan jastip Kopi Kenangan promo setengah harga.
+              Harap membaca aturan berikut sebelum melakukan pemesanan jasa order Kopi Kenangan promo setengah harga.
             </p>
           </div>
         </div>
 
         {/* Section 1: Definisi & Kedudukan Layanan */}
-        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2">
-          <h2 className="font-display font-bold text-sm text-[#26150B] flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-bold">1</span>
-            Kedudukan & Status Layanan
-          </h2>
-          <div className="text-xs text-[#5C4A3E] leading-relaxed space-y-2 pl-7">
+        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2 border-l-4 border-l-[#C67D0A]">
+          <div className="flex items-center gap-2">
+            <span className="w-6 h-6 rounded-lg bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-black shrink-0">
+              01
+            </span>
+            <h2 className="font-display font-bold text-sm text-[#26150B]">
+              Kedudukan & Status Layanan
+            </h2>
+          </div>
+          <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
             <p>
-              1.1. <strong>Jasdor</strong> ({SITE_CONFIG.brandName}) adalah penyedia jasa titip (jastip) independen yang membantu konsumen memesan menu minuman dan makanan Kopi Kenangan dengan skema potongan harga promo.
+              1.1. <strong>Jasdor</strong> ({SITE_CONFIG.brandName}) adalah penyedia <strong>layanan jasa order independen</strong> yang membantu pelanggan memesan menu makanan dan minuman Kopi Kenangan dengan skema potongan promo 50% untuk harga dasar minuman.
             </p>
             <p>
-              1.2. Jasdor <strong>bukan merupakan perwakilan, mitra resmi, atau cabang resmi dari PT Bumi Berkah Boga (Kopi Kenangan)</strong>. Semua transaksi jastip adalah kesepakatan antara pelanggan dan Jasdor.
+              1.2. Jasdor <strong>bukan merupakan perwakilan, mitra resmi, karyawan, atau cabang resmi dari PT Bumi Berkah Boga (Kopi Kenangan)</strong>. Semua transaksi adalah murni kesepakatan jasa order antara pelanggan dan Jasdor.
             </p>
           </div>
         </section>
 
-        {/* Section 2: Alur Pemesanan & Data Pemesan */}
-        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2">
-          <h2 className="font-display font-bold text-sm text-[#26150B] flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-bold">2</span>
-            Alur Pemesanan & Checkout
-          </h2>
-          <div className="text-xs text-[#5C4A3E] leading-relaxed space-y-2 pl-7">
+        {/* Section 2: Jadwal Operasional & Alur Pemesanan */}
+        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2 border-l-4 border-l-[#C67D0A]">
+          <div className="flex items-center gap-2">
+            <span className="w-6 h-6 rounded-lg bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-black shrink-0">
+              02
+            </span>
+            <h2 className="font-display font-bold text-sm text-[#26150B]">
+              Jadwal Operasional & Alur Pemesanan
+            </h2>
+          </div>
+          <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
             <p>
-              2.1. Pelanggan wajib memilih outlet Kopi Kenangan yang berstatus <strong>Buka</strong> pada website.
+              2.1. <strong>Jadwal Operasional</strong>: {JADWAL_OPERASIONAL_LENGKAP}. Pemesanan pada hari libur (Senin, Rabu, Kamis) atau di luar jam tersebut akan diproses pada sesi layanan berikutnya.
             </p>
             <p>
-              2.2. Pelanggan wajib mengisi nama pemesan yang valid (maksimal 40 karakter) dan memilih opsi pickup (sekarang atau slot terjadwal 15 menit).
+              2.2. Pelanggan wajib memilih outlet Kopi Kenangan yang berstatus <strong>Buka</strong> pada katalog website.
             </p>
             <p>
-              2.3. Pesanan dianggap sah setelah dikirimkan melalui format WhatsApp resmi dan dikonfirmasi ketersediaannya oleh admin Jasdor.
+              2.3. Pelanggan wajib mengisi nama pemesan yang valid (maksimal 40 karakter) dan memilih opsi waktu pickup (sekarang atau slot 15 menit).
+            </p>
+            <p>
+              2.4. Format pesanan dikirimkan via WhatsApp resmi dan dianggap sah setelah admin Jasdor mengonfirmasi ketersediaan menu di gerai.
             </p>
           </div>
         </section>
 
-        {/* Section 3: Pembayaran & Biaya Jasa */}
-        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2">
-          <h2 className="font-display font-bold text-sm text-[#26150B] flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-bold">3</span>
-            Harga, Fee Jasa & Pembayaran
-          </h2>
-          <div className="text-xs text-[#5C4A3E] leading-relaxed space-y-2 pl-7">
+        {/* Section 3: Harga, Biaya Jasa & Pembayaran */}
+        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2 border-l-4 border-l-[#C67D0A]">
+          <div className="flex items-center gap-2">
+            <span className="w-6 h-6 rounded-lg bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-black shrink-0">
+              03
+            </span>
+            <h2 className="font-display font-bold text-sm text-[#26150B]">
+              Harga, Biaya Jasa Order & Pembayaran
+            </h2>
+          </div>
+          <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
             <p>
-              3.1. Promo potongan 50% berlaku khusus untuk <strong>menu dasar minuman</strong> Kopi Kenangan. Tambahan opsi varian (ukuran Large, Juwara Beans, Oatside) dan addon (topping, syrup) dikenakan penambahan flat transparan sesuai daftar di katalog.
+              3.1. Promo potongan 50% berlaku khusus pada <strong>harga dasar minuman</strong> Kopi Kenangan. Tambahan ukuran cup, varian susu (Oatside), biji kopi (Juwara Beans), dan addon (topping) dikenakan biaya tambahan transparan sesuai rincian di katalog.
             </p>
             <p>
-              3.2. <strong>Biaya Jasa (Fee Jastip)</strong>:
+              3.2. <strong>Biaya Jasa Order</strong>:
               <br />• 1 item pesanan: Rp4.000 flat.
               <br />• 2 item atau lebih: Rp2.000 per item.
             </p>
             <p>
-              3.3. Pembayaran dilakukan via transfer bank atau QRIS resmi yang diberikan admin Jasdor sebelum pesanan diteruskan ke barista outlet.
+              3.3. <strong>Metode Pembayaran</strong> yang sah:
+              <br />• QRIS (mendukung semua bank dan dompet digital).
+              <br />• Transfer Bank Digital: HANYA <strong>Bank Jago</strong> dan <strong>Blu by BCA</strong>.
+              <br />• E-Wallet: <strong>GoPay, DANA, ShopeePay, dan SeaBank</strong>.
+            </p>
+            <p>
+              3.4. Pelanggan wajib menyelesaikan pembayaran setelah tagihan dikirimkan admin dan sebelum pesanan diproses oleh barista outlet.
             </p>
           </div>
         </section>
 
         {/* Section 4: Pembatalan & Kebijakan Refund */}
-        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2">
-          <h2 className="font-display font-bold text-sm text-[#26150B] flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-bold">4</span>
-            Pembatalan & Kebijakan Refund
-          </h2>
-          <div className="text-xs text-[#5C4A3E] leading-relaxed space-y-2 pl-7">
+        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2 border-l-4 border-l-[#C67D0A]">
+          <div className="flex items-center gap-2">
+            <span className="w-6 h-6 rounded-lg bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-black shrink-0">
+              04
+            </span>
+            <h2 className="font-display font-bold text-sm text-[#26150B]">
+              Pembatalan & Garansi Pengembalian Dana (Refund)
+            </h2>
+          </div>
+          <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
             <p>
-              4.1. <strong>Jika Menu Habis di Outlet</strong>: Apabila setelah pembayaran ternyata stok bahan/menu habis di outlet yang dipilih, admin akan menawarkan opsi ganti menu, pindah outlet, atau <strong>garansi refund 100% penuh</strong> tanpa potongan biaya apapun.
+              4.1. Pelanggan dapat membatalkan pesanan tanpa biaya apapun selama pesanan belum dibayarkan atau belum diproses ke outlet.
             </p>
             <p>
-              4.2. <strong>Pembatalan Sepihak oleh Pelanggan</strong>: Pelanggan tidak dapat membatalkan pesanan apabila pesanan sudah diproses dan dibuat oleh barista Kopi Kenangan di outlet.
+              4.2. Jika pesanan sudah dibayarkan namun terjadi <strong>kehabisan stok di outlet</strong>, admin Jasdor akan menginformasikan kepada pelanggan dan dana akan <strong>di-refund 100% penuh</strong>.
+            </p>
+            <p>
+              4.3. Jika pesanan sudah masuk antrean pembuatan oleh barista outlet, pembatalan sepihak oleh pelanggan tidak dapat diproses dan dana tidak dapat dikembalikan.
             </p>
           </div>
         </section>
 
-        {/* Section 5: Batas Tanggung Jawab & Jam Operasional */}
-        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2">
-          <h2 className="font-display font-bold text-sm text-[#26150B] flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-bold">5</span>
-            Batas Tanggung Jawab (Disclaimer)
-          </h2>
-          <div className="text-xs text-[#5C4A3E] leading-relaxed space-y-2 pl-7">
+        {/* Section 5: Batasan Tanggung Jawab */}
+        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2 border-l-4 border-l-[#C67D0A]">
+          <div className="flex items-center gap-2">
+            <span className="w-6 h-6 rounded-lg bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-black shrink-0">
+              05
+            </span>
+            <h2 className="font-display font-bold text-sm text-[#26150B]">
+              Batasan Tanggung Jawab Jasa Order
+            </h2>
+          </div>
+          <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
             <p>
-              5.1. Kualitas racikan rasa, suhu minuman, kebersihan packaging, dan kecepatan pembuatan fisik di outlet merupakan tanggung jawab penuh pihak Kopi Kenangan.
+              5.1. Jasdor bertindak sebagai perantara pemesanan (jasa order). Kualitas bahan baku, rasa, temperatur minuman, dan penyajian sepenuhnya merupakan standar operasional gerai resmi Kopi Kenangan.
             </p>
             <p>
-              5.2. Layanan Jasdor hanya melayani pemesanan pada jam operasional: <strong>{JAM_LAYANAN}</strong>.
-            </p>
-            <p>
-              5.3. Pelanggan wajib mengambil pesanan di outlet sesuai nama pemesan atau nomor antrean yang diberikan admin Jasdor. Keterlambatan pengambilan di outlet yang menyebabkan es mencair berada di luar tanggung jawab Jasdor.
+              5.2. Pelanggan bertanggung jawab untuk mengambil pesanan di outlet sesuai dengan jadwal dan nama pemesan yang telah didaftarkan.
             </p>
           </div>
         </section>
 
-        {/* Kontak Bantuan */}
-        <div className="p-4 bg-amber-50/70 border border-amber-200/80 rounded-2xl text-center space-y-2 text-[#78350F]">
-          <p className="text-xs leading-relaxed">
-            Punya pertanyaan mengenai syarat & ketentuan ini?
-          </p>
+        {/* Kartu Bantuan WhatsApp */}
+        <div className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs flex items-center justify-between gap-3">
+          <div>
+            <span className="font-display font-bold text-xs text-[#26150B] block">
+              Butuh Penjelasan Tambahan?
+            </span>
+            <span className="text-[11px] text-[#735F52] block">
+              Hubungi WhatsApp admin ({NOMOR_WHATSAPP_ADMIN_FORMATTED})
+            </span>
+          </div>
           <a
             href={waContactUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#26150B] text-[#FBBF24] font-display font-bold text-xs rounded-xl transition active:scale-95 shadow-xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold rounded-xl transition active:scale-95 shadow-xs shrink-0"
           >
-            <span>Hubungi Admin ({NOMOR_WHATSAPP_ADMIN_FORMATTED})</span>
+            <WhatsAppIcon className="w-3.5 h-3.5 fill-white shrink-0" />
+            <span>Chat Admin</span>
           </a>
         </div>
 
-        {/* Link Kembali */}
+        {/* Link Kembali ke Beranda */}
         <div className="text-center pt-2">
           <Link
             href="/"

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Header } from '@/components/Header';
+import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import {
-  SITE_CONFIG,
   NOMOR_WHATSAPP_ADMIN_FORMATTED,
   getAdminWhatsAppUrl,
 } from '@/lib/site-config';
@@ -10,11 +10,13 @@ import {
 export const metadata: Metadata = {
   title: 'Kebijakan Privasi — Perlindungan Data Pengguna',
   description:
-    'Kebijakan privasi dan perlindungan data pengguna di Jasdor: bagaimana data pesanan, nama, dan komunikasi WhatsApp dikelola secara aman dan rahasia.',
+    'Kebijakan privasi dan perlindungan data pengguna di Jasdor: bagaimana data pesanan, nama pemesan, dan komunikasi WhatsApp jasa order dikelola secara aman dan rahasia.',
 };
 
 export default function PrivacyPage() {
-  const waPrivacyUrl = getAdminWhatsAppUrl('Halo Admin Jasdor, saya ingin bertanya mengenai privasi data.');
+  const waPrivacyUrl = getAdminWhatsAppUrl(
+    'Halo Admin Jasdor, saya ingin bertanya mengenai privasi data layanan jasa order.'
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF8F4]">
@@ -39,13 +41,13 @@ export default function PrivacyPage() {
               Kebijakan Privasi Jasdor
             </h1>
             <p className="text-xs text-[#E3D6C5] mt-1.5 leading-relaxed">
-              Komitmen kami untuk melindungi kerahasiaan identitas dan data pesanan Anda selama menggunakan layanan Jasdor.
+              Komitmen kami untuk melindungi kerahasiaan identitas dan data pesanan Anda selama menggunakan layanan jasa order Jasdor.
             </p>
           </div>
         </div>
 
         {/* Ringkasan Jaminan Privasi */}
-        <div className="p-3.5 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl flex items-start gap-3 text-emerald-900">
+        <div className="p-3.5 bg-emerald-50/80 border border-emerald-200 rounded-2xl flex items-start gap-3 text-emerald-950 shadow-2xs">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5 text-emerald-700 shrink-0 mt-0.5"
@@ -53,6 +55,7 @@ export default function PrivacyPage() {
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={2}
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -61,92 +64,140 @@ export default function PrivacyPage() {
             />
           </svg>
           <div className="text-xs leading-relaxed">
-            <strong className="font-bold block text-emerald-950 mb-0.5">Jaminan Bebas Spam & Rahasia</strong>
-            Data pesanan Anda hanya digunakan untuk memproses pesanan ke barista outlet dan <strong>tidak pernah diperjualbelikan kepada pihak ketiga manapun</strong>.
+            <strong className="font-bold block text-emerald-950 mb-0.5">
+              Jaminan Bebas Spam & Data Tidak Dibagikan
+            </strong>
+            Data pesanan Anda hanya digunakan untuk memproses pesanan ke barista gerai Kopi Kenangan dan <strong>tidak pernah dibagikan, disewakan, atau dijual kepada pihak ketiga manapun</strong>.
           </div>
         </div>
 
         {/* Section 1: Data yang Dikumpulkan */}
-        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2">
-          <h2 className="font-display font-bold text-sm text-[#26150B] flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-bold">1</span>
-            Data yang Kami Kumpulkan
-          </h2>
-          <div className="text-xs text-[#5C4A3E] leading-relaxed space-y-2 pl-7">
+        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2 border-l-4 border-l-[#C67D0A]">
+          <div className="flex items-center gap-2">
+            <span className="w-6 h-6 rounded-lg bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-black shrink-0">
+              01
+            </span>
+            <h2 className="font-display font-bold text-sm text-[#26150B]">
+              Data yang Kami Kumpulkan
+            </h2>
+          </div>
+          <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
             <p>
-              Kami hanya mengumpulkan data minimal yang dibutuhkan untuk kelancaran transaksi jastip:
+              Kami hanya mengumpulkan data minimal yang dibutuhkan untuk kelancaran transaksi jasa order:
             </p>
-            <ul className="list-disc pl-4 space-y-1 text-[#6A584D]">
-              <li><strong>Nama Pemesan</strong>: Dicantumkan pada tiket pesanan di outlet Kopi Kenangan agar barista mengenali pesanan Anda.</li>
-              <li><strong>Rincian Pesanan & Catatan</strong>: Menu yang dipilih, ukuran cup, takaran gula/es, dan topping khusus.</li>
-              <li><strong>Nomor WhatsApp</strong>: Media komunikasi langsung antara pelanggan dan admin Jasdor saat checkout.</li>
-              <li><strong>Data Teknis Ringkas</strong>: Cache lokal keranjang (di browser perangkat Anda) agar item belanja tidak hilang saat navigasi.</li>
+            <ul className="space-y-1.5 text-[#5C4A3E]">
+              <li className="flex items-start gap-2">
+                <span className="text-[#C67D0A] font-bold">•</span>
+                <span><strong>Nama Pemesan</strong>: Dicantumkan pada tiket pesanan di outlet agar barista mengenali pesanan Anda.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#C67D0A] font-bold">•</span>
+                <span><strong>Rincian Pesanan & Catatan</strong>: Menu yang dipilih, ukuran cup, takaran gula/es, dan opsi addon/topping.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#C67D0A] font-bold">•</span>
+                <span><strong>Nomor WhatsApp</strong>: Media komunikasi langsung antara pemesan dan admin Jasdor saat checkout.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#C67D0A] font-bold">•</span>
+                <span><strong>Penyimpanan Keranjang Lokal</strong>: Disimpan sementara di memori browser perangkat Anda agar keranjang tidak hilang saat berpindah menu.</span>
+              </li>
             </ul>
           </div>
         </section>
 
         {/* Section 2: Tujuan Penggunaan Data */}
-        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2">
-          <h2 className="font-display font-bold text-sm text-[#26150B] flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-bold">2</span>
-            Tujuan Penggunaan Data
-          </h2>
-          <div className="text-xs text-[#5C4A3E] leading-relaxed space-y-2 pl-7">
-            <p>Data yang dikumpulkan semata-mata digunakan untuk:</p>
-            <ul className="list-disc pl-4 space-y-1 text-[#6A584D]">
-              <li>Meneruskan dan mendaftarkan pesanan Anda ke sistem barista outlet Kopi Kenangan terpilih.</li>
-              <li>Mengonfirmasi ketersediaan stok produk dan jadwal pengambilan (pickup).</li>
-              <li>Mengirimkan informasi pembayaran QRIS/rekening resmi serta bukti konfirmasi pesanan.</li>
-              <li>Memproses pengembalian dana (refund) jika terjadi kehabisan stok di outlet.</li>
+        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2 border-l-4 border-l-[#C67D0A]">
+          <div className="flex items-center gap-2">
+            <span className="w-6 h-6 rounded-lg bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-black shrink-0">
+              02
+            </span>
+            <h2 className="font-display font-bold text-sm text-[#26150B]">
+              Tujuan Penggunaan Data
+            </h2>
+          </div>
+          <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
+            <p>Data yang dikumpulkan secara ketat hanya digunakan untuk:</p>
+            <ul className="space-y-1.5 text-[#5C4A3E]">
+              <li className="flex items-start gap-2">
+                <span className="text-[#C67D0A] font-bold">•</span>
+                <span>Meneruskan dan mendaftarkan pesanan ke kasir/barista outlet Kopi Kenangan pilihan Anda.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#C67D0A] font-bold">•</span>
+                <span>Konfirmasi ketersediaan stok menu dan jadwal pengambilan (pickup).</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#C67D0A] font-bold">•</span>
+                <span>Mengirimkan tagihan pembayaran resmi (QRIS / Bank Jago / Blu by BCA / E-wallet) serta konfirmasi pembayaran.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#C67D0A] font-bold">•</span>
+                <span>Memproses refund 100% apabila menu pesanan habis di outlet.</span>
+              </li>
             </ul>
           </div>
         </section>
 
-        {/* Section 3: Pembagian Data Pihak Ketiga */}
-        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2">
-          <h2 className="font-display font-bold text-sm text-[#26150B] flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-bold">3</span>
-            Tidak Dibagikan ke Pihak Ketiga
-          </h2>
-          <div className="text-xs text-[#5C4A3E] leading-relaxed space-y-2 pl-7">
+        {/* Section 3: Keamanan Pembayaran & Privasi Keuangan */}
+        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2 border-l-4 border-l-[#C67D0A]">
+          <div className="flex items-center gap-2">
+            <span className="w-6 h-6 rounded-lg bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-black shrink-0">
+              03
+            </span>
+            <h2 className="font-display font-bold text-sm text-[#26150B]">
+              Keamanan Transaksi & Data Finansial
+            </h2>
+          </div>
+          <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
             <p>
-              Jasdor berkomitmen tegas untuk <strong>tidak menjual, menyewakan, atau membagikan data nomor kontak maupun nama Anda kepada pihak ketiga</strong> untuk tujuan periklanan, pemasaran spam, atau telemarketing.
+              Website Jasdor <strong>tidak pernah meminta atau menyimpan data kredensial finansial sensitif</strong> seperti nomor kartu debit/kredit, PIN ATM, atau password m-banking pengguna.
             </p>
             <p>
-              Data nama hanya disebutkan kepada kasir/barista outlet semata-mata untuk keperluan serah terima pesanan kopi.
+              Seluruh transaksi diselesaikan langsung melalui aplikasi perbankan atau e-wallet resmi pengguna ke rekening resmi / QRIS Jasdor.
             </p>
           </div>
         </section>
 
-        {/* Section 4: Keamanan Pembayaran */}
-        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2">
-          <h2 className="font-display font-bold text-sm text-[#26150B] flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-bold">4</span>
-            Keamanan Transaksi & Pembayaran
-          </h2>
-          <div className="text-xs text-[#5C4A3E] leading-relaxed space-y-2 pl-7">
+        {/* Section 4: Hak Pengguna */}
+        <section className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2 border-l-4 border-l-[#C67D0A]">
+          <div className="flex items-center gap-2">
+            <span className="w-6 h-6 rounded-lg bg-[#FEF3C7] text-[#B45309] text-xs flex items-center justify-center font-black shrink-0">
+              04
+            </span>
+            <h2 className="font-display font-bold text-sm text-[#26150B]">
+              Hak & Penghapusan Data Pengguna
+            </h2>
+          </div>
+          <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
             <p>
-              Website Jasdor <strong>tidak menyimpan data nomor kartu kredit, kartu debit, atau PIN perbankan</strong> Anda. Seluruh pembayaran dilakukan secara aman melalui aplikasi perbankan atau e-wallet resmi pelanggan via scan QRIS atau transfer bank langsung.
+              Pelanggan berhak meminta riwayat chat WhatsApp dan data pesanan dihapus kapan saja dengan menghubungi admin Customer Service kami.
             </p>
           </div>
         </section>
 
-        {/* Kontak Hak Privasi */}
-        <div className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs text-center space-y-2">
-          <p className="text-xs text-[#6A584D] leading-relaxed">
-            Jika Anda memiliki pertanyaan mengenai privasi data Anda di {SITE_CONFIG.brandShort}, silakan hubungi admin kami melalui WhatsApp:
-          </p>
+        {/* Kartu Kontak WhatsApp */}
+        <div className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs flex items-center justify-between gap-3">
+          <div>
+            <span className="font-display font-bold text-xs text-[#26150B] block">
+              Pertanyaan Mengenai Privasi?
+            </span>
+            <span className="text-[11px] text-[#735F52] block">
+              Hubungi Admin WA ({NOMOR_WHATSAPP_ADMIN_FORMATTED})
+            </span>
+          </div>
           <a
             href={waPrivacyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#26150B] text-[#FBBF24] font-display font-bold text-xs rounded-xl transition active:scale-95 shadow-xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold rounded-xl transition active:scale-95 shadow-xs shrink-0"
           >
-            <span>Hubungi Admin ({NOMOR_WHATSAPP_ADMIN_FORMATTED})</span>
+            <WhatsAppIcon className="w-3.5 h-3.5 fill-white shrink-0" />
+            <span>Chat Admin</span>
           </a>
         </div>
 
-        {/* Link Kembali */}
+        {/* Link Kembali ke Beranda */}
         <div className="text-center pt-2">
           <Link
             href="/"
