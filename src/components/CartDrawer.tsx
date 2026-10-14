@@ -378,17 +378,20 @@ export function CartDrawer({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-2xs animate-in fade-in duration-200 overscroll-contain">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#26150B]/60 backdrop-blur-2xs animate-in fade-in duration-200 overscroll-contain">
       <div className="fixed inset-0 touch-none" onClick={onClose} aria-hidden="true" />
 
-      <div className="relative w-full max-w-md max-h-[92vh] bg-white rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300 overscroll-contain">
+      <div className="relative w-full max-w-md max-h-[92vh] bg-[#FBF8F4] rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300 overscroll-contain border-t border-[#EFE5D8]">
+        {/* Drag handle */}
+        <div className="w-12 h-1 bg-[#D4C3B2] rounded-full mx-auto mt-2.5 mb-1" />
+
         {/* ZONA A: Header Tetap di Atas */}
-        <div className="shrink-0 bg-white/95 backdrop-blur px-5 py-3.5 border-b border-stone-200 flex items-center justify-between z-10 touch-none">
+        <div className="shrink-0 bg-[#FBF8F4]/95 backdrop-blur px-5 py-3 border-b border-[#EFE5D8] flex items-center justify-between z-10 touch-none">
           <div>
-            <h3 className="font-bold text-base text-[#111111] leading-tight">
+            <h3 className="font-display font-bold text-base text-[#26150B] leading-tight">
               Keranjang Belanja
             </h3>
-            <p className="text-[11px] text-stone-500 line-clamp-1">
+            <p className="text-[11px] text-[#735F52] line-clamp-1">
               {effectiveOutletName}
             </p>
           </div>
@@ -396,7 +399,7 @@ export function CartDrawer({
           <button
             onClick={onClose}
             type="button"
-            className="min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition"
+            className="min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-[#8C7667] hover:text-[#26150B] hover:bg-[#F2EAE0] transition"
             aria-label="Tutup keranjang"
           >
             <svg
@@ -406,23 +409,23 @@ export function CartDrawer({
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
         {/* ZONA B: Zona Tengah - DAFTAR ITEM SAJA yang bisa di-scroll */}
-        <div className="relative flex-1 min-h-0 flex flex-col bg-stone-50/40">
+        <div className="relative flex-1 min-h-0 flex flex-col bg-[#FAF6F0]">
           <div
             ref={itemsScrollRef}
             onScroll={updateScrollIndicator}
             className="cart-items-scroll flex-1 overflow-y-auto p-4 space-y-3 overscroll-contain"
           >
             {items.length === 0 ? (
-              <div className="py-12 text-center text-stone-400">
+              <div className="py-12 text-center text-[#8C7667]">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-12 w-12 mx-auto mb-2 text-stone-300"
+                  className="h-12 w-12 mx-auto mb-2 text-[#C8B8A6]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -434,8 +437,8 @@ export function CartDrawer({
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                   />
                 </svg>
-                <p className="text-sm font-semibold">Keranjang masih kosong</p>
-                <p className="text-xs mt-1">Pilih menu favoritmu di atas.</p>
+                <p className="font-display text-sm font-bold text-[#26150B]">Keranjang masih kosong</p>
+                <p className="text-xs text-[#735F52] mt-1">Pilih menu favoritmu di atas.</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -444,10 +447,10 @@ export function CartDrawer({
                   return (
                     <div
                       key={item.id}
-                      className="p-3 bg-white rounded-2xl border border-stone-200/90 shadow-2xs flex gap-3 items-start"
+                      className="p-3 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs flex gap-3 items-start"
                     >
                       {item.image && (
-                        <div className="relative w-14 h-14 bg-stone-200 rounded-xl overflow-hidden shrink-0 border border-stone-100">
+                        <div className="relative w-14 h-14 bg-[#F4EDE3] rounded-xl overflow-hidden shrink-0 border border-[#EAE0D3]">
                           <Image
                             src={item.image}
                             alt={item.name}
@@ -460,13 +463,13 @@ export function CartDrawer({
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-1">
-                          <h4 className="font-bold text-xs text-[#111111] leading-snug line-clamp-1">
+                          <h4 className="font-display font-bold text-xs text-[#26150B] leading-snug line-clamp-1">
                             {item.name}
                           </h4>
                           <button
                             type="button"
                             onClick={() => onRemoveItem(item.id)}
-                            className="text-stone-400 hover:text-rose-500 p-1 -mr-1"
+                            className="text-[#9C897B] hover:text-rose-600 p-1 -mr-1"
                             aria-label={`Hapus ${item.name}`}
                           >
                             <svg
@@ -487,50 +490,50 @@ export function CartDrawer({
                         </div>
 
                         {item.variantDescription && (
-                          <p className="text-[11px] text-stone-500 line-clamp-2 mt-0.5">
+                          <p className="text-[11px] text-[#6A584D] line-clamp-2 mt-0.5">
                             {item.variantDescription}
                           </p>
                         )}
 
                         {item.addons && item.addons.length > 0 && (
-                          <p className="text-[10px] text-amber-700 mt-0.5">
+                          <p className="text-[10px] text-[#A66908] font-medium mt-0.5">
                             Topping: {item.addons.map((a) => a.name).join(', ')}
                           </p>
                         )}
 
                         {item.notes && (
-                          <p className="text-[10px] text-stone-400 italic mt-0.5">
+                          <p className="text-[10px] text-[#8C7667] italic mt-0.5">
                             Catatan: &quot;{item.notes}&quot;
                           </p>
                         )}
 
-                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-stone-200/60">
+                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#F2EAE0]">
                           <div className="flex items-baseline gap-1.5">
-                            <span className="text-xs font-bold text-amber-800">
+                            <span className="font-display text-xs font-black text-[#DC2626]">
                               {formatRupiah(itemPricing ? itemPricing.subtotalItem : 0)}
                             </span>
-                            <span className="text-[10px] text-stone-400 line-through">
+                            <span className="text-[10px] text-[#9C897B] line-through">
                               {formatRupiah(itemPricing ? itemPricing.originalPricePerItem * item.quantity : 0)}
                             </span>
                           </div>
 
                           {/* Kontrol Kuantitas */}
-                          <div className="flex items-center gap-2 bg-stone-50 px-2 py-0.5 rounded-lg border border-stone-200">
+                          <div className="flex items-center gap-2 bg-[#F2EAE0] px-2 py-0.5 rounded-lg border border-[#E3D6C5]">
                             <button
                               type="button"
                               onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-                              className="text-stone-600 font-bold text-sm px-1.5 min-h-[30px]"
+                              className="text-[#26150B] font-bold text-sm px-1.5 min-h-[30px]"
                               aria-label="Kurangi kuantitas"
                             >
                               -
                             </button>
-                            <span className="text-xs font-bold text-[#111111]">
+                            <span className="font-display text-xs font-bold text-[#26150B]">
                               {item.quantity}
                             </span>
                             <button
                               type="button"
                               onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                              className="text-stone-600 font-bold text-sm px-1.5 min-h-[30px]"
+                              className="text-[#26150B] font-bold text-sm px-1.5 min-h-[30px]"
                               aria-label="Tambah kuantitas"
                             >
                               +
@@ -548,7 +551,7 @@ export function CartDrawer({
           {/* Fade gradient petunjuk scroll: HANYA saat masih ada isi di bawahnya */}
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-stone-100 to-transparent transition-opacity duration-200 ${
+            className={`pointer-events-none absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-[#FAF6F0] to-transparent transition-opacity duration-200 ${
               canScrollDown ? 'opacity-100' : 'opacity-0'
             }`}
           />
@@ -556,19 +559,19 @@ export function CartDrawer({
 
         {/* ZONA C: Zona Bawah SELALU MENEMPEL (STICKY/PINNED) */}
         {items.length > 0 && (
-          <div className="shrink-0 bg-white border-t border-stone-200 shadow-xl z-20 flex flex-col max-h-[65vh] overflow-y-auto overscroll-contain">
+          <div className="shrink-0 bg-[#FBF8F4] border-t border-[#EFE5D8] shadow-xl z-20 flex flex-col max-h-[65vh] overflow-y-auto overscroll-contain">
             <div className="p-3.5 space-y-2.5">
               {/* 1. Informasi Pick Up (Ringkas) */}
-              <div className="bg-stone-50 rounded-xl p-3 border border-stone-200/80 space-y-2.5">
+              <div className="bg-white rounded-2xl p-3 border border-[#EFE5D8] space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-[11px] font-bold text-[#111111] uppercase tracking-wide">
+                  <h4 className="font-display text-[11px] font-bold text-[#26150B] uppercase tracking-wide">
                     Informasi Pick Up
                   </h4>
                 </div>
 
                 {/* Input Nama */}
                 <div className="space-y-1">
-                  <label htmlFor="checkout-name" className="text-[11px] font-semibold text-stone-700 block">
+                  <label htmlFor="checkout-name" className="text-[11px] font-semibold text-[#4A3225] block">
                     Nama Pemesan <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -584,17 +587,17 @@ export function CartDrawer({
                       if (errorMessage) setErrorMessage(null);
                     }}
                     placeholder="Contoh: Budi Prasetyo"
-                    className={`w-full min-h-[40px] px-3.5 py-2 bg-white border rounded-xl text-xs text-[#1F2937] placeholder-stone-400 outline-hidden transition ${
+                    className={`w-full min-h-[40px] px-3.5 py-2 bg-white border rounded-xl text-xs text-[#26150B] placeholder-[#9C897B] outline-hidden transition ${
                       nameHighlight
                         ? 'border-rose-500 ring-2 ring-rose-400/50 bg-rose-50/40'
-                        : 'border-stone-300 focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]'
+                        : 'border-[#E0D4C5] focus:border-[#C67D0A] focus:ring-1 focus:ring-[#C67D0A]'
                     }`}
                   />
                 </div>
 
                 {/* Pilihan Waktu Pick Up */}
                 <div className="space-y-1.5">
-                  <span className="text-[11px] font-semibold text-stone-700 block">
+                  <span className="text-[11px] font-semibold text-[#4A3225] block">
                     Waktu Pengambilan
                   </span>
 
@@ -604,8 +607,8 @@ export function CartDrawer({
                       onClick={() => setPickupMode('now')}
                       className={`min-h-[40px] p-2 rounded-xl border text-left text-xs font-medium transition ${
                         pickupMode === 'now'
-                          ? 'border-[#111111] bg-[#111111] text-[#D4AF37] font-bold shadow-2xs'
-                          : 'border-stone-200 bg-white text-stone-700 hover:border-stone-300'
+                          ? 'border-[#26150B] bg-[#26150B] text-[#FBBF24] font-display font-bold shadow-2xs'
+                          : 'border-[#E0D4C5] bg-white text-[#3D2313] hover:border-[#D9A74A]'
                       }`}
                     >
                       <span className="block text-[11px] leading-tight">Pick up Sekarang</span>
@@ -620,10 +623,10 @@ export function CartDrawer({
                       }}
                       className={`min-h-[40px] p-2 rounded-xl border text-left text-xs font-medium transition ${
                         pickupMode === 'scheduled'
-                          ? 'border-[#111111] bg-[#111111] text-[#D4AF37] font-bold shadow-2xs'
+                          ? 'border-[#26150B] bg-[#26150B] text-[#FBBF24] font-display font-bold shadow-2xs'
                           : scheduleSlots.isAvailable
-                          ? 'border-stone-200 bg-white text-stone-700 hover:border-stone-300'
-                          : 'border-stone-100 bg-stone-100 text-stone-300 cursor-not-allowed opacity-60'
+                          ? 'border-[#E0D4C5] bg-white text-[#3D2313] hover:border-[#D9A74A]'
+                          : 'border-[#EFE5D8] bg-[#F4EDE3] text-[#BFAFA0] cursor-not-allowed opacity-60'
                       }`}
                     >
                       <span className="block text-[11px] leading-tight">Jadwalkan Jam</span>
@@ -634,7 +637,7 @@ export function CartDrawer({
                   {/* Dropdown Jam Terjadwal */}
                   {pickupMode === 'scheduled' && scheduleSlots.isAvailable && (
                     <div className="pt-1">
-                      <label htmlFor="schedule-slot-select" className="text-[11px] text-stone-500 block mb-1">
+                      <label htmlFor="schedule-slot-select" className="text-[11px] text-[#735F52] block mb-1">
                         Pilih Jam Ambil (WIB):
                       </label>
                       <select
@@ -646,10 +649,10 @@ export function CartDrawer({
                           if (slotHighlight) setSlotHighlight(false);
                           if (errorMessage) setErrorMessage(null);
                         }}
-                        className={`w-full min-h-[40px] px-3.5 py-2 bg-white border rounded-xl text-xs text-[#1F2937] outline-hidden ${
+                        className={`w-full min-h-[40px] px-3.5 py-2 bg-white border rounded-xl text-xs text-[#26150B] outline-hidden ${
                           slotHighlight
                             ? 'border-rose-500 ring-2 ring-rose-400/50 bg-rose-50/40'
-                            : 'border-stone-300 focus:border-[#D4AF37]'
+                            : 'border-[#E0D4C5] focus:border-[#C67D0A]'
                         }`}
                       >
                         {scheduleSlots.slots.map((slot) => (
@@ -662,7 +665,7 @@ export function CartDrawer({
                   )}
 
                   {!scheduleSlots.isAvailable && (
-                    <p className="text-[10px] text-amber-600">
+                    <p className="text-[10px] text-[#A66908]">
                       {scheduleSlots.reason}
                     </p>
                   )}
@@ -670,37 +673,37 @@ export function CartDrawer({
               </div>
 
               {/* 2. Rincian Ringkasan Pembayaran */}
-              <div className="bg-stone-50/60 rounded-xl p-2.5 border border-stone-200/70 text-xs space-y-1">
-                <h4 className="font-bold text-[#111111] uppercase tracking-wide text-[10px] pb-1 border-b border-stone-200/60">
+              <div className="bg-white rounded-2xl p-3 border border-[#EFE5D8] text-xs space-y-1.5">
+                <h4 className="font-display font-bold text-[#26150B] uppercase tracking-wide text-[10px] pb-1 border-b border-[#F2EAE0]">
                   Ringkasan Pembayaran
                 </h4>
 
-                <div className="flex justify-between text-stone-600 text-[11px]">
+                <div className="flex justify-between text-[#6A584D] text-[11px]">
                   <span>Sub Total ({pricing.totalQuantity} item)</span>
-                  <span className="font-semibold text-stone-900">{formatRupiah(pricing.subtotal)}</span>
+                  <span className="font-semibold text-[#26150B]">{formatRupiah(pricing.subtotal)}</span>
                 </div>
 
-                <div className="flex justify-between text-stone-600 text-[11px]">
+                <div className="flex justify-between text-[#6A584D] text-[11px]">
                   <span>
                     {pricing.totalQuantity === 1
                       ? 'Biaya Jasa (1 item)'
                       : `Biaya Jasa (Rp2.000 x ${pricing.totalQuantity} item)`}
                   </span>
-                  <span className="font-semibold text-stone-900">{formatRupiah(pricing.fee)}</span>
+                  <span className="font-semibold text-[#26150B]">{formatRupiah(pricing.fee)}</span>
                 </div>
 
-                <div className="flex justify-between text-stone-400 line-through text-[10px]">
+                <div className="flex justify-between text-[#9C897B] line-through text-[10px]">
                   <span>Total Harga Asli KK</span>
                   <span>{formatRupiah(pricing.totalSavings + pricing.subtotal)}</span>
                 </div>
 
-                <div className="pt-1.5 border-t border-stone-200/60 flex justify-between items-baseline font-bold text-sm">
-                  <span className="text-[#111111] text-xs">Total Tagihan</span>
+                <div className="pt-2 border-t border-[#F2EAE0] flex justify-between items-baseline font-bold text-sm">
+                  <span className="font-display text-[#26150B] text-xs font-bold">Total Tagihan</span>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                       Hemat {formatRupiah(pricing.totalSavings)}
                     </span>
-                    <span className="text-amber-800 text-sm font-extrabold">{formatRupiah(pricing.total)}</span>
+                    <span className="font-display text-base font-black text-[#26150B]">{formatRupiah(pricing.total)}</span>
                   </div>
                 </div>
               </div>
@@ -714,25 +717,25 @@ export function CartDrawer({
                   <svg className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
-                  <span className="leading-tight flex-1">{errorMessage}</span>
+                  <span className="leading-tight flex-1 font-medium">{errorMessage}</span>
                 </div>
               )}
 
-              {/* 4. Tombol Kirim Pesanan ke WhatsApp */}
+              {/* 4. Tombol Kirim Pesanan ke WhatsApp (Official WhatsApp Green CTA) */}
               <button
                 type="button"
                 disabled={isSubmitting}
                 onClick={handleProceedToWhatsApp}
-                className="w-full min-h-[48px] px-4 py-3 bg-[#111111] hover:bg-stone-900 active:scale-98 text-[#D4AF37] font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md disabled:opacity-60"
+                className="w-full min-h-[48px] px-4 py-3 bg-[#15803D] hover:bg-[#166534] active:scale-98 text-white font-display font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md disabled:opacity-60"
               >
                 {isSubmitting ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     <span>Memvalidasi Pesanan...</span>
                   </>
                 ) : (
                   <>
-                    <WhatsAppIcon className="h-4.5 w-4.5 text-[#25D366] shrink-0" />
+                    <WhatsAppIcon className="h-4.5 w-4.5 text-white shrink-0" />
                     <span>Kirim Pesanan ke WhatsApp • {formatRupiah(pricing.total)}</span>
                   </>
                 )}
@@ -744,27 +747,27 @@ export function CartDrawer({
 
       {/* Modal Dialog Konfirmasi "Sudah mengirim pesan di WhatsApp?" */}
       {showSuccessDialog && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/70 backdrop-blur-2xs animate-in fade-in overscroll-contain">
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-[#26150B]/60 backdrop-blur-2xs animate-in fade-in overscroll-contain">
           <div className="fixed inset-0 touch-none" aria-hidden="true" />
-          <div className="relative w-full max-w-xs bg-white rounded-2xl p-5 shadow-2xl space-y-4 animate-in zoom-in-95 border border-stone-100 text-center z-10 overscroll-contain">
-            <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+          <div className="relative w-full max-w-xs bg-white rounded-3xl p-5 shadow-2xl space-y-4 animate-in zoom-in-95 border border-[#EFE5D8] text-center z-10 overscroll-contain">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto border border-emerald-200">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                strokeWidth={2}
+                strokeWidth={2.2}
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
 
             <div className="space-y-1">
-              <h3 className="font-bold text-base text-[#111111]">
-                Sudah mengirim pesan di WhatsApp?
+              <h3 className="font-display font-bold text-base text-[#26150B]">
+                Sudah kirim pesan ke WhatsApp?
               </h3>
-              <p className="text-xs text-stone-500 leading-relaxed">
+              <p className="text-xs text-[#6A584D] leading-relaxed">
                 Konfirmasi jika Anda sudah mengirimkan format pesanan ke WhatsApp Jasdor.
               </p>
             </div>
@@ -773,25 +776,25 @@ export function CartDrawer({
               <button
                 type="button"
                 onClick={handleConfirmWhatsAppSent}
-                className="w-full min-h-[44px] px-4 py-2.5 bg-[#111111] text-[#D4AF37] font-bold text-xs rounded-xl shadow-xs"
+                className="w-full min-h-[44px] px-4 py-2.5 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] font-display font-bold text-xs rounded-xl shadow-xs"
               >
                 Sudah
               </button>
               <button
                 type="button"
                 onClick={() => setShowSuccessDialog(false)}
-                className="w-full min-h-[44px] px-4 py-2.5 bg-stone-100 text-stone-700 font-semibold text-xs rounded-xl"
+                className="w-full min-h-[44px] px-4 py-2.5 bg-[#F2EAE0] hover:bg-[#EAE0D3] text-[#4A3225] font-semibold text-xs rounded-xl"
               >
                 Belum
               </button>
             </div>
 
             {/* Tombol cadangan Salin Pesan */}
-            <div className="pt-2 border-t border-stone-100">
+            <div className="pt-2 border-t border-[#F2EAE0]">
               <button
                 type="button"
                 onClick={handleCopyMessage}
-                className="text-[11px] text-amber-700 hover:underline font-medium min-h-[36px] flex items-center justify-center gap-1 mx-auto"
+                className="text-[11px] text-[#A66908] hover:underline font-bold min-h-[36px] flex items-center justify-center gap-1 mx-auto"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -816,10 +819,10 @@ export function CartDrawer({
 
       {/* Modal Peringatan Stok Tidak Pasti */}
       {showUncertainModal && (
-        <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/70 backdrop-blur-2xs animate-in fade-in overscroll-contain">
+        <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-[#26150B]/60 backdrop-blur-2xs animate-in fade-in overscroll-contain">
           <div className="fixed inset-0 touch-none" aria-hidden="true" />
-          <div className="relative w-full max-w-sm bg-white rounded-2xl p-5 shadow-2xl space-y-3.5 text-center z-10 overscroll-contain">
-            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
+          <div className="relative w-full max-w-sm bg-white rounded-3xl p-5 shadow-2xl space-y-3.5 text-center z-10 overscroll-contain border border-[#EFE5D8]">
+            <div className="w-12 h-12 bg-[#FEF3C7] text-[#B45309] rounded-2xl flex items-center justify-center mx-auto border border-[#FDE68A]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
@@ -837,10 +840,10 @@ export function CartDrawer({
             </div>
 
             <div className="space-y-1">
-              <h3 className="font-bold text-sm text-[#111111]">
+              <h3 className="font-display font-bold text-sm text-[#26150B]">
                 Stok Tidak Dapat Dipastikan Otomatis
               </h3>
-              <p className="text-xs text-stone-500 leading-relaxed">
+              <p className="text-xs text-[#6A584D] leading-relaxed">
                 Koneksi pengecekan stok ke outlet sedang lambat. Kamu tetap dapat melanjutkan pesanan dan ketersediaan stok akan dikonfirmasi langsung oleh admin jasdor via WhatsApp.
               </p>
             </div>
@@ -852,14 +855,14 @@ export function CartDrawer({
                   setShowUncertainModal(false);
                   dispatchWhatsAppOrder(generatedMessage);
                 }}
-                className="w-full min-h-[44px] px-4 py-2.5 bg-[#111111] text-[#D4AF37] font-bold text-xs rounded-xl shadow-xs"
+                className="w-full min-h-[44px] px-4 py-2.5 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] font-display font-bold text-xs rounded-xl shadow-xs"
               >
                 Tetap Lanjut ke WhatsApp
               </button>
               <button
                 type="button"
                 onClick={() => setShowUncertainModal(false)}
-                className="w-full min-h-[44px] px-4 py-2.5 bg-stone-100 text-stone-700 font-semibold text-xs rounded-xl hover:bg-stone-200"
+                className="w-full min-h-[44px] px-4 py-2.5 bg-[#F2EAE0] hover:bg-[#EAE0D3] text-[#4A3225] font-semibold text-xs rounded-xl"
               >
                 Kembali ke Keranjang
               </button>
@@ -870,13 +873,13 @@ export function CartDrawer({
 
       {/* Modal Salin Pesan bila URL melebihi batas */}
       {showCopyModal && (
-        <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/70 backdrop-blur-2xs animate-in fade-in overscroll-contain">
+        <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-[#26150B]/60 backdrop-blur-2xs animate-in fade-in overscroll-contain">
           <div className="fixed inset-0 touch-none" aria-hidden="true" />
-          <div className="relative w-full max-w-sm bg-white rounded-2xl p-5 shadow-2xl space-y-3 text-center z-10 overscroll-contain">
-            <h3 className="font-bold text-sm text-[#111111]">
+          <div className="relative w-full max-w-sm bg-white rounded-3xl p-5 shadow-2xl space-y-3 text-center z-10 overscroll-contain border border-[#EFE5D8]">
+            <h3 className="font-display font-bold text-sm text-[#26150B]">
               Pesan Siap Dikirim
             </h3>
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-[#6A584D]">
               Panjang teks pesanan melebihi batas tautan browser. Silakan salin teks di bawah ini dan tempelkan (paste) di obrolan WhatsApp:
             </p>
 
@@ -884,20 +887,20 @@ export function CartDrawer({
               readOnly
               value={generatedMessage}
               rows={6}
-              className="w-full p-2.5 text-[11px] bg-stone-50 border border-stone-200 rounded-xl font-mono text-stone-700 overscroll-contain"
+              className="w-full p-2.5 text-[11px] bg-[#FAF7F2] border border-[#E0D4C5] rounded-xl font-mono text-[#26150B] overscroll-contain"
             />
 
             <button
               type="button"
               onClick={handleCopyMessage}
-              className="w-full min-h-[44px] px-4 py-2.5 bg-[#111111] text-[#D4AF37] font-bold text-xs rounded-xl"
+              className="w-full min-h-[44px] px-4 py-2.5 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] font-display font-bold text-xs rounded-xl"
             >
               {isCopied ? 'Tersalin ke Clipboard!' : 'Salin Pesan'}
             </button>
             <button
               type="button"
               onClick={() => setShowCopyModal(false)}
-              className="w-full min-h-[36px] text-xs text-stone-500 hover:text-stone-800 font-medium"
+              className="w-full min-h-[36px] text-xs text-[#8C7667] hover:text-[#26150B] font-medium"
             >
               Tutup
             </button>
