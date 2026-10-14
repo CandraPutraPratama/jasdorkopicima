@@ -21,6 +21,7 @@ import {
   filterCustomerNameInput,
 } from '@/lib/sanitizer';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -50,6 +51,9 @@ export function CartDrawer({
   const effectiveOutletCode = cartOutletCode || outlet?.code;
   const effectiveOutletName = cartOutletName || outlet?.name || 'Kopi Kenangan';
 
+  // Kunci scroll halaman belakang secara menyeluruh saat drawer aktif
+  useScrollLock(isOpen);
+
   // Form checkout state
   const [customerName, setCustomerName] = useState('');
   const [pickupMode, setPickupMode] = useState<'now' | 'scheduled'>('now');
@@ -65,6 +69,9 @@ export function CartDrawer({
   const [showUncertainModal, setShowUncertainModal] = useState(false);
   const [orderCompleted, setOrderCompleted] = useState(false);
   const [orderSnapshot, setOrderSnapshot] = useState<OrderSummarySnapshot | null>(null);
+
+  // Kunci scroll tambahan saat sub-dialog aktif (reference counted)
+  useScrollLock(showSuccessDialog || showUncertainModal || showCopyModal);
 
   // UX & Validation Attention states (Sprint 2 Item 1)
   const [nameHighlight, setNameHighlight] = useState(false);
@@ -143,8 +150,9 @@ export function CartDrawer({
     });
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-2xs animate-in fade-in">
-        <div className="w-full max-w-sm bg-white rounded-3xl p-6 text-center space-y-4 shadow-2xl">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-2xs animate-in fade-in overscroll-contain">
+        <div className="fixed inset-0 touch-none" aria-hidden="true" />
+        <div className="relative w-full max-w-sm bg-white rounded-3xl p-6 text-center space-y-4 shadow-2xl z-10 overscroll-contain">
           <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -367,12 +375,12 @@ export function CartDrawer({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-2xs animate-in fade-in duration-200">
-      <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-2xs animate-in fade-in duration-200 overscroll-contain">
+      <div className="fixed inset-0 touch-none" onClick={onClose} aria-hidden="true" />
 
-      <div className="relative w-full max-w-md max-h-[92vh] bg-white rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300">
+      <div className="relative w-full max-w-md max-h-[92vh] bg-white rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300 overscroll-contain">
         {/* ZONA A: Header Tetap di Atas */}
-        <div className="shrink-0 bg-white/95 backdrop-blur px-5 py-3.5 border-b border-stone-200 flex items-center justify-between z-10">
+        <div className="shrink-0 bg-white/95 backdrop-blur px-5 py-3.5 border-b border-stone-200 flex items-center justify-between z-10 touch-none">
           <div>
             <h3 className="font-bold text-base text-[#111111] leading-tight">
               Keranjang Belanja
@@ -545,7 +553,7 @@ export function CartDrawer({
 
         {/* ZONA C: Zona Bawah SELALU MENEMPEL (STICKY/PINNED) */}
         {items.length > 0 && (
-          <div className="shrink-0 bg-white border-t border-stone-200 shadow-xl z-20 flex flex-col max-h-[65vh] overflow-y-auto">
+          <div className="shrink-0 bg-white border-t border-stone-200 shadow-xl z-20 flex flex-col max-h-[65vh] overflow-y-auto overscroll-contain">
             <div className="p-3.5 space-y-2.5">
               {/* 1. Informasi Pick Up (Ringkas) */}
               <div className="bg-stone-50 rounded-xl p-3 border border-stone-200/80 space-y-2.5">
@@ -733,8 +741,9 @@ export function CartDrawer({
 
       {/* Modal Dialog Konfirmasi "Sudah mengirim pesan di WhatsApp?" */}
       {showSuccessDialog && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/70 backdrop-blur-2xs animate-in fade-in">
-          <div className="w-full max-w-xs bg-white rounded-2xl p-5 shadow-2xl space-y-4 animate-in zoom-in-95 border border-stone-100 text-center">
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/70 backdrop-blur-2xs animate-in fade-in overscroll-contain">
+          <div className="fixed inset-0 touch-none" aria-hidden="true" />
+          <div className="relative w-full max-w-xs bg-white rounded-2xl p-5 shadow-2xl space-y-4 animate-in zoom-in-95 border border-stone-100 text-center z-10 overscroll-contain">
             <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -804,8 +813,9 @@ export function CartDrawer({
 
       {/* Modal Peringatan Stok Tidak Pasti */}
       {showUncertainModal && (
-        <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/70 backdrop-blur-2xs animate-in fade-in">
-          <div className="w-full max-w-sm bg-white rounded-2xl p-5 shadow-2xl space-y-3.5 text-center">
+        <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/70 backdrop-blur-2xs animate-in fade-in overscroll-contain">
+          <div className="fixed inset-0 touch-none" aria-hidden="true" />
+          <div className="relative w-full max-w-sm bg-white rounded-2xl p-5 shadow-2xl space-y-3.5 text-center z-10 overscroll-contain">
             <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -857,8 +867,9 @@ export function CartDrawer({
 
       {/* Modal Salin Pesan bila URL melebihi batas */}
       {showCopyModal && (
-        <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/70 backdrop-blur-2xs animate-in fade-in">
-          <div className="w-full max-w-sm bg-white rounded-2xl p-5 shadow-2xl space-y-3 text-center">
+        <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-black/70 backdrop-blur-2xs animate-in fade-in overscroll-contain">
+          <div className="fixed inset-0 touch-none" aria-hidden="true" />
+          <div className="relative w-full max-w-sm bg-white rounded-2xl p-5 shadow-2xl space-y-3 text-center z-10 overscroll-contain">
             <h3 className="font-bold text-sm text-[#111111]">
               Pesan Siap Dikirim
             </h3>
@@ -870,7 +881,7 @@ export function CartDrawer({
               readOnly
               value={generatedMessage}
               rows={6}
-              className="w-full p-2.5 text-[11px] bg-stone-50 border border-stone-200 rounded-xl font-mono text-stone-700"
+              className="w-full p-2.5 text-[11px] bg-stone-50 border border-stone-200 rounded-xl font-mono text-stone-700 overscroll-contain"
             />
 
             <button

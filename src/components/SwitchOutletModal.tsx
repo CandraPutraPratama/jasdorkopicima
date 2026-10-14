@@ -1,5 +1,7 @@
 'use client';
 
+import { useScrollLock } from '@/hooks/useScrollLock';
+
 interface SwitchOutletModalProps {
   currentOutletName?: string | null;
   newOutletName?: string | null;
@@ -13,9 +15,13 @@ export function SwitchOutletModal({
   onConfirm,
   onCancel,
 }: SwitchOutletModalProps) {
+  // Kunci scroll halaman belakang selama modal konfirmasi outlet tampil
+  useScrollLock(true);
+
   return (
-    <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-2xs animate-in fade-in duration-150">
-      <div className="w-full max-w-xs bg-white rounded-2xl p-5 shadow-2xl space-y-4 animate-in zoom-in-95 duration-150 border border-stone-100">
+    <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-2xs animate-in fade-in duration-150 overscroll-contain">
+      <div className="fixed inset-0 touch-none" aria-hidden="true" />
+      <div className="relative w-full max-w-xs bg-white rounded-2xl p-5 shadow-2xl space-y-4 animate-in zoom-in-95 duration-150 border border-stone-100 z-10 overscroll-contain">
         <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
           <svg
             xmlns="http://www.w3.org/2000/svg"

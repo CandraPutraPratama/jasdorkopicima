@@ -12,6 +12,7 @@ import {
 import { formatRupiah } from '@/lib/currency';
 import { getOptionAddition, BUSINESS_CONFIG } from '@/config/business';
 import { cleanNotes, filterOrderNotesInput } from '@/lib/sanitizer';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface ProductBottomSheetProps {
   outletCode: string;
@@ -26,6 +27,9 @@ export function ProductBottomSheet({
   onClose,
   onAddToCart,
 }: ProductBottomSheetProps) {
+  // Kunci scroll halaman belakang selama sheet detail produk terbuka
+  useScrollLock(true);
+
   const [options, setOptions] = useState<ProductOptionDetails | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -242,14 +246,14 @@ export function ProductBottomSheet({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-2xs transition-opacity animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-2xs transition-opacity animate-in fade-in duration-200 overscroll-contain">
       {/* Backdrop tap to dismiss */}
-      <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
+      <div className="fixed inset-0 touch-none" onClick={onClose} aria-hidden="true" />
 
       {/* Sheet Container (Mobile-first max-w-md) */}
-      <div className="relative w-full max-w-md max-h-[92vh] bg-white rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300">
+      <div className="relative w-full max-w-md max-h-[92vh] bg-white rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300 overscroll-contain">
         {/* Header Lembar Produk */}
-        <div className="sticky top-0 z-10 bg-white/95 backdrop-blur px-5 py-3.5 border-b border-stone-200 flex items-center justify-between">
+        <div className="sticky top-0 z-10 bg-white/95 backdrop-blur px-5 py-3.5 border-b border-stone-200 flex items-center justify-between touch-none">
           <div className="pr-4">
             <h3 className="font-bold text-base text-[#111111] line-clamp-1">
               {product.name}
@@ -278,7 +282,7 @@ export function ProductBottomSheet({
         </div>
 
         {/* Scrollable Content Body */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-5">
+        <div className="flex-1 overflow-y-auto p-4 space-y-5 overscroll-contain">
           {/* Ringkasan Produk */}
           <div className="flex gap-3 pb-3 border-b border-stone-100">
             <div className="relative w-16 h-16 bg-stone-100 rounded-xl overflow-hidden shrink-0 border border-stone-100">
@@ -590,7 +594,7 @@ export function ProductBottomSheet({
         </div>
 
         {/* Sticky Footer: Total Estimasi, Stepper di KIRI, dan Tombol Tambah ke Keranjang */}
-        <div className="sticky bottom-0 bg-white border-t border-stone-200 p-3.5 space-y-2.5 shadow-lg">
+        <div className="sticky bottom-0 bg-white border-t border-stone-200 p-3.5 space-y-2.5 shadow-lg overscroll-contain touch-none">
           <div className="flex items-baseline justify-between">
             <div>
               <span className="text-[10px] text-stone-400 block font-medium">
