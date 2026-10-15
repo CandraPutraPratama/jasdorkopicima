@@ -23,6 +23,7 @@ import {
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { OPERATIONAL_GATE_ENABLED } from '@/lib/feature-flags';
+import { RINGKASAN_METODE_PEMBAYARAN } from '@/lib/site-config';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -720,6 +721,26 @@ export function CartDrawer({
                   <span className="leading-tight flex-1 font-medium">{errorMessage}</span>
                 </div>
               )}
+
+              {/* Baris Info Pembayaran (Display Only) */}
+              <div className="bg-[#F7F2EC] border border-[#EAE0D3] rounded-xl p-2.5 flex items-start gap-2 text-[11px] leading-relaxed">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-4 h-4 text-[#C67D0A] shrink-0 mt-0.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+                <div className="min-w-0">
+                  <span className="font-bold text-[#26150B]">Pembayaran: </span>
+                  <span className="font-semibold text-[#4A3225]">{RINGKASAN_METODE_PEMBAYARAN}</span>
+                  <span className="text-[#735F52]"> — instruksi bayar dikirim admin via WA setelah pesanan dikonfirmasi.</span>
+                </div>
+              </div>
 
               {/* 4. Tombol Kirim Pesanan ke WhatsApp (Official WhatsApp Green CTA) */}
               <button

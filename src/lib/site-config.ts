@@ -69,6 +69,25 @@ export const METODE_PEMBAYARAN: MetodePembayaranItem[] = [
   },
 ];
 
+export const DAFTAR_METODE_PEMBAYARAN_RINGKAS = [
+  'QRIS',
+  'Bank Jago',
+  'Blu',
+  'GoPay',
+  'DANA',
+  'ShopeePay',
+  'SeaBank',
+] as const;
+
+export const RINGKASAN_METODE_PEMBAYARAN: string =
+  DAFTAR_METODE_PEMBAYARAN_RINGKAS.join(' / ');
+
+export const TEKS_INFO_PEMBAYARAN_CHECKOUT: string =
+  `Pembayaran: ${RINGKASAN_METODE_PEMBAYARAN} — instruksi bayar dikirim admin via WA setelah pesanan dikonfirmasi.`;
+
+export const TEKS_PEMBAYARAN_LANGKAH_ORDER: string =
+  'Bayar via QRIS / transfer / e-wallet setelah admin konfirmasi.';
+
 export function getAdminWhatsAppUrl(customMessage?: string): string {
   const defaultText = `Halo Admin ${NAMA_BRAND_SHORT}, saya ingin bertanya tentang layanan jasa order Kopi Kenangan promo 50%.`;
   const text = customMessage || defaultText;
@@ -89,6 +108,10 @@ export const SITE_CONFIG = {
   operationalTentativeDay: HARI_LAYANAN_TENTATIF,
   disclaimer: DISCLAIMER_RESMI,
   paymentMethods: METODE_PEMBAYARAN,
+  paymentMethodsList: DAFTAR_METODE_PEMBAYARAN_RINGKAS,
+  paymentMethodsSummary: RINGKASAN_METODE_PEMBAYARAN,
+  paymentCheckoutNotice: TEKS_INFO_PEMBAYARAN_CHECKOUT,
+  paymentStepNotice: TEKS_PEMBAYARAN_LANGKAH_ORDER,
   navLinks: [
     { label: 'FAQ', href: '/faq' },
     { label: 'Syarat & Ketentuan', href: '/syarat-ketentuan' },

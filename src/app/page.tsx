@@ -7,7 +7,12 @@ import { Header } from '@/components/Header';
 import { OutletSearchCard } from '@/components/OutletSearchCard';
 import { OutletCardSkeleton } from '@/components/Skeleton';
 import { filterOutletSearchInput } from '@/lib/sanitizer';
-import { getAdminWhatsAppUrl, NOMOR_WHATSAPP_ADMIN_FORMATTED, JADWAL_OPERASIONAL_RINGKAS } from '@/lib/site-config';
+import {
+  getAdminWhatsAppUrl,
+  NOMOR_WHATSAPP_ADMIN_FORMATTED,
+  JADWAL_OPERASIONAL_RINGKAS,
+  TEKS_PEMBAYARAN_LANGKAH_ORDER,
+} from '@/lib/site-config';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import type { Outlet } from '@/types/domain';
 
@@ -159,17 +164,17 @@ export default function HomePage() {
 
             {/* 3 Langkah Cara Order Cepat (Trust Section) */}
             <div className="mt-4 pt-3.5 border-t border-white/10 grid grid-cols-3 gap-2 text-center">
-              <div className="bg-white/5 rounded-xl p-2 border border-white/5">
+              <div className="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-start">
                 <span className="text-[10px] font-black text-[#FBBF24] block">1. PILIH OUTLET</span>
                 <span className="text-[10px] text-[#D4C3B2] leading-tight block mt-0.5">Cari mall / cabang terdekat</span>
               </div>
-              <div className="bg-white/5 rounded-xl p-2 border border-white/5">
+              <div className="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-start">
                 <span className="text-[10px] font-black text-[#FBBF24] block">2. PILIH MENU</span>
                 <span className="text-[10px] text-[#D4C3B2] leading-tight block mt-0.5">Kustomisasi cup & topping</span>
               </div>
-              <div className="bg-white/5 rounded-xl p-2 border border-white/5">
+              <div className="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-start">
                 <span className="text-[10px] font-black text-[#FBBF24] block">3. WHATSAPP</span>
-                <span className="text-[10px] text-[#D4C3B2] leading-tight block mt-0.5">Kirim & ambil pesanan</span>
+                <span className="text-[10px] text-[#D4C3B2] leading-tight block mt-0.5">{TEKS_PEMBAYARAN_LANGKAH_ORDER}</span>
               </div>
             </div>
           </div>
