@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { kkApiClient } from '@/lib/kk-client';
-import { normalizeMenu } from '@/lib/adapter';
+import { normalizeMenu, normalizeStore } from '@/lib/adapter';
+import { isOutletClosed } from '@/lib/orderability';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { verifyStoreScope } from '@/lib/outlet-service';
@@ -79,7 +80,8 @@ export async function POST(
     );
   }
 
-  // 4. Validasi ruang lingkup brand outlet (wajib Kopi Kenangan resmi)
+  // 4. Validasi ruang lingkup brand dan status operasional outlet (buka/tutup)
+  let storeObj;
   try {
     const rawStore = await kkApiClient.getStore(code);
     const inScope = await verifyStoreScope(code, rawStore);
@@ -89,6 +91,7 @@ export async function POST(
         { status: 404 }
       );
     }
+    storeObj = normalizeStore(rawStore);
   } catch (storeErr: any) {
     if (
       storeErr.message?.includes('404') ||
@@ -100,6 +103,27 @@ export async function POST(
         { status: 404 }
       );
     }
+    console.warn(`[ValidateCart] Gagal memeriksa status outlet [${code}]:`, storeErr.message);
+  }
+
+  // Jika status outlet TUTUP atau tidak bisa dipesan, blokir validasi keranjang
+  if (storeObj && isOutletClosed(storeObj)) {
+    const reasonText = storeObj.orderReason || 'Outlet sedang tutup';
+    return NextResponse.json({
+      valid: false,
+      uncertain: false,
+      isOutletClosed: true,
+      outletReason: reasonText,
+      openTime: storeObj.openTime || '',
+      closeTime: storeObj.closeTime || '',
+      message: `Outlet ${storeObj.name || code} sedang tutup (${reasonText}). Pemesanan tidak dapat diproses, silakan pilih outlet lain.`,
+      unavailableItems: [
+        {
+          name: storeObj.name || 'Outlet',
+          reason: `Outlet sedang tutup (${reasonText})`,
+        },
+      ],
+    });
   }
 
   // 5. Pengecekan stok FRESH langsung dari KK API (bypass cache)

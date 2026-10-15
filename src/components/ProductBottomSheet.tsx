@@ -19,6 +19,7 @@ interface ProductBottomSheetProps {
   product: Product;
   onClose: () => void;
   onAddToCart: (item: Omit<CartItem, 'id'>) => void;
+  isOutletClosed?: boolean;
 }
 
 export function ProductBottomSheet({
@@ -26,6 +27,7 @@ export function ProductBottomSheet({
   product,
   onClose,
   onAddToCart,
+  isOutletClosed = false,
 }: ProductBottomSheetProps) {
   // Kunci scroll halaman belakang selama sheet detail produk terbuka
   useScrollLock(true);
@@ -164,7 +166,8 @@ export function ProductBottomSheet({
   // Cek apakah Whipped Cream wajib tapi belum dipilih
   const hasWhippedCreamOptions = whippedCreamAddons.length > 0;
   const isWhippedCreamMissing = hasWhippedCreamOptions && !selectedWhippedCream;
-  const isAddToCartDisabled = isLoading || Boolean(errorMessage) || isWhippedCreamMissing;
+  const isAddToCartDisabled =
+    isLoading || Boolean(errorMessage) || isWhippedCreamMissing || Boolean(isOutletClosed);
 
   const handleSelectDimensionValue = (dimCode: number, valId: number) => {
     if (!options?.optionMap) return;
@@ -624,9 +627,16 @@ export function ProductBottomSheet({
           </div>
 
           {/* Peringatan jika Whipped Cream belum dipilih */}
-          {isWhippedCreamMissing && (
+          {isWhippedCreamMissing && !isOutletClosed && (
             <div className="p-2 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-[11px] text-center font-medium">
               ⚠️ Silakan pilih 1 opsi Whipped Cream sebelum menambahkan ke keranjang
+            </div>
+          )}
+
+          {/* Peringatan jika outlet sedang tutup */}
+          {isOutletClosed && (
+            <div className="p-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-950 text-[11px] text-center font-medium">
+              ⚠️ Outlet ini sedang tutup — menu ini hanya untuk dilihat (tidak dapat dipesan)
             </div>
           )}
 
@@ -636,7 +646,7 @@ export function ProductBottomSheet({
             <div className="flex items-center shrink-0 bg-[#F2EAE0] p-0.5 rounded-xl border border-[#E3D6C5] h-[46px]">
               <button
                 type="button"
-                disabled={quantity <= 1}
+                disabled={quantity <= 1 || isOutletClosed}
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                 className="w-9 h-full bg-white rounded-lg flex items-center justify-center text-[#26150B] font-bold disabled:opacity-30 hover:bg-[#FAF7F2] active:scale-95 shadow-2xs text-sm"
                 aria-label="Kurangi jumlah"
@@ -648,8 +658,9 @@ export function ProductBottomSheet({
               </span>
               <button
                 type="button"
+                disabled={isOutletClosed}
                 onClick={() => setQuantity((q) => q + 1)}
-                className="w-9 h-full bg-white rounded-lg flex items-center justify-center text-[#26150B] font-bold hover:bg-[#FAF7F2] active:scale-95 shadow-2xs text-sm"
+                className="w-9 h-full bg-white rounded-lg flex items-center justify-center text-[#26150B] font-bold disabled:opacity-30 hover:bg-[#FAF7F2] active:scale-95 shadow-2xs text-sm"
                 aria-label="Tambah jumlah"
               >
                 +
@@ -661,23 +672,33 @@ export function ProductBottomSheet({
               type="button"
               disabled={isAddToCartDisabled}
               onClick={handleAddToCart}
-              className="flex-1 min-h-[46px] px-3 py-2 bg-[#26150B] hover:bg-[#3D2313] active:scale-98 text-[#FBBF24] font-display font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition shadow-md disabled:opacity-40 disabled:cursor-not-allowed"
+              className={`flex-1 min-h-[46px] px-3 py-2 font-display font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition shadow-md ${
+                isOutletClosed
+                  ? 'bg-[#E5DACB] text-[#8C7667] cursor-not-allowed opacity-80'
+                  : 'bg-[#26150B] hover:bg-[#3D2313] active:scale-98 text-[#FBBF24] disabled:opacity-40 disabled:cursor-not-allowed'
+              }`}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3.5 w-3.5 shrink-0"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-              <span className="line-clamp-1">Tambah ke Keranjang • {formatRupiah(pricing.subtotal)}</span>
+              {isOutletClosed ? (
+                <span>Outlet Sedang Tutup</span>
+              ) : (
+                <>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-3.5 w-3.5 shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                  <span className="line-clamp-1">Tambah ke Keranjang • {formatRupiah(pricing.subtotal)}</span>
+                </>
+              )}
             </button>
           </div>
         </div>

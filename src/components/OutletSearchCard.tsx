@@ -1,22 +1,42 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { Outlet } from '@/types/domain';
+import { isOutletClosed } from '@/lib/orderability';
 
 interface OutletSearchCardProps {
   outlet: Outlet;
 }
 
 export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
-  const isOrderable = Boolean(outlet.canOrder);
+  const router = useRouter();
+  const isClosed = isOutletClosed(outlet);
+  const isOrderable = !isClosed;
   const statusBadgeText = isOrderable ? 'Buka' : outlet.orderReason || 'Tutup';
+
+  const handleCardClick = () => {
+    if (isOrderable) {
+      router.push(`/outlet/${outlet.code}`);
+    }
+  };
 
   return (
     <div
-      className={`p-4 bg-white rounded-2xl border transition shadow-xs ${
+      onClick={handleCardClick}
+      onKeyDown={(e) => {
+        if (isOrderable && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          router.push(`/outlet/${outlet.code}`);
+        }
+      }}
+      role={isOrderable ? 'button' : undefined}
+      tabIndex={isOrderable ? 0 : undefined}
+      aria-label={isOrderable ? `Pilih outlet ${outlet.name}` : `${outlet.name} - ${statusBadgeText}`}
+      className={`p-4 bg-white rounded-2xl border transition shadow-xs outline-hidden ${
         isOrderable
-          ? 'border-[#EFE5D8] hover:border-[#D9A74A]/60 hover:shadow-md'
-          : 'border-[#EFE5D8]/60 bg-[#FAF7F2]/60'
+          ? 'border-[#EFE5D8] hover:border-[#D9A74A]/60 hover:shadow-md cursor-pointer active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-[#C67D0A]'
+          : 'border-[#EFE5D8]/60 bg-[#FAF7F2]/60 cursor-default'
       }`}
     >
       <div className="flex items-start justify-between gap-2 mb-2">
@@ -82,6 +102,10 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
         {isOrderable ? (
           <Link
             href={`/outlet/${outlet.code}`}
+            prefetch={true}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             className="min-h-[44px] px-4 py-2 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] active:scale-95 text-xs font-display font-bold rounded-xl flex items-center gap-1.5 transition shadow-xs"
           >
             <span>Pilih Outlet</span>

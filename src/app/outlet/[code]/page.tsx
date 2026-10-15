@@ -15,6 +15,7 @@ import { FloatingCartBar } from '@/components/FloatingCartBar';
 import { CartDrawer } from '@/components/CartDrawer';
 import { SwitchOutletModal } from '@/components/SwitchOutletModal';
 import { determineActiveCategory } from '@/lib/category-scrollspy';
+import { isOutletClosed as checkIsOutletClosed } from '@/lib/orderability';
 import type { Outlet, MenuGroup, Product } from '@/types/domain';
 
 interface OutletMenuPageProps {
@@ -38,6 +39,9 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isNotFound, setIsNotFound] = useState<boolean>(false);
+
+  // Status apakah outlet sedang tutup / tidak dapat dipesan (Single Source of Truth)
+  const isOutletClosed = checkIsOutletClosed(outlet);
 
   // Filter menu favorit khusus yang tersedia di outlet saat ini
   const favoriteProducts = useMemo(() => {
@@ -236,8 +240,8 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
         backLabel="Kembali ke Cari Outlet"
         sticky={true}
         title={outlet ? outlet.name : undefined}
-        badgeText={outlet ? (outlet.isOpen ? 'Buka Sekarang' : 'Tutup') : undefined}
-        badgeVariant={outlet?.isOpen ? 'emerald' : 'rose'}
+        badgeText={outlet ? (!isOutletClosed ? 'Buka Sekarang' : (outlet.orderReason || 'Tutup')) : undefined}
+        badgeVariant={!isOutletClosed ? 'emerald' : 'rose'}
       />
 
       {/* Loading State Outlet & Menu */}
@@ -328,6 +332,59 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                 )}
               </div>
             )}
+
+            {/* Banner Peringatan jika Outlet Tutup */}
+            {isOutletClosed && (
+              <div
+                role="alert"
+                className="mt-3 p-3.5 bg-amber-50 border border-amber-200/90 rounded-2xl flex flex-col gap-2.5 shadow-2xs animate-in fade-in"
+              >
+                <div className="flex items-start gap-2.5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5 text-amber-600 shrink-0 mt-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-xs text-amber-950">
+                      {outlet.openTime
+                        ? `Outlet ini sedang tutup — pemesanan dibuka kembali pukul ${outlet.openTime.slice(0, 5)} WIB`
+                        : `Outlet ini sedang tutup (${outlet.orderReason || 'Tidak menerima pesanan'})`}
+                    </p>
+                    <p className="text-[11px] text-amber-900 mt-1 leading-relaxed">
+                      Katalog menu tetap dapat dilihat (read-only) untuk window shopping. Silakan pilih outlet lain yang sedang buka untuk memesan.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 pt-1 border-t border-amber-200/60">
+                  <Link
+                    href="/"
+                    className="min-h-[38px] px-3.5 py-1.5 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] text-xs font-display font-bold rounded-xl flex items-center gap-1.5 transition shadow-xs"
+                  >
+                    <span>Pilih Outlet Lain</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3.5 w-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Sticky Horizontally Swipeable Menu Category Nav (Baris 2 sticky tepat di bawah Header) */}
@@ -405,6 +462,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                             isFavorite={isFavorite(product.id)}
                             onToggleFavorite={() => toggleFavorite(product.id)}
                             onSelectProduct={(p) => setSelectedProduct(p)}
+                            isOutletClosed={isOutletClosed}
                           />
                         ))}
                       </div>
@@ -424,6 +482,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           product={selectedProduct}
           onClose={() => setSelectedProduct(null)}
           onAddToCart={(item) => cart.addItem(item, outlet.code, outlet.name)}
+          isOutletClosed={isOutletClosed}
         />
       )}
 

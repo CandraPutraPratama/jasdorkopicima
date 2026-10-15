@@ -36,7 +36,9 @@ export function normalizeStore(raw: KkStoreItem): Outlet {
     orderType: raw.order_type,
     status: raw.status,
     orderMsg: raw.order_msg,
-    isOpen: Boolean(raw.is_open),
+    isOpen: typeof raw.is_open === 'boolean' ? raw.is_open : Boolean(raw.is_open),
+    openTime: raw.open || '',
+    closeTime: raw.close || '',
   });
 
   return {

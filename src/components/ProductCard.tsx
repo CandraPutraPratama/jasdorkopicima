@@ -11,6 +11,7 @@ interface ProductCardProps {
   onSelectProduct: (product: Product) => void;
   isFavorite?: boolean;
   onToggleFavorite?: (product: Product) => void;
+  isOutletClosed?: boolean;
 }
 
 export function ProductCard({
@@ -18,6 +19,7 @@ export function ProductCard({
   onSelectProduct,
   isFavorite = false,
   onToggleFavorite,
+  isOutletClosed = false,
 }: ProductCardProps) {
   const pricing = calculateItemPricing({
     name: product.name,
@@ -160,27 +162,49 @@ export function ProductCard({
             </span>
           </div>
 
-          {/* 5. Tombol Lingkaran Hijau Plus (Kanan Bawah) */}
+          {/* 5. Tombol Lingkaran Plus (Kanan Bawah) — dinonaktifkan jika outlet tutup */}
           {!isSoldOut && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelectProduct(product);
-              }}
-              aria-label={`Tambah dan kustomisasi ${product.name}`}
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white flex items-center justify-center shadow-xs transition active:scale-90 shrink-0"
-            >
-              <svg
-                className="w-4 h-4 stroke-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2.8}
-                stroke="currentColor"
+            isOutletClosed ? (
+              <button
+                type="button"
+                disabled
+                aria-label={`Outlet tutup — ${product.name} tidak dapat dipesan`}
+                title="Outlet sedang tutup — tidak dapat dipesan"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#E5DACB] text-[#8C7667] flex items-center justify-center cursor-not-allowed opacity-75 shrink-0"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
+                <svg
+                  className="w-4 h-4 stroke-[#8C7667]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.5}
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelectProduct(product);
+                }}
+                aria-label={`Tambah dan kustomisasi ${product.name}`}
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white flex items-center justify-center shadow-xs transition active:scale-90 shrink-0"
+              >
+                <svg
+                  className="w-4 h-4 stroke-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.8}
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            )
           )}
         </div>
       </div>

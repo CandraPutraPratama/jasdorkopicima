@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import type { CartItem } from '@/lib/cart-reducer';
 import type { OrderPricingResult } from '@/lib/pricing';
 import type { Outlet } from '@/types/domain';
@@ -24,6 +25,7 @@ import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { OPERATIONAL_GATE_ENABLED } from '@/lib/feature-flags';
 import { RINGKASAN_METODE_PEMBAYARAN } from '@/lib/site-config';
+import { isOutletClosed as checkIsOutletClosed } from '@/lib/orderability';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -52,6 +54,49 @@ export function CartDrawer({
 }: CartDrawerProps) {
   const effectiveOutletCode = cartOutletCode || outlet?.code;
   const effectiveOutletName = cartOutletName || outlet?.name || 'Kopi Kenangan';
+
+  // Status outlet tutup & validasi
+  const [isOutletClosedState, setIsOutletClosedState] = useState<boolean>(false);
+  const [outletClosedReason, setOutletClosedReason] = useState<string>('');
+
+  const isOutletClosed =
+    isOutletClosedState ||
+    Boolean(outlet && outlet.code === effectiveOutletCode && checkIsOutletClosed(outlet));
+
+  const effectiveClosedReason =
+    (outlet && outlet.code === effectiveOutletCode && checkIsOutletClosed(outlet)
+      ? outlet.orderReason
+      : null) ||
+    outletClosedReason ||
+    'Tutup';
+
+  // Cek kesegaran status buka/tutup outlet saat drawer dibuka (hanya jika data outlet belum ada di prop)
+  useEffect(() => {
+    if (!isOpen || !effectiveOutletCode) return;
+    if (outlet && outlet.code === effectiveOutletCode) return;
+
+    let cancelled = false;
+    fetch(`/api/outlets/${encodeURIComponent(effectiveOutletCode)}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!cancelled && data.outlet) {
+          if (checkIsOutletClosed(data.outlet)) {
+            setIsOutletClosedState(true);
+            setOutletClosedReason(data.outlet.orderReason || 'Tutup');
+          } else {
+            setIsOutletClosedState(false);
+            setOutletClosedReason('');
+          }
+        }
+      })
+      .catch((err) => {
+        console.warn('Gagal memverifikasi status outlet keranjang:', err);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, effectiveOutletCode, outlet]);
 
   // Kunci scroll halaman belakang secara menyeluruh saat drawer aktif
   useScrollLock(isOpen);
@@ -248,6 +293,13 @@ export function CartDrawer({
       }
     }
 
+    if (isOutletClosed) {
+      setErrorMessage(
+        `Outlet ${effectiveOutletName} sedang tutup dan tidak menerima pesanan saat ini. Silakan pilih outlet lain.`
+      );
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -268,18 +320,23 @@ export function CartDrawer({
         }
       }
 
-      // 2. Cek status buka outlet terbaru dari get_store
+      // 2. Cek status buka & orderability outlet terbaru dari get_store
       if (effectiveOutletCode) {
         const storeRes = await fetch(`/api/outlets/${encodeURIComponent(effectiveOutletCode)}`, {
           cache: 'no-store',
         });
         const storeData = await storeRes.json();
-        if (!storeData.outlet?.isOpen) {
-          throw new Error(`Outlet ${effectiveOutletName} sedang tutup saat ini.`);
+        const outletInfo = storeData.outlet;
+        if (!outletInfo?.isOpen || !outletInfo?.canOrder) {
+          setIsOutletClosedState(true);
+          setOutletClosedReason(outletInfo?.orderReason || 'Tutup');
+          throw new Error(
+            `Outlet ${effectiveOutletName} sedang tutup (${outletInfo?.orderReason || 'Tidak menerima pesanan'}). Silakan pilih outlet lain.`
+          );
         }
       }
 
-      // 3. Pengecekan stok yang benar-benar FRESH langsung ke KK API
+      // 3. Pengecekan stok dan status outlet yang benar-benar FRESH langsung ke KK API
       if (effectiveOutletCode) {
         const valRes = await fetch(`/api/outlets/${encodeURIComponent(effectiveOutletCode)}/validate-cart`, {
           method: 'POST',
@@ -297,6 +354,14 @@ export function CartDrawer({
         const valData = await valRes.json();
 
         if (!valData.valid) {
+          if (valData.isOutletClosed) {
+            setIsOutletClosedState(true);
+            setOutletClosedReason(valData.outletReason || 'Tutup');
+            throw new Error(
+              valData.message ||
+                `Outlet ${effectiveOutletName} sedang tutup (${valData.outletReason || 'Tidak menerima pesanan'}). Silakan pilih outlet lain.`
+            );
+          }
           const reasons = (valData.unavailableItems || [])
             .map((u: any) => `${u.name} (${u.reason})`)
             .join(', ');
@@ -742,25 +807,85 @@ export function CartDrawer({
                 </div>
               </div>
 
-              {/* 4. Tombol Kirim Pesanan ke WhatsApp (Official WhatsApp Green CTA) */}
-              <button
-                type="button"
-                disabled={isSubmitting}
-                onClick={handleProceedToWhatsApp}
-                className="w-full min-h-[48px] px-4 py-3 bg-[#15803D] hover:bg-[#166534] active:scale-98 text-white font-display font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md disabled:opacity-60"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Memvalidasi Pesanan...</span>
-                  </>
-                ) : (
-                  <>
-                    <WhatsAppIcon className="h-4.5 w-4.5 text-white shrink-0" />
-                    <span>Kirim Pesanan ke WhatsApp • {formatRupiah(pricing.total)}</span>
-                  </>
-                )}
-              </button>
+              {/* Banner Peringatan Outlet Tutup */}
+              {isOutletClosed && (
+                <div
+                  role="alert"
+                  className="p-3 bg-amber-50 border border-amber-200/90 rounded-2xl text-amber-950 text-xs flex flex-col gap-2 shadow-2xs animate-in fade-in"
+                >
+                  <div className="flex items-start gap-2.5">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 h-5 text-amber-600 shrink-0 mt-0.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-amber-950 text-xs">
+                        Outlet ini sedang tutup ({effectiveClosedReason})
+                      </p>
+                      <p className="text-[11px] text-amber-900 mt-0.5 leading-relaxed">
+                        {effectiveOutletName} sedang tidak menerima pesanan saat ini. Silakan pilih outlet lain untuk melanjutkan pesanan.
+                      </p>
+                    </div>
+                  </div>
+                  <Link
+                    href="/"
+                    onClick={onClose}
+                    className="min-h-[38px] px-3.5 py-1.5 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] text-xs font-display font-bold rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-center"
+                  >
+                    <span>Pilih Outlet Lain</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3.5 w-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </div>
+              )}
+
+              {/* 4. Tombol Kirim Pesanan ke WhatsApp (Official WhatsApp Green CTA) / Tombol Outlet Tutup */}
+              {isOutletClosed ? (
+                <button
+                  type="button"
+                  disabled
+                  className="w-full min-h-[48px] px-4 py-3 bg-[#E5DACB] text-[#8C7667] font-display font-bold text-xs rounded-xl flex items-center justify-center gap-2 cursor-not-allowed opacity-80"
+                >
+                  <span>Outlet Sedang Tutup — Tidak Bisa Dipesan</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled={isSubmitting}
+                  onClick={handleProceedToWhatsApp}
+                  className="w-full min-h-[48px] px-4 py-3 bg-[#15803D] hover:bg-[#166534] active:scale-98 text-white font-display font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md disabled:opacity-60"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Memvalidasi Pesanan...</span>
+                    </>
+                  ) : (
+                    <>
+                      <WhatsAppIcon className="h-4.5 w-4.5 text-white shrink-0" />
+                      <span>Kirim Pesanan ke WhatsApp • {formatRupiah(pricing.total)}</span>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           </div>
         )}
