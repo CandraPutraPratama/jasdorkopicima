@@ -62,21 +62,21 @@ export function Header({
           </Link>
         ) : (
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#D9A74A]/40 shadow-xs bg-[#FAF7EF] shrink-0">
+            <div className="relative w-9 h-9 rounded-full overflow-hidden shadow-xs shrink-0 flex items-center justify-center">
               <Image
                 src="/brand/logo-cima.webp"
                 alt="Cima Group Logo"
                 fill
-                sizes="32px"
-                className="object-cover group-hover:scale-105 transition"
+                sizes="36px"
+                className="object-contain group-hover:scale-105 transition"
                 priority
               />
             </div>
-            <div>
+            <div className="flex flex-col justify-center">
               <span className="font-display text-base font-extrabold tracking-tight text-[#26150B] block leading-tight">
                 {brandName || 'jasdorkopicima'}
               </span>
-              <span className="text-[10px] text-[#A66908] font-bold tracking-wider block leading-none uppercase">
+              <span className="text-[10px] text-[#A66908] font-bold tracking-wider block leading-none uppercase mt-0.5">
                 {brandSub || 'JASA ORDER KOPI KENANGAN'}
               </span>
             </div>
@@ -95,12 +95,12 @@ export function Header({
 
       {showBack && !title && (
         <Link href="/" className="flex items-center gap-2 mr-2">
-          <div className="relative w-7 h-7 rounded-full overflow-hidden border border-[#D9A74A]/40 bg-[#FAF7EF] shrink-0">
+          <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center">
             <Image
               src="/brand/logo-cima.webp"
               alt="Cima Group Logo"
               fill
-              className="object-cover"
+              className="object-contain"
             />
           </div>
           <span className="font-display text-sm font-bold text-[#26150B]">jasdorkopicima</span>

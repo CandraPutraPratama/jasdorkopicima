@@ -17,6 +17,7 @@ const eslintConfig = defineConfig([
     "docs/**",
     "supabase/**",
     "patches/**",
+    ".agents/**",
   ]),
   ...nextVitals,
   ...nextTs,
