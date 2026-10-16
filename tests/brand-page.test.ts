@@ -26,4 +26,10 @@ test('dynamic brand page exists and handles active, coming_soon, and reserved/un
 
   // 4. Istilah bisnis: Tidak boleh ada jastip
   assert.ok(!pageCode.toLowerCase().includes('jastip'), 'Tidak boleh ada kata jastip pada halaman brand');
+
+  // 5. Total outlet count dinamis: Tidak boleh hardcode 1.340 atau 390+
+  assert.ok(pageCode.includes('getOutletCount'), 'Halaman brand harus memanggil getOutletCount() secara dinamis');
+  assert.ok(!pageCode.includes('1.340'), 'Tidak boleh ada angka hardcode 1.340 di halaman brand');
+  assert.ok(!pageCode.includes('390+'), 'Tidak boleh ada angka hardcode 390+ di halaman brand');
 });
+

@@ -61,9 +61,10 @@ export default function BrandPage({ params }: BrandPageProps) {
   const [isLoadingOutlets, setIsLoadingOutlets] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const [outletCount, setOutletCount] = useState<number | null>(null);
   const [, startTransition] = useTransition();
 
-  // Load default featured outlets untuk brand aktif via BrandOutletProvider
+  // Load default featured outlets dan total outlet count via BrandOutletProvider
   useEffect(() => {
     if (brand.status !== 'active') return;
 
@@ -74,6 +75,19 @@ export default function BrandPage({ params }: BrandPageProps) {
       return;
     }
 
+    // Ambil outlet count dinamis
+    provider
+      .getOutletCount()
+      .then((count) => {
+        if (!isCancelled && typeof count === 'number' && count > 0) {
+          setOutletCount(count);
+        }
+      })
+      .catch((err) => {
+        console.warn(`[BrandPage] Gagal memuat outlet count ${brand.slug}:`, err);
+      });
+
+    // Ambil featured outlets
     provider
       .listFeaturedOutlets()
       .then((items) => {
@@ -276,9 +290,7 @@ export default function BrandPage({ params }: BrandPageProps) {
             </div>
 
             <p className="text-xs sm:text-sm text-[#D4C3B3] leading-relaxed">
-              {brand.slug === 'fore'
-                ? 'Tersedia di 390+ outlet resmi di seluruh Indonesia. Pilih outlet terdekat, tentukan menu favoritmu, dan pesan praktis via WhatsApp.'
-                : 'Tersedia di 1.340+ outlet resmi di seluruh Indonesia. Pilih outlet terdekat, tentukan menu favoritmu, dan nikmati diskon setengah harga via WhatsApp.'}
+              Tersedia di {outletCount ? `${outletCount.toLocaleString('id-ID')} ` : ''}outlet resmi di seluruh Indonesia. Pilih outlet terdekat, tentukan menu favoritmu, dan {brand.slug === 'fore' ? 'pesan praktis' : 'nikmati diskon setengah harga'} via WhatsApp.
             </p>
 
             {/* 3 Langkah Horizontal Strip */}
@@ -306,7 +318,7 @@ export default function BrandPage({ params }: BrandPageProps) {
               Cari Outlet {brand.name}
             </h2>
             <p className="text-xs text-[#735F52]">
-              Tersedia 1.340 outlet resmi di seluruh Indonesia. Ketik nama mall, gedung, jalan, atau area di sekitarmu
+              Tersedia {outletCount ? `${outletCount.toLocaleString('id-ID')} ` : ''}outlet resmi di seluruh Indonesia. Ketik nama mall, gedung, jalan, atau area di sekitarmu
             </p>
           </div>
 
@@ -350,7 +362,7 @@ export default function BrandPage({ params }: BrandPageProps) {
               </span>
             ) : !hasSearched && !isLoadingFeatured ? (
               <span className="text-[11px] font-semibold text-[#735F52]">
-                1.340 Outlet Tersedia
+                {outletCount ? `${outletCount.toLocaleString('id-ID')} Outlet Tersedia` : 'Outlet Tersedia'}
               </span>
             ) : null}
           </div>
