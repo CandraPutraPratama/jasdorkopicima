@@ -41,18 +41,18 @@ export function BrandCard({ brand, outletCount }: BrandCardProps) {
 
         {/* Floating Brand Logo Emblem */}
         <div
-          className="w-12 h-12 rounded-xl bg-white flex items-center justify-center font-display font-black text-xs shadow-md border-2 border-white tracking-wider overflow-hidden p-1.5"
+          className="h-12 px-3.5 min-w-[54px] max-w-[130px] rounded-2xl bg-white flex items-center justify-center font-display font-black text-xs shadow-md border-2 border-white tracking-wider overflow-hidden"
           style={{ color: isActive ? brand.accentColor || '#8B1E19' : '#4B5563' }}
         >
           {brand.logo ? (
             <img
               src={brand.logo}
               alt={brand.name}
-              className="w-full h-full object-contain"
+              className="h-7 w-auto max-w-[100px] object-contain"
               loading="eager"
             />
           ) : (
-            initials
+            <span className="px-1">{initials}</span>
           )}
         </div>
       </div>
@@ -74,7 +74,7 @@ export function BrandCard({ brand, outletCount }: BrandCardProps) {
               </span>
               {typeof outletCount === 'number' && outletCount > 0 ? (
                 <span className="text-[10px] font-semibold text-[#735F52]">
-                  {outletCount} outlet
+                  {outletCount.toLocaleString('id-ID')} outlet
                 </span>
               ) : brand.outletCountLabel ? (
                 <span className="text-[10px] font-semibold text-[#735F52]">

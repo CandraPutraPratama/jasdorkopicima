@@ -71,8 +71,26 @@ export class KopiKenanganOutletProvider implements BrandOutletProvider {
   }
 
   public async getOutletCount(): Promise<number> {
-    const outlets = await this.listFeaturedOutlets();
-    return outlets.length;
+    if (typeof window !== 'undefined') {
+      try {
+        const res = await fetch('/api/outlets?count=true');
+        if (res.ok) {
+          const data = await res.json();
+          if (typeof data.total === 'number' && data.total > 0) {
+            return data.total;
+          }
+        }
+      } catch (err) {
+        console.warn('[BrandProvider] Gagal fetch outlet count:', err);
+      }
+    }
+
+    try {
+      const { getTotalOutletsCount } = await import('./outlet-service.ts');
+      return await getTotalOutletsCount();
+    } catch {
+      return 1340;
+    }
   }
 }
 

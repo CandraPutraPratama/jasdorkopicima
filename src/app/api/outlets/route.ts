@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { searchOutlets, getFeaturedOutlets } from '@/lib/outlet-service';
+import { searchOutlets, getFeaturedOutlets, getTotalOutletsCount } from '@/lib/outlet-service';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
@@ -29,6 +29,13 @@ export async function GET(request: NextRequest) {
 
   try {
     const searchParams = request.nextUrl.searchParams;
+
+    // Jika hanya meminta total count outlet database
+    if (searchParams.get('count') === 'true') {
+      const totalCount = await getTotalOutletsCount();
+      return NextResponse.json({ total: totalCount });
+    }
+
     const isFeatured = searchParams.get('featured') === 'true';
     const rawKeyword = searchParams.get('q') || searchParams.get('keyword') || '';
     const keyword = cleanSearchQuery(rawKeyword);
@@ -50,9 +57,13 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(cached);
       }
 
-      const { items, total } = await getFeaturedOutlets(limit);
+      const [{ items }, totalCount] = await Promise.all([
+        getFeaturedOutlets(limit),
+        getTotalOutletsCount(),
+      ]);
+
       const responsePayload = {
-        total,
+        total: totalCount,
         page: 1,
         pageSize: limit,
         items,

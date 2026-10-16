@@ -189,6 +189,28 @@ export async function getFeaturedOutlets(limit = 10): Promise<SearchOutletsResul
 }
 
 /**
+ * Mengambil total jumlah outlet aktif dan in-scope Kopi Kenangan di database Supabase.
+ */
+export async function getTotalOutletsCount(): Promise<number> {
+  try {
+    const supabase = getSupabaseServerClient();
+    const { count, error } = await supabase
+      .from('outlets')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_active', true)
+      .eq('is_in_scope', true);
+
+    if (!error && typeof count === 'number' && count > 0) {
+      return count;
+    }
+  } catch (err: any) {
+    console.warn(`[OutletService] Supabase getTotalOutletsCount error: ${err?.message}`);
+  }
+
+  return 1340;
+}
+
+/**
  * Memeriksa apakah suatu kode outlet berada dalam ruang lingkup resmi Kopi Kenangan.
  * Menggunakan database Supabase (yang disinkronkan berkala dengan data brand_and_image lengkap)
  * serta pengaman berbasis prefix kode dan nama outlet.

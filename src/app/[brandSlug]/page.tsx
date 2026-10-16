@@ -257,11 +257,11 @@ export default function BrandPage({ params }: BrandPageProps) {
 
             <div className="flex items-center gap-3">
               {brand.logo && (
-                <div className="w-10 h-10 rounded-xl bg-white p-1.5 shadow-sm shrink-0 flex items-center justify-center border border-white/20">
+                <div className="h-10 px-2.5 rounded-xl bg-white shadow-sm shrink-0 flex items-center justify-center border border-white/20">
                   <img
                     src={brand.logo}
                     alt={brand.name}
-                    className="w-full h-full object-contain"
+                    className="h-6 w-auto max-w-[85px] object-contain"
                   />
                 </div>
               )}
@@ -271,7 +271,7 @@ export default function BrandPage({ params }: BrandPageProps) {
             </div>
 
             <p className="text-xs sm:text-sm text-[#D4C3B3] leading-relaxed">
-              Pilih outlet terdekat, tentukan menu favoritmu, dan nikmati diskon setengah harga via WhatsApp.
+              Tersedia di 1.340+ outlet resmi di seluruh Indonesia. Pilih outlet terdekat, tentukan menu favoritmu, dan nikmati diskon setengah harga via WhatsApp.
             </p>
 
             {/* 3 Langkah Horizontal Strip */}
@@ -299,7 +299,7 @@ export default function BrandPage({ params }: BrandPageProps) {
               Cari Outlet {brand.name}
             </h2>
             <p className="text-xs text-[#735F52]">
-              Ketik nama mall, gedung, jalan, atau area di sekitarmu
+              Tersedia 1.340 outlet resmi di seluruh Indonesia. Ketik nama mall, gedung, jalan, atau area di sekitarmu
             </p>
           </div>
 
@@ -343,7 +343,7 @@ export default function BrandPage({ params }: BrandPageProps) {
               </span>
             ) : !hasSearched && !isLoadingFeatured ? (
               <span className="text-[11px] font-semibold text-[#735F52]">
-                Temukan {featuredOutlets.length} Outlet
+                1.340 Outlet Tersedia
               </span>
             ) : null}
           </div>
