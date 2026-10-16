@@ -118,9 +118,9 @@ export async function searchOutlets(
 /**
  * Mengambil daftar outlet unggulan/populer (default untuk homepage sebelum pencarian).
  * Mengutamakan outlet yang sedang buka (canOrder: true) lalu disusul outlet populer,
- * dengan batas jumlah (default 12 outlet).
+ * dengan batas jumlah (default 10 outlet).
  */
-export async function getFeaturedOutlets(limit = 12): Promise<SearchOutletsResult> {
+export async function getFeaturedOutlets(limit = 10): Promise<SearchOutletsResult> {
   // 1. Ambil dari KK API queryStore dengan keyword kosong untuk status real-time
   try {
     const rawData = await kkApiClient.queryStore({

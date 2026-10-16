@@ -135,6 +135,7 @@ export interface BrandConfig {
   themeColor: string;
   bannerGradient: string;
   status: 'active' | 'coming_soon';
+  logo?: string;
   outletCountLabel?: string;
   adminWhatsApp?: string;
   operatingHoursText?: string;
@@ -172,7 +173,7 @@ export const BRANDS: Record<string, BrandConfig> = {
     themeColor: '#A8201A',
     bannerGradient: 'from-[#8B1E19] to-[#450A0A]',
     status: 'active',
-    outletCountLabel: '12 outlet',
+    logo: '/brand-logos/kopi-kenangan.png',
     adminWhatsApp: NOMOR_WHATSAPP_ADMIN,
     operatingHoursText: JADWAL_OPERASIONAL_LENGKAP,
     feeConfig: {

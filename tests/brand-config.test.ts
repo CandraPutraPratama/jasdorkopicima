@@ -15,7 +15,8 @@ test('getBrandConfig returns full config for kopi-kenangan', () => {
   assert.equal(brand?.name, 'Kopi Kenangan');
   assert.equal(brand?.status, 'active');
   assert.equal(brand?.promoBadge, 'Hemat 50%');
-  assert.equal(brand?.outletCountLabel, '12 outlet');
+  assert.equal(brand?.logo, '/brand-logos/kopi-kenangan.png');
+  assert.equal(brand?.outletCountLabel, undefined, 'Tidak ada angka outlet di-hardcode di BrandConfig');
   assert.ok(brand?.accentColor);
 });
 
@@ -26,6 +27,7 @@ test('getBrandConfig returns coming_soon status for tomoro', () => {
   assert.equal(brand?.name, 'Tomoro Coffee');
   assert.equal(brand?.status, 'coming_soon');
   assert.equal(brand?.promoBadge, 'Segera Hadir');
+  assert.equal(brand?.logo, undefined);
   // Aturan koreksi user: jangan tampilkan teks "0 outlet" untuk brand segera hadir
   assert.equal(brand?.outletCountLabel, undefined);
 });

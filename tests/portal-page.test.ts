@@ -16,13 +16,17 @@ test('portal page component and BrandCard exist and enforce Variant C specificat
   // 1. BrandCard checks
   assert.ok(cardCode.includes('Hemat 50%') || cardCode.includes('promoBadge'), 'BrandCard harus menampilkan badge promo');
   assert.ok(cardCode.includes('Segera Hadir'), 'BrandCard harus menangani status Segera Hadir');
-  assert.ok(cardCode.includes('outletCountLabel'), 'BrandCard harus memuat outletCountLabel opsional');
+  assert.ok(cardCode.includes('outletCount'), 'BrandCard harus mendukung prop outletCount dinamis');
+  assert.ok(cardCode.includes('brand.logo'), 'BrandCard harus mendukung logo brand');
+  assert.ok(cardCode.includes('object-contain'), 'Logo brand harus ditampilkan proporsional (object-contain)');
   // Aturan koreksi 1: Brand segera hadir tidak menampilkan 0 outlet
   assert.ok(!cardCode.includes("'0 outlet'"), 'BrandCard tidak boleh menampilkan string 0 outlet');
 
   // 2. Portal page checks
   assert.ok(portalCode.includes('CIMA GROUP') || portalCode.includes('Cima Group'), 'Portal harus memuat branding Cima Group');
   assert.ok(portalCode.includes('Jajan Favorit, Setengah Harga'), 'Portal harus memuat judul hero yang disetujui');
+  assert.ok(portalCode.includes('getBrandOutletProvider'), 'Portal harus memuat outlet count dinamis dari BrandOutletProvider');
+  assert.ok(portalCode.includes('outletCount'), 'Portal harus meneruskan outletCount ke BrandCard');
   // Aturan koreksi 2: Label pembayaran Jago/Blu bukan BCA/Jago
   assert.ok(portalCode.includes('Jago/Blu'), 'Portal trust strip harus menggunakan label Jago/Blu');
   assert.ok(portalCode.includes('QRIS'), 'Portal trust strip harus memuat QRIS');

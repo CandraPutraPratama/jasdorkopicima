@@ -17,6 +17,7 @@ import {
   getAdminWhatsAppUrl,
   NOMOR_WHATSAPP_ADMIN_FORMATTED,
 } from '@/lib/site-config';
+import { getBrandOutletProvider } from '@/lib/brand-provider';
 import type { Outlet } from '@/types/domain';
 
 interface BrandPageProps {
@@ -60,19 +61,22 @@ export default function BrandPage({ params }: BrandPageProps) {
   const [hasSearched, setHasSearched] = useState(false);
   const [, startTransition] = useTransition();
 
-  // Load default featured outlets untuk brand aktif
+  // Load default featured outlets untuk brand aktif via BrandOutletProvider
   useEffect(() => {
     if (brand.status !== 'active') return;
 
     let isCancelled = false;
-    fetch('/api/outlets?featured=true')
-      .then(async (res) => {
-        if (!res.ok) throw new Error('Gagal memuat outlet unggulan');
-        return res.json();
-      })
-      .then((data) => {
+    const provider = getBrandOutletProvider(brand.slug);
+    if (!provider) {
+      setIsLoadingFeatured(false);
+      return;
+    }
+
+    provider
+      .listFeaturedOutlets()
+      .then((items) => {
         if (!isCancelled) {
-          setFeaturedOutlets(data.items || []);
+          setFeaturedOutlets(items);
           setIsLoadingFeatured(false);
         }
       })
@@ -83,7 +87,7 @@ export default function BrandPage({ params }: BrandPageProps) {
     return () => {
       isCancelled = true;
     };
-  }, [brand.status]);
+  }, [brand.slug, brand.status]);
 
   // Debounce query
   useEffect(() => {
@@ -98,7 +102,7 @@ export default function BrandPage({ params }: BrandPageProps) {
     return () => clearTimeout(handler);
   }, [query, brand.status]);
 
-  // Fetch search query
+  // Fetch search query via BrandOutletProvider
   useEffect(() => {
     if (brand.status !== 'active') return;
 
@@ -115,17 +119,17 @@ export default function BrandPage({ params }: BrandPageProps) {
     setSearchError(null);
     setHasSearched(true);
 
-    fetch(`/api/outlets?q=${encodeURIComponent(debouncedQuery)}`)
-      .then(async (res) => {
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || 'Gagal mencari outlet');
-        }
-        return res.json();
-      })
-      .then((data) => {
+    const provider = getBrandOutletProvider(brand.slug);
+    if (!provider) {
+      setIsLoadingOutlets(false);
+      return;
+    }
+
+    provider
+      .searchOutlets(debouncedQuery)
+      .then((items) => {
         if (!isCancelled) {
-          setOutlets(data.items || []);
+          setOutlets(items);
           setIsLoadingOutlets(false);
         }
       })
@@ -140,7 +144,7 @@ export default function BrandPage({ params }: BrandPageProps) {
     return () => {
       isCancelled = true;
     };
-  }, [debouncedQuery, brand.status]);
+  }, [debouncedQuery, brand.slug, brand.status]);
 
   // Handle Jasdor Closed Gate
   if (!isStatusLoading && !isOpen && status) {
@@ -251,9 +255,20 @@ export default function BrandPage({ params }: BrandPageProps) {
               </span>
             </div>
 
-            <h1 className="font-display font-black text-xl sm:text-2xl text-[#FAF7F2] leading-tight tracking-tight">
-              Pesan {brand.name} Lebih Hemat
-            </h1>
+            <div className="flex items-center gap-3">
+              {brand.logo && (
+                <div className="w-10 h-10 rounded-xl bg-white p-1.5 shadow-sm shrink-0 flex items-center justify-center border border-white/20">
+                  <img
+                    src={brand.logo}
+                    alt={brand.name}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              )}
+              <h1 className="font-display font-black text-xl sm:text-2xl text-[#FAF7F2] leading-tight tracking-tight">
+                Pesan {brand.name} Lebih Hemat
+              </h1>
+            </div>
 
             <p className="text-xs sm:text-sm text-[#D4C3B3] leading-relaxed">
               Pilih outlet terdekat, tentukan menu favoritmu, dan nikmati diskon setengah harga via WhatsApp.
@@ -328,7 +343,7 @@ export default function BrandPage({ params }: BrandPageProps) {
               </span>
             ) : !hasSearched && !isLoadingFeatured ? (
               <span className="text-[11px] font-semibold text-[#735F52]">
-                {brand.outletCountLabel || `${featuredOutlets.length} outlet`}
+                Temukan {featuredOutlets.length} Outlet
               </span>
             ) : null}
           </div>

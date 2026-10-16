@@ -5,9 +5,10 @@ import type { BrandConfig } from '@/lib/site-config';
 
 interface BrandCardProps {
   brand: BrandConfig;
+  outletCount?: number;
 }
 
-export function BrandCard({ brand }: BrandCardProps) {
+export function BrandCard({ brand, outletCount }: BrandCardProps) {
   const isActive = brand.status === 'active';
 
   // Inisial emblem/logo ringkas
@@ -40,10 +41,19 @@ export function BrandCard({ brand }: BrandCardProps) {
 
         {/* Floating Brand Logo Emblem */}
         <div
-          className="w-11 h-11 rounded-xl bg-white flex items-center justify-center font-display font-black text-xs shadow-md border-2 border-white tracking-wider"
+          className="w-12 h-12 rounded-xl bg-white flex items-center justify-center font-display font-black text-xs shadow-md border-2 border-white tracking-wider overflow-hidden p-1.5"
           style={{ color: isActive ? brand.accentColor || '#8B1E19' : '#4B5563' }}
         >
-          {initials}
+          {brand.logo ? (
+            <img
+              src={brand.logo}
+              alt={brand.name}
+              className="w-full h-full object-contain"
+              loading="eager"
+            />
+          ) : (
+            initials
+          )}
         </div>
       </div>
 
@@ -62,11 +72,15 @@ export function BrandCard({ brand }: BrandCardProps) {
               <span className="text-[10px] font-black text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] px-1.5 py-0.5 rounded uppercase tracking-wide">
                 {brand.promoBadge}
               </span>
-              {brand.outletCountLabel && (
+              {typeof outletCount === 'number' && outletCount > 0 ? (
+                <span className="text-[10px] font-semibold text-[#735F52]">
+                  {outletCount} outlet
+                </span>
+              ) : brand.outletCountLabel ? (
                 <span className="text-[10px] font-semibold text-[#735F52]">
                   {brand.outletCountLabel}
                 </span>
-              )}
+              ) : null}
             </>
           ) : (
             /* Badge Segera Hadir untuk Brand Pilot Non-Aktif (hanya badge status) */

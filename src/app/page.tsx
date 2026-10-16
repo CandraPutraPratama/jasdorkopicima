@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useOperationalStatus } from '@/hooks/useOperationalStatus';
 import { ClosedScreen } from '@/components/ClosedScreen';
 import { Header } from '@/components/Header';
 import { BrandCard } from '@/components/BrandCard';
 import { Footer } from '@/components/Footer';
+import { getBrandOutletProvider } from '@/lib/brand-provider';
 import {
   getAllBrands,
   getAdminWhatsAppUrl,
@@ -60,6 +61,40 @@ export default function PortalPage() {
 
   const { isOpen, status, isLoading: isStatusLoading, refetch } = useOperationalStatus();
   const brands = getAllBrands();
+  const [outletCounts, setOutletCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function loadOutletCounts() {
+      const activeBrands = getAllBrands().filter((b) => b.status === 'active');
+      const counts: Record<string, number> = {};
+
+      await Promise.all(
+        activeBrands.map(async (brand) => {
+          const provider = getBrandOutletProvider(brand.slug);
+          if (provider) {
+            try {
+              const count = await provider.getOutletCount();
+              counts[brand.slug] = count;
+            } catch (err) {
+              console.warn(`[Portal] Gagal memuat jumlah outlet ${brand.slug}:`, err);
+            }
+          }
+        })
+      );
+
+      if (!isCancelled) {
+        setOutletCounts(counts);
+      }
+    }
+
+    loadOutletCounts();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   if (!isStatusLoading && !isOpen && status) {
     return (
@@ -138,7 +173,11 @@ export default function PortalPage() {
 
           <div className="grid grid-cols-2 gap-3">
             {brands.map((brand) => (
-              <BrandCard key={brand.slug} brand={brand} />
+              <BrandCard
+                key={brand.slug}
+                brand={brand}
+                outletCount={outletCounts[brand.slug]}
+              />
             ))}
           </div>
         </section>

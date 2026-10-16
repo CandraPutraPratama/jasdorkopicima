@@ -6,6 +6,7 @@ export interface BrandOutletProvider {
   listFeaturedOutlets(limit?: number): Promise<Outlet[]>;
   searchOutlets(query: string, page?: number, pageSize?: number): Promise<Outlet[]>;
   getOutlet(code: string): Promise<Outlet | null>;
+  getOutletCount(): Promise<number>;
 }
 
 /**
@@ -15,7 +16,7 @@ export interface BrandOutletProvider {
 export class KopiKenanganOutletProvider implements BrandOutletProvider {
   public brandSlug = 'kopi-kenangan';
 
-  public async listFeaturedOutlets(limit = 8): Promise<Outlet[]> {
+  public async listFeaturedOutlets(limit = 10): Promise<Outlet[]> {
     if (typeof window !== 'undefined') {
       const res = await fetch(`/api/outlets?featured=true&limit=${limit}`);
       if (!res.ok) return [];
@@ -68,6 +69,11 @@ export class KopiKenanganOutletProvider implements BrandOutletProvider {
       return null;
     }
   }
+
+  public async getOutletCount(): Promise<number> {
+    const outlets = await this.listFeaturedOutlets();
+    return outlets.length;
+  }
 }
 
 /**
@@ -80,7 +86,7 @@ export class TomoroOutletProvider implements BrandOutletProvider {
   public brandSlug = 'tomoro';
 
   // TODO: Hubungkan data source Tomoro Coffee di sini saat brand diluncurkan
-  public async listFeaturedOutlets(_limit = 8): Promise<Outlet[]> {
+  public async listFeaturedOutlets(_limit = 10): Promise<Outlet[]> {
     return [];
   }
 
@@ -96,6 +102,10 @@ export class TomoroOutletProvider implements BrandOutletProvider {
   // TODO: Hubungkan detail outlet Tomoro Coffee di sini
   public async getOutlet(_code: string): Promise<Outlet | null> {
     return null;
+  }
+
+  public async getOutletCount(): Promise<number> {
+    return 0;
   }
 }
 
