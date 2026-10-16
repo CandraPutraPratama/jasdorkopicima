@@ -37,6 +37,16 @@ export default function BrandPage({ params }: BrandPageProps) {
     notFound();
   }
 
+  // Set tab title spesifik brand (hindari copy Kopi Kenangan untuk Tomoro)
+  useEffect(() => {
+    if (brand) {
+      document.title =
+        brand.status === 'coming_soon'
+          ? `${brand.name} (Segera Hadir) | Cima Group`
+          : `Jasa Order ${brand.name} Promo Diskon 50% | Cima Group`;
+    }
+  }, [brand]);
+
   const { isOpen, status, isLoading: isStatusLoading, refetch } = useOperationalStatus();
 
   // State pencarian outlet untuk brand aktif
@@ -312,11 +322,15 @@ export default function BrandPage({ params }: BrandPageProps) {
             <h2 id="outlet-list-heading" className="font-display font-bold text-sm text-[#26150B]">
               {hasSearched ? 'Hasil Pencarian' : 'Outlet Rekomendasi'}
             </h2>
-            {hasSearched && !isLoadingOutlets && (
+            {hasSearched && !isLoadingOutlets ? (
               <span className="text-[11px] font-semibold text-[#735F52]">
                 {outlets.length} outlet ditemukan
               </span>
-            )}
+            ) : !hasSearched && !isLoadingFeatured ? (
+              <span className="text-[11px] font-semibold text-[#735F52]">
+                {brand.outletCountLabel || `${featuredOutlets.length} outlet`}
+              </span>
+            ) : null}
           </div>
 
           {searchError && (

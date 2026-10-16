@@ -27,6 +27,7 @@ export interface KkStoreItem {
   order_type?: number[];
   status?: string;
   order_msg?: string;
+  real_close_time?: string;
 }
 
 export interface KkQueryStoreData {

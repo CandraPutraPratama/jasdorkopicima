@@ -32,13 +32,14 @@ import { rewriteProductImageUrl } from './image-url.ts';
  * Menormalkan data 1 store/outlet dari KK ke domain Outlet
  */
 export function normalizeStore(raw: KkStoreItem): Outlet {
+  const effectiveCloseTime = raw.real_close_time || raw.close || '';
   const orderability = checkOutletOrderability({
     orderType: raw.order_type,
     status: raw.status,
     orderMsg: raw.order_msg,
     isOpen: typeof raw.is_open === 'boolean' ? raw.is_open : Boolean(raw.is_open),
     openTime: raw.open || '',
-    closeTime: raw.close || '',
+    closeTime: effectiveCloseTime,
   });
 
   return {
@@ -48,7 +49,7 @@ export function normalizeStore(raw: KkStoreItem): Outlet {
     address: (raw.address || '').trim(),
     isOpen: Boolean(raw.is_open),
     openTime: raw.open || '',
-    closeTime: raw.close || '',
+    closeTime: effectiveCloseTime,
     timeZone: raw.time_zone || 7,
     phone: raw.phone || undefined,
     distanceStr: raw.distance_str || undefined,

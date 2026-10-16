@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     // Jika parameter featured diminta atau tidak ada query pencarian sama sekali
     if (isFeatured || (!keyword && !searchParams.has('q') && !searchParams.has('keyword'))) {
-      const limit = Math.min(12, Math.max(1, parseInt(searchParams.get('limit') || '8', 10)));
+      const limit = Math.min(12, Math.max(1, parseInt(searchParams.get('limit') || '12', 10)));
       const cacheKey = cacheKeys.storeList('__featured__', 1, limit);
       const cached = await cacheService.get<{
         total: number;

@@ -122,4 +122,59 @@ test('isOutletClosed acts as single source of truth across all components', () =
   );
 });
 
+test('REGRESI ZONA WAKTU: LIPPO-PURI dan GI pada Jumat 11:40 WIB berstatus BUKA dan Jumat 23:30 WIB berstatus TUTUP', () => {
+  // Pin waktu: Jumat 11:40 WIB = UTC 04:40
+  const jumat1140Wib = new Date('2026-10-16T04:40:00.000Z');
+  // Pin waktu: Jumat 23:30 WIB = UTC 16:30
+  const jumat2330Wib = new Date('2026-10-16T16:30:00.000Z');
+
+  // Outlet Lippo Mall Puri: 10:00 - 22:15 WIB
+  const lippoPuri = {
+    code: 'LIPPO-PURI',
+    name: 'Lippo Mall Puri',
+    isOpen: true,
+    canOrder: true,
+    openTime: '10:00',
+    closeTime: '22:15',
+  };
+
+  // Outlet Grand Indonesia: 08:00 - 22:00 WIB
+  const gi = {
+    code: 'GI',
+    name: 'Central Grand Indonesia 2nd Floor',
+    isOpen: true,
+    canOrder: true,
+    openTime: '08:00',
+    closeTime: '22:00',
+  };
+
+  // 1. Pada Jumat 11:40 WIB: Keduanya WAJIB BUKA (isOutletClosed: false)
+  assert.equal(isOutletClosed(lippoPuri, jumat1140Wib), false, 'LIPPO-PURI harus BUKA pada 11:40 WIB');
+  assert.equal(isOutletClosed(gi, jumat1140Wib), false, 'GI harus BUKA pada 11:40 WIB');
+
+  // 2. Pada Jumat 23:30 WIB: Keduanya WAJIB TUTUP (isOutletClosed: true)
+  assert.equal(isOutletClosed(lippoPuri, jumat2330Wib), true, 'LIPPO-PURI harus TUTUP pada 23:30 WIB');
+  assert.equal(isOutletClosed(gi, jumat2330Wib), true, 'GI harus TUTUP pada 23:30 WIB');
+});
+
+test('checkOutletOrderability dan isOutletClosed untuk outlet dari endpoint get_store (tanpa orderMsg/status) berstatus BUKA di dalam jam operasional', () => {
+  const jumat1140Wib = new Date('2026-10-16T04:40:00.000Z');
+
+  // Bentuk data get_store: hanya isOpen, openTime, closeTime tanpa orderMsg atau status
+  const getStoreOutlet = {
+    code: 'LIPPO-PURI',
+    name: 'Lippo Mall Puri',
+    isOpen: true,
+    openTime: '10:00',
+    closeTime: '22:15',
+  };
+
+  const orderability = checkOutletOrderability(getStoreOutlet, jumat1140Wib);
+  assert.equal(orderability.canOrder, true, 'getStoreOutlet harus canOrder: true pada 11:40 WIB');
+  assert.equal(orderability.reason, 'Buka');
+
+  const closed = isOutletClosed({ ...getStoreOutlet, canOrder: orderability.canOrder }, jumat1140Wib);
+  assert.equal(closed, false, 'getStoreOutlet harus isOutletClosed: false pada 11:40 WIB');
+});
+
 

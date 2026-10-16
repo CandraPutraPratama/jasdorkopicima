@@ -80,7 +80,8 @@ export function isOutletClosed(
  * Jika tidak memenuhi, kembalikan alasan spesifik untuk ditampilkan di badge dan nonaktifkan pemilihan.
  */
 export function checkOutletOrderability(
-  outlet: OutletOrderabilityInput
+  outlet: OutletOrderabilityInput,
+  now: Date = new Date()
 ): OutletOrderabilityResult {
   const { orderType, status, orderMsg, isOpen, openTime, closeTime } = outlet;
 
@@ -92,23 +93,15 @@ export function checkOutletOrderability(
     };
   }
 
-  // 0a. Cek jam operasional outlet jika ada data openTime & closeTime
-  if (openTime && closeTime && !isOutletOpenBySchedule(openTime, closeTime)) {
+  // 0a. Cek jam operasional outlet jika ada data openTime & closeTime (dalam zona Asia/Jakarta)
+  if (openTime && closeTime && !isOutletOpenBySchedule(openTime, closeTime, now)) {
     return {
       canOrder: false,
       reason: 'Tutup',
     };
   }
 
-  // 0b. Fallback jika seluruh data kosong
-  if (!orderMsg && !status && (!orderType || orderType.length === 0)) {
-    return {
-      canOrder: false,
-      reason: 'Tutup',
-    };
-  }
-
-  // 1. Cek order_msg terlebih dahulu (pesan dinamis real-time dari KK)
+  // 1. Cek order_msg terlebih dahulu jika ada (pesan dinamis real-time dari KK)
   if (orderMsg && orderMsg.trim() !== 'Pesan Sekarang') {
     return {
       canOrder: false,
@@ -116,7 +109,7 @@ export function checkOutletOrderability(
     };
   }
 
-  // 2. Cek status keaktifan outlet
+  // 2. Cek status keaktifan outlet jika ada
   if (status && status !== 'Active') {
     return {
       canOrder: false,
@@ -124,8 +117,8 @@ export function checkOutletOrderability(
     };
   }
 
-  // 3. Cek dukungan order_type 101 (Pick Up)
-  if (!orderType || !Array.isArray(orderType) || !orderType.includes(101)) {
+  // 3. Cek dukungan order_type 101 (Pick Up) jika ada
+  if (orderType && Array.isArray(orderType) && orderType.length > 0 && !orderType.includes(101)) {
     return {
       canOrder: false,
       reason: 'Pickup tidak tersedia',
@@ -140,7 +133,18 @@ export function checkOutletOrderability(
     };
   }
 
-  // 5. Fallback jika data tidak lengkap
+  // 5. Jika field realtime (orderMsg/status/orderType) tidak disertakan (misal dari endpoint get_store),
+  // dan outlet isOpen === true serta jam operasional valid (sudah lolos cek di atas)
+  if (!orderMsg && !status && (!orderType || orderType.length === 0)) {
+    if (isOpen === true && openTime && closeTime) {
+      return {
+        canOrder: true,
+        reason: 'Buka',
+      };
+    }
+  }
+
+  // 6. Fallback jika data kosong atau tidak memenuhi syarat
   return {
     canOrder: false,
     reason: 'Tutup',

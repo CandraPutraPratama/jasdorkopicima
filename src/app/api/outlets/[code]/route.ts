@@ -52,6 +52,20 @@ export async function GET(
       );
     }
 
+    // Ambil data real-time dari queryStore (order_msg, status, order_type, real_close_time)
+    try {
+      const qRes = await kkApiClient.queryStore({ keyword: code, pageSize: 5 });
+      const matched = (qRes.store || []).find((s) => s.code?.toUpperCase() === code.toUpperCase());
+      if (matched) {
+        if (matched.order_msg) rawStore.order_msg = matched.order_msg;
+        if (matched.status) rawStore.status = matched.status;
+        if (matched.order_type) rawStore.order_type = matched.order_type;
+        if (matched.real_close_time) rawStore.real_close_time = matched.real_close_time;
+      }
+    } catch (e: any) {
+      console.warn(`[ApiOutletDetail] Gagal mengambil queryStore enrichment untuk [${code}]:`, e.message);
+    }
+
     const outlet = normalizeStore(rawStore);
     const responsePayload = { outlet };
 

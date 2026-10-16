@@ -19,34 +19,52 @@ export interface OperationalStatusResult {
  */
 export function getWibTimeParts(
   date: Date = new Date(),
-  timeZone: string = BUSINESS_CONFIG.operational.timeZone
+  timeZone: string = BUSINESS_CONFIG.operational.timeZone || 'Asia/Jakarta'
 ): { hour: number; minute: number; timeString: string } {
-  const formatter = new Intl.DateTimeFormat('en-US', {
-    timeZone,
-    hour: '2-digit',
-    minute: '2-digit',
-    hourCycle: 'h23',
-  });
+  try {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone,
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    });
 
-  const parts = formatter.formatToParts(date);
-  let hourStr = '00';
-  let minuteStr = '00';
+    const parts = formatter.formatToParts(date);
+    let hourStr = '00';
+    let minuteStr = '00';
 
-  for (const part of parts) {
-    if (part.type === 'hour') hourStr = part.value;
-    if (part.type === 'minute') minuteStr = part.value;
+    for (const part of parts) {
+      if (part.type === 'hour') hourStr = part.value;
+      if (part.type === 'minute') minuteStr = part.value;
+    }
+
+    let hour = parseInt(hourStr, 10);
+    const minute = parseInt(minuteStr, 10);
+    if (hour === 24) hour = 0;
+
+    const formattedHour = String(hour).padStart(2, '0');
+    const formattedMinute = String(minute).padStart(2, '0');
+
+    return {
+      hour,
+      minute,
+      timeString: `${formattedHour}:${formattedMinute}`,
+    };
+  } catch {
+    // Fallback matematis UTC+7 (Asia/Jakarta) jika Intl timeZone tidak tersedia
+    const utcMs = date.getTime() + date.getTimezoneOffset() * 60000;
+    const wibDate = new Date(utcMs + 7 * 3600000);
+    const hour = wibDate.getUTCHours();
+    const minute = wibDate.getUTCMinutes();
+    const formattedHour = String(hour).padStart(2, '0');
+    const formattedMinute = String(minute).padStart(2, '0');
+
+    return {
+      hour,
+      minute,
+      timeString: `${formattedHour}:${formattedMinute}`,
+    };
   }
-
-  const hour = parseInt(hourStr, 10);
-  const minute = parseInt(minuteStr, 10);
-  const formattedHour = String(hour).padStart(2, '0');
-  const formattedMinute = String(minute).padStart(2, '0');
-
-  return {
-    hour,
-    minute,
-    timeString: `${formattedHour}:${formattedMinute}`,
-  };
 }
 
 /**
