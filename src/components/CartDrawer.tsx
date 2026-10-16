@@ -742,7 +742,7 @@ export function CartDrawer({
                   disabled
                   className="w-full min-h-[48px] px-4 py-3 bg-[#E5DACB] text-[#8C7667] font-display font-bold text-xs rounded-xl flex items-center justify-center gap-2 cursor-not-allowed opacity-80"
                 >
-                  <span>Outlet Sedang Tutup — Tidak Bisa Dipesan</span>
+                  <span>Outlet Sedang Tutup - Tidak Bisa Dipesan</span>
                 </button>
               ) : (
                 <button

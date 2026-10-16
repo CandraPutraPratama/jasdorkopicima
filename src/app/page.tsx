@@ -9,55 +9,20 @@ import { getBrandOutletProvider } from '@/lib/brand-provider';
 import {
   getAllBrands,
   getAdminWhatsAppUrl,
-  NOMOR_WHATSAPP_ADMIN_FORMATTED,
   JADWAL_OPERASIONAL_LENGKAP,
   TEKS_INFO_PEMBAYARAN_CHECKOUT,
 } from '@/lib/site-config';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { ActiveOrderBanner } from '@/components/ActiveOrderBanner';
+import { TrustStrip } from '@/components/TrustStrip';
+import { TESTIMONIALS } from '@/data/testimonials';
 
 /* TODO: Tampilkan section testimoni setelah data testimoni pelanggan asli tersedia (jangan tampilkan label TODO ke user) */
 const SHOW_TESTIMONIALS = false;
 
-interface TestimonialItem {
-  id: string;
-  name: string;
-  brand: string;
-  quote: string;
-  savings: string;
-  isPlaceholderTodo: boolean;
-}
-
-const TESTIMONIALS: TestimonialItem[] = [
-  {
-    id: 'testi-1',
-    name: 'Dimas R.',
-    brand: 'Kopi Kenangan',
-    quote: 'Pesen 4 cup Kopi Kenangan Mantan buat anak kantor, bayar setengah harga. Admin fast respon banget!',
-    savings: 'Hemat Rp42.000',
-    isPlaceholderTodo: true,
-  },
-  {
-    id: 'testi-2',
-    name: 'Sarah P.',
-    brand: 'Kopi Kenangan',
-    quote: 'Format pesanannya gampang, tinggal klik WA. Langsung ambil di outlet tanpa ribet antre.',
-    savings: 'Hemat Rp28.000',
-    isPlaceholderTodo: true,
-  },
-  {
-    id: 'testi-3',
-    name: 'Andi K.',
-    brand: 'Cima Group',
-    quote: 'Langganan tiap weekend jajan kopi hemat. QRIS tanpa admin, super praktis!',
-    savings: 'Hemat 50%',
-    isPlaceholderTodo: true,
-  },
-];
-
 export default function PortalPage() {
   useEffect(() => {
-    document.title = 'Cima Group — Portal Jasa Order Multi-Brand Promo Setengah Harga';
+    document.title = 'Cima Group - Portal Jasa Order Multi-Brand Promo Setengah Harga';
   }, []);
 
   const { isOpen, status, isLoading: isStatusLoading, refetch } = useOperationalStatus();
@@ -140,29 +105,7 @@ export default function PortalPage() {
         </div>
 
         {/* Strip Kepercayaan / Trust Strip (Above the Fold) */}
-        <div className="bg-white border border-[#EFE5D8] rounded-xl px-3 py-2.5 shadow-2xs">
-          <div className="flex items-center justify-between gap-2 text-[11px] font-semibold text-[#5A4537] overflow-x-auto no-scrollbar">
-            <div className="flex items-center gap-1.5 shrink-0">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-              <span>QRIS</span>
-            </div>
-            <span className="text-[#D9CEBF]">•</span>
-            <div className="flex items-center gap-1.5 shrink-0">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-              <span>Jago/Blu</span>
-            </div>
-            <span className="text-[#D9CEBF]">•</span>
-            <div className="flex items-center gap-1.5 shrink-0">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-              <span>E-Wallet</span>
-            </div>
-            <span className="text-[#D9CEBF]">•</span>
-            <div className="flex items-center gap-1.5 shrink-0 text-[#15803D] font-bold">
-              <WhatsAppIcon className="w-3.5 h-3.5 fill-[#15803D]" />
-              <span>Admin Fast Respon</span>
-            </div>
-          </div>
-        </div>
+        <TrustStrip />
 
         {/* Grid Brand (2 Kolom Mobile-First, Kartu Muka Food Court) */}
         <section aria-labelledby="brand-grid-heading" className="space-y-2">
@@ -283,7 +226,7 @@ export default function PortalPage() {
         <div className="p-3 bg-white border border-[#EFE5D8] rounded-2xl flex items-center justify-between gap-3 shadow-2xs">
           <div>
             <p className="font-display font-bold text-xs text-[#26150B]">Ada pertanyaan sebelum order?</p>
-            <p className="text-[11px] text-[#735F52] mt-0.5">Admin siap bantu via WhatsApp ({NOMOR_WHATSAPP_ADMIN_FORMATTED})</p>
+            <p className="text-[11px] text-[#735F52] mt-0.5">Admin siap bantu via WhatsApp</p>
           </div>
           <a
             href={getAdminWhatsAppUrl('Halo Admin Jasdor, saya ingin bertanya tentang cara pesan.')}

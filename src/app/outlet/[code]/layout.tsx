@@ -39,7 +39,7 @@ export async function generateMetadata({
         title: outletName,
         description,
         openGraph: {
-          title: `${outletName} | Jasdor — Jasa Order Kopi Kenangan`,
+          title: `${outletName} | Jasdor - Jasa Order Kopi Kenangan`,
           description,
           url: `https://jasdor.cimagroup.my.id/outlet/${encodeURIComponent(cleanCode)}`,
           images: [
@@ -53,7 +53,7 @@ export async function generateMetadata({
         },
         twitter: {
           card: 'summary_large_image',
-          title: `${outletName} | Jasdor — Jasa Order Kopi Kenangan`,
+          title: `${outletName} | Jasdor - Jasa Order Kopi Kenangan`,
           description,
           images: ['/og-image.png'],
         },

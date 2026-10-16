@@ -162,14 +162,14 @@ export function ProductCard({
             </span>
           </div>
 
-          {/* 5. Tombol Lingkaran Plus (Kanan Bawah) — dinonaktifkan jika outlet tutup */}
+          {/* 5. Tombol Lingkaran Plus (Kanan Bawah) - dinonaktifkan jika outlet tutup */}
           {!isSoldOut && (
             isOutletClosed ? (
               <button
                 type="button"
                 disabled
-                aria-label={`Outlet tutup — ${product.name} tidak dapat dipesan`}
-                title="Outlet sedang tutup — tidak dapat dipesan"
+                aria-label={`Outlet tutup - ${product.name} tidak dapat dipesan`}
+                title="Outlet sedang tutup - tidak dapat dipesan"
                 className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#E5DACB] text-[#8C7667] flex items-center justify-center cursor-not-allowed opacity-75 shrink-0"
               >
                 <svg

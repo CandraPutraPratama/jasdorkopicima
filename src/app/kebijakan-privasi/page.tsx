@@ -8,7 +8,7 @@ import {
 } from '@/lib/site-config';
 
 export const metadata: Metadata = {
-  title: 'Kebijakan Privasi — Perlindungan Data Pengguna',
+  title: 'Kebijakan Privasi - Perlindungan Data Pengguna',
   description:
     'Kebijakan privasi dan perlindungan data pengguna di Jasdor: bagaimana data pesanan, nama pemesan, dan komunikasi WhatsApp jasa order dikelola secara aman dan rahasia.',
 };

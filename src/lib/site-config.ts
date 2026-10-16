@@ -39,7 +39,13 @@ export const NAMA_BRAND_SHORT: string = 'Jasdor';
 export const TAGLINE: string = 'Jasa Order Kopi Kenangan Promo Setengah Harga';
 
 export const DISCLAIMER_RESMI: string =
-  'Jasdor adalah layanan jasa order independen • Bukan afiliasi resmi Kopi Kenangan.';
+  'Jasdor adalah layanan jasa order • Bukan afiliasi resmi Kopi Kenangan.';
+
+/**
+ * Angka real dari catatan order manual pemilik - update jika berubah.
+ * Ditambah jumlah order di database untuk menghasilkan total orderan kumulatif.
+ */
+export const TOTAL_ORDERS_BASELINE = 1636;
 
 export interface MetodePembayaranItem {
   id: string;
@@ -83,10 +89,10 @@ export const RINGKASAN_METODE_PEMBAYARAN: string =
   DAFTAR_METODE_PEMBAYARAN_RINGKAS.join(' / ');
 
 export const TEKS_INFO_PEMBAYARAN_CHECKOUT: string =
-  'Pembayaran: QRIS langsung di website — scan QR, bayar sesuai nominal, lalu konfirmasi via WhatsApp.';
+  'Pembayaran: QRIS langsung di website - scan QR, bayar sesuai nominal, lalu konfirmasi via WhatsApp.';
 
 export const TEKS_PEMBAYARAN_LANGKAH_ORDER: string =
-  'Bayar via QRIS langsung di website — scan QR, bayar sesuai nominal, lalu konfirmasi via WhatsApp.';
+  'Bayar via QRIS langsung di website - scan QR, bayar sesuai nominal, lalu konfirmasi via WhatsApp.';
 
 export function getAdminWhatsAppUrl(customMessage?: string): string {
   const defaultText = `Halo Admin ${NAMA_BRAND_SHORT}, saya ingin bertanya tentang layanan jasa order Kopi Kenangan promo 50%.`;
@@ -128,6 +134,7 @@ export const SITE_CONFIG = {
   paymentStepNotice: TEKS_PEMBAYARAN_LANGKAH_ORDER,
   navLinks: [
     { label: 'FAQ', href: '/faq' },
+    { label: 'Testimoni', href: '/testimoni' },
     { label: 'Syarat & Ketentuan', href: '/syarat-ketentuan' },
     { label: 'Kebijakan Privasi', href: '/kebijakan-privasi' },
     { label: 'Kontak', href: '/kontak' },
@@ -162,6 +169,7 @@ export interface BrandConfig {
 
 export const RESERVED_SLUGS = [
   'faq',
+  'testimoni',
   'syarat-ketentuan',
   'kebijakan-privasi',
   'kontak',

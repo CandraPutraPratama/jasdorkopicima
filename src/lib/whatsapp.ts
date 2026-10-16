@@ -216,7 +216,7 @@ export interface OrderWhatsAppConfirmationInput {
  * Format:
  * Halo admin, saya sudah bayar pesanan #CG-XXXXXX
  * Outlet: [nama outlet]
- * - [qty]x [nama item] ([opsi/varian]) — RpXXX
+ * - [qty]x [nama item] ([opsi/varian]) - RpXXX
  * - ...
  * Total: RpXXX
  * Nama: [nama pemesan]
@@ -239,7 +239,7 @@ export function buildOrderWhatsAppConfirmationMessage(
       optParts.push(...it.addons.map((a) => a.name).filter(Boolean));
     }
     const optText = optParts.length > 0 ? ` (${optParts.join(', ')})` : '';
-    lines.push(`- ${it.quantity}x ${it.name}${optText} — ${formatRupiah(it.subtotal)}`);
+    lines.push(`- ${it.quantity}x ${it.name}${optText} - ${formatRupiah(it.subtotal)}`);
   }
 
   lines.push(`Total: ${formatRupiah(order.total)}`);

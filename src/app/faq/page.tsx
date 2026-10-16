@@ -12,7 +12,7 @@ import {
 } from '@/lib/site-config';
 
 export const metadata: Metadata = {
-  title: 'FAQ — Pertanyaan Umum Layanan Jasa Order',
+  title: 'FAQ - Pertanyaan Umum Layanan Jasa Order',
   description:
     'Pertanyaan yang sering diajukan mengenai layanan jasa order Kopi Kenangan Jasdor: cara order, jadwal layanan, diskon 50%, biaya jasa order, metode pembayaran, dan refund.',
 };
@@ -30,15 +30,15 @@ const FAQ_LIST: FaqItem[] = [
     id: 'tentang-jasdor',
     category: 'Layanan',
     q: 'Apa itu Jasdor dan bagaimana cara kerjanya?',
-    a: 'Jasdor adalah layanan jasa order independen khusus menu Kopi Kenangan. Kami membantu Anda memesan menu favorit dengan promo diskon 50% untuk harga dasar minuman, lalu pesanan langsung dikirimkan formatnya ke WhatsApp admin untuk diproses dan diambil di outlet pilihan Anda.',
-    highlight: 'Jasa Order Independen • Diskon 50%',
+    a: 'Jasdor adalah layanan jasa order khusus menu Kopi Kenangan. Kami membantu Anda memesan menu favorit dengan promo diskon 50% untuk harga dasar minuman, lalu pesanan langsung dikirimkan formatnya ke WhatsApp admin untuk diproses dan diambil di outlet pilihan Anda.',
+    highlight: 'Layanan Jasa Order • Diskon 50%',
   },
   {
     id: 'status-afiliasi',
     category: 'Status Resmi',
     q: 'Apakah Jasdor berafiliasi resmi dengan Kopi Kenangan?',
-    a: 'Tidak. Jasdor adalah penyedia layanan jasa order independen pihak ketiga dan bukan merupakan perwakilan, mitra resmi, atau cabang dari PT Bumi Berkah Boga (Kopi Kenangan). Semua merek dagang, logo, dan nama menu adalah hak milik resmi Kopi Kenangan.',
-    highlight: 'Jasa Order Independen',
+    a: 'Tidak. Jasdor adalah penyedia layanan jasa order pihak ketiga dan bukan merupakan perwakilan, mitra resmi, atau cabang dari PT Bumi Berkah Boga (Kopi Kenangan). Semua merek dagang, logo, dan nama menu adalah hak milik resmi Kopi Kenangan.',
+    highlight: 'Layanan Jasa Order',
   },
   {
     id: 'cara-order',
@@ -115,7 +115,7 @@ export default function FaqPage() {
           </div>
         </div>
 
-        {/* Highlight Penegasan Independen */}
+        {/* Highlight Penegasan Layanan Jasa Order */}
         <div className="p-3.5 bg-amber-50/80 border border-amber-200 rounded-2xl flex items-start gap-3 text-[#78350F] shadow-2xs">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +134,7 @@ export default function FaqPage() {
           </svg>
           <div className="text-xs leading-relaxed">
             <strong className="font-bold block text-[#78350F] mb-0.5">
-              Layanan Jasa Order Independen
+              Layanan Jasa Order
             </strong>
             {SITE_CONFIG.disclaimer} Seluruh pesanan diteruskan dan diproses langsung ke gerai resmi Kopi Kenangan pilihan Anda.
           </div>

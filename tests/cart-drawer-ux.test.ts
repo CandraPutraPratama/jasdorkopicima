@@ -56,7 +56,7 @@ test('CartDrawer memuat blokade dan banner peringatan saat outlet tutup', async 
 
   assert.ok(cartDrawerCode.includes('isOutletClosed'), 'CartDrawer harus mengecek isOutletClosed');
   assert.ok(cartDrawerCode.includes('Outlet ini sedang tutup'), 'CartDrawer harus memiliki banner outlet sedang tutup');
-  assert.ok(cartDrawerCode.includes('Outlet Sedang Tutup — Tidak Bisa Dipesan'), 'CartDrawer harus menonaktifkan checkout saat outlet tutup');
+  assert.ok(cartDrawerCode.includes('Outlet Sedang Tutup - Tidak Bisa Dipesan'), 'CartDrawer harus menonaktifkan checkout saat outlet tutup');
   assert.ok(cartDrawerCode.includes('valData.isOutletClosed'), 'CartDrawer harus memproses respon isOutletClosed dari validate-cart');
 });
 
@@ -67,7 +67,7 @@ test('ProductCard & ProductBottomSheet mendukung status outlet tutup', async () 
   const bottomSheetCode = fs.readFileSync(path.resolve('src/components/ProductBottomSheet.tsx'), 'utf-8');
 
   assert.ok(productCardCode.includes('isOutletClosed'), 'ProductCard harus menerima prop isOutletClosed');
-  assert.ok(productCardCode.includes('Outlet tutup — '), 'ProductCard harus menyediakan penjelasan aria-label saat tutup');
+  assert.ok(productCardCode.includes('Outlet tutup - '), 'ProductCard harus menyediakan penjelasan aria-label saat tutup');
   assert.ok(bottomSheetCode.includes('isOutletClosed'), 'ProductBottomSheet harus menerima prop isOutletClosed');
   assert.ok(bottomSheetCode.includes('Outlet Sedang Tutup'), 'ProductBottomSheet harus menampilkan teks Outlet Sedang Tutup saat nonaktif');
 });
@@ -78,7 +78,7 @@ test('Outlet page memuat banner peringatan operasional tutup dan merender katalo
   const outletPageCode = fs.readFileSync(path.resolve('src/app/outlet/[code]/page.tsx'), 'utf-8');
 
   assert.ok(outletPageCode.includes('isOutletClosed'), 'Halaman outlet harus memiliki flag isOutletClosed');
-  assert.ok(outletPageCode.includes('Outlet ini sedang tutup — pemesanan dibuka kembali pukul'), 'Halaman outlet harus memuat teks banner pembukaan kembali');
+  assert.ok(outletPageCode.includes('Outlet ini sedang tutup - pemesanan dibuka kembali pukul'), 'Halaman outlet harus memuat teks banner pembukaan kembali');
   assert.ok(outletPageCode.includes('Katalog menu tetap dapat dilihat (read-only) untuk window shopping'), 'Halaman outlet harus menginformasikan bahwa menu tetap dapat dilihat');
 });
 

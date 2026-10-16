@@ -10,7 +10,7 @@ import {
 } from '@/lib/site-config';
 
 export const metadata: Metadata = {
-  title: 'Syarat & Ketentuan — Aturan Layanan Jasa Order',
+  title: 'Syarat & Ketentuan - Aturan Layanan Jasa Order',
   description:
     'Syarat dan ketentuan penggunaan layanan jasa order Kopi Kenangan Jasdor: alur pemesanan, pembayaran, garansi refund, dan batas tanggung jawab layanan.',
 };
@@ -60,7 +60,7 @@ export default function TermsPage() {
           </div>
           <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
             <p>
-              1.1. <strong>Jasdor</strong> ({SITE_CONFIG.brandName}) adalah penyedia <strong>layanan jasa order independen</strong> yang membantu pelanggan memesan menu makanan dan minuman Kopi Kenangan dengan skema potongan promo 50% untuk harga dasar minuman.
+              1.1. <strong>Jasdor</strong> ({SITE_CONFIG.brandName}) adalah penyedia <strong>layanan jasa order</strong> yang membantu pelanggan memesan menu makanan dan minuman Kopi Kenangan dengan skema potongan promo 50% untuk harga dasar minuman.
             </p>
             <p>
               1.2. Jasdor <strong>bukan merupakan perwakilan, mitra resmi, karyawan, atau cabang resmi dari PT Bumi Berkah Boga (Kopi Kenangan)</strong>. Semua transaksi adalah murni kesepakatan jasa order antara pelanggan dan Jasdor.

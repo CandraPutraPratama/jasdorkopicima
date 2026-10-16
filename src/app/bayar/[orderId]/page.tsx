@@ -12,7 +12,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { orderId } = await params;
   return {
-    title: `Pembayaran Pesanan #${orderId} — ${SITE_CONFIG.brandShort}`,
+    title: `Pembayaran Pesanan #${orderId} - ${SITE_CONFIG.brandShort}`,
     description: `Halaman pembayaran QRIS resmi jasa order ${SITE_CONFIG.brandName}`,
     robots: {
       index: false,

@@ -10,7 +10,7 @@ import {
 } from '@/lib/site-config';
 
 export const metadata: Metadata = {
-  title: 'Kontak — Hubungi Customer Service Jasdor',
+  title: 'Kontak - Hubungi Customer Service Jasdor',
   description:
     'Hubungi admin layanan jasa order Kopi Kenangan Jasdor via WhatsApp resmi. Siap melayani pemesanan, ketersediaan outlet, konfirmasi pembayaran, dan refund.',
 };

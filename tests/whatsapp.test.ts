@@ -270,8 +270,8 @@ test('buildOrderWhatsAppConfirmationMessage formats pre-filled message correctly
   const expected = [
     'Halo admin, saya sudah bayar pesanan #CG-AB12CD',
     'Outlet: Lippo Mall Puri',
-    '- 1x Kopi Kenangan Mantan (Iced, Large (+Rp5.000), Less Sugar, Topping: Boba (+Rp6.000)) — Rp18.000',
-    '- 2x Oatmeal Raisin Soft Baked Cookie — Rp20.000',
+    '- 1x Kopi Kenangan Mantan (Iced, Large (+Rp5.000), Less Sugar, Topping: Boba (+Rp6.000)) - Rp18.000',
+    '- 2x Oatmeal Raisin Soft Baked Cookie - Rp20.000',
     'Total: Rp38.000',
     'Nama: Budi Santoso',
   ].join('\n');
@@ -300,7 +300,7 @@ test('buildOrderWhatsAppConfirmationMessage fallbacks to outlet_code if outlet_n
 
   const message = buildOrderWhatsAppConfirmationMessage(order);
   assert.ok(message.includes('Outlet: GI-JAKARTA'));
-  assert.ok(message.includes('- 1x Americano (Hot) — Rp15.000'));
+  assert.ok(message.includes('- 1x Americano (Hot) - Rp15.000'));
   assert.ok(message.includes('Total: Rp15.000'));
   assert.ok(message.includes('Nama: Siti Aminah'));
 });

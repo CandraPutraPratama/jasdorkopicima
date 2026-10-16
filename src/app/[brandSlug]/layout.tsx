@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: BrandLayoutProps): Promise<Me
       },
       description: `Layanan jasa order hemat untuk ${brand.name} sedang kami persiapkan di Cima Group.`,
       openGraph: {
-        title: `${brand.name} — Segera Hadir di Cima Group`,
+        title: `${brand.name} - Segera Hadir di Cima Group`,
         description: `Layanan jasa order hemat untuk ${brand.name} sedang kami persiapkan.`,
       },
     };

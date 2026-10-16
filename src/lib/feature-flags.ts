@@ -1,5 +1,5 @@
 /**
- * Feature Flags — satu titik kontrol untuk semua fitur yang bisa dinyalakan/dimatikan.
+ * Feature Flags - satu titik kontrol untuk semua fitur yang bisa dinyalakan/dimatikan.
  *
  * ─────────────────────────────────────────────────────────────────────────────
  * OPERATIONAL_GATE_ENABLED

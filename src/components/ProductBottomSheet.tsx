@@ -636,7 +636,7 @@ export function ProductBottomSheet({
           {/* Peringatan jika outlet sedang tutup */}
           {isOutletClosed && (
             <div className="p-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-950 text-[11px] text-center font-medium">
-              ⚠️ Outlet ini sedang tutup — menu ini hanya untuk dilihat (tidak dapat dipesan)
+              ⚠️ Outlet ini sedang tutup - menu ini hanya untuk dilihat (tidak dapat dipesan)
             </div>
           )}
 

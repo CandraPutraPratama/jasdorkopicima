@@ -7,7 +7,7 @@ describe('PWA, SEO, dan Analytics (Tahap 9)', () => {
   describe('Web App Manifest', () => {
     test('manifest menghasilkan field wajib PWA dengan benar', () => {
       const data = manifest();
-      assert.strictEqual(data.name, 'Jasdor — Jasa Order Kopi Kenangan');
+      assert.strictEqual(data.name, 'Jasdor - Jasa Order Kopi Kenangan');
       assert.strictEqual(data.short_name, 'Jasdor');
       assert.strictEqual(data.start_url, '/');
       assert.strictEqual(data.display, 'standalone');

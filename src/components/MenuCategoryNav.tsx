@@ -37,7 +37,7 @@ export function MenuCategoryNav({
     };
   }, [categories]);
 
-  // Sprint 2 Item 3.2 — Chip aktif selalu di tengah, instan tanpa smooth (behavior: 'auto')
+  // Sprint 2 Item 3.2 - Chip aktif selalu di tengah, instan tanpa smooth (behavior: 'auto')
   useEffect(() => {
     if (!activeCategoryCode) return;
     const container = scrollContainerRef.current;
@@ -56,7 +56,7 @@ export function MenuCategoryNav({
 
     container.scrollTo({
       left: clampedLeft,
-      behavior: 'auto', // INSTAN — tidak ada animasi smooth (Sprint 2 Item 3.2)
+      behavior: 'auto', // INSTAN - tidak ada animasi smooth (Sprint 2 Item 3.2)
     });
   }, [activeCategoryCode]);
 

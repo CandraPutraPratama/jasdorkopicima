@@ -360,7 +360,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-xs text-amber-950">
                       {outlet.openTime
-                        ? `Outlet ini sedang tutup — pemesanan dibuka kembali pukul ${outlet.openTime.slice(0, 5)} WIB`
+                        ? `Outlet ini sedang tutup - pemesanan dibuka kembali pukul ${outlet.openTime.slice(0, 5)} WIB`
                         : `Outlet ini sedang tutup (${outlet.orderReason || 'Tidak menerima pesanan'})`}
                     </p>
                     <p className="text-[11px] text-amber-900 mt-1 leading-relaxed">
@@ -422,7 +422,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                     <div className="flex items-center justify-between pt-1">
                       <h2 className="font-display text-sm font-black text-[#26150B] tracking-tight">
                         {isFavoritSection
-                          ? `Favoritku — ${group.products.length} menu`
+                          ? `Favoritku - ${group.products.length} menu`
                           : group.name}
                       </h2>
                       {!isFavoritSection && (

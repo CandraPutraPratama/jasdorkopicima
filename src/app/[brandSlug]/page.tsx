@@ -10,12 +10,12 @@ import { OutletSearchCard } from '@/components/OutletSearchCard';
 import { OutletCardSkeleton } from '@/components/Skeleton';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { ActiveOrderBanner } from '@/components/ActiveOrderBanner';
+import { TrustStrip } from '@/components/TrustStrip';
 import { filterOutletSearchInput } from '@/lib/sanitizer';
 import {
   getBrandConfig,
   isReservedSlug,
   getAdminWhatsAppUrl,
-  NOMOR_WHATSAPP_ADMIN_FORMATTED,
 } from '@/lib/site-config';
 import { getBrandOutletProvider } from '@/lib/brand-provider';
 import type { Outlet } from '@/types/domain';
@@ -252,7 +252,7 @@ export default function BrandPage({ params }: BrandPageProps) {
         backHref="/"
         backLabel="Kembali ke Portal"
         brandName={brand.name}
-        brandSub={brand.tagline || 'JASA ORDER INDEPENDEN'}
+        brandSub={brand.tagline || 'LAYANAN JASA ORDER'}
         chatMessage={`Halo Admin Jasdor, saya butuh info jasa order ${brand.name}.`}
       />
 
@@ -265,7 +265,7 @@ export default function BrandPage({ params }: BrandPageProps) {
           <div className="relative z-10 space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[10px] font-bold text-[#E5B563] uppercase tracking-wider bg-[#3B2314] px-2 py-0.5 rounded-full border border-[#52331C]">
-                Jasa Order Independen
+                Layanan Jasa Order
               </span>
               {brand.promoBadge ? (
                 <span className="text-[10px] font-black text-white bg-[#DC2626] px-2 py-0.5 rounded-full uppercase tracking-wide">
@@ -310,6 +310,9 @@ export default function BrandPage({ params }: BrandPageProps) {
             </div>
           </div>
         </div>
+
+        {/* Trust Strip */}
+        <TrustStrip />
 
         {/* Form Pencarian Outlet */}
         <section aria-labelledby="outlet-search-heading" className="space-y-3">
@@ -425,7 +428,7 @@ export default function BrandPage({ params }: BrandPageProps) {
         <div className="p-3 bg-white border border-[#EFE5D8] rounded-2xl flex items-center justify-between gap-3 shadow-2xs">
           <div>
             <p className="font-display font-bold text-xs text-[#26150B]">Butuh bantuan cari outlet?</p>
-            <p className="text-[11px] text-[#735F52] mt-0.5">Admin siap bantu via WhatsApp ({NOMOR_WHATSAPP_ADMIN_FORMATTED})</p>
+            <p className="text-[11px] text-[#735F52] mt-0.5">Admin siap bantu via WhatsApp</p>
           </div>
           <a
             href={getAdminWhatsAppUrl(`Halo Admin Jasdor, saya butuh rekomendasi outlet ${brand.name} terdekat.`)}
