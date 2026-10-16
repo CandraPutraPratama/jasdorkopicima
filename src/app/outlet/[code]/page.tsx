@@ -16,6 +16,7 @@ import { CartDrawer } from '@/components/CartDrawer';
 import { SwitchOutletModal } from '@/components/SwitchOutletModal';
 import { determineActiveCategory } from '@/lib/category-scrollspy';
 import { isOutletClosed as checkIsOutletClosed } from '@/lib/orderability';
+import { resolveBrandSlugFromOutletCode } from '@/lib/site-config';
 import type { Outlet, MenuGroup, Product } from '@/types/domain';
 
 interface OutletMenuPageProps {
@@ -25,6 +26,7 @@ interface OutletMenuPageProps {
 export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   const resolvedParams = use(params);
   const outletCode = resolvedParams.code;
+  const brandSlug = resolveBrandSlugFromOutletCode(outletCode);
 
   const { isOpen: isJasdorOpen, status: jasdorStatus, isLoading: isJasdorLoading, refetch } =
     useOperationalStatus();
@@ -236,7 +238,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
       {/* Note: sticky={false} preserved for test suite regex check */}
       <Header
         showBack={true}
-        backHref="/"
+        backHref={`/${brandSlug}`}
         backLabel="Kembali ke Cari Outlet"
         sticky={true}
         title={outlet ? outlet.name : undefined}
@@ -272,7 +274,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
             Outlet ini tidak terdaftar atau berada di luar jangkauan layanan Kopi Kenangan kami.
           </p>
           <Link
-            href="/"
+            href={`/${brandSlug}`}
             className="min-h-[44px] px-6 py-2.5 bg-[#26150B] text-[#FBBF24] font-display font-bold text-xs rounded-xl flex items-center justify-center shadow-xs"
           >
             Cari Outlet Kopi Kenangan
@@ -302,7 +304,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           <h2 className="font-display text-base font-bold text-[#26150B] mb-1">Gagal Memuat Outlet</h2>
           <p className="text-xs text-[#6A584D] max-w-xs mb-4 leading-relaxed">{errorMessage}</p>
           <Link
-            href="/"
+            href={`/${brandSlug}`}
             className="min-h-[44px] px-5 py-2.5 bg-[#26150B] text-[#FBBF24] font-display font-bold text-xs rounded-xl flex items-center justify-center"
           >
             Pilih Outlet Lain
@@ -368,7 +370,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                 </div>
                 <div className="flex items-center gap-2 pt-1 border-t border-amber-200/60">
                   <Link
-                    href="/"
+                    href={`/${brandSlug}`}
                     className="min-h-[38px] px-3.5 py-1.5 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] text-xs font-display font-bold rounded-xl flex items-center gap-1.5 transition shadow-xs"
                   >
                     <span>Pilih Outlet Lain</span>
