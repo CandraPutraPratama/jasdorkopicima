@@ -27,34 +27,24 @@ export function BrandCard({ brand, outletCount }: BrandCardProps) {
           : 'border-[#EFE5D8]/70 bg-[#FAF7F2]/60 opacity-65 grayscale cursor-not-allowed border-dashed'
       }`}
     >
-      {/* Banner Visual Atas */}
+      {/* Visual Logo Brand (Kotak Atas) - Full box tanpa background merah dan tanpa persegi panjang di tengah */}
       <div
-        className="h-20 relative flex items-center justify-center overflow-hidden"
-        style={{
-          background: isActive
-            ? 'linear-gradient(180deg, #A8201A 0%, #5E0B08 100%)'
-            : 'linear-gradient(180deg, #6B7280 0%, #374151 100%)',
-        }}
+        className={`h-24 sm:h-28 relative flex items-center justify-center overflow-hidden border-b border-[#EFE5D8]/80 ${
+          isActive ? 'bg-white' : 'bg-[#FAF6F0]'
+        }`}
       >
-        {/* Subtle accent glow */}
-        <div className="absolute inset-0 bg-radial from-white/10 to-transparent pointer-events-none" />
-
-        {/* Floating Brand Logo Emblem */}
-        <div
-          className="h-12 px-3.5 min-w-[54px] max-w-[130px] rounded-2xl bg-white flex items-center justify-center font-display font-black text-xs shadow-md border-2 border-white tracking-wider overflow-hidden"
-          style={{ color: isActive ? brand.accentColor || '#8B1E19' : '#4B5563' }}
-        >
-          {brand.logo ? (
-            <img
-              src={brand.logo}
-              alt={brand.name}
-              className="h-7 w-auto max-w-[100px] object-contain"
-              loading="eager"
-            />
-          ) : (
-            <span className="px-1">{initials}</span>
-          )}
-        </div>
+        {brand.logo ? (
+          <img
+            src={brand.logo}
+            alt={brand.name}
+            className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+            loading="eager"
+          />
+        ) : (
+          <div className="w-12 h-12 rounded-2xl bg-white/90 shadow-xs border border-[#E5DACB] flex items-center justify-center font-display font-black text-sm text-[#735F52]">
+            <span>{initials}</span>
+          </div>
+        )}
       </div>
 
       {/* Konten Kartu Bawah */}

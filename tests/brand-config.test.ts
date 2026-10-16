@@ -5,7 +5,6 @@ import {
   getAllBrands,
   isReservedSlug,
   resolveBrandSlugFromOutletCode,
-  type BrandConfig,
 } from '../src/lib/site-config.ts';
 
 test('getBrandConfig returns full config for kopi-kenangan', () => {
@@ -15,7 +14,7 @@ test('getBrandConfig returns full config for kopi-kenangan', () => {
   assert.equal(brand?.name, 'Kopi Kenangan');
   assert.equal(brand?.status, 'active');
   assert.equal(brand?.promoBadge, 'Hemat 50%');
-  assert.equal(brand?.logo, '/brand-logos/kopi-kenangan.png');
+  assert.equal(brand?.logo, '/brand-logos/kopi-kenangan.webp');
   assert.equal(brand?.outletCountLabel, undefined, 'Tidak ada angka outlet di-hardcode di BrandConfig');
   assert.ok(brand?.accentColor);
 });

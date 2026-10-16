@@ -6,12 +6,12 @@ export default function NotFound() {
     <div className="min-h-screen flex flex-col items-center justify-between p-6 bg-[#FBF8F4] text-[#26150B] text-center">
       {/* Header Brand */}
       <div className="pt-8 flex flex-col items-center">
-        <div className="relative w-20 h-20 mb-3 rounded-full bg-[#26150B] p-2 border border-[#D9A74A]/40 shadow-xs">
+        <div className="relative w-20 h-20 mb-3 rounded-full bg-[#FAF7EF] border border-[#D9A74A]/40 shadow-xs overflow-hidden">
           <Image
             src="/brand/logo-cima.webp"
-            alt="Logo Jasdor Kopi Cima"
+            alt="Logo Cima Group"
             fill
-            className="object-contain p-1.5"
+            className="object-cover"
             priority
           />
         </div>

@@ -173,7 +173,7 @@ export const BRANDS: Record<string, BrandConfig> = {
     themeColor: '#A8201A',
     bannerGradient: 'from-[#8B1E19] to-[#450A0A]',
     status: 'active',
-    logo: '/brand-logos/kopi-kenangan.png',
+    logo: '/brand-logos/kopi-kenangan.webp',
     adminWhatsApp: NOMOR_WHATSAPP_ADMIN,
     operatingHoursText: JADWAL_OPERASIONAL_LENGKAP,
     feeConfig: {

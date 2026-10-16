@@ -2,7 +2,6 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   getBrandOutletProvider,
-  type BrandOutletProvider,
 } from '../src/lib/brand-provider.ts';
 
 test('getBrandOutletProvider returns provider for kopi-kenangan', async () => {

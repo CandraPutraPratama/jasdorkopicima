@@ -257,11 +257,11 @@ export default function BrandPage({ params }: BrandPageProps) {
 
             <div className="flex items-center gap-3">
               {brand.logo && (
-                <div className="h-10 px-2.5 rounded-xl bg-white shadow-sm shrink-0 flex items-center justify-center border border-white/20">
+                <div className="w-10 h-10 p-1.5 rounded-xl bg-white shadow-sm shrink-0 flex items-center justify-center border border-white/20">
                   <img
                     src={brand.logo}
                     alt={brand.name}
-                    className="h-6 w-auto max-w-[85px] object-contain"
+                    className="w-full h-full object-contain"
                   />
                 </div>
               )}

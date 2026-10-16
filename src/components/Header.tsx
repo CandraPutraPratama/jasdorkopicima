@@ -62,13 +62,13 @@ export function Header({
           </Link>
         ) : (
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#D9A74A]/40 shadow-xs bg-[#26150B] shrink-0">
+            <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#D9A74A]/40 shadow-xs bg-[#FAF7EF] shrink-0">
               <Image
                 src="/brand/logo-cima.webp"
-                alt="Jasdor Logo"
+                alt="Cima Group Logo"
                 fill
                 sizes="32px"
-                className="object-contain p-0.5 group-hover:scale-105 transition"
+                className="object-cover group-hover:scale-105 transition"
                 priority
               />
             </div>
@@ -95,12 +95,12 @@ export function Header({
 
       {showBack && !title && (
         <Link href="/" className="flex items-center gap-2 mr-2">
-          <div className="relative w-7 h-7 rounded-full overflow-hidden border border-[#D9A74A]/40 bg-[#26150B] shrink-0">
+          <div className="relative w-7 h-7 rounded-full overflow-hidden border border-[#D9A74A]/40 bg-[#FAF7EF] shrink-0">
             <Image
               src="/brand/logo-cima.webp"
-              alt="Jasdor Logo"
+              alt="Cima Group Logo"
               fill
-              className="object-contain p-0.5"
+              className="object-cover"
             />
           </div>
           <span className="font-display text-sm font-bold text-[#26150B]">jasdorkopicima</span>

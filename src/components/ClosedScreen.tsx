@@ -19,13 +19,13 @@ export function ClosedScreen({
     <div className="min-h-screen flex flex-col items-center justify-between p-6 bg-[#FBF8F4] text-[#26150B]">
       {/* Brand Header */}
       <div className="pt-8 flex flex-col items-center text-center">
-        <div className="relative w-24 h-24 mb-4 drop-shadow-md rounded-full bg-[#26150B] p-2 border-2 border-[#D9A74A]/50">
+        <div className="relative w-24 h-24 mb-4 drop-shadow-md rounded-full bg-[#FAF7EF] border-2 border-[#D9A74A]/50 overflow-hidden">
           <Image
             src="/brand/logo-cima.webp"
-            alt="Logo Jasdor Kopi Cima"
+            alt="Logo Cima Group"
             fill
             sizes="96px"
-            className="object-contain p-2"
+            className="object-cover"
             priority
           />
         </div>
