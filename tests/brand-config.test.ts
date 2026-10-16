@@ -44,7 +44,7 @@ test('getBrandConfig returns full config for fore', () => {
   assert.equal(brand?.status, 'active');
   assert.equal(brand?.tagline, 'Setiap Fore Punya Cerita');
   assert.equal(brand?.promoBadge, '', 'Badge promo Fore dikosongkan');
-  assert.equal(brand?.logo, '/brand-logos/fore.png');
+  assert.equal(brand?.logo, '/brand-logos/logo-fore-baru.webp');
   assert.equal(brand?.outletCountLabel, undefined, 'Tidak ada angka outlet di-hardcode di BrandConfig');
   assert.ok(brand?.accentColor);
 });

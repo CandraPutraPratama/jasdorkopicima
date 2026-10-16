@@ -210,7 +210,7 @@ export const BRANDS: Record<string, BrandConfig> = {
     themeColor: '#0E3E2C',
     bannerGradient: 'from-[#00543C] to-[#0A291E]',
     status: 'active',
-    logo: '/brand-logos/fore.png',
+    logo: '/brand-logos/logo-fore-baru.webp',
     adminWhatsApp: NOMOR_WHATSAPP_ADMIN,
     operatingHoursText: JADWAL_OPERASIONAL_LENGKAP,
     feeConfig: {
