@@ -55,7 +55,14 @@ export default function PortalPage() {
   const brands = getAllBrands();
 
   if (!isStatusLoading && !isOpen && status) {
-    return <ClosedScreen status={status} onRefetch={refetch} />;
+    return (
+      <ClosedScreen
+        currentWibTime={status?.currentWibTime}
+        openTime={status?.openTime}
+        closeTime={status?.closeTime}
+        onRefresh={refetch}
+      />
+    );
   }
 
   return (

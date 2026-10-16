@@ -134,7 +134,14 @@ export default function BrandPage({ params }: BrandPageProps) {
 
   // Handle Jasdor Closed Gate
   if (!isStatusLoading && !isOpen && status) {
-    return <ClosedScreen status={status} onRefetch={refetch} />;
+    return (
+      <ClosedScreen
+        currentWibTime={status?.currentWibTime}
+        openTime={status?.openTime}
+        closeTime={status?.closeTime}
+        onRefresh={refetch}
+      />
+    );
   }
 
   // TAMPILAN 1: Brand Pilot "Segera Hadir" (misal Tomoro Coffee)

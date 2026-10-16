@@ -216,6 +216,7 @@ export function getAllBrands(): BrandConfig[] {
  * Memetakan kode outlet ke brandSlug yang sesuai.
  * Untuk saat ini seluruh kode outlet yang terdaftar di database/KK memetakan ke 'kopi-kenangan'.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function resolveBrandSlugFromOutletCode(_outletCode: string): string {
   // Pilot stage: default semua outlet KK adalah 'kopi-kenangan'
   return 'kopi-kenangan';
