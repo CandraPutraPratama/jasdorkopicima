@@ -15,16 +15,18 @@ export interface OutletOrderabilityResult {
 }
 
 /**
- * Mengecek apakah jam operasional outlet sedang buka berdasarkan jam WIB saat ini.
+ * Mengecek apakah jam operasional outlet sedang buka berdasarkan jam lokal outlet saat ini.
+ * Default timezone: Asia/Jakarta (WIB).
  */
 export function isOutletOpenBySchedule(
   openTime?: string | null,
   closeTime?: string | null,
-  now: Date = new Date()
+  now: Date = new Date(),
+  timezone: string = 'Asia/Jakarta'
 ): boolean {
   if (!openTime || !closeTime) return true;
 
-  const { hour, minute } = getWibTimeParts(now);
+  const { hour, minute } = getWibTimeParts(now, timezone);
   const currentMinutes = hour * 60 + minute;
 
   const [openH, openM] = openTime.split(':').map(Number);
@@ -52,14 +54,17 @@ export function isOutletClosed(
     canOrder?: boolean | null;
     openTime?: string | null;
     closeTime?: string | null;
+    timezone?: string | null;
   } | null,
-  now: Date = new Date()
+  now: Date = new Date(),
+  timezone?: string
 ): boolean {
   if (!outlet) return false;
   if (outlet.isOpen === false) return true;
   if (outlet.canOrder === false) return true;
   if (outlet.openTime && outlet.closeTime) {
-    if (!isOutletOpenBySchedule(outlet.openTime, outlet.closeTime, now)) {
+    const tz = timezone || outlet.timezone || 'Asia/Jakarta';
+    if (!isOutletOpenBySchedule(outlet.openTime, outlet.closeTime, now, tz)) {
       return true;
     }
   }
@@ -80,10 +85,12 @@ export function isOutletClosed(
  * Jika tidak memenuhi, kembalikan alasan spesifik untuk ditampilkan di badge dan nonaktifkan pemilihan.
  */
 export function checkOutletOrderability(
-  outlet: OutletOrderabilityInput,
-  now: Date = new Date()
+  outlet: OutletOrderabilityInput & { timezone?: string | null },
+  now: Date = new Date(),
+  timezone?: string
 ): OutletOrderabilityResult {
   const { orderType, status, orderMsg, isOpen, openTime, closeTime } = outlet;
+  const tz = timezone || outlet.timezone || 'Asia/Jakarta';
 
   // 0. Fallback jika outlet ditandai tutup secara eksplisit
   if (isOpen === false) {
@@ -93,8 +100,8 @@ export function checkOutletOrderability(
     };
   }
 
-  // 0a. Cek jam operasional outlet jika ada data openTime & closeTime (dalam zona Asia/Jakarta)
-  if (openTime && closeTime && !isOutletOpenBySchedule(openTime, closeTime, now)) {
+  // 0a. Cek jam operasional outlet jika ada data openTime & closeTime (dalam zona waktu outlet)
+  if (openTime && closeTime && !isOutletOpenBySchedule(openTime, closeTime, now, tz)) {
     return {
       canOrder: false,
       reason: 'Tutup',

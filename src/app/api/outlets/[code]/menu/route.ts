@@ -36,6 +36,22 @@ export async function GET(
     return NextResponse.json({ error: 'Parameter code wajib disertakan' }, { status: 400 });
   }
 
+  const cacheKey = cacheKeys.menu(code);
+
+  // Penanganan khusus brand Fore Coffee (flat menu, seeded di generic_cache dengan fallback statis)
+  if (code.toLowerCase().startsWith('fore-')) {
+    const cached = await cacheService.get<{ menuGroups: MenuGroup[] }>(cacheKey);
+    if (cached && cached.menuGroups && cached.menuGroups.length > 0) {
+      return NextResponse.json(cached);
+    }
+
+    const { getForeMenuForOutlet } = await import('@/lib/fore-menu-data');
+    const menuGroups = getForeMenuForOutlet(code);
+    const responsePayload = { menuGroups };
+    await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.menuTtlSeconds);
+    return NextResponse.json(responsePayload);
+  }
+
   // Validasi apakah outlet berada dalam lingkup Kopi Kenangan resmi
   try {
     const rawStore = await kkApiClient.getStore(code);
@@ -59,9 +75,7 @@ export async function GET(
     }
   }
 
-  const cacheKey = cacheKeys.menu(code);
-
-  // 1. Cek cache segar
+  // 1. Cek cache segar untuk Kopi Kenangan
   const cached = await cacheService.get<{ menuGroups: MenuGroup[] }>(cacheKey);
   if (cached) {
     return NextResponse.json(cached);

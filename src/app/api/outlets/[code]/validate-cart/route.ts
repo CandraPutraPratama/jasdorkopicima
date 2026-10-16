@@ -80,7 +80,67 @@ export async function POST(
     );
   }
 
-  // 4. Validasi ruang lingkup brand dan status operasional outlet (buka/tutup)
+  // 4. Penanganan khusus brand Fore Coffee
+  if (code.toLowerCase().startsWith('fore-')) {
+    const { getOutletByCode } = await import('@/lib/outlet-service');
+    const { getForeMenuForOutlet } = await import('@/lib/fore-menu-data');
+    const outlet = await getOutletByCode(code);
+    if (!outlet) {
+      return NextResponse.json(
+        { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
+        { status: 404 }
+      );
+    }
+
+    if (isOutletClosed(outlet)) {
+      const reasonText = outlet.orderReason || 'Outlet sedang tutup';
+      return NextResponse.json({
+        valid: false,
+        uncertain: false,
+        isOutletClosed: true,
+        outletReason: reasonText,
+        openTime: outlet.openTime || '',
+        closeTime: outlet.closeTime || '',
+        message: `Outlet ${outlet.name || code} sedang tutup (${reasonText}). Pemesanan tidak dapat diproses, silakan pilih outlet lain.`,
+        unavailableItems: [
+          {
+            name: outlet.name || 'Outlet',
+            reason: `Outlet sedang tutup (${reasonText})`,
+          },
+        ],
+      });
+    }
+
+    const menuGroups = getForeMenuForOutlet(code);
+    const allProducts = menuGroups.flatMap((g) => g.products || []);
+    const unavailableItems: Array<{ name: string; reason: string }> = [];
+
+    for (const item of items) {
+      const prod = allProducts.find((p) => p.bundleCode === item.bundleCode);
+      if (!prod) {
+        unavailableItems.push({
+          name: item.name || 'Produk',
+          reason: 'Menu sudah tidak tersedia di outlet ini',
+        });
+      }
+    }
+
+    if (unavailableItems.length > 0) {
+      return NextResponse.json({
+        valid: false,
+        uncertain: false,
+        unavailableItems,
+      });
+    }
+
+    return NextResponse.json({
+      valid: true,
+      uncertain: false,
+      unavailableItems: [],
+    });
+  }
+
+  // 5. Validasi ruang lingkup brand dan status operasional outlet Kopi Kenangan (buka/tutup)
   let storeObj;
   try {
     const rawStore = await kkApiClient.getStore(code);

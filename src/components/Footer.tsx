@@ -22,7 +22,7 @@ export function Footer() {
               {SITE_CONFIG.brandName}
             </span>
             <span className="text-[11px] text-[#735F52] font-medium block mt-0.5 leading-snug">
-              Layanan Jasa Order Promo Setengah Harga
+              Mau Hemat? Order disini aja!
               <br />
               <span className="text-[#8C5D17] font-semibold">{JADWAL_OPERASIONAL_LENGKAP}</span>
             </span>
@@ -32,11 +32,11 @@ export function Footer() {
             href={waUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 self-start px-3 py-1.5 bg-white hover:bg-[#F2EAE0] border border-[#E0D4C5] text-[#15803D] hover:text-[#166534] text-xs font-bold rounded-xl transition active:scale-95 shadow-2xs"
+            className="inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap self-start px-2.5 py-1.5 bg-white hover:bg-[#F2EAE0] border border-[#E0D4C5] text-[#15803D] hover:text-[#166534] text-[11px] font-bold rounded-xl transition active:scale-95 shadow-2xs"
             aria-label="Hubungi Admin WhatsApp"
           >
-            <WhatsAppIcon className="w-4 h-4 fill-[#25D366] shrink-0" />
-            <span>WA: {NOMOR_WHATSAPP_ADMIN_FORMATTED}</span>
+            <WhatsAppIcon className="w-3.5 h-3.5 fill-[#25D366] shrink-0" />
+            <span className="whitespace-nowrap">WA: {NOMOR_WHATSAPP_ADMIN_FORMATTED}</span>
           </a>
         </div>
 
@@ -56,13 +56,10 @@ export function Footer() {
           ))}
         </nav>
 
-        {/* Penegasan Independen & Hak Cipta */}
-        <div className="pt-2 text-center space-y-1">
-          <p className="text-[11px] text-[#735F52] font-medium leading-relaxed">
-            {SITE_CONFIG.disclaimer}
-          </p>
+        {/* Hak Cipta */}
+        <div className="pt-2 text-center">
           <p className="text-[10px] text-[#A69485]">
-            © {new Date().getFullYear()} {SITE_CONFIG.brandShort} • Seluruh hak cipta dilindungi.
+            © {new Date().getFullYear()} JasdorKopiCima • Seluruh hak cipta dilindungi.
           </p>
         </div>
       </div>

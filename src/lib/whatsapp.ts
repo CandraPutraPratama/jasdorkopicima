@@ -16,6 +16,7 @@ export interface BuildWhatsAppMessageInput {
   estimatedTime?: string;
   scheduledTime?: string;
   items: CartItem[];
+  brandName?: string;
 }
 
 import { cleanNotes, cleanCustomerName } from './sanitizer.ts';
@@ -120,10 +121,14 @@ export function buildWhatsAppMessage(input: BuildWhatsAppMessageInput): string {
     }))
   );
 
+  const brandDisplay =
+    input.brandName ||
+    (outletName.toLowerCase().includes('fore') ? 'Fore Coffee' : 'Kopi Kenangan');
+
   const lines: string[] = [];
   lines.push('Halo Kak, saya ingin memesan:');
   lines.push('');
-  lines.push('Brand: Kopi Kenangan');
+  lines.push(`Brand: ${brandDisplay}`);
   lines.push(`Nama: ${cleanCustomerName(customerName)}`);
   lines.push(`Lokasi: ${outletName.trim()}`);
   lines.push(pickupLine);
@@ -187,4 +192,58 @@ export function buildWhatsAppUrl(
     isDirect: false,
     encodedText,
   };
+}
+
+export interface OrderWhatsAppConfirmationItem {
+  name: string;
+  quantity: number;
+  subtotal: number;
+  variantOptions?: string[];
+  addons?: Array<{ name: string; price?: number }>;
+}
+
+export interface OrderWhatsAppConfirmationInput {
+  id: string;
+  outlet_name?: string;
+  outlet_code: string;
+  customer_name: string;
+  total: number;
+  items: OrderWhatsAppConfirmationItem[];
+}
+
+/**
+ * Membentuk pesan konfirmasi WhatsApp pasca bayar QRIS on-site.
+ * Format:
+ * Halo admin, saya sudah bayar pesanan #CG-XXXXXX
+ * Outlet: [nama outlet]
+ * - [qty]x [nama item] ([opsi/varian]) — RpXXX
+ * - ...
+ * Total: RpXXX
+ * Nama: [nama pemesan]
+ */
+export function buildOrderWhatsAppConfirmationMessage(
+  order: OrderWhatsAppConfirmationInput
+): string {
+  const outletLabel = order.outlet_name?.trim() || order.outlet_code;
+  const lines: string[] = [
+    `Halo admin, saya sudah bayar pesanan #${order.id}`,
+    `Outlet: ${outletLabel}`,
+  ];
+
+  for (const it of order.items) {
+    const optParts: string[] = [];
+    if (it.variantOptions && it.variantOptions.length > 0) {
+      optParts.push(...it.variantOptions.filter(Boolean));
+    }
+    if (it.addons && it.addons.length > 0) {
+      optParts.push(...it.addons.map((a) => a.name).filter(Boolean));
+    }
+    const optText = optParts.length > 0 ? ` (${optParts.join(', ')})` : '';
+    lines.push(`- ${it.quantity}x ${it.name}${optText} — ${formatRupiah(it.subtotal)}`);
+  }
+
+  lines.push(`Total: ${formatRupiah(order.total)}`);
+  lines.push(`Nama: ${order.customer_name}`);
+
+  return lines.join('\n');
 }

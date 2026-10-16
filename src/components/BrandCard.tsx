@@ -59,9 +59,11 @@ export function BrandCard({ brand, outletCount }: BrandCardProps) {
           {isActive ? (
             <>
               {/* Badge Promo Merah Punch */}
-              <span className="text-[10px] font-black text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] px-1.5 py-0.5 rounded uppercase tracking-wide">
-                {brand.promoBadge}
-              </span>
+              {brand.promoBadge ? (
+                <span className="text-[10px] font-black text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] px-1.5 py-0.5 rounded uppercase tracking-wide">
+                  {brand.promoBadge}
+                </span>
+              ) : null}
               {typeof outletCount === 'number' && outletCount > 0 ? (
                 <span className="text-[10px] font-semibold text-[#735F52]">
                   {outletCount.toLocaleString('id-ID')} outlet

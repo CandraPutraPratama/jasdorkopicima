@@ -48,6 +48,21 @@ export async function GET(
     return NextResponse.json(cached);
   }
 
+  // Penanganan khusus brand Fore Coffee
+  if (code.toLowerCase().startsWith('fore-')) {
+    const { getForeProductOptions } = await import('@/lib/fore-menu-data');
+    const options = getForeProductOptions(bundleCode, code);
+    if (!options) {
+      return NextResponse.json(
+        { error: 'Produk tidak ditemukan di outlet ini' },
+        { status: 404 }
+      );
+    }
+    const responsePayload = { options };
+    await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.optionsTtlSeconds);
+    return NextResponse.json(responsePayload);
+  }
+
   // 2. Ambil dari KK API dengan proteksi stale-if-error
   try {
     const store = await kkApiClient.getStore(code);

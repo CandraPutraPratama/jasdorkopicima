@@ -1,9 +1,11 @@
 import { getSupabaseServerClient } from './supabase-server.ts';
 import { kkApiClient } from './kk-client.ts';
-import { normalizeStores } from './adapter.ts';
+import { normalizeStores, normalizeStore } from './adapter.ts';
 import { isStoreInScope, getStoreBrandName, BUSINESS_CONFIG } from '../config/business.ts';
 import { cacheService, cacheKeys } from './cache.ts';
 import { cleanSearchQuery, escapePostgrestFilterTerm } from './sanitizer.ts';
+import { resolveForeTimezone } from './fore-menu-data.ts';
+import { isOutletOpenBySchedule } from './orderability.ts';
 import type { Outlet } from '../types/domain.ts';
 
 export interface SearchOutletsResult {
@@ -14,14 +16,14 @@ export interface SearchOutletsResult {
 
 /**
  * Mencari outlet berdasarkan keyword (nama, mall, atau jalan).
- * Jika keyword kosong, langsung mengembalikan daftar kosong (tidak menampilkan seluruh 1.357 outlet).
- * Menggunakan KK API queryStore untuk mendapatkan status order_type, status, dan order_msg real-time.
- * Jika KK API gagal, otomatis fallback ke pencarian database Supabase.
+ * Mendukung filter brand: 'fore' / 'Fore Coffee' atau 'kopi-kenangan'.
+ * Jika keyword kosong, langsung mengembalikan daftar kosong.
  */
 export async function searchOutlets(
   keyword = '',
   page = 1,
-  pageSize = 20
+  pageSize = 20,
+  brand?: string
 ): Promise<SearchOutletsResult> {
   const trimmed = cleanSearchQuery(keyword);
   if (!trimmed) {
@@ -32,7 +34,66 @@ export async function searchOutlets(
     };
   }
 
-  // 1. Ambil dari KK API terlebih dahulu untuk mendapatkan status real-time (order_type, status, order_msg)
+  const isFore = brand === 'fore' || brand === 'Fore Coffee';
+
+  // 1. Jika brand Fore Coffee, langsung cari dari Supabase (Fore tidak menggunakan KK API)
+  if (isFore) {
+    try {
+      const safeTerm = escapePostgrestFilterTerm(trimmed);
+      if (!safeTerm) {
+        return { items: [], total: 0, source: 'database' };
+      }
+
+      const supabase = getSupabaseServerClient();
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      const { data, count, error } = await supabase
+        .from('outlets')
+        .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand', {
+          count: 'exact',
+        })
+        .eq('is_active', true)
+        .eq('is_in_scope', true)
+        .eq('brand', 'Fore Coffee')
+        .or(`name.ilike.%${safeTerm}%,address.ilike.%${safeTerm}%,code.ilike.%${safeTerm}%`)
+        .order('name', { ascending: true })
+        .range(from, to);
+
+      if (!error && data) {
+        const items: Outlet[] = data.map((row) => {
+          const timezone = resolveForeTimezone(row.code);
+          const isOpen = isOutletOpenBySchedule(row.open_time, row.close_time, new Date(), timezone);
+          return {
+            id: Number(row.id),
+            code: row.code,
+            name: row.name,
+            address: row.address,
+            isOpen,
+            openTime: row.open_time || '',
+            closeTime: row.close_time || '',
+            timeZone: timezone === 'Asia/Jayapura' ? 9 : timezone === 'Asia/Makassar' ? 8 : 7,
+            timezone,
+            brand: 'Fore Coffee',
+            canOrder: isOpen,
+            orderReason: isOpen ? undefined : 'Outlet sedang tutup',
+          };
+        });
+
+        return {
+          items,
+          total: count ?? items.length,
+          source: 'database',
+        };
+      }
+    } catch (err: any) {
+      console.warn(`[OutletService] Fore Supabase search error: ${err.message}`);
+    }
+
+    return { items: [], total: 0, source: 'database' };
+  }
+
+  // 2. Ambil dari KK API terlebih dahulu untuk Kopi Kenangan
   try {
     const rawData = await kkApiClient.queryStore({
       pageNum: page,
@@ -56,7 +117,7 @@ export async function searchOutlets(
     console.warn(`[OutletService] KK API queryStore error (${kkErr.message}). Fallback ke Supabase.`);
   }
 
-  // 2. Fallback ke database Supabase
+  // 3. Fallback ke database Supabase untuk Kopi Kenangan
   try {
     const safeTerm = escapePostgrestFilterTerm(trimmed);
     if (!safeTerm) {
@@ -78,6 +139,7 @@ export async function searchOutlets(
       })
       .eq('is_active', true)
       .eq('is_in_scope', true)
+      .neq('brand', 'Fore Coffee')
       .or(`name.ilike.%${safeTerm}%,address.ilike.%${safeTerm}%`)
       .order('name', { ascending: true })
       .range(from, to);
@@ -94,6 +156,8 @@ export async function searchOutlets(
         openTime: row.open_time || '',
         closeTime: row.close_time || '',
         timeZone: 7,
+        timezone: 'Asia/Jakarta',
+        brand: 'Kopi Kenangan',
         canOrder: false,
         orderReason: 'Status real-time tidak tersedia',
       }));
@@ -116,12 +180,68 @@ export async function searchOutlets(
 }
 
 /**
- * Mengambil daftar outlet unggulan/populer (default untuk homepage sebelum pencarian).
- * Mengutamakan outlet yang sedang buka (canOrder: true) lalu disusul outlet populer,
- * dengan batas jumlah (default 10 outlet).
+ * Mengambil daftar outlet unggulan/populer.
+ * Mendukung filter brand: 'fore' / 'Fore Coffee' atau 'kopi-kenangan'.
  */
-export async function getFeaturedOutlets(limit = 10): Promise<SearchOutletsResult> {
-  // 1. Ambil dari KK API queryStore dengan keyword kosong untuk status real-time
+export async function getFeaturedOutlets(
+  limit = 10,
+  brand?: string
+): Promise<SearchOutletsResult> {
+  const isFore = brand === 'fore' || brand === 'Fore Coffee';
+
+  if (isFore) {
+    try {
+      const supabase = getSupabaseServerClient();
+      const { data, error } = await supabase
+        .from('outlets')
+        .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand')
+        .eq('is_active', true)
+        .eq('is_in_scope', true)
+        .eq('brand', 'Fore Coffee')
+        .limit(Math.max(limit, 20));
+
+      if (!error && data) {
+        const items: Outlet[] = data.map((row) => {
+          const timezone = resolveForeTimezone(row.code);
+          const isOpen = isOutletOpenBySchedule(row.open_time, row.close_time, new Date(), timezone);
+          return {
+            id: Number(row.id),
+            code: row.code,
+            name: row.name,
+            address: row.address,
+            isOpen,
+            openTime: row.open_time || '',
+            closeTime: row.close_time || '',
+            timeZone: timezone === 'Asia/Jayapura' ? 9 : timezone === 'Asia/Makassar' ? 8 : 7,
+            timezone,
+            brand: 'Fore Coffee',
+            canOrder: isOpen,
+            orderReason: isOpen ? undefined : 'Outlet sedang tutup',
+          };
+        });
+
+        // Prioritaskan outlet yang sedang buka
+        const sorted = [...items].sort((a, b) => {
+          if (a.canOrder && !b.canOrder) return -1;
+          if (!a.canOrder && b.canOrder) return 1;
+          return 0;
+        });
+
+        const sliced = sorted.slice(0, limit);
+        return {
+          items: sliced,
+          total: sorted.length,
+          source: 'database',
+        };
+      }
+    } catch (err: any) {
+      console.warn(`[OutletService] Fore getFeaturedOutlets error: ${err.message}`);
+    }
+
+    return { items: [], total: 0, source: 'database' };
+  }
+
+  // 1. Ambil dari KK API queryStore dengan keyword kosong untuk status real-time Kopi Kenangan
   try {
     const rawData = await kkApiClient.queryStore({
       pageNum: 1,
@@ -155,6 +275,7 @@ export async function getFeaturedOutlets(limit = 10): Promise<SearchOutletsResul
       .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope')
       .eq('is_active', true)
       .eq('is_in_scope', true)
+      .neq('brand', 'Fore Coffee')
       .limit(limit);
 
     if (!error && data) {
@@ -167,6 +288,8 @@ export async function getFeaturedOutlets(limit = 10): Promise<SearchOutletsResul
         openTime: row.open_time || '',
         closeTime: row.close_time || '',
         timeZone: 7,
+        timezone: 'Asia/Jakarta',
+        brand: 'Kopi Kenangan',
         canOrder: false,
         orderReason: 'Status real-time tidak tersedia',
       }));
@@ -189,16 +312,25 @@ export async function getFeaturedOutlets(limit = 10): Promise<SearchOutletsResul
 }
 
 /**
- * Mengambil total jumlah outlet aktif dan in-scope Kopi Kenangan di database Supabase.
+ * Mengambil total jumlah outlet aktif dan in-scope di database Supabase berdasarkan brand.
  */
-export async function getTotalOutletsCount(): Promise<number> {
+export async function getTotalOutletsCount(brand?: string): Promise<number> {
+  const isFore = brand === 'fore' || brand === 'Fore Coffee';
   try {
     const supabase = getSupabaseServerClient();
-    const { count, error } = await supabase
+    let query = supabase
       .from('outlets')
       .select('*', { count: 'exact', head: true })
       .eq('is_active', true)
       .eq('is_in_scope', true);
+
+    if (isFore) {
+      query = query.eq('brand', 'Fore Coffee');
+    } else {
+      query = query.neq('brand', 'Fore Coffee');
+    }
+
+    const { count, error } = await query;
 
     if (!error && typeof count === 'number' && count > 0) {
       return count;
@@ -207,7 +339,60 @@ export async function getTotalOutletsCount(): Promise<number> {
     console.warn(`[OutletService] Supabase getTotalOutletsCount error: ${err?.message}`);
   }
 
-  return 1340;
+  return isFore ? 394 : 1340;
+}
+
+/**
+ * Mengambil satu outlet berdasarkan kodenya (mendukung Fore Coffee & Kopi Kenangan).
+ */
+export async function getOutletByCode(code: string): Promise<Outlet | null> {
+  const trimmedCode = (code || '').trim();
+  if (!trimmedCode) return null;
+
+  const isFore = trimmedCode.toLowerCase().startsWith('fore-');
+
+  try {
+    const supabase = getSupabaseServerClient();
+    const { data, error } = await supabase
+      .from('outlets')
+      .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand')
+      .ilike('code', trimmedCode)
+      .maybeSingle();
+
+    if (!error && data) {
+      const rowBrand = data.brand || (isFore ? 'Fore Coffee' : 'Kopi Kenangan');
+      const timezone = resolveForeTimezone(data.code);
+      const isOpen = isOutletOpenBySchedule(data.open_time, data.close_time, new Date(), timezone);
+      return {
+        id: Number(data.id),
+        code: data.code,
+        name: data.name,
+        address: data.address,
+        isOpen,
+        openTime: data.open_time || '',
+        closeTime: data.close_time || '',
+        timeZone: timezone === 'Asia/Jayapura' ? 9 : timezone === 'Asia/Makassar' ? 8 : 7,
+        timezone,
+        brand: rowBrand,
+        canOrder: isOpen,
+        orderReason: isOpen ? undefined : 'Outlet sedang tutup',
+      };
+    }
+  } catch (err: any) {
+    console.warn(`[OutletService] getOutletByCode DB error for [${trimmedCode}]:`, err.message);
+  }
+
+  if (isFore) {
+    return null;
+  }
+
+  try {
+    const rawStore = await kkApiClient.getStore(trimmedCode);
+    if (!rawStore) return null;
+    return normalizeStore(rawStore);
+  } catch {
+    return null;
+  }
 }
 
 /**

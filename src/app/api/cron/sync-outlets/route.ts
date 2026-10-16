@@ -59,6 +59,23 @@ async function handleSync(request: NextRequest) {
   }
 
   try {
+    const brandParam = request.nextUrl.searchParams.get('brand');
+    if (brandParam === 'fore') {
+      console.log('[Sync Outlets] Memulai sinkronisasi seluruh outlet Fore ke Supabase...');
+      const { syncForeOutletsToDb } = await import('@/lib/fore-client');
+      const foreResult = await syncForeOutletsToDb();
+      return NextResponse.json({
+        success: true,
+        brand: 'fore',
+        message: 'Sinkronisasi daftar outlet Fore Coffee berhasil.',
+        syncedCount: foreResult.syncedCount,
+        activeCount: foreResult.activeCount,
+        inactiveCount: foreResult.inactiveCount,
+        durationMs: foreResult.durationMs,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     console.log('[Sync Outlets] Memulai sinkronisasi seluruh outlet dari KK ke Supabase...');
     const result = await syncOutletsToDb();
 

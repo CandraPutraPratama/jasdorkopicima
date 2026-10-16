@@ -36,12 +36,26 @@ test('getBrandConfig returns null for unknown brand slug', () => {
   assert.equal(brand, null);
 });
 
-test('getAllBrands returns registered brands list', () => {
+test('getBrandConfig returns full config for fore', () => {
+  const brand = getBrandConfig('fore');
+  assert.ok(brand !== null, 'brand fore harus terdaftar');
+  assert.equal(brand?.slug, 'fore');
+  assert.equal(brand?.name, 'Fore Coffee');
+  assert.equal(brand?.status, 'active');
+  assert.equal(brand?.tagline, 'Setiap Fore Punya Cerita');
+  assert.equal(brand?.promoBadge, '', 'Badge promo Fore dikosongkan');
+  assert.equal(brand?.logo, '/brand-logos/fore.png');
+  assert.equal(brand?.outletCountLabel, undefined, 'Tidak ada angka outlet di-hardcode di BrandConfig');
+  assert.ok(brand?.accentColor);
+});
+
+test('getAllBrands returns registered brands list including fore', () => {
   const brands = getAllBrands();
   assert.ok(Array.isArray(brands));
-  assert.ok(brands.length >= 2);
+  assert.ok(brands.length >= 3);
   const slugs = brands.map((b) => b.slug);
   assert.ok(slugs.includes('kopi-kenangan'));
+  assert.ok(slugs.includes('fore'));
   assert.ok(slugs.includes('tomoro'));
 });
 
@@ -53,10 +67,49 @@ test('isReservedSlug blocks protected system routes', () => {
   assert.equal(isReservedSlug('outlet'), true);
   assert.equal(isReservedSlug('api'), true);
   assert.equal(isReservedSlug('kopi-kenangan'), false);
+  assert.equal(isReservedSlug('fore'), false);
   assert.equal(isReservedSlug('tomoro'), false);
 });
 
-test('resolveBrandSlugFromOutletCode resolves to kopi-kenangan by default', () => {
+test('resolveBrandSlugFromOutletCode resolves to fore for fore-* outlets and kopi-kenangan by default', () => {
+  assert.equal(resolveBrandSlugFromOutletCode('fore-t3inb'), 'fore');
+  assert.equal(resolveBrandSlugFromOutletCode('fore-ahnas'), 'fore');
   assert.equal(resolveBrandSlugFromOutletCode('LIPPO-PURI'), 'kopi-kenangan');
   assert.equal(resolveBrandSlugFromOutletCode('KALCIT'), 'kopi-kenangan');
+});
+
+test('Fore menu and airport pricing tier override verification', async () => {
+  const { getForeMenuForOutlet } = await import('../src/lib/fore-menu-data.ts');
+
+  // 1. Outlet bandara fore-t3inb menampilkan Aren Latte Rp33.000 (bukan Rp29.000)
+  const airportMenu = getForeMenuForOutlet('fore-t3inb');
+  const airportCoffee = airportMenu.find((g) => g.code === 'coffee');
+  assert.ok(airportCoffee, 'Group coffee harus ada di menu bandara');
+  const airportArenLatte = airportCoffee.products.find((p) => p.name === 'Aren Latte');
+  assert.ok(airportArenLatte, 'Aren Latte harus ada di menu bandara');
+  assert.equal(airportArenLatte.basePrice, 33000, 'Harga Aren Latte di outlet bandara fore-t3inb harus Rp33.000');
+
+  // 2. Outlet non-bandara fore-ahnas menampilkan Aren Latte harga nasional Rp29.000
+  const nationalMenu = getForeMenuForOutlet('fore-ahnas');
+  const nationalCoffee = nationalMenu.find((g) => g.code === 'coffee');
+  assert.ok(nationalCoffee, 'Group coffee harus ada di menu nasional');
+  const nationalArenLatte = nationalCoffee.products.find((p) => p.name === 'Aren Latte');
+  assert.ok(nationalArenLatte, 'Aren Latte harus ada di menu nasional');
+  assert.equal(nationalArenLatte.basePrice, 29000, 'Harga Aren Latte di outlet nasional fore-ahnas harus Rp29.000');
+
+  // 3. Total produk harus 74 item across 6 categories
+  const totalItems = nationalMenu.reduce((sum, g) => sum + g.products.length, 0);
+  assert.equal(totalItems, 74, 'Total item menu Fore harus 74');
+  assert.equal(nationalMenu.length, 6, 'Total kategori Fore harus 6');
+
+  // 4. Semua foto produk menggunakan URL R2 self-hosted cimagroup
+  for (const group of nationalMenu) {
+    for (const prod of group.products) {
+      assert.ok(
+        prod.image.startsWith('https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/'),
+        `Foto produk "${prod.name}" harus menggunakan URL self-hosted R2 cimagroup, got: ${prod.image}`
+      );
+      assert.equal(prod.isSoldOut, false, 'Semua produk Fore harus isSoldOut: false');
+    }
+  }
 });

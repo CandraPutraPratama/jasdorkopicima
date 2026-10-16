@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getAdminWhatsAppUrl } from '@/lib/site-config';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
+import { useMyOrders } from '@/lib/use-my-orders';
 
 interface HeaderProps {
   showBack?: boolean;
@@ -15,6 +16,7 @@ interface HeaderProps {
   badgeText?: string;
   badgeVariant?: 'emerald' | 'rose' | 'amber';
   showChatAdmin?: boolean;
+  showMyOrders?: boolean;
   brandName?: string;
   brandSub?: string;
   chatMessage?: string;
@@ -30,11 +32,13 @@ export function Header({
   badgeText,
   badgeVariant = 'emerald',
   showChatAdmin,
+  showMyOrders = true,
   brandName,
   brandSub,
   chatMessage,
 }: HeaderProps) {
   const shouldShowChatAdmin = showChatAdmin ?? !showBack;
+  const { activeCount } = useMyOrders();
 
   return (
     <header
@@ -108,6 +112,39 @@ export function Header({
       )}
 
       <div className="flex items-center gap-1.5 shrink-0">
+        {showMyOrders && title !== 'Pesanan Saya' && (
+          <Link
+            href="/pesanan-saya"
+            className="relative flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-[#4A3225] hover:text-[#26150B] bg-white hover:bg-[#F2EAE0] border border-[#E0D4C5] rounded-full transition active:scale-95 shadow-2xs"
+            title="Pesanan Saya"
+            aria-label="Pesanan Saya"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-3.5 h-3.5 text-[#8C5D17] shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
+            </svg>
+            <span className="hidden xs:inline sm:inline">Pesanan</span>
+            {activeCount > 0 && (
+              <span
+                className="inline-flex items-center justify-center min-w-[16px] h-4 px-1 bg-[#D97706] text-white text-[9px] font-extrabold rounded-full animate-pulse shadow-xs"
+                suppressHydrationWarning
+              >
+                {activeCount}
+              </span>
+            )}
+          </Link>
+        )}
+
         {shouldShowChatAdmin && (
           <a
             href={getAdminWhatsAppUrl(chatMessage || 'Halo Admin Jasdor, saya butuh info jasa order Kopi Kenangan.')}

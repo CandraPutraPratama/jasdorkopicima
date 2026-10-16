@@ -9,6 +9,7 @@ import { Header } from '@/components/Header';
 import { OutletSearchCard } from '@/components/OutletSearchCard';
 import { OutletCardSkeleton } from '@/components/Skeleton';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
+import { ActiveOrderBanner } from '@/components/ActiveOrderBanner';
 import { filterOutletSearchInput } from '@/lib/sanitizer';
 import {
   getBrandConfig,
@@ -37,13 +38,15 @@ export default function BrandPage({ params }: BrandPageProps) {
     notFound();
   }
 
-  // Set tab title spesifik brand (hindari copy Kopi Kenangan untuk Tomoro)
+  // Set tab title spesifik brand
   useEffect(() => {
     if (brand) {
       document.title =
         brand.status === 'coming_soon'
           ? `${brand.name} (Segera Hadir) | Cima Group`
-          : `Jasa Order ${brand.name} Promo Diskon 50% | Cima Group`;
+          : brand.promoBadge
+            ? `Jasa Order ${brand.name} ${brand.promoBadge} | Cima Group`
+            : `Jasa Order ${brand.name} | Cima Group`;
     }
   }, [brand]);
 
@@ -240,6 +243,9 @@ export default function BrandPage({ params }: BrandPageProps) {
       />
 
       <main className="flex-1 w-full max-w-md mx-auto px-4 py-4 space-y-4">
+        {/* Banner Pengingat Pesanan Menunggu Pembayaran */}
+        <ActiveOrderBanner />
+
         {/* Hero Ramping Brand Aktif */}
         <div className="bg-[#26150B] text-[#FAF7F2] rounded-2xl p-4 sm:p-5 relative overflow-hidden shadow-sm">
           <div className="relative z-10 space-y-2">
@@ -247,9 +253,11 @@ export default function BrandPage({ params }: BrandPageProps) {
               <span className="text-[10px] font-bold text-[#E5B563] uppercase tracking-wider bg-[#3B2314] px-2 py-0.5 rounded-full border border-[#52331C]">
                 Jasa Order Independen
               </span>
-              <span className="text-[10px] font-black text-white bg-[#DC2626] px-2 py-0.5 rounded-full uppercase tracking-wide">
-                {brand.promoBadge}
-              </span>
+              {brand.promoBadge ? (
+                <span className="text-[10px] font-black text-white bg-[#DC2626] px-2 py-0.5 rounded-full uppercase tracking-wide">
+                  {brand.promoBadge}
+                </span>
+              ) : null}
             </div>
 
             <div className="flex items-center gap-3">
@@ -268,7 +276,9 @@ export default function BrandPage({ params }: BrandPageProps) {
             </div>
 
             <p className="text-xs sm:text-sm text-[#D4C3B3] leading-relaxed">
-              Tersedia di 1.340+ outlet resmi di seluruh Indonesia. Pilih outlet terdekat, tentukan menu favoritmu, dan nikmati diskon setengah harga via WhatsApp.
+              {brand.slug === 'fore'
+                ? 'Tersedia di 390+ outlet resmi di seluruh Indonesia. Pilih outlet terdekat, tentukan menu favoritmu, dan pesan praktis via WhatsApp.'
+                : 'Tersedia di 1.340+ outlet resmi di seluruh Indonesia. Pilih outlet terdekat, tentukan menu favoritmu, dan nikmati diskon setengah harga via WhatsApp.'}
             </p>
 
             {/* 3 Langkah Horizontal Strip */}

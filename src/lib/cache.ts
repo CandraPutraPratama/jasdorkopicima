@@ -243,8 +243,10 @@ export const cacheKeys = {
   menu: (storeCode: string) => `menu:${storeCode.toUpperCase()}`,
   productOptions: (storeCode: string, bundleCode: string) =>
     `options:${storeCode.toUpperCase()}:${bundleCode}`,
-  storeList: (keyword: string, page: number, pageSize: number) =>
-    `stores:${keyword.toLowerCase()}:${page}:${pageSize}`,
+  storeList: (keyword: string, page: number, pageSize: number, brand?: string) =>
+    brand
+      ? `stores:${brand.toLowerCase()}:${keyword.toLowerCase()}:${page}:${pageSize}`
+      : `stores:${keyword.toLowerCase()}:${page}:${pageSize}`,
   storeDetail: (storeCode: string) => `store:${storeCode.toUpperCase()}`,
   storeScope: (storeCode: string) => `scope:${storeCode.toUpperCase()}`,
 };

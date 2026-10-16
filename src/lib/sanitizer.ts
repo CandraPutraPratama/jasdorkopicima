@@ -164,3 +164,65 @@ export function escapePostgrestFilterTerm(term: string): string {
     .replace(/\s+/g, ' ')
     .trim();
 }
+
+/**
+ * Filter live untuk input Nomor WhatsApp (CartDrawer):
+ * Hanya mengizinkan digit angka, spasi, tanda tambah (+), dan strip (-). Maks 20 karakter.
+ */
+export function filterCustomerPhoneInput(value?: string | null): string {
+  if (!value || typeof value !== 'string') return '';
+  return value.replace(/[^0-9+\s\-]/g, '').slice(0, 20);
+}
+
+/**
+ * Membersihkan nomor WhatsApp menjadi format standar internasional tanpa tanda tambah (misal: 628123456789):
+ * - Mengubah awalan '08' menjadi '628'
+ * - Mengubah awalan '+62' menjadi '62'
+ * - Menghilangkan spasi dan strip
+ */
+export function cleanCustomerPhone(phone?: string | null): string {
+  if (!phone || typeof phone !== 'string') return '';
+  let digits = phone.replace(/[^0-9]/g, '');
+  if (digits.startsWith('08')) {
+    digits = '62' + digits.slice(1);
+  }
+  return digits.slice(0, 16);
+}
+
+/**
+ * Validasi nomor WhatsApp customer Indonesia:
+ * - Harus dimulai dengan 628 atau 08
+ * - Panjang nomor 10 sampai 15 digit
+ */
+export function validateCustomerPhone(phone?: string | null): {
+  isValid: boolean;
+  sanitized: string;
+  errorMessage?: string;
+} {
+  const raw = phone || '';
+  const trimmed = raw.trim();
+
+  if (!trimmed) {
+    return {
+      isValid: false,
+      sanitized: '',
+      errorMessage: 'Silakan isi nomor WhatsApp pemesan.',
+    };
+  }
+
+  const cleaned = cleanCustomerPhone(trimmed);
+
+  if (!/^628[0-9]{7,12}$/.test(cleaned)) {
+    return {
+      isValid: false,
+      sanitized: cleaned,
+      errorMessage: 'Nomor WhatsApp tidak valid (contoh: 08123456789 atau 628123456789).',
+    };
+  }
+
+  return {
+    isValid: true,
+    sanitized: cleaned,
+  };
+}
+

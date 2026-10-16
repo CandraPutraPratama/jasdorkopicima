@@ -29,10 +29,11 @@ export async function GET(request: NextRequest) {
 
   try {
     const searchParams = request.nextUrl.searchParams;
+    const brandParam = searchParams.get('brand') || undefined;
 
     // Jika hanya meminta total count outlet database
     if (searchParams.get('count') === 'true') {
-      const totalCount = await getTotalOutletsCount();
+      const totalCount = await getTotalOutletsCount(brandParam);
       return NextResponse.json({ total: totalCount });
     }
 
@@ -45,7 +46,7 @@ export async function GET(request: NextRequest) {
     // Jika parameter featured diminta atau tidak ada query pencarian sama sekali
     if (isFeatured || (!keyword && !searchParams.has('q') && !searchParams.has('keyword'))) {
       const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '10', 10)));
-      const cacheKey = cacheKeys.storeList('__featured__', 1, limit);
+      const cacheKey = cacheKeys.storeList('__featured__', 1, limit, brandParam);
       const cached = await cacheService.get<{
         total: number;
         page: number;
@@ -58,8 +59,8 @@ export async function GET(request: NextRequest) {
       }
 
       const [{ items }, totalCount] = await Promise.all([
-        getFeaturedOutlets(limit),
-        getTotalOutletsCount(),
+        getFeaturedOutlets(limit, brandParam),
+        getTotalOutletsCount(brandParam),
       ]);
 
       const responsePayload = {
@@ -82,7 +83,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const cacheKey = cacheKeys.storeList(keyword, page, pageSize);
+    const cacheKey = cacheKeys.storeList(keyword, page, pageSize, brandParam);
     const cached = await cacheService.get<{
       total: number;
       page: number;
@@ -94,7 +95,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(cached);
     }
 
-    const { items, total } = await searchOutlets(keyword, page, pageSize);
+    const { items, total } = await searchOutlets(keyword, page, pageSize, brandParam);
 
     const responsePayload = {
       total,

@@ -3,7 +3,7 @@ import { kkApiClient } from '@/lib/kk-client';
 import { normalizeStore } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
-import { verifyStoreScope } from '@/lib/outlet-service';
+import { verifyStoreScope, getOutletByCode } from '@/lib/outlet-service';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import type { Outlet } from '@/types/domain';
 
@@ -41,6 +41,21 @@ export async function GET(
     const cached = await cacheService.get<{ outlet: Outlet }>(cacheKey);
     if (cached) {
       return NextResponse.json(cached);
+    }
+
+    // Penanganan khusus brand Fore Coffee
+    if (code.toLowerCase().startsWith('fore-')) {
+      const foreOutlet = await getOutletByCode(code);
+      if (!foreOutlet) {
+        return NextResponse.json(
+          { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
+          { status: 404 }
+        );
+      }
+
+      const responsePayload = { outlet: foreOutlet };
+      await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.storeOpenStatusTtlSeconds);
+      return NextResponse.json(responsePayload);
     }
 
     const rawStore = await kkApiClient.getStore(code);

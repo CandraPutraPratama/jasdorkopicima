@@ -237,3 +237,70 @@ test('buildWhatsAppUrl checks character limit and provides fallback', () => {
   assert.equal(url2.isDirect, false);
   assert.equal(url2.url, 'https://wa.me/6287793420768');
 });
+
+test('buildOrderWhatsAppConfirmationMessage formats pre-filled message correctly with items and options', async () => {
+  const { buildOrderWhatsAppConfirmationMessage } = await import('../src/lib/whatsapp.ts');
+
+  const order = {
+    id: 'CG-AB12CD',
+    outlet_name: 'Lippo Mall Puri',
+    outlet_code: 'LIPPO-PURI',
+    customer_name: 'Budi Santoso',
+    total: 38000,
+    items: [
+      {
+        name: 'Kopi Kenangan Mantan',
+        quantity: 1,
+        subtotal: 18000,
+        variantOptions: ['Iced', 'Large (+Rp5.000)', 'Less Sugar'],
+        addons: [{ name: 'Topping: Boba (+Rp6.000)', price: 6000 }],
+      },
+      {
+        name: 'Oatmeal Raisin Soft Baked Cookie',
+        quantity: 2,
+        subtotal: 20000,
+        variantOptions: [],
+        addons: [],
+      },
+    ],
+  };
+
+  const message = buildOrderWhatsAppConfirmationMessage(order);
+
+  const expected = [
+    'Halo admin, saya sudah bayar pesanan #CG-AB12CD',
+    'Outlet: Lippo Mall Puri',
+    '- 1x Kopi Kenangan Mantan (Iced, Large (+Rp5.000), Less Sugar, Topping: Boba (+Rp6.000)) — Rp18.000',
+    '- 2x Oatmeal Raisin Soft Baked Cookie — Rp20.000',
+    'Total: Rp38.000',
+    'Nama: Budi Santoso',
+  ].join('\n');
+
+  assert.equal(message, expected);
+});
+
+test('buildOrderWhatsAppConfirmationMessage fallbacks to outlet_code if outlet_name is empty', async () => {
+  const { buildOrderWhatsAppConfirmationMessage } = await import('../src/lib/whatsapp.ts');
+
+  const order = {
+    id: 'CG-999999',
+    outlet_name: '',
+    outlet_code: 'GI-JAKARTA',
+    customer_name: 'Siti Aminah',
+    total: 15000,
+    items: [
+      {
+        name: 'Americano',
+        quantity: 1,
+        subtotal: 15000,
+        variantOptions: ['Hot'],
+      },
+    ],
+  };
+
+  const message = buildOrderWhatsAppConfirmationMessage(order);
+  assert.ok(message.includes('Outlet: GI-JAKARTA'));
+  assert.ok(message.includes('- 1x Americano (Hot) — Rp15.000'));
+  assert.ok(message.includes('Total: Rp15.000'));
+  assert.ok(message.includes('Nama: Siti Aminah'));
+});

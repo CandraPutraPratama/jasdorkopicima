@@ -177,4 +177,44 @@ test('checkOutletOrderability dan isOutletClosed untuk outlet dari endpoint get_
   assert.equal(closed, false, 'getStoreOutlet harus isOutletClosed: false pada 11:40 WIB');
 });
 
+test('PINNING TEST ZONA WAKTU: Outlet WITA tutup 22:00 WITA harus tampil TUTUP pada 21:30 WIB', () => {
+  // 21:30 WIB (UTC+7) = UTC 14:30 = 22:30 WITA (UTC+8)
+  const waktu2130Wib = new Date('2026-10-16T14:30:00.000Z');
+
+  // Outlet Fore di Bali / Makassar (WITA, Asia/Makassar) dengan jam operasional 07:00 - 22:00
+  const outletWita = {
+    code: 'fore-dpsdm',
+    name: 'Fore Coffee - Boarding Domestic I Gusti Ngurah Rai Bali',
+    isOpen: true,
+    canOrder: true,
+    openTime: '07:00',
+    closeTime: '22:00',
+    timezone: 'Asia/Makassar',
+  };
+
+  // Jam 21:30 WIB setara 22:30 WITA, yang berarti sudah lewat jam tutup 22:00 WITA -> WAJIB TUTUP
+  const isClosed = isOutletClosed(outletWita, waktu2130Wib);
+  assert.equal(
+    isClosed,
+    true,
+    'Outlet WITA yang tutup 22:00 WITA harus tampil TUTUP pada jam 21:30 WIB (22:30 WITA)'
+  );
+
+  // Verifikasi langsung ke isOutletOpenBySchedule
+  const isOpenSchedule = isOutletOpenBySchedule('07:00', '22:00', waktu2130Wib, 'Asia/Makassar');
+  assert.equal(
+    isOpenSchedule,
+    false,
+    'isOutletOpenBySchedule harus bernilai false untuk 21:30 WIB di zona Asia/Makassar'
+  );
+
+  // Bandingkan jika dievaluasi di zona WIB biasa (Asia/Jakarta): 21:30 WIB masih sebelum 22:00 WIB
+  const isOpenInWib = isOutletOpenBySchedule('07:00', '22:00', waktu2130Wib, 'Asia/Jakarta');
+  assert.equal(
+    isOpenInWib,
+    true,
+    'Jika dievaluasi di zona WIB biasa, 21:30 masih buka sebelum 22:00 WIB'
+  );
+});
+
 

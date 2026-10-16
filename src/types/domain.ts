@@ -20,6 +20,8 @@ export interface Outlet {
   orderMsg?: string;
   canOrder: boolean;
   orderReason?: string;
+  timezone?: string;
+  brand?: string;
 }
 
 export interface Product {

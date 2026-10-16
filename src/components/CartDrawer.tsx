@@ -3,29 +3,23 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { CartItem } from '@/lib/cart-reducer';
 import type { OrderPricingResult } from '@/lib/pricing';
 import type { Outlet } from '@/types/domain';
 import { formatRupiah } from '@/lib/currency';
 import { calculateAvailableScheduleSlots, isValidScheduleSlot } from '@/lib/schedule-slots';
 import { getWibTimeParts } from '@/lib/operational';
-import { buildWhatsAppMessage, buildWhatsAppUrl } from '@/lib/whatsapp';
-import { BUSINESS_CONFIG } from '@/config/business';
-import {
-  createOrderSummarySnapshot,
-  formatOrderSummaryDetail,
-  type OrderSummarySnapshot,
-} from '@/lib/order-snapshot';
 import {
   validateCustomerName,
-  cleanCustomerName,
   filterCustomerNameInput,
+  validateCustomerPhone,
+  filterCustomerPhoneInput,
 } from '@/lib/sanitizer';
-import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { useScrollLock } from '@/hooks/useScrollLock';
-import { OPERATIONAL_GATE_ENABLED } from '@/lib/feature-flags';
-import { RINGKASAN_METODE_PEMBAYARAN } from '@/lib/site-config';
+import { TEKS_INFO_PEMBAYARAN_CHECKOUT } from '@/lib/site-config';
 import { isOutletClosed as checkIsOutletClosed } from '@/lib/orderability';
+import { saveMyOrder } from '@/lib/my-orders';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -102,32 +96,26 @@ export function CartDrawer({
   useScrollLock(isOpen);
 
   // Form checkout state
+  const router = useRouter();
   const [customerName, setCustomerName] = useState('');
+  const [customerWa, setCustomerWa] = useState('');
   const [pickupMode, setPickupMode] = useState<'now' | 'scheduled'>('now');
   const [selectedSlot, setSelectedSlot] = useState<string>('');
 
-  // Submit / WhatsApp state
+  // Submit state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [showCopyModal, setShowCopyModal] = useState(false);
-  const [generatedMessage, setGeneratedMessage] = useState('');
-  const [isCopied, setIsCopied] = useState(false);
-  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [showUncertainModal, setShowUncertainModal] = useState(false);
-  const [orderCompleted, setOrderCompleted] = useState(false);
-  const [orderSnapshot, setOrderSnapshot] = useState<OrderSummarySnapshot | null>(null);
-
-  // Kunci scroll tambahan saat sub-dialog aktif (reference counted)
-  useScrollLock(showSuccessDialog || showUncertainModal || showCopyModal);
 
   // UX & Validation Attention states (Sprint 2 Item 1)
   const [nameHighlight, setNameHighlight] = useState(false);
+  const [waHighlight, setWaHighlight] = useState(false);
   const [slotHighlight, setSlotHighlight] = useState(false);
   const [canScrollDown, setCanScrollDown] = useState(false);
 
   // Element Refs for scroll & focus control
   const itemsScrollRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const waInputRef = useRef<HTMLInputElement>(null);
   const slotSelectRef = useRef<HTMLSelectElement>(null);
   const highlightTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -188,64 +176,8 @@ export function CartDrawer({
 
   if (!isOpen) return null;
 
-  // Layar sukses setelah pesan WhatsApp terkirim dan dikonfirmasi
-  if (orderCompleted) {
-    const activeSnapshot = orderSnapshot ?? createOrderSummarySnapshot({
-      customerName,
-      pricing,
-      outletName: effectiveOutletName,
-    });
-
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-2xs animate-in fade-in overscroll-contain">
-        <div className="fixed inset-0 touch-none" aria-hidden="true" />
-        <div className="relative w-full max-w-sm bg-white rounded-3xl p-6 text-center space-y-4 shadow-2xl z-10 overscroll-contain">
-          <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2.5}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-
-          <div className="space-y-1">
-            <h3 className="text-lg font-bold text-[#111111]">
-              Pesanan Terkirim!
-            </h3>
-            <p className="text-xs text-stone-500 leading-relaxed">
-              Terima kasih, Kak <span className="font-semibold text-stone-800">{activeSnapshot.customerName || customerName}</span>. Tim jasdor akan segera mengonfirmasi pesananmu di WhatsApp.
-            </p>
-          </div>
-
-          <div className="bg-stone-50 p-3 rounded-xl border border-stone-200 text-xs text-stone-600">
-            <p className="font-semibold text-[#111111]">Detail Ringkas:</p>
-            <p className="mt-0.5">{formatOrderSummaryDetail(activeSnapshot)}</p>
-            <p className="text-[11px] text-stone-400 mt-0.5">Outlet: {activeSnapshot.outletName}</p>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => {
-              setOrderCompleted(false);
-              setOrderSnapshot(null);
-              onClose();
-            }}
-            className="w-full min-h-[44px] px-4 py-2.5 bg-[#111111] text-[#D4AF37] font-bold text-xs rounded-xl shadow-xs"
-          >
-            Selesai & Tutup
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   // Helper untuk memicu scroll halus, highlight visual, dan fokus pada input bermasalah (Langkah 3)
-  const triggerFieldAttention = (field: 'name' | 'slot') => {
+  const triggerFieldAttention = (field: 'name' | 'wa' | 'slot') => {
     if (highlightTimerRef.current) {
       clearTimeout(highlightTimerRef.current);
     }
@@ -254,6 +186,11 @@ export function CartDrawer({
       nameInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       nameInputRef.current?.focus();
       highlightTimerRef.current = setTimeout(() => setNameHighlight(false), 2000);
+    } else if (field === 'wa') {
+      setWaHighlight(true);
+      waInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      waInputRef.current?.focus();
+      highlightTimerRef.current = setTimeout(() => setWaHighlight(false), 2000);
     } else if (field === 'slot') {
       setSlotHighlight(true);
       slotSelectRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -262,8 +199,8 @@ export function CartDrawer({
     }
   };
 
-  // Handle validasi pra-kirim ke WhatsApp
-  const handleProceedToWhatsApp = async () => {
+  // Handle pembuatan pesanan dan pengalihan ke halaman pembayaran QRIS
+  const handleProceedToPayment = async () => {
     setErrorMessage(null);
     const nameValidation = validateCustomerName(customerName);
 
@@ -273,7 +210,15 @@ export function CartDrawer({
       return;
     }
 
+    const phoneValidation = validateCustomerPhone(customerWa);
+    if (!phoneValidation.isValid) {
+      setErrorMessage(phoneValidation.errorMessage || 'Silakan isi nomor WhatsApp pemesan.');
+      triggerFieldAttention('wa');
+      return;
+    }
+
     const trimmedName = nameValidation.sanitized;
+    const sanitizedPhone = phoneValidation.sanitized;
 
     if (items.length === 0) {
       setErrorMessage('Keranjang pesanan masih kosong.');
@@ -303,144 +248,51 @@ export function CartDrawer({
     setIsSubmitting(true);
 
     try {
-      // 1. Cek jam buka jasdor secara real-time ke server (hanya saat gerbang operasional aktif)
-      if (OPERATIONAL_GATE_ENABLED) {
-        let simulateParam = '';
-        if (typeof window !== 'undefined') {
-          const urlParams = new URLSearchParams(window.location.search);
-          const sim = urlParams.get('simulate');
-          if (sim === 'open' || sim === 'closed') {
-            simulateParam = `?simulate=${sim}`;
-          }
-        }
-        const opRes = await fetch(`/api/operational-status${simulateParam}`, { cache: 'no-store' });
-        const opData = await opRes.json();
-        if (!opData.isOpen) {
-          throw new Error('Jasdor sedang tutup saat ini. Pesanan tidak dapat dikirim.');
-        }
-      }
-
-      // 2. Cek status buka & orderability outlet terbaru dari get_store
-      if (effectiveOutletCode) {
-        const storeRes = await fetch(`/api/outlets/${encodeURIComponent(effectiveOutletCode)}`, {
-          cache: 'no-store',
-        });
-        const storeData = await storeRes.json();
-        const outletInfo = storeData.outlet;
-        if (!outletInfo?.isOpen || !outletInfo?.canOrder) {
-          setIsOutletClosedState(true);
-          setOutletClosedReason(outletInfo?.orderReason || 'Tutup');
-          throw new Error(
-            `Outlet ${effectiveOutletName} sedang tutup (${outletInfo?.orderReason || 'Tidak menerima pesanan'}). Silakan pilih outlet lain.`
-          );
-        }
-      }
-
-      // 3. Pengecekan stok dan status outlet yang benar-benar FRESH langsung ke KK API
-      if (effectiveOutletCode) {
-        const valRes = await fetch(`/api/outlets/${encodeURIComponent(effectiveOutletCode)}/validate-cart`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            items: items.map((it) => ({
-              bundleCode: it.bundleCode,
-              sku: it.sku,
-              name: it.name,
-              quantity: it.quantity,
-            })),
-          }),
-        });
-
-        const valData = await valRes.json();
-
-        if (!valData.valid) {
-          if (valData.isOutletClosed) {
-            setIsOutletClosedState(true);
-            setOutletClosedReason(valData.outletReason || 'Tutup');
-            throw new Error(
-              valData.message ||
-                `Outlet ${effectiveOutletName} sedang tutup (${valData.outletReason || 'Tidak menerima pesanan'}). Silakan pilih outlet lain.`
-            );
-          }
-          const reasons = (valData.unavailableItems || [])
-            .map((u: any) => `${u.name} (${u.reason})`)
-            .join(', ');
-          throw new Error(`Maaf, beberapa menu sedang habis di outlet: ${reasons}`);
-        }
-
-        // 4. Hitung estimasi waktu siap untuk pickup sekarang
-        const now = new Date();
-        const readyDate = new Date(now.getTime() + 10 * 60 * 1000);
-        const { timeString: estimatedTime } = getWibTimeParts(readyDate);
-
-        // 5. Bangun string pesan format WhatsApp resmi
-        const message = buildWhatsAppMessage({
-          customerName: trimmedName,
+      // 1. Panggil API create-order di server
+      const orderRes = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brandSlug: 'kopi-kenangan',
+          outletCode: effectiveOutletCode,
           outletName: effectiveOutletName,
-          pickupMode,
-          estimatedTime,
-          scheduledTime: effectiveSelectedSlot,
+          customerName: trimmedName,
+          customerWa: sanitizedPhone,
           items,
-        });
+          pickupTime: pickupMode === 'scheduled' ? effectiveSelectedSlot : 'Sekarang (~10 menit)',
+          notes: '',
+        }),
+      });
 
-        setGeneratedMessage(message);
+      const orderData = await orderRes.json();
 
-        // Jika stok tidak bisa dipastikan secara otomatis, beri pilihan eksplisit kepada customer
-        if (valData.uncertain) {
-          setShowUncertainModal(true);
-          return;
+      if (!orderRes.ok || !orderData.success) {
+        if (orderData.isOutletClosed) {
+          setIsOutletClosedState(true);
+          setOutletClosedReason(orderData.reason || 'Tutup');
         }
-
-        // Jika stok terverifikasi valid, langsung buka WhatsApp
-        dispatchWhatsAppOrder(message);
+        // Juga tangani jika ada valData.isOutletClosed dari validate-cart
+        if (orderData.valData?.isOutletClosed) {
+          setIsOutletClosedState(true);
+          setOutletClosedReason(orderData.valData.outletReason || 'Tutup');
+        }
+        throw new Error(orderData.error || 'Gagal membuat pesanan. Silakan coba beberapa saat lagi.');
       }
+
+      // 2. Berhasil membuat pesanan: simpan ke Pesanan Saya di perangkat ini
+      if (orderData.orderId) {
+        saveMyOrder(orderData.orderId);
+      }
+
+      // Kosongkan keranjang, tutup drawer, dan arahkan ke halaman bayar
+      onClearCart();
+      onClose();
+      router.push(orderData.redirectUrl || `/bayar/${orderData.orderId}`);
     } catch (err: any) {
-      setErrorMessage(err.message || 'Terjadi kesalahan saat memvalidasi pesanan.');
+      setErrorMessage(err.message || 'Terjadi kesalahan saat memproses pesanan.');
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const dispatchWhatsAppOrder = (message: string) => {
-    setOrderSnapshot(
-      createOrderSummarySnapshot({
-        customerName: cleanCustomerName(customerName),
-        pricing,
-        outletName: effectiveOutletName,
-      })
-    );
-    const waInfo = buildWhatsAppUrl(BUSINESS_CONFIG.whatsappNumber, message);
-    window.open(waInfo.url, '_blank', 'noopener,noreferrer');
-    setShowSuccessDialog(true);
-    if (!waInfo.isDirect) {
-      setShowCopyModal(true);
-    }
-  };
-
-  const handleCopyMessage = async () => {
-    try {
-      await navigator.clipboard.writeText(generatedMessage);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2500);
-    } catch (e) {
-      console.warn('Gagal menyalin:', e);
-    }
-  };
-
-  const handleConfirmWhatsAppSent = () => {
-    if (!orderSnapshot) {
-      setOrderSnapshot(
-        createOrderSummarySnapshot({
-          customerName: cleanCustomerName(customerName),
-          pricing,
-          outletName: effectiveOutletName,
-        })
-      );
-    }
-    onClearCart();
-    setShowSuccessDialog(false);
-    setShowCopyModal(false);
-    setOrderCompleted(true);
   };
 
   return (
@@ -661,6 +513,32 @@ export function CartDrawer({
                   />
                 </div>
 
+                {/* Input Nomor WhatsApp */}
+                <div className="space-y-1">
+                  <label htmlFor="checkout-wa" className="text-[11px] font-semibold text-[#4A3225] block">
+                    Nomor WhatsApp <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    ref={waInputRef}
+                    id="checkout-wa"
+                    type="tel"
+                    maxLength={20}
+                    value={customerWa}
+                    onChange={(e) => {
+                      const filtered = filterCustomerPhoneInput(e.target.value);
+                      setCustomerWa(filtered);
+                      if (waHighlight) setWaHighlight(false);
+                      if (errorMessage) setErrorMessage(null);
+                    }}
+                    placeholder="Contoh: 08123456789"
+                    className={`w-full min-h-[40px] px-3.5 py-2 bg-white border rounded-xl text-xs text-[#26150B] placeholder-[#9C897B] outline-hidden transition ${
+                      waHighlight
+                        ? 'border-rose-500 ring-2 ring-rose-400/50 bg-rose-50/40'
+                        : 'border-[#E0D4C5] focus:border-[#C67D0A] focus:ring-1 focus:ring-[#C67D0A]'
+                    }`}
+                  />
+                </div>
+
                 {/* Pilihan Waktu Pick Up */}
                 <div className="space-y-1.5">
                   <span className="text-[11px] font-semibold text-[#4A3225] block">
@@ -801,9 +679,9 @@ export function CartDrawer({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
                 <div className="min-w-0">
-                  <span className="font-bold text-[#26150B]">Pembayaran: </span>
-                  <span className="font-semibold text-[#4A3225]">{RINGKASAN_METODE_PEMBAYARAN}</span>
-                  <span className="text-[#735F52]"> — instruksi bayar dikirim admin via WA setelah pesanan dikonfirmasi.</span>
+                  <p className="text-[#4A3225]">
+                    {TEKS_INFO_PEMBAYARAN_CHECKOUT}
+                  </p>
                 </div>
               </div>
 
@@ -857,7 +735,7 @@ export function CartDrawer({
                 </div>
               )}
 
-              {/* 4. Tombol Kirim Pesanan ke WhatsApp (Official WhatsApp Green CTA) / Tombol Outlet Tutup */}
+              {/* 4. Tombol Lanjut ke Pembayaran QRIS / Tombol Outlet Tutup */}
               {isOutletClosed ? (
                 <button
                   type="button"
@@ -870,18 +748,20 @@ export function CartDrawer({
                 <button
                   type="button"
                   disabled={isSubmitting}
-                  onClick={handleProceedToWhatsApp}
-                  className="w-full min-h-[48px] px-4 py-3 bg-[#15803D] hover:bg-[#166534] active:scale-98 text-white font-display font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md disabled:opacity-60"
+                  onClick={handleProceedToPayment}
+                  className="w-full min-h-[48px] px-4 py-3 bg-[#26150B] hover:bg-[#3D2313] active:scale-98 text-[#FBBF24] font-display font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md disabled:opacity-60"
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Memvalidasi Pesanan...</span>
+                      <div className="w-4 h-4 border-2 border-[#FBBF24] border-t-transparent rounded-full animate-spin" />
+                      <span>Memproses Pesanan...</span>
                     </>
                   ) : (
                     <>
-                      <WhatsAppIcon className="h-4.5 w-4.5 text-white shrink-0" />
-                      <span>Kirim Pesanan ke WhatsApp • {formatRupiah(pricing.total)}</span>
+                      <svg className="w-4 h-4 text-[#FBBF24]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      <span>Lanjut ke Pembayaran • {formatRupiah(pricing.total)}</span>
                     </>
                   )}
                 </button>
@@ -890,169 +770,6 @@ export function CartDrawer({
           </div>
         )}
       </div>
-
-      {/* Modal Dialog Konfirmasi "Sudah mengirim pesan di WhatsApp?" */}
-      {showSuccessDialog && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-[#26150B]/60 backdrop-blur-2xs animate-in fade-in overscroll-contain">
-          <div className="fixed inset-0 touch-none" aria-hidden="true" />
-          <div className="relative w-full max-w-xs bg-white rounded-3xl p-5 shadow-2xl space-y-4 animate-in zoom-in-95 border border-[#EFE5D8] text-center z-10 overscroll-contain">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto border border-emerald-200">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2.2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-
-            <div className="space-y-1">
-              <h3 className="font-display font-bold text-base text-[#26150B]">
-                Sudah kirim pesan ke WhatsApp?
-              </h3>
-              <p className="text-xs text-[#6A584D] leading-relaxed">
-                Konfirmasi jika Anda sudah mengirimkan format pesanan ke WhatsApp Jasdor.
-              </p>
-            </div>
-
-            <div className="space-y-2 pt-1">
-              <button
-                type="button"
-                onClick={handleConfirmWhatsAppSent}
-                className="w-full min-h-[44px] px-4 py-2.5 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] font-display font-bold text-xs rounded-xl shadow-xs"
-              >
-                Sudah
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowSuccessDialog(false)}
-                className="w-full min-h-[44px] px-4 py-2.5 bg-[#F2EAE0] hover:bg-[#EAE0D3] text-[#4A3225] font-semibold text-xs rounded-xl"
-              >
-                Belum
-              </button>
-            </div>
-
-            {/* Tombol cadangan Salin Pesan */}
-            <div className="pt-2 border-t border-[#F2EAE0]">
-              <button
-                type="button"
-                onClick={handleCopyMessage}
-                className="text-[11px] text-[#A66908] hover:underline font-bold min-h-[36px] flex items-center justify-center gap-1 mx-auto"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3.5 w-3.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-                  />
-                </svg>
-                {isCopied ? 'Tersalin!' : 'Salin Teks Pesan'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal Peringatan Stok Tidak Pasti */}
-      {showUncertainModal && (
-        <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-[#26150B]/60 backdrop-blur-2xs animate-in fade-in overscroll-contain">
-          <div className="fixed inset-0 touch-none" aria-hidden="true" />
-          <div className="relative w-full max-w-sm bg-white rounded-3xl p-5 shadow-2xl space-y-3.5 text-center z-10 overscroll-contain border border-[#EFE5D8]">
-            <div className="w-12 h-12 bg-[#FEF3C7] text-[#B45309] rounded-2xl flex items-center justify-center mx-auto border border-[#FDE68A]">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
-            </div>
-
-            <div className="space-y-1">
-              <h3 className="font-display font-bold text-sm text-[#26150B]">
-                Stok Tidak Dapat Dipastikan Otomatis
-              </h3>
-              <p className="text-xs text-[#6A584D] leading-relaxed">
-                Koneksi pengecekan stok ke outlet sedang lambat. Kamu tetap dapat melanjutkan pesanan dan ketersediaan stok akan dikonfirmasi langsung oleh admin jasdor via WhatsApp.
-              </p>
-            </div>
-
-            <div className="space-y-2 pt-1">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowUncertainModal(false);
-                  dispatchWhatsAppOrder(generatedMessage);
-                }}
-                className="w-full min-h-[44px] px-4 py-2.5 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] font-display font-bold text-xs rounded-xl shadow-xs"
-              >
-                Tetap Lanjut ke WhatsApp
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowUncertainModal(false)}
-                className="w-full min-h-[44px] px-4 py-2.5 bg-[#F2EAE0] hover:bg-[#EAE0D3] text-[#4A3225] font-semibold text-xs rounded-xl"
-              >
-                Kembali ke Keranjang
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal Salin Pesan bila URL melebihi batas */}
-      {showCopyModal && (
-        <div className="fixed inset-0 z-70 flex items-center justify-center p-4 bg-[#26150B]/60 backdrop-blur-2xs animate-in fade-in overscroll-contain">
-          <div className="fixed inset-0 touch-none" aria-hidden="true" />
-          <div className="relative w-full max-w-sm bg-white rounded-3xl p-5 shadow-2xl space-y-3 text-center z-10 overscroll-contain border border-[#EFE5D8]">
-            <h3 className="font-display font-bold text-sm text-[#26150B]">
-              Pesan Siap Dikirim
-            </h3>
-            <p className="text-xs text-[#6A584D]">
-              Panjang teks pesanan melebihi batas tautan browser. Silakan salin teks di bawah ini dan tempelkan (paste) di obrolan WhatsApp:
-            </p>
-
-            <textarea
-              readOnly
-              value={generatedMessage}
-              rows={6}
-              className="w-full p-2.5 text-[11px] bg-[#FAF7F2] border border-[#E0D4C5] rounded-xl font-mono text-[#26150B] overscroll-contain"
-            />
-
-            <button
-              type="button"
-              onClick={handleCopyMessage}
-              className="w-full min-h-[44px] px-4 py-2.5 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] font-display font-bold text-xs rounded-xl"
-            >
-              {isCopied ? 'Tersalin ke Clipboard!' : 'Salin Pesan'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowCopyModal(false)}
-              className="w-full min-h-[36px] text-xs text-[#8C7667] hover:text-[#26150B] font-medium"
-            >
-              Tutup
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

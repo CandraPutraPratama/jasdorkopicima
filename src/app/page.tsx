@@ -11,8 +11,10 @@ import {
   getAdminWhatsAppUrl,
   NOMOR_WHATSAPP_ADMIN_FORMATTED,
   JADWAL_OPERASIONAL_LENGKAP,
+  TEKS_INFO_PEMBAYARAN_CHECKOUT,
 } from '@/lib/site-config';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
+import { ActiveOrderBanner } from '@/components/ActiveOrderBanner';
 
 /* TODO: Tampilkan section testimoni setelah data testimoni pelanggan asli tersedia (jangan tampilkan label TODO ke user) */
 const SHOW_TESTIMONIALS = false;
@@ -116,6 +118,9 @@ export default function PortalPage() {
       />
 
       <main className="flex-1 w-full max-w-md mx-auto px-4 py-4 space-y-4">
+        {/* Banner Pengingat Pesanan Menunggu Pembayaran */}
+        <ActiveOrderBanner />
+
         {/* Hero Kompak (Varian C: Maksimal Sepertiga Layar) */}
         <div className="bg-[#26150B] text-[#FAF7F2] rounded-2xl p-4 sm:p-5 relative overflow-hidden shadow-sm">
           {/* Subtle warm glow background */}
@@ -223,26 +228,15 @@ export default function PortalPage() {
             <h2 id="payment-info-heading" className="font-display font-bold text-xs text-[#26150B]">
               Metode Pembayaran & Ketentuan
             </h2>
-            <span className="text-[10px] font-semibold text-[#8C5D17] bg-[#F2EAE0] px-2 py-0.5 rounded-full">
-              Bayar Setelah Konfirmasi
+            <span className="text-[10px] font-semibold text-[#15803D] bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full">
+              QRIS On-Site
             </span>
           </div>
-          <div className="space-y-1.5 text-[11px] leading-relaxed">
-            <div className="flex items-start gap-1.5">
-              <span className="font-bold text-[#26150B] shrink-0">• QRIS:</span>
-              <span>Bisa semua aplikasi bank & e-wallet tanpa biaya admin.</span>
-            </div>
-            <div className="flex items-start gap-1.5">
-              <span className="font-bold text-[#26150B] shrink-0">• Transfer Digital:</span>
-              <span>Hanya Bank Jago dan Blu by BCA.</span>
-            </div>
-            <div className="flex items-start gap-1.5">
-              <span className="font-bold text-[#26150B] shrink-0">• E-Wallet:</span>
-              <span>GoPay, DANA, ShopeePay, dan SeaBank.</span>
-            </div>
-            <div className="pt-1.5 border-t border-[#E8DEC0]/80 text-[10px] text-[#735F52]">
-              Jadwal operasional: <span className="font-semibold text-[#26150B]">{JADWAL_OPERASIONAL_LENGKAP}</span>. Pesanan di luar jam operasional diproses saat buka.
-            </div>
+          <p className="text-[11px] leading-relaxed text-[#5A4537]">
+            {TEKS_INFO_PEMBAYARAN_CHECKOUT}
+          </p>
+          <div className="pt-1.5 border-t border-[#E8DEC0]/80 text-[10px] text-[#735F52]">
+            Jadwal operasional: <span className="font-semibold text-[#26150B]">{JADWAL_OPERASIONAL_LENGKAP}</span>. Pesanan di luar jam operasional diproses saat buka.
           </div>
         </section>
 

@@ -1,0 +1,15 @@
+# 10 outlet bandara (tier harga bandara)
+
+## TERVERIFIKASI (6) — harga sesuai tier bandara
+fore-t3inb  # T3 International Boarding Soekarno Hatta (via jasdorin 2026-10-16)
+fore-t3dms  # T3 Arrival Gate 4 (kalibrasi aplikasi 2026-10-16)
+fore-cgk2f  # T2F Boarding Internasional, Soekarno Hatta (kalibrasi aplikasi 2026-10-16)
+fore-t1bs   # Terminal 1B Soekarno Hatta (kalibrasi aplikasi 2026-10-16)
+fore-dpsdm  # Boarding Domestic I Gusti Ngurah Rai, Bali (kalibrasi aplikasi 2026-10-16)
+fore-dshmk  # Bandara Sultan Hasanuddin-Departure, Makassar (kalibrasi aplikasi 2026-10-16)
+
+## PROVISIONAL (4) — pola bandara, belum dikalibrasi via aplikasi
+fore-cgkt3  # T3 Domestic Boarding, Soekarno Hatta
+fore-tdhll  # T3 Domestic Check-In, Soekarno Hatta
+fore-t3g2   # T3 International Check in, Soekarno Hatta
+fore-t1c    # Terminal 1C Soekarno - Hatta

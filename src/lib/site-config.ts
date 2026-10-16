@@ -83,16 +83,30 @@ export const RINGKASAN_METODE_PEMBAYARAN: string =
   DAFTAR_METODE_PEMBAYARAN_RINGKAS.join(' / ');
 
 export const TEKS_INFO_PEMBAYARAN_CHECKOUT: string =
-  `Pembayaran: ${RINGKASAN_METODE_PEMBAYARAN} — instruksi bayar dikirim admin via WA setelah pesanan dikonfirmasi.`;
+  'Pembayaran: QRIS langsung di website — scan QR, bayar sesuai nominal, lalu konfirmasi via WhatsApp.';
 
 export const TEKS_PEMBAYARAN_LANGKAH_ORDER: string =
-  'Bayar via QRIS / transfer / e-wallet setelah admin konfirmasi.';
+  'Bayar via QRIS langsung di website — scan QR, bayar sesuai nominal, lalu konfirmasi via WhatsApp.';
 
 export function getAdminWhatsAppUrl(customMessage?: string): string {
   const defaultText = `Halo Admin ${NAMA_BRAND_SHORT}, saya ingin bertanya tentang layanan jasa order Kopi Kenangan promo 50%.`;
   const text = customMessage || defaultText;
   return `https://wa.me/${NOMOR_WHATSAPP_ADMIN}?text=${encodeURIComponent(text)}`;
 }
+
+// ==========================================
+// KONFIGURASI PEMBAYARAN QRIS ON-SITE & ADMIN
+// ==========================================
+
+export const QRIS_CONFIG = {
+  imagePath: '/payment/qris-cima-group.webp',
+  merchantName: 'CIMATIX_ID',
+  expiryDurationMinutes: 60,
+} as const;
+
+export const ADMIN_CONFIG = {
+  cookieName: 'jasdor_admin_session',
+} as const;
 
 export const SITE_CONFIG = {
   brandName: NAMA_BRAND,
@@ -125,6 +139,7 @@ export const SITE_CONFIG = {
 // ==========================================
 
 export interface BrandConfig {
+  id?: string;
   slug: string;
   name: string;
   shortName: string;
@@ -162,6 +177,7 @@ export function isReservedSlug(slug: string): boolean {
 
 export const BRANDS: Record<string, BrandConfig> = {
   'kopi-kenangan': {
+    id: 'kopi-kenangan',
     slug: 'kopi-kenangan',
     name: 'Kopi Kenangan',
     shortName: 'Kopi Kenangan',
@@ -181,7 +197,29 @@ export const BRANDS: Record<string, BrandConfig> = {
       multiItemFee: BUSINESS_CONFIG.pricing.feeMultiItem,
     },
   },
+  fore: {
+    id: 'fore',
+    slug: 'fore',
+    name: 'Fore Coffee',
+    shortName: 'Fore Coffee',
+    tagline: 'Setiap Fore Punya Cerita',
+    promoBadge: '',
+    description:
+      'Layanan jasa order Fore Coffee resmi. Pesan menu kopi, teh, dan Fore Deli favoritmu, checkout praktis via WhatsApp!',
+    accentColor: '#00543C',
+    themeColor: '#0E3E2C',
+    bannerGradient: 'from-[#00543C] to-[#0A291E]',
+    status: 'active',
+    logo: '/brand-logos/fore.png',
+    adminWhatsApp: NOMOR_WHATSAPP_ADMIN,
+    operatingHoursText: JADWAL_OPERASIONAL_LENGKAP,
+    feeConfig: {
+      singleItemFee: BUSINESS_CONFIG.pricing.feeSingleItem,
+      multiItemFee: BUSINESS_CONFIG.pricing.feeMultiItem,
+    },
+  },
   tomoro: {
+    id: 'tomoro',
     slug: 'tomoro',
     name: 'Tomoro Coffee',
     shortName: 'Tomoro',
@@ -215,11 +253,13 @@ export function getAllBrands(): BrandConfig[] {
 
 /**
  * Memetakan kode outlet ke brandSlug yang sesuai.
- * Untuk saat ini seluruh kode outlet yang terdaftar di database/KK memetakan ke 'kopi-kenangan'.
+ * Outlet dengan prefix 'fore-' memetakan ke 'fore'.
+ * Outlet Kopi Kenangan memetakan ke 'kopi-kenangan'.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function resolveBrandSlugFromOutletCode(_outletCode: string): string {
-  // Pilot stage: default semua outlet KK adalah 'kopi-kenangan'
+export function resolveBrandSlugFromOutletCode(outletCode: string): string {
+  if (outletCode && outletCode.trim().toLowerCase().startsWith('fore-')) {
+    return 'fore';
+  }
   return 'kopi-kenangan';
 }
 
