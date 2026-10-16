@@ -8,7 +8,6 @@ import { ClosedScreen } from '@/components/ClosedScreen';
 import { Header } from '@/components/Header';
 import { OutletSearchCard } from '@/components/OutletSearchCard';
 import { OutletCardSkeleton } from '@/components/Skeleton';
-import { Footer } from '@/components/Footer';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { filterOutletSearchInput } from '@/lib/sanitizer';
 import {
@@ -223,8 +222,6 @@ export default function BrandPage({ params }: BrandPageProps) {
             </div>
           </div>
         </main>
-
-        <Footer />
       </div>
     );
   }
@@ -419,8 +416,6 @@ export default function BrandPage({ params }: BrandPageProps) {
           </a>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

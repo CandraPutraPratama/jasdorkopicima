@@ -5,7 +5,6 @@ import { useOperationalStatus } from '@/hooks/useOperationalStatus';
 import { ClosedScreen } from '@/components/ClosedScreen';
 import { Header } from '@/components/Header';
 import { BrandCard } from '@/components/BrandCard';
-import { Footer } from '@/components/Footer';
 import { getBrandOutletProvider } from '@/lib/brand-provider';
 import {
   getAllBrands,
@@ -303,8 +302,6 @@ export default function PortalPage() {
           </a>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }
