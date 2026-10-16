@@ -1,412 +1,255 @@
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
 import { useOperationalStatus } from '@/hooks/useOperationalStatus';
 import { ClosedScreen } from '@/components/ClosedScreen';
 import { Header } from '@/components/Header';
-import { OutletSearchCard } from '@/components/OutletSearchCard';
-import { OutletCardSkeleton } from '@/components/Skeleton';
-import { filterOutletSearchInput } from '@/lib/sanitizer';
+import { BrandCard } from '@/components/BrandCard';
+import { Footer } from '@/components/Footer';
 import {
+  getAllBrands,
   getAdminWhatsAppUrl,
   NOMOR_WHATSAPP_ADMIN_FORMATTED,
   JADWAL_OPERASIONAL_RINGKAS,
-  TEKS_PEMBAYARAN_LANGKAH_ORDER,
 } from '@/lib/site-config';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
-import type { Outlet } from '@/types/domain';
 
-export default function HomePage() {
+/* TODO: Ganti data di bawah ini dengan testimoni pelanggan asli setelah diluncurkan */
+interface TestimonialItem {
+  id: string;
+  name: string;
+  brand: string;
+  quote: string;
+  savings: string;
+  isPlaceholderTodo: boolean;
+}
+
+const TESTIMONIALS: TestimonialItem[] = [
+  {
+    id: 'testi-1',
+    name: 'Dimas R.',
+    brand: 'Kopi Kenangan',
+    quote: 'Pesen 4 cup Kopi Kenangan Mantan buat anak kantor, bayar setengah harga. Admin fast respon banget!',
+    savings: 'Hemat Rp42.000',
+    isPlaceholderTodo: true,
+  },
+  {
+    id: 'testi-2',
+    name: 'Sarah P.',
+    brand: 'Kopi Kenangan',
+    quote: 'Format pesanannya gampang, tinggal klik WA. Langsung ambil di outlet tanpa ribet antre.',
+    savings: 'Hemat Rp28.000',
+    isPlaceholderTodo: true,
+  },
+  {
+    id: 'testi-3',
+    name: 'Andi K.',
+    brand: 'Cima Group',
+    quote: 'Langganan tiap weekend jajan kopi hemat. QRIS tanpa admin, super praktis!',
+    savings: 'Hemat 50%',
+    isPlaceholderTodo: true,
+  },
+];
+
+export default function PortalPage() {
   const { isOpen, status, isLoading: isStatusLoading, refetch } = useOperationalStatus();
+  const brands = getAllBrands();
 
-  const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
-  const [outlets, setOutlets] = useState<Outlet[]>([]);
-  const [featuredOutlets, setFeaturedOutlets] = useState<Outlet[]>([]);
-  const [isLoadingFeatured, setIsLoadingFeatured] = useState(true);
-  const [isLoadingOutlets, setIsLoadingOutlets] = useState(false);
-  const [searchError, setSearchError] = useState<string | null>(null);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [, startTransition] = useTransition();
-
-  // Load default featured outlets saat pertama kali homepage dibuka
-  useEffect(() => {
-    let isCancelled = false;
-
-    fetch('/api/outlets?featured=true')
-      .then(async (res) => {
-        if (!res.ok) {
-          throw new Error('Gagal memuat outlet unggulan');
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (!isCancelled) {
-          setFeaturedOutlets(data.items || []);
-          setIsLoadingFeatured(false);
-        }
-      })
-      .catch(() => {
-        if (!isCancelled) {
-          setIsLoadingFeatured(false);
-        }
-      });
-
-    return () => {
-      isCancelled = true;
-    };
-  }, []);
-
-  // Debounce search query 300ms
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      startTransition(() => {
-        setDebouncedQuery(query.trim());
-      });
-    }, 300);
-
-    return () => clearTimeout(handler);
-  }, [query]);
-
-  // Fetch outlets when debouncedQuery changes
-  useEffect(() => {
-    if (!debouncedQuery) {
-      setOutlets([]);
-      setIsLoadingOutlets(false);
-      setHasSearched(false);
-      setSearchError(null);
-      return;
-    }
-
-    let isCancelled = false;
-    setIsLoadingOutlets(true);
-    setSearchError(null);
-    setHasSearched(true);
-
-    fetch(`/api/outlets?q=${encodeURIComponent(debouncedQuery)}`)
-      .then(async (res) => {
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || 'Gagal mencari outlet');
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (!isCancelled) {
-          setOutlets(data.items || []);
-          setIsLoadingOutlets(false);
-        }
-      })
-      .catch((err) => {
-        if (!isCancelled) {
-          setSearchError(err.message || 'Terjadi kesalahan saat memuat outlet');
-          setIsLoadingOutlets(false);
-        }
-      });
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [debouncedQuery]);
-
-  // 1. Loading status operasional pertama kali
-  if (isStatusLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#FBF8F4]">
-        <div className="w-9 h-9 border-3 border-[#C67D0A] border-t-transparent rounded-full animate-spin" />
-        <p className="mt-3 text-xs text-[#735F52] font-semibold">
-          Memeriksa jam operasional Jasdor...
-        </p>
-      </div>
-    );
+  if (!isStatusLoading && !isOpen && status) {
+    return <ClosedScreen status={status} onRefetch={refetch} />;
   }
 
-  // 2. TUTUP TOTAL jika di luar jam operasional (08.00 - 23.20 WIB)
-  if (!isOpen) {
-    return (
-      <ClosedScreen
-        currentWibTime={status?.currentWibTime}
-        openTime={status?.openTime}
-        closeTime={status?.closeTime}
-        onRefresh={refetch}
-      />
-    );
-  }
-
-  // 3. Tampilan BUKA: Halaman Pencarian Outlet
   return (
-    <div className="min-h-screen flex flex-col bg-[#FBF8F4]">
-      <Header isOpen={true} />
+    <div className="min-h-screen bg-[#FBF8F4] flex flex-col selection:bg-[#D9A74A]/30">
+      {/* Header Ramping Cima Group */}
+      <Header
+        brandName="CIMA GROUP"
+        brandSub="PORTAL MULTI-BRAND"
+        chatMessage="Halo Admin Cima Group, mau tanya seputar jasa order hemat."
+      />
 
-      <main className="flex-1 p-4 flex flex-col">
-        {/* Banner Promo Ringkas & Appetizing */}
-        <div className="bg-gradient-to-br from-[#26150B] via-[#351F14] to-[#1C0D06] rounded-3xl p-5 text-white mb-4 shadow-md border border-[#D9A74A]/30 relative overflow-hidden">
-          {/* Subtle warm glow background accent */}
-          <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#C67D0A]/15 rounded-full blur-2xl pointer-events-none" />
+      <main className="flex-1 w-full max-w-md mx-auto px-4 py-4 space-y-4">
+        {/* Hero Kompak (Varian C: Maksimal Sepertiga Layar) */}
+        <div className="bg-[#26150B] text-[#FAF7F2] rounded-2xl p-4 sm:p-5 relative overflow-hidden shadow-sm">
+          {/* Subtle warm glow background */}
+          <div className="absolute -top-12 -right-12 w-36 h-36 bg-[#D9A74A]/15 rounded-full blur-2xl pointer-events-none" />
 
-          <div className="relative z-10">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#FBBF24]">
-                Jasa Order Independen Kopi Cima
-              </span>
-              <span className="px-2.5 py-0.5 bg-[#DC2626] text-white text-[10px] font-black rounded-full uppercase tracking-wide shadow-xs">
-                Hemat 50%
-              </span>
+          <div className="relative z-10 space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#3B2314] border border-[#52331C] text-[10px] font-bold text-[#E5B563] uppercase tracking-wider">
+              <span>Promo Jasa Order Hemat</span>
             </div>
-
-            <h1 className="font-display text-xl font-black tracking-tight text-white leading-tight">
-              Kopi Kenangan Favoritmu, Setengah Harga
+            <h1 className="font-display font-black text-xl sm:text-2xl text-[#FAF7F2] leading-tight tracking-tight">
+              Jajan Favorit, Setengah Harga
             </h1>
-
-            <p className="text-xs text-[#E3D6C5] mt-1.5 leading-relaxed">
-              Diskon 50% menu dasar Kopi Kenangan. Biaya jasa order transparan Rp2.000/item (Rp4.000 untuk 1 item). Pesan praktis, checkout via WhatsApp!
+            <p className="text-xs sm:text-sm text-[#D4C3B3] leading-relaxed">
+              Pilih brand → pilih outlet → checkout via WhatsApp. Promo s/d 50% tiap brand.
             </p>
+          </div>
+        </div>
 
-            {/* 3 Langkah Cara Order Cepat (Trust Section) */}
-            <div className="mt-4 pt-3.5 border-t border-white/10 grid grid-cols-3 gap-2 text-center">
-              <div className="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-start">
-                <span className="text-[10px] font-black text-[#FBBF24] block">1. PILIH OUTLET</span>
-                <span className="text-[10px] text-[#D4C3B2] leading-tight block mt-0.5">Cari mall / cabang terdekat</span>
-              </div>
-              <div className="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-start">
-                <span className="text-[10px] font-black text-[#FBBF24] block">2. PILIH MENU</span>
-                <span className="text-[10px] text-[#D4C3B2] leading-tight block mt-0.5">Kustomisasi cup & topping</span>
-              </div>
-              <div className="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-start">
-                <span className="text-[10px] font-black text-[#FBBF24] block">3. WHATSAPP</span>
-                <span className="text-[10px] text-[#D4C3B2] leading-tight block mt-0.5">{TEKS_PEMBAYARAN_LANGKAH_ORDER}</span>
-              </div>
+        {/* Strip Kepercayaan / Trust Strip (Above the Fold) */}
+        <div className="bg-white border border-[#EFE5D8] rounded-xl px-3 py-2.5 shadow-2xs">
+          <div className="flex items-center justify-between gap-2 text-[11px] font-semibold text-[#5A4537] overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+              <span>QRIS</span>
+            </div>
+            <span className="text-[#D9CEBF]">•</span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+              <span>Jago/Blu</span>
+            </div>
+            <span className="text-[#D9CEBF]">•</span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+              <span>E-Wallet</span>
+            </div>
+            <span className="text-[#D9CEBF]">•</span>
+            <div className="flex items-center gap-1.5 shrink-0 text-[#15803D] font-bold">
+              <WhatsAppIcon className="w-3.5 h-3.5 fill-[#15803D]" />
+              <span>Admin Fast Respon</span>
             </div>
           </div>
         </div>
 
-        {/* Section Kontak Admin Terpisah — Ringkas & Lega */}
-        <div className="mb-4 bg-white border border-[#EFE5D8] rounded-2xl p-3.5 shadow-xs flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#25D366] shrink-0 animate-pulse" />
-              <p className="text-xs font-bold text-[#26150B] leading-tight">
-                Ada pertanyaan sebelum pesan?
-              </p>
+        {/* Grid Brand (2 Kolom Mobile-First, Kartu Muka Food Court) */}
+        <section aria-labelledby="brand-grid-heading" className="space-y-2">
+          <div className="flex items-center justify-between px-0.5">
+            <h2 id="brand-grid-heading" className="font-display font-bold text-sm text-[#26150B]">
+              Pilih Brand
+            </h2>
+            <span className="text-[11px] text-[#8C7A6B] font-medium">
+              {brands.filter((b) => b.status === 'active').length} Brand Aktif
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            {brands.map((brand) => (
+              <BrandCard key={brand.slug} brand={brand} />
+            ))}
+          </div>
+        </section>
+
+        {/* 3 Langkah Cara Order Ringkas */}
+        <section
+          aria-labelledby="cara-order-heading"
+          className="bg-white border border-[#EFE5D8] rounded-2xl p-3.5 shadow-2xs space-y-2.5"
+        >
+          <h2 id="cara-order-heading" className="font-display font-bold text-xs uppercase text-[#8C5D17] tracking-wider">
+            3 Langkah Mudah Order Hemat
+          </h2>
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="p-2 rounded-xl bg-[#FAF7F2] border border-[#F2EAE0]">
+              <div className="w-5 h-5 mx-auto rounded-full bg-[#26150B] text-white text-[10px] font-bold flex items-center justify-center mb-1">
+                1
+              </div>
+              <p className="text-[11px] font-bold text-[#26150B] leading-tight">Pilih Brand</p>
+              <p className="text-[9px] text-[#735F52] mt-0.5 leading-snug">Cari outlet terdekat</p>
             </div>
-            <p className="text-[11px] text-[#735F52] leading-tight mt-1 truncate">
-              Admin siap bantu via WhatsApp ({NOMOR_WHATSAPP_ADMIN_FORMATTED}) • {JADWAL_OPERASIONAL_RINGKAS}
-            </p>
+            <div className="p-2 rounded-xl bg-[#FAF7F2] border border-[#F2EAE0]">
+              <div className="w-5 h-5 mx-auto rounded-full bg-[#26150B] text-white text-[10px] font-bold flex items-center justify-center mb-1">
+                2
+              </div>
+              <p className="text-[11px] font-bold text-[#26150B] leading-tight">Pilih Menu</p>
+              <p className="text-[9px] text-[#735F52] mt-0.5 leading-snug">Diskon s/d 50%</p>
+            </div>
+            <div className="p-2 rounded-xl bg-[#FAF7F2] border border-[#F2EAE0]">
+              <div className="w-5 h-5 mx-auto rounded-full bg-[#15803D] text-white text-[10px] font-bold flex items-center justify-center mb-1">
+                3
+              </div>
+              <p className="text-[11px] font-bold text-[#26150B] leading-tight">Kirim WA</p>
+              <p className="text-[9px] text-[#735F52] mt-0.5 leading-snug">Admin siapkan order</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Info Metode Pembayaran Lengkap Sesuai Data Asli */}
+        <section
+          aria-labelledby="payment-info-heading"
+          className="bg-[#FAF7F2] border border-[#EFE5D8] rounded-2xl p-3.5 space-y-2 text-xs text-[#5A4537]"
+        >
+          <div className="flex items-center justify-between">
+            <h2 id="payment-info-heading" className="font-display font-bold text-xs text-[#26150B]">
+              Metode Pembayaran & Ketentuan
+            </h2>
+            <span className="text-[10px] font-semibold text-[#8C5D17] bg-[#F2EAE0] px-2 py-0.5 rounded-full">
+              Bayar Setelah Konfirmasi
+            </span>
+          </div>
+          <div className="space-y-1.5 text-[11px] leading-relaxed">
+            <div className="flex items-start gap-1.5">
+              <span className="font-bold text-[#26150B] shrink-0">• QRIS:</span>
+              <span>Bisa semua aplikasi bank & e-wallet tanpa biaya admin.</span>
+            </div>
+            <div className="flex items-start gap-1.5">
+              <span className="font-bold text-[#26150B] shrink-0">• Transfer Digital:</span>
+              <span>Hanya Bank Jago dan Blu by BCA.</span>
+            </div>
+            <div className="flex items-start gap-1.5">
+              <span className="font-bold text-[#26150B] shrink-0">• E-Wallet:</span>
+              <span>GoPay, DANA, ShopeePay, dan SeaBank.</span>
+            </div>
+            <div className="pt-1.5 border-t border-[#E8DEC0]/80 text-[10px] text-[#735F52]">
+              Jadwal operasional: <span className="font-semibold text-[#26150B]">{JADWAL_OPERASIONAL_RINGKAS}</span>. Pesanan di luar jam operasional diproses saat buka.
+            </div>
+          </div>
+        </section>
+
+        {/* Section Testimoni (Placeholder Bersih bertanda TODO Jelas) */}
+        <section aria-labelledby="testimoni-heading" className="space-y-2 pt-1">
+          <div className="flex items-center justify-between px-0.5">
+            <h2 id="testimoni-heading" className="font-display font-bold text-sm text-[#26150B]">
+              Kata Pelanggan
+            </h2>
+            {/* Penanda jujur bahwa ini placeholder review awal */}
+            <span className="text-[10px] font-bold text-[#8C5D17] bg-[#F4EDE3] border border-[#E5DACB] px-1.5 py-0.5 rounded">
+              Contoh Ulasan (TODO)
+            </span>
+          </div>
+
+          <div className="space-y-2">
+            {TESTIMONIALS.map((testi) => (
+              <div
+                key={testi.id}
+                className="bg-white border border-[#EFE5D8] rounded-xl p-3 shadow-2xs space-y-1.5"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold text-xs text-[#26150B]">{testi.name}</span>
+                    <span className="text-[10px] text-[#735F52] bg-[#FAF7F2] px-1.5 py-0.5 rounded">
+                      {testi.brand}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-black text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] px-1.5 py-0.5 rounded">
+                    {testi.savings}
+                  </span>
+                </div>
+                <p className="text-xs text-[#5C4A3E] leading-relaxed italic">
+                  &ldquo;{testi.quote}&rdquo;
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Banner Bantuan WhatsApp Cepat */}
+        <div className="p-3 bg-white border border-[#EFE5D8] rounded-2xl flex items-center justify-between gap-3 shadow-2xs">
+          <div>
+            <p className="font-display font-bold text-xs text-[#26150B]">Ada pertanyaan sebelum order?</p>
+            <p className="text-[11px] text-[#735F52] mt-0.5">Admin siap bantu via WhatsApp ({NOMOR_WHATSAPP_ADMIN_FORMATTED})</p>
           </div>
           <a
-            href={getAdminWhatsAppUrl('Halo Admin Jasdor, saya ingin bertanya tentang layanan jasa order Kopi Kenangan.')}
+            href={getAdminWhatsAppUrl('Halo Admin Jasdor, saya ingin bertanya tentang cara pesan.')}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold rounded-xl shadow-xs transition active:scale-95 shrink-0"
+            className="px-3 py-2 bg-[#15803D] hover:bg-[#166534] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition shrink-0 active:scale-95 shadow-xs"
           >
-            <WhatsAppIcon className="w-4 h-4 fill-white shrink-0" />
-            <span>Chat Admin</span>
+            <WhatsAppIcon className="w-3.5 h-3.5 fill-white" />
+            <span>Tanya Admin</span>
           </a>
         </div>
-
-        {/* Input Pencarian Outlet */}
-        <div className="relative mb-4">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#8C7667]">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-          <input
-            id="outlet-search-input"
-            type="text"
-            maxLength={60}
-            value={query}
-            onChange={(e) => setQuery(filterOutletSearchInput(e.target.value))}
-            placeholder="Cari nama outlet, mall, atau jalan..."
-            className="w-full min-h-[48px] pl-11 pr-10 py-2.5 bg-white border border-[#E0D4C5] focus:border-[#C67D0A] focus:ring-2 focus:ring-[#C67D0A]/20 rounded-2xl text-sm text-[#26150B] placeholder-[#9C897B] transition shadow-xs outline-hidden"
-          />
-          {query && (
-            <button
-              onClick={() => setQuery('')}
-              type="button"
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#8C7667] hover:text-[#26150B] min-h-[44px] min-w-[44px] justify-center"
-              aria-label="Hapus kata kunci pencarian"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          )}
-        </div>
-
-        {/* Quick Suggestion Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 mb-4 text-xs">
-          <span className="text-[11px] text-[#735F52] font-semibold shrink-0">Cari cepat:</span>
-          {['Grand Indonesia', 'Puri', 'Kokas', 'Rungkut', 'Senayan'].map((sample) => (
-            <button
-              key={sample}
-              type="button"
-              onClick={() => setQuery(sample)}
-              className="px-2.5 py-1 text-xs font-semibold bg-white border border-[#EAE0D3] hover:border-[#C67D0A] text-[#4A3225] rounded-xl transition shrink-0 active:scale-95 shadow-2xs"
-            >
-              {sample}
-            </button>
-          ))}
-        </div>
-
-        {/* State 1: Daftar Outlet Unggulan Default (Sebelum pengguna mencari) */}
-        {!hasSearched && (
-          <div>
-            <div className="flex items-center justify-between mb-3 px-1">
-              <div className="flex items-center gap-2">
-                <h2 className="font-display font-bold text-sm text-[#26150B]">
-                  Outlet Pilihan & Terpopuler
-                </h2>
-                <span className="px-2 py-0.5 bg-[#FEF3C7] text-[#92400E] text-[10px] font-bold rounded-full border border-[#FDE68A]">
-                  Rekomendasi
-                </span>
-              </div>
-              {!isLoadingFeatured && featuredOutlets.length > 0 && (
-                <span className="text-[11px] text-[#8C7667] font-medium">
-                  {featuredOutlets.length} outlet
-                </span>
-              )}
-            </div>
-
-            {isLoadingFeatured ? (
-              <div className="space-y-3 pb-6">
-                <OutletCardSkeleton />
-                <OutletCardSkeleton />
-                <OutletCardSkeleton />
-              </div>
-            ) : featuredOutlets.length > 0 ? (
-              <div className="space-y-3 pb-6">
-                {featuredOutlets.map((outlet) => (
-                  <OutletSearchCard key={outlet.code || outlet.id} outlet={outlet} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex-1 flex flex-col items-center justify-center p-6 text-center bg-white rounded-3xl border border-[#EFE5D8] shadow-xs my-auto">
-                <div className="w-14 h-14 bg-[#FEF3C7] text-[#B45309] rounded-2xl flex items-center justify-center mb-3 border border-[#FDE68A]">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-7 w-7"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.8}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.8}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </div>
-                <h2 className="font-display text-base font-bold text-[#26150B] mb-1">
-                  Cari Outlet Kopi Kenangan
-                </h2>
-                <p className="text-xs text-[#6A584D] leading-relaxed max-w-xs mb-2">
-                  Ketik nama outlet, mall, atau area jalan di atas untuk mulai memesan jasa order promo setengah harga.
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* State 2: Skeleton Loading saat pencarian berlangsung */}
-        {isLoadingOutlets && (
-          <div className="space-y-3">
-            <OutletCardSkeleton />
-            <OutletCardSkeleton />
-            <OutletCardSkeleton />
-          </div>
-        )}
-
-        {/* State 3: Error pesan saat request gagal */}
-        {searchError && !isLoadingOutlets && (
-          <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-800 text-center">
-            <p className="text-xs font-semibold">{searchError}</p>
-            <button
-              onClick={() => setDebouncedQuery(query.trim())}
-              type="button"
-              className="mt-2 text-xs text-rose-900 underline font-semibold min-h-[44px]"
-            >
-              Coba Cari Lagi
-            </button>
-          </div>
-        )}
-
-        {/* State 4: Hasil Pencarian Outlet */}
-        {!isLoadingOutlets && !searchError && hasSearched && (
-          <div>
-            <div className="flex items-center justify-between mb-3 px-1">
-              <span className="text-xs text-[#735F52] font-semibold">
-                Ditemukan {outlets.length} outlet
-              </span>
-              <span className="text-[11px] text-[#8C7667] font-medium">
-                Pilih cabang yang Buka
-              </span>
-            </div>
-
-            {outlets.length === 0 ? (
-              <div className="p-8 bg-white border border-[#EFE5D8] rounded-3xl text-center shadow-xs">
-                <div className="w-12 h-12 bg-[#F4EDE3] text-[#8C7667] rounded-full flex items-center justify-center mx-auto mb-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="font-display text-sm font-bold text-[#26150B]">
-                  Outlet Tidak Ditemukan
-                </h3>
-                <p className="text-xs text-[#6A584D] mt-1 max-w-xs mx-auto leading-relaxed">
-                  Tidak ada outlet Kopi Kenangan yang cocok dengan &quot;{debouncedQuery}&quot;. Coba gunakan nama jalan atau mall terdekat lainnya.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3 pb-6">
-                {outlets.map((outlet) => (
-                  <OutletSearchCard key={outlet.code || outlet.id} outlet={outlet} />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
       </main>
+
+      <Footer />
     </div>
   );
 }

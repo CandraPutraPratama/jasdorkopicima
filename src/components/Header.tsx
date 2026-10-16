@@ -15,6 +15,9 @@ interface HeaderProps {
   badgeText?: string;
   badgeVariant?: 'emerald' | 'rose' | 'amber';
   showChatAdmin?: boolean;
+  brandName?: string;
+  brandSub?: string;
+  chatMessage?: string;
 }
 
 export function Header({
@@ -27,6 +30,9 @@ export function Header({
   badgeText,
   badgeVariant = 'emerald',
   showChatAdmin,
+  brandName,
+  brandSub,
+  chatMessage,
 }: HeaderProps) {
   const shouldShowChatAdmin = showChatAdmin ?? !showBack;
 
@@ -68,10 +74,10 @@ export function Header({
             </div>
             <div>
               <span className="font-display text-base font-extrabold tracking-tight text-[#26150B] block leading-tight">
-                jasdorkopicima
+                {brandName || 'jasdorkopicima'}
               </span>
               <span className="text-[10px] text-[#A66908] font-bold tracking-wider block leading-none uppercase">
-                JASA ORDER KOPI KENANGAN
+                {brandSub || 'JASA ORDER KOPI KENANGAN'}
               </span>
             </div>
           </Link>
@@ -104,7 +110,7 @@ export function Header({
       <div className="flex items-center gap-1.5 shrink-0">
         {shouldShowChatAdmin && (
           <a
-            href={getAdminWhatsAppUrl('Halo Admin Jasdor, saya butuh info jasa order Kopi Kenangan.')}
+            href={getAdminWhatsAppUrl(chatMessage || 'Halo Admin Jasdor, saya butuh info jasa order Kopi Kenangan.')}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold text-[#15803D] bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 rounded-full transition active:scale-95 shadow-xs"
