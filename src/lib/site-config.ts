@@ -1,4 +1,4 @@
-import { BUSINESS_CONFIG } from '@/config/business';
+import { BUSINESS_CONFIG } from '../config/business.ts';
 
 /**
  * Konfigurasi terpusat untuk profil situs, kontak admin, jadwal operasional,
@@ -119,3 +119,105 @@ export const SITE_CONFIG = {
     { label: 'Kontak', href: '/kontak' },
   ],
 };
+
+// ==========================================
+// ARSITEKTUR MULTI-BRAND (PORTAL CIMA GROUP)
+// ==========================================
+
+export interface BrandConfig {
+  slug: string;
+  name: string;
+  shortName: string;
+  tagline: string;
+  promoBadge: string;
+  description: string;
+  accentColor: string;
+  themeColor: string;
+  bannerGradient: string;
+  status: 'active' | 'coming_soon';
+  outletCountLabel?: string;
+  adminWhatsApp?: string;
+  operatingHoursText?: string;
+  feeConfig?: {
+    singleItemFee: number;
+    multiItemFee: number;
+  };
+}
+
+export const RESERVED_SLUGS = [
+  'faq',
+  'syarat-ketentuan',
+  'kebijakan-privasi',
+  'kontak',
+  'outlet',
+  'api',
+] as const;
+
+export type ReservedSlug = (typeof RESERVED_SLUGS)[number];
+
+export function isReservedSlug(slug: string): boolean {
+  return RESERVED_SLUGS.includes(slug as ReservedSlug);
+}
+
+export const BRANDS: Record<string, BrandConfig> = {
+  'kopi-kenangan': {
+    slug: 'kopi-kenangan',
+    name: 'Kopi Kenangan',
+    shortName: 'Kopi Kenangan',
+    tagline: 'Kopi Kenangan Favoritmu, Setengah Harga',
+    promoBadge: 'Hemat 50%',
+    description:
+      'Diskon 50% menu dasar Kopi Kenangan. Biaya jasa order transparan Rp2.000/item (Rp4.000 untuk 1 item). Pesan praktis, checkout via WhatsApp!',
+    accentColor: '#8B1E19',
+    themeColor: '#A8201A',
+    bannerGradient: 'from-[#8B1E19] to-[#450A0A]',
+    status: 'active',
+    outletCountLabel: '12 outlet',
+    adminWhatsApp: NOMOR_WHATSAPP_ADMIN,
+    operatingHoursText: JADWAL_OPERASIONAL_LENGKAP,
+    feeConfig: {
+      singleItemFee: BUSINESS_CONFIG.pricing.feeSingleItem,
+      multiItemFee: BUSINESS_CONFIG.pricing.feeMultiItem,
+    },
+  },
+  tomoro: {
+    slug: 'tomoro',
+    name: 'Tomoro Coffee',
+    shortName: 'Tomoro',
+    tagline: 'Tomoro Coffee Pilihanmu, Segera Hadir',
+    promoBadge: 'Segera Hadir',
+    description:
+      'Layanan jasa order Tomoro Coffee dengan promo hemat segera hadir untuk area Jabodetabek. Nikmati kemudahan pesan tanpa antre.',
+    accentColor: '#E11D48',
+    themeColor: '#BE123C',
+    bannerGradient: 'from-[#4B5563] to-[#1F2937]',
+    status: 'coming_soon',
+    // Catatan koreksi pengguna: Hapus teks "0 outlet" pada brand Segera Hadir
+    outletCountLabel: undefined,
+    adminWhatsApp: NOMOR_WHATSAPP_ADMIN,
+    operatingHoursText: JADWAL_OPERASIONAL_LENGKAP,
+    feeConfig: {
+      singleItemFee: BUSINESS_CONFIG.pricing.feeSingleItem,
+      multiItemFee: BUSINESS_CONFIG.pricing.feeMultiItem,
+    },
+  },
+};
+
+export function getBrandConfig(slug: string): BrandConfig | null {
+  if (isReservedSlug(slug)) return null;
+  return BRANDS[slug] || null;
+}
+
+export function getAllBrands(): BrandConfig[] {
+  return Object.values(BRANDS);
+}
+
+/**
+ * Memetakan kode outlet ke brandSlug yang sesuai.
+ * Untuk saat ini seluruh kode outlet yang terdaftar di database/KK memetakan ke 'kopi-kenangan'.
+ */
+export function resolveBrandSlugFromOutletCode(_outletCode: string): string {
+  // Pilot stage: default semua outlet KK adalah 'kopi-kenangan'
+  return 'kopi-kenangan';
+}
+
