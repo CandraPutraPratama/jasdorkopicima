@@ -48,7 +48,7 @@ test('site-config: TOTAL_ORDERS_BASELINE adalah 1636 dan testimoni terdaftar di 
 test('testimonials: konfigurasi galeri foto R2 dan pembersihan ulasan teks palsu', () => {
   assert.equal(TESTIMONI_PHOTO_BASE_URL, 'https://gambar.cimagroup.my.id/testimoni');
   assert.equal(TESTIMONI_PHOTO_MAX, 20);
-  assert.ok(typeof TESTIMONI_CHANNEL_URL === 'string');
+  assert.equal(TESTIMONI_CHANNEL_URL, 'https://whatsapp.com/channel/0029Vb4JVLB7tkjIaElH2F3I');
   assert.ok(typeof TESTIMONI_CAPTIONS === 'object');
 
   // Pastikan tidak ada satupun nama atau ulasan teks palsu di src/data/testimonials.ts

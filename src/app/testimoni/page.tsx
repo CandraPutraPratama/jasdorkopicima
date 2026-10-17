@@ -246,14 +246,8 @@ export default function TestimoniGalleryPage() {
           </div>
           <a
             href={TESTIMONI_CHANNEL_URL}
-            target={TESTIMONI_CHANNEL_URL === '#' ? undefined : '_blank'}
+            target="_blank"
             rel="noopener noreferrer"
-            onClick={(e) => {
-              if (TESTIMONI_CHANNEL_URL === '#') {
-                e.preventDefault();
-                alert('Channel WhatsApp testimoni segera hadir! Hubungi admin untuk informasi lebih lanjut.');
-              }
-            }}
             className="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-[#FAF7F2] hover:bg-[#F2ECE1] border border-[#E0D4C5] text-[#26150B] text-xs font-bold transition active:scale-[0.98]"
           >
             <span>Buka Channel Testimoni</span>

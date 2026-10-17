@@ -66,9 +66,8 @@ export const TESTIMONI_PHOTO_MAX = 20;
 
 /**
  * Link Channel WhatsApp khusus testimoni pelanggan Jasdor.
- * TODO: Ganti '#' dengan link channel WhatsApp resmi pemilik jika sudah tersedia.
  */
-export const TESTIMONI_CHANNEL_URL = '#';
+export const TESTIMONI_CHANNEL_URL = 'https://whatsapp.com/channel/0029Vb4JVLB7tkjIaElH2F3I';
 
 export interface MetodePembayaranItem {
   id: string;
