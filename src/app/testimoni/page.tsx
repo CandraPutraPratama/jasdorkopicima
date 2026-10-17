@@ -54,6 +54,21 @@ export default function TestimoniGalleryPage() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Probing keberadaan foto R2 secara programmatic di browser setelah hidrasi
+  useEffect(() => {
+    ALL_PHOTO_ITEMS.forEach((item) => {
+      const img = new Image();
+      img.onload = () => {
+        setLoadedMap((prev) => ({ ...prev, [item.num]: true }));
+        setCheckedMap((prev) => ({ ...prev, [item.num]: true }));
+      };
+      img.onerror = () => {
+        setCheckedMap((prev) => ({ ...prev, [item.num]: true }));
+      };
+      img.src = item.url;
+    });
+  }, []);
+
   // Keyboard shortcut ESC untuk menutup lightbox
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -87,25 +102,6 @@ export default function TestimoniGalleryPage() {
         sticky={true}
         title="Testimoni Pelanggan"
       />
-
-      {/* Hidden preloader untuk mendeteksi keberadaan file di R2 tanpa merusak tampilan */}
-      <div className="hidden" aria-hidden="true">
-        {ALL_PHOTO_ITEMS.map((item) => (
-          <img
-            key={item.num}
-            src={item.url}
-            alt=""
-            loading="eager"
-            onLoad={() => {
-              setLoadedMap((prev) => ({ ...prev, [item.num]: true }));
-              setCheckedMap((prev) => ({ ...prev, [item.num]: true }));
-            }}
-            onError={() => {
-              setCheckedMap((prev) => ({ ...prev, [item.num]: true }));
-            }}
-          />
-        ))}
-      </div>
 
       <main className="flex-1 p-4 pb-12 max-w-2xl mx-auto w-full space-y-4">
         {/* Banner Hero Testimoni */}
