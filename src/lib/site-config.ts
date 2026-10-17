@@ -47,6 +47,29 @@ export const DISCLAIMER_RESMI: string =
  */
 export const TOTAL_ORDERS_BASELINE = 1636;
 
+/**
+ * Konfigurasi Galeri Foto Testimoni (R2).
+ *
+ * PANDUAN UNTUK PEMILIK:
+ * 1. Unggah bukti chat atau struk pembayaran ke bucket R2 publik pada folder: `testimoni/`
+ * 2. Format file: WebP (.webp) untuk efisiensi loading dan kompresi optimal.
+ * 3. Format penamaan file WAJIB berurutan 2 digit:
+ *    - testimoni-01.webp
+ *    - testimoni-02.webp
+ *    ... sampai testimoni-20.webp
+ * 4. Foto yang sudah diupload akan OTOMATIS tampil di halaman /testimoni
+ *    tanpa perlu edit kode ataupun deploy ulang website.
+ * 5. (Opsional) Tambahkan caption 1 baris di src/data/testimonials.ts jika ingin memberikan keterangan.
+ */
+export const TESTIMONI_PHOTO_BASE_URL = 'https://gambar.cimagroup.my.id/testimoni';
+export const TESTIMONI_PHOTO_MAX = 20;
+
+/**
+ * Link Channel WhatsApp khusus testimoni pelanggan Jasdor.
+ * TODO: Ganti '#' dengan link channel WhatsApp resmi pemilik jika sudah tersedia.
+ */
+export const TESTIMONI_CHANNEL_URL = '#';
+
 export interface MetodePembayaranItem {
   id: string;
   nama: string;

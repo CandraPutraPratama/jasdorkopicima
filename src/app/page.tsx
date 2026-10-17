@@ -15,10 +15,6 @@ import {
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { ActiveOrderBanner } from '@/components/ActiveOrderBanner';
 import { TrustStrip } from '@/components/TrustStrip';
-import { TESTIMONIALS } from '@/data/testimonials';
-
-/* TODO: Tampilkan section testimoni setelah data testimoni pelanggan asli tersedia (jangan tampilkan label TODO ke user) */
-const SHOW_TESTIMONIALS = false;
 
 export default function PortalPage() {
   useEffect(() => {
@@ -182,45 +178,6 @@ export default function PortalPage() {
             Jadwal operasional: <span className="font-semibold text-[#26150B]">{JADWAL_OPERASIONAL_LENGKAP}</span>. Pesanan di luar jam operasional diproses saat buka.
           </div>
         </section>
-
-        {/* Section Testimoni (Sembunyikan sampai ada ulasan pelanggan asli) */}
-        {SHOW_TESTIMONIALS && (
-          <section aria-labelledby="testimoni-heading" className="space-y-2 pt-1">
-            <div className="flex items-center justify-between px-0.5">
-              <h2 id="testimoni-heading" className="font-display font-bold text-sm text-[#26150B]">
-                Kata Pelanggan
-              </h2>
-              {/* Penanda jujur bahwa ini placeholder review awal */}
-              <span className="text-[10px] font-bold text-[#8C5D17] bg-[#F4EDE3] border border-[#E5DACB] px-1.5 py-0.5 rounded">
-                Contoh Ulasan (TODO)
-              </span>
-            </div>
-
-            <div className="space-y-2">
-              {TESTIMONIALS.map((testi) => (
-                <div
-                  key={testi.id}
-                  className="bg-white border border-[#EFE5D8] rounded-xl p-3 shadow-2xs space-y-1.5"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-bold text-xs text-[#26150B]">{testi.name}</span>
-                      <span className="text-[10px] text-[#735F52] bg-[#FAF7F2] px-1.5 py-0.5 rounded">
-                        {testi.brand}
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-black text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] px-1.5 py-0.5 rounded">
-                      {testi.savings}
-                    </span>
-                  </div>
-                  <p className="text-xs text-[#5C4A3E] leading-relaxed italic">
-                    &ldquo;{testi.quote}&rdquo;
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
 
         {/* Banner Bantuan WhatsApp Cepat */}
         <div className="p-3 bg-white border border-[#EFE5D8] rounded-2xl flex items-center justify-between gap-3 shadow-2xs">

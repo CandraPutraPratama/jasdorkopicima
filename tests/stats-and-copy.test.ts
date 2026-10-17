@@ -10,8 +10,11 @@ import {
   TOTAL_ORDERS_BASELINE,
   RESERVED_SLUGS,
   SITE_CONFIG,
+  TESTIMONI_PHOTO_BASE_URL,
+  TESTIMONI_PHOTO_MAX,
+  TESTIMONI_CHANNEL_URL,
 } from '../src/lib/site-config.ts';
-import { TESTIMONIALS } from '../src/data/testimonials.ts';
+import { TESTIMONI_CAPTIONS } from '../src/data/testimonials.ts';
 
 test('order-stats: getStartOfTodayWIB menghasilkan format ISO awal hari WIB (00:00:00+07:00)', () => {
   // Test dengan reference date tertentu: 2026-10-17 02:00:00 UTC (09:00:00 WIB)
@@ -42,15 +45,17 @@ test('site-config: TOTAL_ORDERS_BASELINE adalah 1636 dan testimoni terdaftar di 
   assert.ok(SITE_CONFIG.navLinks.some((l) => l.href === '/testimoni'), 'testimoni harus ada di navLinks footer');
 });
 
-test('testimonials: dataset terstruktur dan memiliki item valid', () => {
-  assert.ok(Array.isArray(TESTIMONIALS));
-  assert.ok(TESTIMONIALS.length >= 3);
-  for (const item of TESTIMONIALS) {
-    assert.ok(item.id, 'id harus ada');
-    assert.ok(item.name, 'name harus ada');
-    assert.ok(item.quote, 'quote harus ada');
-    assert.ok(item.brand, 'brand harus ada');
-  }
+test('testimonials: konfigurasi galeri foto R2 dan pembersihan ulasan teks palsu', () => {
+  assert.equal(TESTIMONI_PHOTO_BASE_URL, 'https://gambar.cimagroup.my.id/testimoni');
+  assert.equal(TESTIMONI_PHOTO_MAX, 20);
+  assert.ok(typeof TESTIMONI_CHANNEL_URL === 'string');
+  assert.ok(typeof TESTIMONI_CAPTIONS === 'object');
+
+  // Pastikan tidak ada satupun nama atau ulasan teks palsu di src/data/testimonials.ts
+  const testimonialsFile = fs.readFileSync(path.resolve('src/data/testimonials.ts'), 'utf-8');
+  assert.ok(!testimonialsFile.includes('Dimas R.'), 'Tidak boleh ada nama Dimas R.');
+  assert.ok(!testimonialsFile.includes('Sarah P.'), 'Tidak boleh ada nama Sarah P.');
+  assert.ok(!testimonialsFile.includes('Andi K.'), 'Tidak boleh ada nama Andi K.');
 });
 
 test('verifikasi copy: tidak ada kata "independen" dan tidak ada em dash "—" di src/', () => {

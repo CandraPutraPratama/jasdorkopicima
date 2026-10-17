@@ -29,6 +29,6 @@ test('portal page component and BrandCard exist and enforce Variant C specificat
   assert.ok(portalCode.includes('outletCount'), 'Portal harus meneruskan outletCount ke BrandCard');
   // Aturan baru: Trust strip 3 item (Total Orderan, Orderan Hari Ini, Testimoni)
   assert.ok(portalCode.includes('TrustStrip'), 'Portal harus memuat komponen TrustStrip');
-  // Section Testimoni dengan 3 TODO placeholders
-  assert.ok(portalCode.includes('TODO'), 'Portal harus memuat penanda TODO jelas pada placeholder testimoni');
+  // Testimoni palsu tidak boleh ada di portal
+  assert.ok(!portalCode.includes('Dimas R.'), 'Portal tidak boleh memuat testimoni teks palsu');
 });
