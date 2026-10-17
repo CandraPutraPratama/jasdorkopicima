@@ -95,7 +95,7 @@ export default function TestimoniGalleryPage() {
             key={item.num}
             src={item.url}
             alt=""
-            loading="lazy"
+            loading="eager"
             onLoad={() => {
               setLoadedMap((prev) => ({ ...prev, [item.num]: true }));
               setCheckedMap((prev) => ({ ...prev, [item.num]: true }));
