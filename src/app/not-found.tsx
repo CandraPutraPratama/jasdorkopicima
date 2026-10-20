@@ -52,7 +52,7 @@ export default function NotFound() {
       {/* Footer */}
       <div className="pb-4">
         <p className="text-[11px] text-[#8C7667]">
-          jasdorkopicima • Jasa Order Kopi Kenangan
+          jasdorkopicima • Layanan Jasa Order Hemat
         </p>
       </div>
     </div>

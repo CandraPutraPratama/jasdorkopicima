@@ -1,4 +1,4 @@
-import { calculateOrderPricing } from './pricing.ts';
+import { calculateOrderPricing, getOrderBreakdown } from './pricing.ts';
 import { formatRupiah } from './currency.ts';
 import type { CartItem } from './cart-reducer.ts';
 import type { Addon } from '../types/domain.ts';
@@ -118,6 +118,10 @@ export function buildWhatsAppMessage(input: BuildWhatsAppMessageInput): string {
       variantAddition: it.variantAddition,
       toppingTotal: it.toppingTotal,
       quantity: it.quantity,
+      isBundle: it.isBundle,
+      bundleType: it.bundleType,
+      bundleFee: it.bundleFee,
+      bundleNormalPrice: it.bundleNormalPrice,
     }))
   );
 
@@ -138,11 +142,22 @@ export function buildWhatsAppMessage(input: BuildWhatsAppMessageInput): string {
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     const itemPricing = orderPricing.items[i];
-
-    const detailsStr = formatItemDetails(item);
     const lineTotal = formatRupiah(itemPricing.subtotalItem);
 
-    lines.push(`- ${item.quantity}x ${item.name}${detailsStr} ${lineTotal}`);
+    if (item.isBundle && item.bundleDetails && item.bundleDetails.length > 0) {
+      lines.push(`- ${item.quantity}x ${item.name}`);
+      for (const d of item.bundleDetails) {
+        const dOpt = d.variantDescription ? ` (${d.variantDescription})` : '';
+        const dPrice = formatRupiah(d.promoPrice || Math.round((d.normalPrice || 0) * 0.5));
+        lines.push(`  • ${d.name}${dOpt} ${EM_DASH} ${dPrice}`);
+        if (d.notes?.trim()) {
+          lines.push(`    Catatan: ${cleanNotes(d.notes)}`);
+        }
+      }
+    } else {
+      const detailsStr = formatItemDetails(item);
+      lines.push(`- ${item.quantity}x ${item.name}${detailsStr} ${lineTotal}`);
+    }
 
     const cleanedNote = cleanNotes(item.notes);
     if (cleanedNote) {
@@ -151,14 +166,19 @@ export function buildWhatsAppMessage(input: BuildWhatsAppMessageInput): string {
   }
 
   lines.push('');
-  lines.push(`Sub Total: ${formatRupiah(orderPricing.subtotal)}`);
+  if (orderPricing.bundleQuantity > 0) {
+    lines.push(`Sub Total Bundling (${orderPricing.bundleQuantity} item): ${formatRupiah(orderPricing.bundleSubtotal)}`);
+  }
+  if (orderPricing.regularQuantity > 0) {
+    lines.push(`Sub Total Normal (${orderPricing.regularQuantity} item): ${formatRupiah(orderPricing.regularSubtotal)}`);
+  }
+  if (orderPricing.bundleQuantity > 0) {
+    lines.push(`Biaya Jasa Bundling: ${formatRupiah(orderPricing.bundleFee)}`);
+  }
+  if (orderPricing.regularQuantity > 0) {
+    lines.push(`Biaya Jasa Normal: ${formatRupiah(orderPricing.regularFee)}`);
+  }
 
-  const feeLine =
-    orderPricing.totalQuantity === 1
-      ? 'Biaya Jasa (1 item): Rp4.000'
-      : `Biaya Jasa (Rp2.000 x ${orderPricing.totalQuantity} item): ${formatRupiah(orderPricing.fee)}`;
-
-  lines.push(feeLine);
   lines.push(`Total: ${formatRupiah(orderPricing.total)}`);
   lines.push('');
   lines.push(`Kamu hemat ${formatRupiah(orderPricing.totalSavings)} dari harga normal!`);
@@ -200,50 +220,194 @@ export interface OrderWhatsAppConfirmationItem {
   subtotal: number;
   variantOptions?: string[];
   addons?: Array<{ name: string; price?: number }>;
+  notes?: string;
+  isBundle?: boolean;
+  bundleType?: string;
+  bundleNormalPrice?: number;
+  bundleFee?: number;
+  bundleDetails?: Array<{
+    name: string;
+    category?: 'drink' | 'food';
+    variantDescription?: string;
+    normalPrice?: number;
+    promoPrice?: number;
+    notes?: string;
+  }>;
 }
 
 export interface OrderWhatsAppConfirmationInput {
   id: string;
+  brand_slug?: string;
   outlet_name?: string;
   outlet_code: string;
   customer_name: string;
   total: number;
+  subtotal?: number;
+  fee?: number;
+  pickup_time?: string | null;
+  created_at?: string;
   items: OrderWhatsAppConfirmationItem[];
 }
 
+const EM_DASH = '\u2014';
+
 /**
  * Membentuk pesan konfirmasi WhatsApp pasca bayar QRIS on-site.
- * Format:
- * Halo admin, saya sudah bayar pesanan #CG-XXXXXX
- * Outlet: [nama outlet]
- * - [qty]x [nama item] ([opsi/varian]) - RpXXX
- * - ...
- * Total: RpXXX
- * Nama: [nama pemesan]
+ * - Untuk pesanan bundling: Mengikuti format resmi paket bundling dengan rincian per-item, harga diskon 50%, dan total hemat.
+ * - Untuk pesanan non-bundling: Tetap mempertahankan format standar lama.
  */
 export function buildOrderWhatsAppConfirmationMessage(
   order: OrderWhatsAppConfirmationInput
 ): string {
-  const outletLabel = order.outlet_name?.trim() || order.outlet_code;
-  const lines: string[] = [
-    `Halo admin, saya sudah bayar pesanan #${order.id}`,
-    `Outlet: ${outletLabel}`,
-  ];
+  const isBundleOrder = order.items.some(
+    (it) =>
+      it.isBundle ||
+      Boolean(it.bundleDetails && it.bundleDetails.length > 0) ||
+      it.name.toLowerCase().includes('bundling')
+  );
 
-  for (const it of order.items) {
-    const optParts: string[] = [];
-    if (it.variantOptions && it.variantOptions.length > 0) {
-      optParts.push(...it.variantOptions.filter(Boolean));
+  // 1. Pesan WA non-bundling: JANGAN DIUBAH (Invarian)
+  if (!isBundleOrder) {
+    const outletLabel = order.outlet_name?.trim() || order.outlet_code;
+    const lines: string[] = [
+      `Halo admin, saya sudah bayar pesanan #${order.id}`,
+      `Outlet: ${outletLabel}`,
+    ];
+
+    for (const it of order.items) {
+      const optParts: string[] = [];
+      if (it.variantOptions && it.variantOptions.length > 0) {
+        optParts.push(...it.variantOptions.filter(Boolean));
+      }
+      if (it.addons && it.addons.length > 0) {
+        optParts.push(...it.addons.map((a) => a.name).filter(Boolean));
+      }
+      const optText = optParts.length > 0 ? ` (${optParts.join(', ')})` : '';
+      lines.push(`- ${it.quantity}x ${it.name}${optText} - ${formatRupiah(it.subtotal)}`);
     }
-    if (it.addons && it.addons.length > 0) {
-      optParts.push(...it.addons.map((a) => a.name).filter(Boolean));
-    }
-    const optText = optParts.length > 0 ? ` (${optParts.join(', ')})` : '';
-    lines.push(`- ${it.quantity}x ${it.name}${optText} - ${formatRupiah(it.subtotal)}`);
+
+    lines.push(`Total: ${formatRupiah(order.total)}`);
+    lines.push(`Nama: ${order.customer_name}`);
+
+    return lines.join('\n');
   }
 
+  // 2. Format Pesan WA Bundling Resmi
+  const outletLabel = order.outlet_name?.trim() || order.outlet_code;
+  const brandDisplay =
+    order.brand_slug &&
+    !order.brand_slug.toLowerCase().includes('kopi') &&
+    !order.brand_slug.toLowerCase().includes('kenangan') &&
+    order.brand_slug.toLowerCase().includes('fore')
+      ? 'Fore Coffee'
+      : 'Kopi Kenangan';
+
+  let pickupLine = 'Pickup: Sekarang (estimasi siap ~jam segera)';
+  if (order.pickup_time && order.pickup_time !== 'now') {
+    if (order.pickup_time.startsWith('Dijadwalkan') || order.pickup_time.startsWith('Terjadwal')) {
+      pickupLine = `Pickup: ${order.pickup_time.replace('Terjadwal', 'Dijadwalkan')}`;
+    } else {
+      pickupLine = `Pickup: Dijadwalkan jam ${order.pickup_time}`;
+    }
+  } else if (order.created_at) {
+    try {
+      const createdDate = new Date(order.created_at);
+      const estTime = new Date(createdDate.getTime() + 15 * 60 * 1000);
+      const estFormatted = estTime
+        .toLocaleTimeString('id-ID', {
+          timeZone: 'Asia/Jakarta',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        })
+        .replace('.', ':');
+      pickupLine = `Pickup: Sekarang (estimasi siap ~jam ${estFormatted})`;
+    } catch {
+      pickupLine = 'Pickup: Sekarang (estimasi siap ~jam segera)';
+    }
+  }
+
+  const lines: string[] = [];
+  lines.push(`Halo Kak, saya sudah bayar pesanan #${order.id}`);
+  lines.push('');
+  lines.push(`Brand: ${brandDisplay}`);
+  lines.push(`Nama: ${cleanCustomerName(order.customer_name)}`);
+  lines.push(`Outlet: ${outletLabel}`);
+  lines.push(pickupLine);
+  lines.push('');
+  lines.push('Pesanan:');
+
+  let totalNormalPrice = 0;
+
+  for (const it of order.items) {
+    const isThisBundle =
+      it.isBundle ||
+      Boolean(it.bundleDetails && it.bundleDetails.length > 0) ||
+      it.name.toLowerCase().includes('bundling');
+
+    if (isThisBundle) {
+      lines.push(`- ${it.quantity}x ${it.name}`);
+
+      if (it.bundleDetails && it.bundleDetails.length > 0) {
+        for (const d of it.bundleDetails) {
+          const normalP = d.normalPrice || (d.promoPrice ? d.promoPrice * 2 : 0);
+          const promoP = d.promoPrice || Math.round(normalP * 0.5);
+          totalNormalPrice += normalP * it.quantity;
+
+          const optText = d.variantDescription ? ` (${d.variantDescription})` : '';
+          lines.push(`  • ${d.name}${optText} ${EM_DASH} ${formatRupiah(promoP)}`);
+          if (d.notes?.trim()) {
+            lines.push(`    Catatan: ${cleanNotes(d.notes)}`);
+          }
+        }
+      } else if (it.variantOptions && it.variantOptions.length > 0) {
+        for (const opt of it.variantOptions) {
+          lines.push(`  • ${opt}`);
+        }
+        totalNormalPrice += (it.bundleNormalPrice || it.subtotal * 2) * it.quantity;
+      } else {
+        totalNormalPrice += (it.bundleNormalPrice || it.subtotal * 2) * it.quantity;
+      }
+    } else {
+      const optParts: string[] = [];
+      if (it.variantOptions && it.variantOptions.length > 0) {
+        optParts.push(...it.variantOptions.filter(Boolean));
+      }
+      if (it.addons && it.addons.length > 0) {
+        optParts.push(...it.addons.map((a) => a.name).filter(Boolean));
+      }
+      const optText = optParts.length > 0 ? ` (${optParts.join(', ')})` : '';
+      lines.push(`- ${it.quantity}x ${it.name}${optText} - ${formatRupiah(it.subtotal)}`);
+      if (it.notes?.trim()) {
+        lines.push(`  Catatan: ${cleanNotes(it.notes)}`);
+      }
+      totalNormalPrice += (it.subtotal * 2) * it.quantity;
+    }
+  }
+
+  const breakdown = getOrderBreakdown(order.items, order.fee);
+
+  lines.push('');
+  if (breakdown.bundleQuantity > 0) {
+    lines.push(`Sub Total Bundling (${breakdown.bundleQuantity} item): ${formatRupiah(breakdown.bundleSubtotal)}`);
+  }
+  if (breakdown.regularQuantity > 0) {
+    lines.push(`Sub Total Normal (${breakdown.regularQuantity} item): ${formatRupiah(breakdown.regularSubtotal)}`);
+  }
+  if (breakdown.bundleQuantity > 0) {
+    lines.push(`Biaya Jasa Bundling: ${formatRupiah(breakdown.bundleFee)}`);
+  }
+  if (breakdown.regularQuantity > 0) {
+    lines.push(`Biaya Jasa Normal: ${formatRupiah(breakdown.regularFee)}`);
+  }
   lines.push(`Total: ${formatRupiah(order.total)}`);
-  lines.push(`Nama: ${order.customer_name}`);
+
+  // "Kamu hemat" = total harga normal − total bayar
+  const totalSavings = Math.max(0, totalNormalPrice - order.total);
+  lines.push('');
+  lines.push(`Kamu hemat ${formatRupiah(totalSavings)} dari harga normal!`);
+  lines.push('');
+  lines.push('Mohon konfirmasi pesanan saya. Terima kasih!');
 
   return lines.join('\n');
 }

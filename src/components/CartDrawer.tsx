@@ -17,9 +17,9 @@ import {
   filterCustomerPhoneInput,
 } from '@/lib/sanitizer';
 import { useScrollLock } from '@/hooks/useScrollLock';
-import { TEKS_INFO_PEMBAYARAN_CHECKOUT } from '@/lib/site-config';
 import { isOutletClosed as checkIsOutletClosed } from '@/lib/orderability';
 import { saveMyOrder } from '@/lib/my-orders';
+import { useMinOrder50kMode } from '@/hooks/useBundlingOnlyMode';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -48,6 +48,23 @@ export function CartDrawer({
 }: CartDrawerProps) {
   const effectiveOutletCode = cartOutletCode || outlet?.code;
   const effectiveOutletName = cartOutletName || outlet?.name || 'Kopi Kenangan';
+
+  // Mode Minimal Pembelian 50k & validasi item reguler
+  const isMinOrderMode = useMinOrder50kMode();
+  const isKopiKenangan = !effectiveOutletCode || !effectiveOutletCode.toLowerCase().startsWith('fore-');
+
+  const regularValidationError = useMemo(() => {
+    if (!isKopiKenangan || !isMinOrderMode || pricing.regularQuantity === 0) {
+      return null;
+    }
+    if (pricing.regularNormalSubtotal < 50000) {
+      return 'Minimal pembelian Rp50.000 (harga normal)';
+    }
+    if (pricing.regularNormalSubtotal > 60000) {
+      return 'Maksimal pembelian Rp60.000 (harga normal)';
+    }
+    return null;
+  }, [isKopiKenangan, isMinOrderMode, pricing.regularQuantity, pricing.regularNormalSubtotal]);
 
   // Status outlet tutup & validasi
   const [isOutletClosedState, setIsOutletClosedState] = useState<boolean>(false);
@@ -225,6 +242,11 @@ export function CartDrawer({
       return;
     }
 
+    if (regularValidationError) {
+      setErrorMessage(regularValidationError);
+      return;
+    }
+
     if (pickupMode === 'scheduled') {
       if (!effectiveSelectedSlot) {
         setErrorMessage('Silakan pilih jam jadwal pick up.');
@@ -296,20 +318,20 @@ export function CartDrawer({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#26150B]/60 backdrop-blur-2xs animate-in fade-in duration-200 overscroll-contain">
-      <div className="fixed inset-0 touch-none" onClick={onClose} aria-hidden="true" />
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#26150B]/60 backdrop-blur-xs overscroll-contain animate-in fade-in duration-200">
+      <div className="fixed inset-0 touch-none cursor-pointer" onClick={onClose} aria-hidden="true" />
 
-      <div className="relative w-full max-w-md max-h-[92vh] bg-[#FBF8F4] rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300 overscroll-contain border-t border-[#EFE5D8]">
+      <div className="relative w-full max-w-md h-[100dvh] max-h-[100dvh] sm:h-auto sm:max-h-[92vh] bg-[#FAF4E8] rounded-none sm:rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300 overscroll-contain border-t-2 border-x-2 border-[#2B1D12]">
         {/* Drag handle */}
-        <div className="w-12 h-1 bg-[#D4C3B2] rounded-full mx-auto mt-2.5 mb-1" />
+        <div className="w-12 h-1.5 bg-[#2B1D12] rounded-full mx-auto mt-2.5 mb-1" />
 
         {/* ZONA A: Header Tetap di Atas */}
-        <div className="shrink-0 bg-[#FBF8F4]/95 backdrop-blur px-5 py-3 border-b border-[#EFE5D8] flex items-center justify-between z-10 touch-none">
+        <div className="shrink-0 bg-[#FAF4E8] px-5 py-3 border-b-2 border-[#2B1D12] flex items-center justify-between z-10 touch-none">
           <div>
-            <h3 className="font-display font-bold text-base text-[#26150B] leading-tight">
+            <h3 className="font-display font-black text-base text-[#2B1D12] leading-tight">
               Keranjang Belanja
             </h3>
-            <p className="text-[11px] text-[#735F52] line-clamp-1">
+            <p className="text-[11px] text-[#6A584D] font-bold line-clamp-1">
               {effectiveOutletName}
             </p>
           </div>
@@ -317,7 +339,7 @@ export function CartDrawer({
           <button
             onClick={onClose}
             type="button"
-            className="min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-[#8C7667] hover:text-[#26150B] hover:bg-[#F2EAE0] transition"
+            className="min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-[#2B1D12] bg-white border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
             aria-label="Tutup keranjang"
           >
             <svg
@@ -327,23 +349,23 @@ export function CartDrawer({
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M6 18L18 6M6 6l12 12" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
         {/* ZONA B: Zona Tengah - DAFTAR ITEM SAJA yang bisa di-scroll */}
-        <div className="relative flex-1 min-h-0 flex flex-col bg-[#FAF6F0]">
+        <div className="relative flex-1 min-h-0 flex flex-col bg-[#FAF4E8]">
           <div
             ref={itemsScrollRef}
             onScroll={updateScrollIndicator}
             className="cart-items-scroll flex-1 overflow-y-auto p-4 space-y-3 overscroll-contain"
           >
             {items.length === 0 ? (
-              <div className="py-12 text-center text-[#8C7667]">
+              <div className="py-12 text-center text-[#6A584D]">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-12 w-12 mx-auto mb-2 text-[#C8B8A6]"
+                  className="h-12 w-12 mx-auto mb-2 text-[#C67D0A]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -351,12 +373,12 @@ export function CartDrawer({
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={1.5}
+                    strokeWidth={2}
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                   />
                 </svg>
-                <p className="font-display text-sm font-bold text-[#26150B]">Keranjang masih kosong</p>
-                <p className="text-xs text-[#735F52] mt-1">Pilih menu favoritmu di atas.</p>
+                <p className="font-display text-sm font-black text-[#2B1D12]">Keranjang masih kosong</p>
+                <p className="text-xs text-[#6A584D] font-medium mt-1">Pilih menu favoritmu di atas.</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -365,10 +387,10 @@ export function CartDrawer({
                   return (
                     <div
                       key={item.id}
-                      className="p-3 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs flex gap-3 items-start"
+                      className="p-3 bg-[#FFFDF9] rounded-2xl border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] flex gap-3 items-start"
                     >
                       {item.image && (
-                        <div className="relative w-14 h-14 bg-[#F4EDE3] rounded-xl overflow-hidden shrink-0 border border-[#EAE0D3]">
+                        <div className="relative w-14 h-14 bg-white rounded-xl overflow-hidden shrink-0 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
                           <Image
                             src={item.image}
                             alt={item.name}
@@ -407,11 +429,19 @@ export function CartDrawer({
                           </button>
                         </div>
 
-                        {item.variantDescription && (
+                        {item.isBundle && item.bundleDetails && item.bundleDetails.length > 0 ? (
+                          <div className="mt-1 space-y-0.5 bg-[#FAF4E8] p-1.5 rounded-lg border border-[#2B1D12]/15">
+                            {item.bundleDetails.map((d, dIdx) => (
+                              <p key={dIdx} className="text-[10px] text-[#4A3628] font-bold">
+                                • {d.name} {d.variantDescription ? <span className="text-[#7A6658]">({d.variantDescription})</span> : null}
+                              </p>
+                            ))}
+                          </div>
+                        ) : item.variantDescription ? (
                           <p className="text-[11px] text-[#6A584D] line-clamp-2 mt-0.5">
                             {item.variantDescription}
                           </p>
-                        )}
+                        ) : null}
 
                         {item.addons && item.addons.length > 0 && (
                           <p className="text-[10px] text-[#A66908] font-medium mt-0.5">
@@ -436,22 +466,22 @@ export function CartDrawer({
                           </div>
 
                           {/* Kontrol Kuantitas */}
-                          <div className="flex items-center gap-2 bg-[#F2EAE0] px-2 py-0.5 rounded-lg border border-[#E3D6C5]">
+                          <div className="flex items-center gap-2 bg-white px-2 py-0.5 rounded-lg border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
                             <button
                               type="button"
                               onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-                              className="text-[#26150B] font-bold text-sm px-1.5 min-h-[30px]"
+                              className="text-[#2B1D12] font-black text-sm px-1.5 min-h-[30px]"
                               aria-label="Kurangi kuantitas"
                             >
                               -
                             </button>
-                            <span className="font-display text-xs font-bold text-[#26150B]">
+                            <span className="font-display text-xs font-black text-[#2B1D12]">
                               {item.quantity}
                             </span>
                             <button
                               type="button"
                               onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                              className="text-[#26150B] font-bold text-sm px-1.5 min-h-[30px]"
+                              className="text-[#2B1D12] font-black text-sm px-1.5 min-h-[30px]"
                               aria-label="Tambah kuantitas"
                             >
                               +
@@ -469,7 +499,7 @@ export function CartDrawer({
           {/* Fade gradient petunjuk scroll: HANYA saat masih ada isi di bawahnya */}
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-[#FAF6F0] to-transparent transition-opacity duration-200 ${
+            className={`pointer-events-none absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-[#FAF4E8] to-transparent transition-opacity duration-200 ${
               canScrollDown ? 'opacity-100' : 'opacity-0'
             }`}
           />
@@ -477,20 +507,20 @@ export function CartDrawer({
 
         {/* ZONA C: Zona Bawah SELALU MENEMPEL (STICKY/PINNED) */}
         {items.length > 0 && (
-          <div className="shrink-0 bg-[#FBF8F4] border-t border-[#EFE5D8] shadow-xl z-20 flex flex-col max-h-[65vh] overflow-y-auto overscroll-contain">
+          <div className="shrink-0 bg-[#FAF4E8] border-t-2 border-[#2B1D12] shadow-xl z-20 flex flex-col max-h-[65vh] overflow-y-auto overscroll-contain">
             <div className="p-3.5 space-y-2.5">
               {/* 1. Informasi Pick Up (Ringkas) */}
-              <div className="bg-white rounded-2xl p-3 border border-[#EFE5D8] space-y-2.5">
+              <div className="bg-[#FFFDF9] rounded-2xl p-3 border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-display text-[11px] font-bold text-[#26150B] uppercase tracking-wide">
+                  <h4 className="font-display text-[11px] font-black text-[#2B1D12] uppercase tracking-wide">
                     Informasi Pick Up
                   </h4>
                 </div>
 
                 {/* Input Nama */}
                 <div className="space-y-1">
-                  <label htmlFor="checkout-name" className="text-[11px] font-semibold text-[#4A3225] block">
-                    Nama Pemesan <span className="text-rose-500">*</span>
+                  <label htmlFor="checkout-name" className="text-[11px] font-bold text-[#2B1D12] block">
+                    Nama Pemesan <span className="text-[#DC2626]">*</span>
                   </label>
                   <input
                     ref={nameInputRef}
@@ -505,18 +535,18 @@ export function CartDrawer({
                       if (errorMessage) setErrorMessage(null);
                     }}
                     placeholder="Contoh: Budi Prasetyo"
-                    className={`w-full min-h-[40px] px-3.5 py-2 bg-white border rounded-xl text-xs text-[#26150B] placeholder-[#9C897B] outline-hidden transition ${
+                    className={`w-full min-h-[40px] px-3.5 py-2 bg-white border-2 rounded-xl text-xs font-semibold text-[#2B1D12] placeholder-[#8C7667] outline-hidden transition ${
                       nameHighlight
-                        ? 'border-rose-500 ring-2 ring-rose-400/50 bg-rose-50/40'
-                        : 'border-[#E0D4C5] focus:border-[#C67D0A] focus:ring-1 focus:ring-[#C67D0A]'
+                        ? 'border-[#DC2626] ring-2 ring-rose-400/50 bg-rose-50/40'
+                        : 'border-[#2B1D12] focus:border-[#C67D0A] shadow-[2px_2px_0px_#2B1D12]'
                     }`}
                   />
                 </div>
 
                 {/* Input Nomor WhatsApp */}
                 <div className="space-y-1">
-                  <label htmlFor="checkout-wa" className="text-[11px] font-semibold text-[#4A3225] block">
-                    Nomor WhatsApp <span className="text-rose-500">*</span>
+                  <label htmlFor="checkout-wa" className="text-[11px] font-bold text-[#2B1D12] block">
+                    Nomor WhatsApp <span className="text-[#DC2626]">*</span>
                   </label>
                   <input
                     ref={waInputRef}
@@ -531,17 +561,17 @@ export function CartDrawer({
                       if (errorMessage) setErrorMessage(null);
                     }}
                     placeholder="Contoh: 08123456789"
-                    className={`w-full min-h-[40px] px-3.5 py-2 bg-white border rounded-xl text-xs text-[#26150B] placeholder-[#9C897B] outline-hidden transition ${
+                    className={`w-full min-h-[40px] px-3.5 py-2 bg-white border-2 rounded-xl text-xs font-semibold text-[#2B1D12] placeholder-[#8C7667] outline-hidden transition ${
                       waHighlight
-                        ? 'border-rose-500 ring-2 ring-rose-400/50 bg-rose-50/40'
-                        : 'border-[#E0D4C5] focus:border-[#C67D0A] focus:ring-1 focus:ring-[#C67D0A]'
+                        ? 'border-[#DC2626] ring-2 ring-rose-400/50 bg-rose-50/40'
+                        : 'border-[#2B1D12] focus:border-[#C67D0A] shadow-[2px_2px_0px_#2B1D12]'
                     }`}
                   />
                 </div>
 
                 {/* Pilihan Waktu Pick Up */}
                 <div className="space-y-1.5">
-                  <span className="text-[11px] font-semibold text-[#4A3225] block">
+                  <span className="text-[11px] font-bold text-[#2B1D12] block">
                     Waktu Pengambilan
                   </span>
 
@@ -549,10 +579,10 @@ export function CartDrawer({
                     <button
                       type="button"
                       onClick={() => setPickupMode('now')}
-                      className={`min-h-[40px] p-2 rounded-xl border text-left text-xs font-medium transition ${
+                      className={`min-h-[40px] p-2 rounded-xl border-2 text-left text-xs font-bold transition ${
                         pickupMode === 'now'
-                          ? 'border-[#26150B] bg-[#26150B] text-[#FBBF24] font-display font-bold shadow-2xs'
-                          : 'border-[#E0D4C5] bg-white text-[#3D2313] hover:border-[#D9A74A]'
+                          ? 'border-[#2B1D12] bg-[#2B1D12] text-[#FAF4E8] font-display shadow-[2px_2px_0px_#C67D0A]'
+                          : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7]'
                       }`}
                     >
                       <span className="block text-[11px] leading-tight">Pick up Sekarang</span>
@@ -565,15 +595,15 @@ export function CartDrawer({
                       onClick={() => {
                         if (scheduleSlots.isAvailable) setPickupMode('scheduled');
                       }}
-                      className={`min-h-[40px] p-2 rounded-xl border text-left text-xs font-medium transition ${
+                      className={`min-h-[40px] p-2 rounded-xl border-2 text-left text-xs font-bold transition ${
                         pickupMode === 'scheduled'
-                          ? 'border-[#26150B] bg-[#26150B] text-[#FBBF24] font-display font-bold shadow-2xs'
+                          ? 'border-[#2B1D12] bg-[#2B1D12] text-[#FAF4E8] font-display shadow-[2px_2px_0px_#C67D0A]'
                           : scheduleSlots.isAvailable
-                          ? 'border-[#E0D4C5] bg-white text-[#3D2313] hover:border-[#D9A74A]'
-                          : 'border-[#EFE5D8] bg-[#F4EDE3] text-[#BFAFA0] cursor-not-allowed opacity-60'
+                          ? 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7]'
+                          : 'border-[#D4C3B2] bg-[#EFE5D8] text-[#8C7667] cursor-not-allowed opacity-60'
                       }`}
                     >
-                      <span className="block text-[11px] leading-tight">Jadwalkan Jam</span>
+                      <span className="block text-[11px] leading-tight">Jadwalkan Pick Up</span>
                       <span className="text-[10px] opacity-80 block mt-0.5 leading-tight">Hari ini saja</span>
                     </button>
                   </div>
@@ -581,7 +611,7 @@ export function CartDrawer({
                   {/* Dropdown Jam Terjadwal */}
                   {pickupMode === 'scheduled' && scheduleSlots.isAvailable && (
                     <div className="pt-1">
-                      <label htmlFor="schedule-slot-select" className="text-[11px] text-[#735F52] block mb-1">
+                      <label htmlFor="schedule-slot-select" className="text-[11px] text-[#2B1D12] font-semibold block mb-1">
                         Pilih Jam Ambil (WIB):
                       </label>
                       <select
@@ -593,10 +623,10 @@ export function CartDrawer({
                           if (slotHighlight) setSlotHighlight(false);
                           if (errorMessage) setErrorMessage(null);
                         }}
-                        className={`w-full min-h-[40px] px-3.5 py-2 bg-white border rounded-xl text-xs text-[#26150B] outline-hidden ${
+                        className={`w-full min-h-[40px] px-3.5 py-2 bg-white border-2 rounded-xl text-xs font-semibold text-[#2B1D12] outline-hidden ${
                           slotHighlight
-                            ? 'border-rose-500 ring-2 ring-rose-400/50 bg-rose-50/40'
-                            : 'border-[#E0D4C5] focus:border-[#C67D0A]'
+                            ? 'border-[#DC2626] ring-2 ring-rose-400/50 bg-rose-50/40'
+                            : 'border-[#2B1D12] focus:border-[#C67D0A] shadow-[2px_2px_0px_#2B1D12]'
                         }`}
                       >
                         {scheduleSlots.slots.map((slot) => (
@@ -609,7 +639,7 @@ export function CartDrawer({
                   )}
 
                   {!scheduleSlots.isAvailable && (
-                    <p className="text-[10px] text-[#A66908]">
+                    <p className="text-[10px] text-[#C67D0A] font-bold">
                       {scheduleSlots.reason}
                     </p>
                   )}
@@ -617,37 +647,51 @@ export function CartDrawer({
               </div>
 
               {/* 2. Rincian Ringkasan Pembayaran */}
-              <div className="bg-white rounded-2xl p-3 border border-[#EFE5D8] text-xs space-y-1.5">
-                <h4 className="font-display font-bold text-[#26150B] uppercase tracking-wide text-[10px] pb-1 border-b border-[#F2EAE0]">
+              <div className="bg-[#FFFDF9] rounded-2xl p-3 border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] text-xs space-y-1.5">
+                <h4 className="font-display font-black text-[#2B1D12] uppercase tracking-wide text-[10px] pb-1 border-b-2 border-[#2B1D12]">
                   Ringkasan Pembayaran
                 </h4>
 
-                <div className="flex justify-between text-[#6A584D] text-[11px]">
-                  <span>Sub Total ({pricing.totalQuantity} item)</span>
-                  <span className="font-semibold text-[#26150B]">{formatRupiah(pricing.subtotal)}</span>
-                </div>
+                {pricing.bundleQuantity > 0 && (
+                  <div className="flex justify-between text-[#2B1D12] text-[11px]">
+                    <span>Sub Total Bundling ({pricing.bundleQuantity} item)</span>
+                    <span className="font-bold text-[#2B1D12]">{formatRupiah(pricing.bundleSubtotal)}</span>
+                  </div>
+                )}
 
-                <div className="flex justify-between text-[#6A584D] text-[11px]">
-                  <span>
-                    {pricing.totalQuantity === 1
-                      ? 'Biaya Jasa (1 item)'
-                      : `Biaya Jasa (Rp2.000 x ${pricing.totalQuantity} item)`}
-                  </span>
-                  <span className="font-semibold text-[#26150B]">{formatRupiah(pricing.fee)}</span>
-                </div>
+                {pricing.regularQuantity > 0 && (
+                  <div className="flex justify-between text-[#2B1D12] text-[11px]">
+                    <span>Sub Total Normal ({pricing.regularQuantity} item)</span>
+                    <span className="font-bold text-[#2B1D12]">{formatRupiah(pricing.regularSubtotal)}</span>
+                  </div>
+                )}
 
-                <div className="flex justify-between text-[#9C897B] line-through text-[10px]">
-                  <span>Total Harga Asli KK</span>
+                {pricing.bundleQuantity > 0 && (
+                  <div className="flex justify-between text-[#2B1D12] text-[11px]">
+                    <span>Biaya Jasa Bundling</span>
+                    <span className="font-bold text-[#2B1D12]">{formatRupiah(pricing.bundleFee)}</span>
+                  </div>
+                )}
+
+                {pricing.regularQuantity > 0 && (
+                  <div className="flex justify-between text-[#2B1D12] text-[11px]">
+                    <span>Biaya Jasa Normal</span>
+                    <span className="font-bold text-[#2B1D12]">{formatRupiah(pricing.regularFee)}</span>
+                  </div>
+                )}
+
+                <div className="flex justify-between text-[#8C7667] line-through text-[10px]">
+                  <span>Total Harga Normal</span>
                   <span>{formatRupiah(pricing.totalSavings + pricing.subtotal)}</span>
                 </div>
 
-                <div className="pt-2 border-t border-[#F2EAE0] flex justify-between items-baseline font-bold text-sm">
-                  <span className="font-display text-[#26150B] text-xs font-bold">Total Tagihan</span>
+                <div className="pt-2 border-t-2 border-[#2B1D12] flex justify-between items-baseline font-bold text-sm">
+                  <span className="font-display text-[#2B1D12] text-xs font-black">Total Pembayaran</span>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                      Hemat {formatRupiah(pricing.totalSavings)}
+                    <span className="text-[10px] font-black text-[#15803D] bg-[#D9F3EA] px-2 py-0.5 rounded-full border-2 border-[#15803D]">
+                      {`Kamu Hemat ${formatRupiah(pricing.totalSavings)}!`}
                     </span>
-                    <span className="font-display text-base font-black text-[#26150B]">{formatRupiah(pricing.total)}</span>
+                    <span className="font-display text-base font-black text-[#2B1D12]">{formatRupiah(pricing.total)}</span>
                   </div>
                 </div>
               </div>
@@ -656,49 +700,51 @@ export function CartDrawer({
               {errorMessage && (
                 <div
                   role="alert"
-                  className="p-2.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs flex items-start gap-2 animate-in fade-in"
+                  className="p-2.5 bg-rose-50 border-2 border-[#DC2626] rounded-xl text-rose-900 text-xs flex items-start gap-2 shadow-[2px_2px_0px_#2B1D12] animate-in fade-in"
                 >
-                  <svg className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  <svg className="w-4 h-4 text-[#DC2626] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
-                  <span className="leading-tight flex-1 font-medium">{errorMessage}</span>
+                  <span className="leading-tight flex-1 font-bold">{errorMessage}</span>
                 </div>
               )}
 
-              {/* Baris Info Pembayaran (Display Only) */}
-              <div className="bg-[#F7F2EC] border border-[#EAE0D3] rounded-xl p-2.5 flex items-start gap-2 text-[11px] leading-relaxed">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4 text-[#C67D0A] shrink-0 mt-0.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  aria-hidden="true"
+
+
+              {/* Banner Peringatan Minimal/Maksimal Pembelian Menu Reguler */}
+              {regularValidationError && (
+                <div
+                  role="alert"
+                  className="p-3 bg-[#FFF0C2] border-2 border-[#DC2626] rounded-2xl text-[#2B1D12] text-xs flex flex-col gap-1 shadow-[3px_3px_0px_#2B1D12] animate-in fade-in"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-                <div className="min-w-0">
-                  <p className="text-[#4A3225]">
-                    {TEKS_INFO_PEMBAYARAN_CHECKOUT}
-                  </p>
+                  <div className="flex items-start gap-2">
+                    <span className="text-base shrink-0">⚠️</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-black text-[#DC2626] text-xs">
+                        {regularValidationError}
+                      </p>
+                      <p className="text-[11px] text-[#6A584D] mt-0.5 leading-relaxed font-medium">
+                        Total harga normal menu reguler: <strong>{formatRupiah(pricing.regularNormalSubtotal)}</strong>. Pesanan menu reguler dibatasi antara Rp50.000 - Rp60.000 (harga normal).
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Banner Peringatan Outlet Tutup */}
               {isOutletClosed && (
                 <div
                   role="alert"
-                  className="p-3 bg-amber-50 border border-amber-200/90 rounded-2xl text-amber-950 text-xs flex flex-col gap-2 shadow-2xs animate-in fade-in"
+                  className="p-3 bg-[#FFF0C2] border-2 border-[#2B1D12] rounded-2xl text-[#2B1D12] text-xs flex flex-col gap-2 shadow-[3px_3px_0px_#2B1D12] animate-in fade-in"
                 >
                   <div className="flex items-start gap-2.5">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5 text-amber-600 shrink-0 mt-0.5"
+                      className="w-5 h-5 text-[#C67D0A] shrink-0 mt-0.5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
-                      strokeWidth={2}
+                      strokeWidth={2.5}
                       aria-hidden="true"
                     >
                       <path
@@ -708,10 +754,10 @@ export function CartDrawer({
                       />
                     </svg>
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-amber-950 text-xs">
+                      <p className="font-black text-[#2B1D12] text-xs">
                         Outlet ini sedang tutup ({effectiveClosedReason})
                       </p>
-                      <p className="text-[11px] text-amber-900 mt-0.5 leading-relaxed">
+                      <p className="text-[11px] text-[#2B1D12] mt-0.5 leading-relaxed font-medium">
                         {effectiveOutletName} sedang tidak menerima pesanan saat ini. Silakan pilih outlet lain untuk melanjutkan pesanan.
                       </p>
                     </div>
@@ -719,7 +765,7 @@ export function CartDrawer({
                   <Link
                     href="/"
                     onClick={onClose}
-                    className="min-h-[38px] px-3.5 py-1.5 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] text-xs font-display font-bold rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs text-center"
+                    className="min-h-[38px] px-3.5 py-1.5 bg-[#2B1D12] text-[#FAF4E8] hover:bg-[#3D2313] text-xs font-display font-black rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A] flex items-center justify-center gap-1.5 transition text-center"
                   >
                     <span>Pilih Outlet Lain</span>
                     <svg
@@ -735,31 +781,42 @@ export function CartDrawer({
                 </div>
               )}
 
-              {/* 4. Tombol Lanjut ke Pembayaran QRIS / Tombol Outlet Tutup */}
+              {/* 4. Tombol Lanjut ke Pembayaran QRIS / Tombol Outlet Tutup / Tombol Min Order Blocked */}
               {isOutletClosed ? (
                 <button
                   type="button"
                   disabled
-                  className="w-full min-h-[48px] px-4 py-3 bg-[#E5DACB] text-[#8C7667] font-display font-bold text-xs rounded-xl flex items-center justify-center gap-2 cursor-not-allowed opacity-80"
+                  className="w-full min-h-[48px] px-4 py-3 bg-[#E5DACB] text-[#8C7667] font-display font-black text-xs rounded-xl flex items-center justify-center gap-2 cursor-not-allowed opacity-80 border-2 border-[#2B1D12]"
                 >
                   <span>Outlet Sedang Tutup - Tidak Bisa Dipesan</span>
+                </button>
+              ) : regularValidationError ? (
+                <button
+                  type="button"
+                  disabled
+                  className="w-full min-h-[48px] px-4 py-3 bg-[#E5DACB] text-[#DC2626] font-display font-black text-xs rounded-xl flex items-center justify-center gap-2 cursor-not-allowed opacity-90 border-2 border-[#DC2626]"
+                >
+                  <svg className="w-4 h-4 text-[#DC2626]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <span>{regularValidationError}</span>
                 </button>
               ) : (
                 <button
                   type="button"
                   disabled={isSubmitting}
                   onClick={handleProceedToPayment}
-                  className="w-full min-h-[48px] px-4 py-3 bg-[#26150B] hover:bg-[#3D2313] active:scale-98 text-[#FBBF24] font-display font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md disabled:opacity-60"
+                  className="w-full min-h-[48px] px-4 py-3 bg-[#2B1D12] text-[#FAF4E8] font-display font-black text-xs rounded-xl flex items-center justify-center gap-2 transition border-2 border-[#2B1D12] shadow-[3px_3px_0px_#C67D0A] hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none disabled:opacity-60"
                 >
                   {isSubmitting ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-[#FBBF24] border-t-transparent rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-[#FAF4E8] border-t-transparent rounded-full animate-spin" />
                       <span>Memproses Pesanan...</span>
                     </>
                   ) : (
                     <>
-                      <svg className="w-4 h-4 text-[#FBBF24]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                      <svg className="w-4 h-4 text-[#FAF4E8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                       <span>Lanjut ke Pembayaran • {formatRupiah(pricing.total)}</span>
                     </>

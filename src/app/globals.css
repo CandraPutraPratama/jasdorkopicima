@@ -1,50 +1,58 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: var(--font-outfit), sans-serif;
+  --font-display: var(--font-baloo), var(--font-outfit), cursive, sans-serif;
+  --font-outfit: var(--font-baloo), cursive, sans-serif;
   --font-sans: var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* Warm Coffee Palette */
-  --color-warm-bg: #FBF8F4;
-  --color-warm-surface: #FFFFFF;
-  --color-warm-cream: #FDFBF7;
-  --color-warm-border: #F0E6D8;
-  --color-warm-border-subtle: #F6EFE6;
+  /* Comic Tahilalats Paper & Ink Palette */
+  --color-warm-bg: #FAF4E8;
+  --color-warm-surface: #FFFDF9;
+  --color-warm-cream: #F5EDE0;
+  --color-warm-border: #2B1D12;
+  --color-warm-border-subtle: #4A3628;
 
-  /* Espresso Typography */
-  --color-espresso: #26150B;
-  --color-espresso-light: #4A3225;
-  --color-espresso-muted: #735F52;
+  /* Ink / Espresso Outline & Typography */
+  --color-espresso: #2B1D12;
+  --color-espresso-light: #4A3628;
+  --color-espresso-muted: #7A6658;
 
-  /* Caramel & Amber Accent */
+  /* Caramel Accent */
   --color-caramel: #C67D0A;
-  --color-caramel-hover: #A76704;
+  --color-caramel-hover: #A66504;
   --color-amber-glow: #FBBF24;
 
-  /* Promo Punch Accent (KHUSUS: Angka promo, badge diskon/hemat, CTA utama) */
+  /* Promo Punch Accent (Tetap merah promo #DC2626) */
   --color-punch: #DC2626;
   --color-punch-hover: #B91C1C;
   --color-punch-bg: #FEF2F2;
   --color-punch-border: #FECACA;
 
+  /* Pastel Badges */
+  --color-pastel-peach: #FFE7D6;
+  --color-pastel-mint: #D9F3EA;
+  --color-pastel-sky: #DDF0FF;
+  --color-pastel-butter: #FFF0C2;
+  --color-pastel-lavender: #EFE4FF;
+
   /* Legacy brand compatibility aliases */
-  --color-brand-dark: #26150B;
+  --color-brand-dark: #2B1D12;
   --color-brand-gold: #C67D0A;
-  --color-brand-gold-hover: #A76704;
-  --color-brand-bg: #FFFFFF;
-  --color-brand-text: #26150B;
+  --color-brand-gold-hover: #A66504;
+  --color-brand-bg: #FFFDF9;
+  --color-brand-text: #2B1D12;
 }
 
 :root {
-  --brand-dark: #26150B;
+  --brand-dark: #2B1D12;
   --brand-gold: #C67D0A;
-  --brand-bg: #FFFFFF;
-  --brand-text: #26150B;
+  --brand-bg: #FFFDF9;
+  --brand-text: #2B1D12;
 }
 
 html, body {
-  background-color: #F5EFEB;
-  color: #26150B;
+  background-color: #F3ECE0;
+  color: #2B1D12;
   font-family: var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
@@ -52,7 +60,7 @@ html, body {
 }
 
 .font-display {
-  font-family: var(--font-outfit), sans-serif;
+  font-family: var(--font-baloo), var(--font-outfit), cursive, sans-serif;
 }
 
 .overflow-x-clip {

@@ -16,20 +16,20 @@ export async function POST(
     return NextResponse.json({ error: 'ID pesanan wajib disertakan' }, { status: 400 });
   }
 
-  let body: { status?: OrderStatus };
+  let body: { status?: OrderStatus; cancellationReason?: string };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: 'Format JSON tidak valid' }, { status: 400 });
   }
 
-  const { status } = body;
+  const { status, cancellationReason } = body;
   if (!status) {
     return NextResponse.json({ error: 'Parameter status wajib disertakan' }, { status: 400 });
   }
 
   try {
-    const updatedOrder = await updateOrderStatusByAdmin(id, status);
+    const updatedOrder = await updateOrderStatusByAdmin(id, status, cancellationReason);
     return NextResponse.json({ success: true, order: updatedOrder });
   } catch (err: any) {
     if (err instanceof OrderValidationError) {

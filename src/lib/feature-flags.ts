@@ -32,3 +32,34 @@
 
 export const OPERATIONAL_GATE_ENABLED =
   process.env.NEXT_PUBLIC_OPERATIONAL_GATE_ENABLED === 'true';
+
+/**
+ * MIN_ORDER_50K_MODE (Sebelumnya: BUNDLING_ONLY_MODE)
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Mode syarat minimal pembelian Rp50.000 (maksimal Rp60.000) untuk menu reguler.
+ *
+ * Saat NYALA (true):
+ *   - Menu reguler TETAP DIBUKA (tidak disembunyikan).
+ *   - Subtotal harga normal item reguler dibatasi: minimal Rp50.000 dan maksimal Rp60.000.
+ *   - Paket bundling tetap aktif mengikuti aturan per paket 50k-60k.
+ *   - Tampilkan info minimal pembelian di halaman menu dan cart.
+ *
+ * Saat MATI (false):
+ *   - Perilaku normal seperti biasa (default).
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+export function isMinOrder50kMode(): boolean {
+  return (
+    process.env.NEXT_PUBLIC_MIN_ORDER_50K_MODE === 'true' ||
+    process.env.NEXT_PUBLIC_BUNDLING_ONLY_MODE === 'true'
+  );
+}
+
+export const MIN_ORDER_50K_MODE =
+  process.env.NEXT_PUBLIC_MIN_ORDER_50K_MODE === 'true' ||
+  process.env.NEXT_PUBLIC_BUNDLING_ONLY_MODE === 'true';
+
+// Alias backwards-compatible
+export const isBundlingOnlyMode = isMinOrder50kMode;
+export const BUNDLING_ONLY_MODE = MIN_ORDER_50K_MODE;
+

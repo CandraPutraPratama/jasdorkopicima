@@ -18,6 +18,18 @@ export interface OrderItemSnapshot {
   variantOptions?: string[];
   addons?: Array<{ name: string; price: number }>;
   notes?: string;
+  isBundle?: boolean;
+  bundleType?: string;
+  bundleNormalPrice?: number;
+  bundleFee?: number;
+  bundleDetails?: Array<{
+    name: string;
+    category?: 'drink' | 'food';
+    variantDescription?: string;
+    normalPrice?: number;
+    promoPrice?: number;
+    notes?: string;
+  }>;
 }
 
 export interface OrderRecord {
@@ -34,6 +46,8 @@ export interface OrderRecord {
   status: OrderStatus;
   notes?: string | null;
   pickup_time?: string | null;
+  cancellation_reason?: string | null;
+  needs_refund?: boolean;
   created_at: string;
   expires_at: string;
 }

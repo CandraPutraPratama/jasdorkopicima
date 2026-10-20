@@ -1,0 +1,1014 @@
+code,name,address,mantan_price,tier
+AEON.BSD,Aeon Mall BSD,"AEON Mall, Lantai 1, Jl. BSD Raya Utama, Pagedangan, Tangerang, Banten, 15345",22000,MAHAL
+AEON.JGC,AEON Mall Jakarta Garden City,"AEON MALL Jakarta Garden City, Lantai 1, Jl. Jakarta Garden City, Cakung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta, 13910",22000,MAHAL
+AMBAS,Mall Ambasador,"Mall Ambasador, Lantai 4, Jl. Prof. DR. Satrio No.65,Setiabudi, Kota Jakarta Selatan",19000,NORMAL
+ATRIUM,Plaza Atrium,"Plaza Atrium, Lantai Ground Floor, Jl. Senen Raya, Senen, Jakarta Pusat, 10410",19000,NORMAL
+BASSURA,Mall @BASSURA CITY,"Mall @Basura, Lantai GF, Jl. Basuki Rahmat No.1A, Cipinang Besar Selatan, Kota Jakarta Timur, 13410",19000,NORMAL
+BAYWALK,Baywalk Mall Pluit,"Baywalk, Lantai 2, Jl. Pluit Karang Ayu 1, Penjaringan, Jakarta Utara, 14450",19000,NORMAL
+BBS.RAK260B,Rest Area 260B,"Rest Area 260B, Cipugur, Banjaratma, Kec. Bulakamba, Kabupaten Brebes, Jawa Tengah 52253",22000,MAHAL
+BDG.CHMPLSWK,Cihampelas Walk,"Jalan Cihampelas No. 160, Unit SG-10 & SG-12, Young Street Level, Kel. Cipaganti, Kec. Coblong, Bandung - 40131 (sebelah Mujigae dan Mixue)",22000,MAHAL
+BDG.DJJPSTER,Djunjunan Pasteur Bandung (Drive Thru),"Djunjunan Pasteur Bandung (DT), Jl. Dr. Djunjunan No.126 - 128, Pasteur, Kec. Sukajadi, Kota Bandung, Jawa Barat",19000,NORMAL
+BDG.ELCENTER,Bandung Electronic Center,"Bandung Electronic Center, Unit LU S-07, Jl. Purnawarman No.13-15, Babakan Ciamis, Kec. Sumur Bandung, Kota Bandung, Jawa Barat 40117",19000,NORMAL
+BDG.GDTTKA,Ruko Gading Tutuka Soreang,"Ruko Gading Tutuka Soreang, Jl. Raya Gading Tutuka, Cingcin, Kec.Soreang - Kab. Bandung",19000,NORMAL
+BDG.METROINDAH,Metro Indah Mall,"Metro Indah Mall, Soekarno-Hatta St No.590, Sekejati, Buahbatu, Bandung City, West Java 40286",19000,NORMAL
+BDG.PVJ,Paris Van Java,"Paris Van Java, Unit CL-A, Jl. Sukajadi No.131-139, Cipedes, Kec. Sukajadi, Kota Bandung, Jawa Barat 40162",19000,NORMAL
+BDG.RKANTPN,Ruko Antapani,"Ruko Antapani, Jalan Terusan Jakarta No.95c Kecamatan Antapani, Kota Bandung 40291",19000,NORMAL
+BDG.RKBHBT,Ruko Buah Batu,"Ruko Buah Batu, Jl. Buah Batu No.189, Turangga, Lengkong, Bandung 40265",19000,NORMAL
+BDG.RKBTUNGGAL,Ruko Batununggal Bandung (Mini Ck),"Ruko Batununggal Bandung, Jl. Batununggal Indah Raya No.150-Bandung, Kecamatan Bandung Kidul Jawa Barat 40266",19000,NORMAL
+BDG.RKCIBADYUT,Ruko Cibaduyut,"Ruko Cibaduyut, Jl Cibaduyut Raya No 142, Cibaduyut, Kec. Bojongloa Kidul, Bandung, Jawa Barat 40236",19000,NORMAL
+BDG.RKJLNSTBD,Ruko Jalan Setia Budi,"JL, Dr. Setiabudi No.192 Hegarmanah Kec. Cidadap, Kota Bandung - Jawa Barat 40152",19000,NORMAL
+BDG.RKKTBR,Ruko Kota Baru Parahyangan Bandung,"Ruko Kota Baru Parahyangan Bandung, Ruko Pancawarna No.33, Kota Baru Parahyangan, Bandung Barat",19000,NORMAL
+BDG.RKKTPG,Ruko Katapang Soreang,"Ruko Katapang Soreang, Jl. Terusan Kopo No.square, Pangauban, Kec. Katapang, Kabupaten Bandung",19000,NORMAL
+BDG.RKLASWI,Pertamina 34.40236 Laswi,"SPBU Pertamina 34.40236 Laswi (Container),Jl.Laswi No 136,Samoja Kec.Batununggal,Kota Bandung Jawa Barat 40273",19000,NORMAL
+BDG.RKLMBG,Ruko Lembang Bandung Barat,"Ruko Lembang Bandung Barat, Jl. Raya Lembang No.374, Lembang, Kabupaten Bandung Barat, Jawa Barat",19000,NORMAL
+BDG.RKMRGCNT,Ruko Margacinta,"Ruko Margacinta,Jl.Margacinta no.99,Mustika Hegar Regency Ruko Barat No.9,Margasari,Kec.Buah Batu,Kota Bandung Jawa Barat 40286",19000,NORMAL
+BDG.RKRNCEKEK,Ruko Rancaekek,"Ruko Rancaekek, Jl. Raya Dangeur, Rancaekek, Mekargalih, Jatinangor, Kabupaten Bandung, Jawa Barat 40394",19000,NORMAL
+BDG.RKSRYSMTR,Ruko Surya Sumantri,"Ruko Surya Sumantri, Jl. Surya Sumantri No.68, Sukagali, Sukajadi, Bandung 40164",19000,NORMAL
+BDG.RKTMNKOPO,Ruko Taman Kopo Indah 2,"Ruko Taman Kopo Indah 2, Jl. Taman Kopo Indah I , Margahayu Sel., Kec. Margaasih, Bandung, Jawa Barat 40218",19000,NORMAL
+BDG.RUKOPASKAL,Ruko Paskal,"Ruko Hypersquare, Jl. Pasir Kaliki No.25/27, Kelurahan, Kebon Jeruk, Andir, Bandung City, West Java 40181",19000,NORMAL
+BDG.SPBUBLENDAH,Pertamina 34.40316 Baleendah,"SPBU Pertamina 34.40316 Baleendah, Jl. Raya Banjaran, Andir, Kec. Baleendah, Kabupaten Bandung, Jawa Barat 40375",19000,NORMAL
+BDG.SPBUCBRU,Pertamina 34.40310 Cibiru,"SPBU 34.40310 Cibiru (Container), 3P8G+RCQ, Cibiru Wetan, Cileunyi, Bandung Regency, West Java 40625",19000,NORMAL
+BDG.SPBUCICLGKA,Pertamina 34.40314 Cicalengka,"SPBU 34.40314 Cicalengka (Container), Jl. Raya Cicalengka Timur No.424, Cicalengka Wetan, Kec. Cicalengka, Kabupaten Bandung, Jawa Barat 40395",19000,NORMAL
+BDG.TSMBBATU,Transmart Buah Batu Square Bandung,"Transmart Buah Batu Square Bandung, Ground Floor, Jl. Raya Bojongsoang No. 321, Cipagalo, Bojongsoang, Bandung, Jawa Barat - 40287",19000,NORMAL
+BDG.YGYCIUMBLT,Toserba Yogya (Ciumbuleuit),"Toserba Yogya (Ciumbuleuit), Lantai 1, Jl. Ciumbuleuit No.147, Hegarmanah, Kec. Cidadap, Kota Bandung, Jawa Barat 40141",19000,NORMAL
+BDG.YOGRANDKP,Yogya Grand Kepatihan,"Yogya Grand Kepatihan,Jl.Kepatihan No.18,Balonggede,Kec.Regol,Kota Bandung,Jawa Barat 40251",19000,NORMAL
+BGR.AONMLSTLCT,AEON Mall Sentul Bogor,"Aeon Mall Sentul City, Unit GF IC-G10, Jl. MH. Thamrin, Citaringgul, Kec. Babakan Madang, Bogor, Jawa Barat 16810",22000,MAHAL
+BGR.CGCBNGMALL,Cibinong City Mall,"Cibinong City Mall, First Floor, IS 1st 11, Jl Tegar Beriman No 1, Cibinong, Bogor, Jawa Barat 16915",19000,NORMAL
+BGR.CLNDEK,Cilendek Bogor,"Cilendek Bogor, Jl. Brigjen Saptadji Hadiprawira, Cilendek Barat, Bogor - Jawa Barat",19000,NORMAL
+BGR.METLANDCLG,Metropolitan Cibubur,"Metland Cileungsi, Lantai Ground no.01B, Jl. Metro Raya, Perumahan Metland Transyogi, Cileungsi, kab. Bogor 16820",19000,NORMAL
+BGR.MLNMCTY,Millennium City,"Millennium City, Marketing Office Millenium City Jl. Raya Dago, Kabasiran, Kec. Parung Panjang, Kab. Bogor, Jawa Barat, 16360",19000,NORMAL
+BGR.PNDURY,Ruko Pandu Raya Bogor,"Ruko Pandu Raya Bogor, Jl. Achmad Adnawijaya No.100B, Tegal Gundil, Kec. Bogor Utara, Kota Bogor 16152",19000,NORMAL
+BGR.PSKDCIOMAS,Ruko Pasirkuda Ciomas,"Ruko Pasirkuda Ciomas, Jl. Aria Surialaga No.4, Pasirkuda, Bogor, Jawa Barat",19000,NORMAL
+BGR.RKBBKMG,Ruko Babakan Madang Bogor,"Ruko Babakan Madang Bogor, Jl.Sirkuit Sentul Ruko 3 RT003 RW002 Desa, Sentul, Kec. Babakan Madang, Kabupaten Bogor, Jawa Barat 16810",19000,NORMAL
+BGR.RKCILNGSI,Ruko Cileungsi,"Ruko Cileungsi, Jl. Raya Cileungsi - Jonggol, Cileungsi Kidul, Kec. Cileungsi, Bogor, Jawa Barat 16820",19000,NORMAL
+BGR.RKCISARUA,Ruko Cisarua Puncak,"Ruko Cisarua Puncak, Jl. Raya Puncak, Citeko, Cisarua, Bogor, Jawa Barat",19000,NORMAL
+BGR.RKGDGCW,Ruko Gadog Ciawi,"Ruko Gadog Ciawi, Jl. Raya Puncak - Cianjur No. 27 Gadog",19000,NORMAL
+BGR.RKKTWST,Ruko Kota Wisata,"Ruko Kota Wisata, Ruko Madison SHC 1 No.39, Jl. Raya Kota Wisata, Bogor, Jawa Barat 16967",19000,NORMAL
+BGR.RKPDRJG,Ruko Pondok Rajeg,"Ruko Pondok Rajeg, Ruko Perum Galaxy Asri, Ruko No 4, Pondok Rajeg, Cibinong, Bogor Regency, West Java 16413",19000,NORMAL
+BGR.RKPRG,Ruko Parung,"Ruko Parung, Jl. Raya Parung No. 667, Parung, Kec. Parung Bogor Jawa Barat 16330",19000,NORMAL
+BGR.RKSKHTCB,Ruko Sukahati Cibinong,"Ruko Sukahati Cibinong, Jl. Raya Sukahati Cibinong Jawa Barat",19000,NORMAL
+BGR.RKSUDIRMAN,Ruko Sudirman Bogor,"Kopi Kenangan, Ruko Sudirman Bogor, Jl. Jend. Sudirman No.60, RT.03/RW.05, Sempur, Kota Bogor,",19000,NORMAL
+BGR.SPBUCBG,Pertamina Cibogo,"SPBU Cibogo, Jalan Raya Puncak Cibogo, Cipayung Datar, Kec. Megamendung, Bogor, Jawa Barat 16770",19000,NORMAL
+BGR.SPBUCOCOMO,Pertamina Mayor Oking Cibinong,"SPBU Pertamina 31.169.01 Mayor Oking Cibinong (Container), Jl. Mayor Oking Km.2 Cibinong 16961",19000,NORMAL
+BGR.SPBUDDCIBI,Pertamina Cikaret Cibinong,"SPBU Pertamina 34.169.34 Cikaret Cibinong, Jl. Raya Cikaret No.53, RW.1, Harapan Jaya, Cibinong, Bogor, Jawa Barat 16914",19000,NORMAL
+BGR.SPBUDDKSBG,Pertamina Kampung Sawah / Bojong Gede,"SPBU Pertamina 34.161.23 Bojong Gede, Jl. Raya Bojong Gede, Bojonggede, Kec. Bojong Gede, Bogor, Jawa Barat 16922",19000,NORMAL
+BGR.SPBUJMPRG,Pertamina 34-16303 Jampang Parung,"SPBU 34-16303 Jampang Parung (Container), Jl. Raya Parung No.2 Rt3/RW5 Jampang Kec. Kemang Jampang Bogor Jawa Barat",19000,NORMAL
+BGR.SPBUKDLANG,Pertamina Kedung Halang,"SPBU Pertamina 34-16715 Kedung Halang (Container), Jl. Raya Pemda No.1 Rt.01/RW.07 Kedung Halang Bogor",19000,NORMAL
+BGR.SPBUPJJ,Pertamina DODO Pertamina Pajajaran Bogor,"SPBU Pertamina Pertamina 34-16102 Pajajaran Bogor, Jl. Raya Pajajaran No.127 Rt.05/RW10 Bantarjati Kec Bogor Utara",19000,NORMAL
+BGR.SPLIMPRA,Superindo Limus Pratama,"Superindo Limus Pratama, Jl. Raya Narogong RT.01 / RW.10, Limus Nunggal, Cileungsi, Limus Nunggal, Cileungsi, Bogor, Jawa Barat 16820",19000,NORMAL
+BGR.STSCLBT,Stasiun Cilebut,"Stasiun Cilebut, Cilebut Timur, Sukaraja, Bogor Regency, West Java",19000,NORMAL
+BGR.STSCTYM,Stasiun Citayam,"Stasiun Citayam, Pabuaran, Bojonggede, Bogor Regency, West Java",19000,NORMAL
+BGR.STSPRPJ,Stasiun Parung Panjang,"Stasiun Parung Panjang, Jl. Marga Mekar No.54 16360, Parung Panjang, Kec. Parung Panjang, Kabupaten Bogor, Jawa Barat 16360",19000,NORMAL
+BGR.SUPINDOPJJ,Super Indo Pajajaran,"Super Indo Pajajaran Bogor, Ground Floor, Jl. Pajajaran, Kel. Baranangsiang, Kec. Bogor Timur, Kota Bogor, Jawa Barat 16143",19000,NORMAL
+BGR.TMYASMIN,Bogor Great Mall,"Transmart Yasmin Bogor, Ground Floor, Jl. KH. Nur Abdul Rohman, Cibadak, Tanah Sereal, Bogor, Jawa Barat - 16166",19000,NORMAL
+BJB.SPBUPSKMNG,SPBU COCO Pasar Kemuning Banjarbaru Drive Thru,"SPBU COCO Pasar Kemuning Banjarbaru (Container) Drive Thru, Jl. A. Yani No.KM, Loktabat Utara, Kec. Banjarbaru Utara, Kota Banjar Baru, Kalimantan Selatan 70714",19000,NORMAL
+BJM.CITRALAND,Citraland Banjarmasin,"Citraland Banjarmasin, I Walk 1 No. 2, Citraland Banjarmasin, Jl. A. Yani Km.7,8 Pemurus Luar, Banjarmasin Timur, Banjarmasin, Kalimantan Selatan 70654",19000,NORMAL
+BJM.DUTAMALL,Duta Mall Banjarmasin,"Duta Mall Banjarmasin, Lantai GF,  Jalan Ahmad Yani KM 2 (Simpang Ulin), Banjarmasin, Kalimantan Selatan 7023",22000,MAHAL
+BJM.RKGATSU,Ruko Gatot Subroto Banjarmasin,"Ruko Gatot Subroto Banjarmasin, Jl. Gatot Subroto, Kebun Bunga, Kec. Banjarmasin Tim, Kota Banjarmasin, Kalimantan Selatan 70235",19000,NORMAL
+BJM.RKHSNBSRI,Ruko Brigjen Hasan Basri Banjarmasin,"Ruko Brigjen Hasan Basri Banjarmasin, Sungai Miai, Banjarmasin Utara, Kota Banjarmasin Kalimantan Selatan 70124",19000,NORMAL
+BKS.BINTANG,Ruko Grand Kota Bintang,"Ruko Grand Kota Bintang, Jl. Raya Kalimalang, Unit Ruko no. A09, Pondok Bambu, Bekasi Barat, 17145",19000,NORMAL
+BKS.DAPKITBKS,Dapur Kitchen Bekasi,"Dapur Kitchen Bekasi, Jl. Perjuangan 3, Marga Mulya, Bekasi Utara, Kota Bekasi, Jawa Barat 17142",19000,NORMAL
+BKS.GRICONCM,Grand Icon Caman,"Jl. Caman Raya No.1, RT.008/RW.001, Jatibening, Kec. Pondokgede, Kota Bks, Jawa Barat 17412",19000,NORMAL
+BKS.JTCMPKA,Jaticempaka Kota Bekasi,"Jaticempaka Kota Bekasi, Jl H Basyar Raya No 275B. Kecamatan Pondok Gede, RT.001/RW.007, Jaticempaka, Kec. Bekasi Bar., Kota Bks, Jawa Barat 17411",19000,NORMAL
+BKS.KM19CTR,Rest Area KM 19,"Rest Area KM 19 (Container), Jakarta - Jl Tol Cikampek KM 19, Lambangsari, Tambun Selatan, Bekasi, Jawa Barat 17510",22000,MAHAL
+BKS.MEIKARTA1,District 1 Meikarta,"District 1 Meikarta, Jl. Orange County Boulevard, Cibatu, Cikarang Sel, Bekasi, Jawa Barat 17530",19000,NORMAL
+BKS.MLCPTRCBR,Mall Ciputra Cibubur,"Mall Ciputra Cibubur, Lt 1 FI-EA-01,02, Jl. Alternatif Cibubur No.Km, RT.005/RW.011, Jatikarya, Kec. Jatisampurna, Kota Bks, Jawa Barat 17435",19000,NORMAL
+BKS.NAGASMHAN,Naga Supermarket Hankam,"Naga Supermarket Hankam (Container), Jl. Raya Hankam, RT.008/RW.010, Jatirahayu, Kec. Pd. Melati, Kota Bks, Jawa Barat 17414 (Area Parkir mobil depan Solaria)",19000,NORMAL
+BKS.RKBLVHIJAU,Ruko Boulevard Hijau Bekasi,"Ruko Boulevard Hijau Bekasi, Komplek Sentra Niaga, Jl. Boulevard Hijau Raya, Pejuang, Kecamatan Medan Satria, Bekasi",19000,NORMAL
+BKS.RKBNTR,Ruko Bintara,"Ruko Bintara, Jl. Bintara Raya No.9, Bintara, Bekasi Barat, Bekasi 17134",19000,NORMAL
+BKS.RKCIKUT,Ruko Cikarang Utara,"Ruko Cikarang Utara, Jl. RE. Martadinata No.17, Karangbaru, Kec.Cikarang Utara, Bekasi - Jawa  Barat",19000,NORMAL
+BKS.RKCKRFTVL,Ruko Cikarang Festival,"Ruko Cikarang Festival, Jl Cibarusah Raya Ruko Blok T08 Villa Mutiara Sukadami Cikarang Selatan Bekasi Jawa Barat",19000,NORMAL
+BKS.RKCNDRBG,Ruko Candrabaga Pd. Ungu,"Ruko Candrabaga Pd. Ungu, Ruko Candrabaga Blok AO 1, Jl. Pd. Ungu Permai No.11, Bahagia, Kec. Babelan, Bekasi 17610",19000,NORMAL
+BKS.RKDELTAMS,Ruko Deltamas,"Ruko Deltamas, Ruko Palais DE Paris A12 - Deltamas Cikarang, Jawa Barat 17530",19000,NORMAL
+BKS.RKDUKZAM,Ruko Dukuh Zamrud,"Ruko Dukuh Zamrud, Pertokoan Zamrut, Jalan Zamrud Utara Blok B1 No.19, RT.001/RW.017, Padurenan, Bekasi Timur, Bekasi, Jawa Barat 16340",19000,NORMAL
+BKS.RKGDTERRA,Ruko Gading Terrace Bekasi,"Ruko Gading Terrace Bekasi, Jl. Boulevard Gading Terrace, Bekasi 17561",19000,NORMAL
+BKS.RKGLXY,Ruko Grand Galaxy City Bekasi,"Ruko Galaxy Bekasi, Jl. Boulevard Raya RT 004, RW 019, Jaka Setia, Kec. Bekasi Selatan, Kota Bekasi, Jawa Barat",19000,NORMAL
+BKS.RKGRANWIS,Ruko Grand Wisata Bekasi,"Ruko Grand Wisata Bekasi, Ruko Festive Boulevard Blok AA 16, Jl Grand Wisata, Lambangsari, Kec. Tambun Selatan, Bekasi, Jawa Barat 17510",19000,NORMAL
+BKS.RKJATIASIH,Ruko Jatiasih,"Ruko Jatiasih, Jl. Wibawa Mukti II - Jatiasih, Bekasi (depan Bunderan Komsen) 17423",19000,NORMAL
+BKS.RKJATIMKMR,Ruko Jatimakmur,"Ruko Jatimakmur, Residence
+RT.002 /RW.020 Kel.Jatimakmur Kec. Pondok Gede. Bekasi - Jawa Barat 17413",19000,NORMAL
+BKS.RKKARTINI,Ruko RA Kartini Bekasi,"Ruko RA Kartini Bekasi, Jl. RA Kartini No.6, RT.003/RW.003, Margahayu, Kec. Bekasi Tim., Kota Bks, Jawa Barat",19000,NORMAL
+BKS.RKKEMPRA,Ruko Kemang Pratama Bekasi,"Ruko Kemang Pratama Bekasi,,Jl. Kemang Pratama Raya Blok AN-41, RT.004/RW.001, Bojong Rawalumbu, Kec. Rawalumbu, Kota Bks, Jawa Barat 17116",19000,NORMAL
+BKS.RKKLABANG,Ruko Kaliabang,"Ruko Kaliabang, Ruko Kaliabang Artha Loka Jl. Kaliabang no 77, RT.001/RW.020, Harapan Jaya, Bekasi Utara, Bekasi City, West Java 17122",19000,NORMAL
+BKS.RKKRGASIH,Ruko Karangasih (Pilar) Cikarang Utara,"Ruko Karangasih Cikarang Utara, Jl. Ki Hajar Dewantara, Karangasih, Cikarang, Kabupaten Bekasi, Jawa Barat 17530",19000,NORMAL
+BKS.RKKRGGN,Ruko Kranggan,"Ruko Kranggan, Jl. Raya Kranggan No.52, Jatiraden, Kec. Jatisampurna, Bekasi - Jawa Barat",19000,NORMAL
+BKS.RKMGJYTBN,Ruko Mangunjaya Tambun,"Ruko Mangunjaya Tambun, Jl. Mangunjaya Raya No. 114, Bekasi",19000,NORMAL
+BKS.RKMGT,Ruko Mutiara Gading Timur,"Ruko Mutiara Gading Timur, Jl Mutiara Gading Timur No.II Rt.012/Rw.028 Mustika Jaya Kota Bekasi Jawa Barat",19000,NORMAL
+BKS.RKPERUMNAS3,Ruko Perumnas 3 Bekasi,"Jl. Nusantara Raya Kel No.10 RT.001/RW.010, Aren Jaya, Kec. Bekasi Tim., Bekasi Kota, Jawa Barat 17111",19000,NORMAL
+BKS.RKTMBN,Ruko Tambun Bekasi,"Ruko Tambun Bekasi, Komp Ruko Tambun City, Jl Sultan Hasanudin, Tambun Selatan - Bekasi",19000,NORMAL
+BKS.RKTOPAZ,Ruko Topaz Summarecon Bekasi,"Ruko Topaz Summarecon Bekasi, Jalan Boulevard Baru, Ruko TOPAZ A06, RT.001/RW.011, Harapan Mulya, Medan Satria, Kota Bekasi, Jawa Barat 17143",22000,MAHAL
+BKS.RKVSNT,Ruko Vasanta Innopark,"Ruko Vasanta Innopark, Ruko Tsubaki T-23, Vasanta Innopark Kawasan Industri MM2100, Kabupaten Bekasi, Jawa Barat 17530",19000,NORMAL
+BKS.RSPMYBSUT,RS Primaya Bekasi Utara,"RS Primaya Bekasi Utara, Golden City, Villa Indah Permai, Jl. Kaliabang No.1, RT.001/RW.033, Tlk. Pucung, Kec. Bekasi Utara, Kota Bks, Jawa Barat 17122",19000,NORMAL
+BKS.SPBUBLKPL,Pertamina Bulak Kapal,"SPBU Pertamina 34-17119 Bulak Kapal ( Container ), Jl. HM Joyo Martono No.8 Bulak Kapal Bekasi",19000,NORMAL
+BKS.SPBUCBTG,Pertamina Cibitung Bekasi,"SPBU Pertamina 34.17548 Cibitung Bekasi (Container), Jalan Raya B. Bosih Selang, Wanasari, Kec. Cibitung, Bekasi, Jawa Barat 17520",19000,NORMAL
+BKS.SPBUCCJBBK,Pertamina Jababeka II,"SPBU Pertamina 31.175.03 Menjangan Jababeka II (Container), 31.175.03, Jl. Menjangan ROW 12 Perum. Jababeka Bekasi",19000,NORMAL
+BKS.SPBUJTWRG,Pertamina Jatiwaringin,"Spbu Pertamina 34.17128 Jatiwaringin, Jl. Raya Jatiwaringin no 234 Rt 003/ Rw. 006 Jatiwaringin Kecamatan Pondok Gede, Kota Bekasi Jawa Barat 17411",19000,NORMAL
+BKS.SPBUPGSN,Pertamina Pengasinan,"SPBU Pertamina 34.17120 Pengasinan (Container) , Jl Pengasinan Raya RT 04/RW03 Kel. Pengasinan Kec. Rawa Lumbu Bekasi",19000,NORMAL
+BKS.SPBURWLUMBU,Pertamina 34.17131 Rawalumbu,"SPBU Pertamina 34.17131 Rawalumbu (Container), Jl. Pramuka No.39, RT.004/RW.002, Sepanjang Jaya, Kec. Rawalumbu, Kota Bks, Jawa Barat 17114",19000,NORMAL
+BKS.SPINDJTBNG,Super Indo Jatibening,"Super Indo Jatibening, Jl. Dr. Ratna, RT.001/RW.001, Jatibening, Kec. Pondokgede, Kota Bks, Jawa Barat 17412",19000,NORMAL
+BKS.SUPINDOCRW,Super Indo Cerewed Bekasi,"Super Indo Cerewed Bekasi, Ground Floor, Jl. Mekar Sari RT 004/RW008, Duren Jaya, Bekasi Timur, Jawa Barat, 17111",19000,NORMAL
+BMS.RKBNYMN,Ruko Bunyamin Purwokerto,"Ruko Bunyamin Purwokerto, Jl. Profesor DR. HR Boenyamin No.106, Sumampir Wetan, Pabuaran, Kec. Purwokerto Utara, Kabupaten Banyumas, Jawa Tengah 53125",19000,NORMAL
+BMS.RKSKRJA,Ruko Sokaraja,"Ruko Sokaraja, G7RV+WCX, Jl. Raya Banjarnegara - Purwokerto, Dusun I Sokaraja Tengah, Sokaraja Tengah, Kec. Sokaraja, Kabupaten Banyumas, Jawa Tengah 53181",19000,NORMAL
+BMS.RTSPRMALL,Rita Supermall Purwokerto,"Rita Supermall Purwokerto, Jl. Jend. Soedirman No.296, Pereng, Sokanegara, Kec. Purwokerto Tim., Kabupaten Banyumas, Jawa Tengah 53116",19000,NORMAL
+BNA.NYAKMKM,Ruko Nyak Makam Aceh,"Ruko Nyak Makam Aceh,  Jl. T. Panglima Nyak Makam No.100b, Doi, Kec. Ulee Kareng, Kota Banda Aceh",19000,NORMAL
+BNA.RKPNGPM,Ruko Panglima Polem Aceh,"Ruko Panglima Polem Aceh, T. Panglima Polem, Laksana, Kota Banda Aceh",19000,NORMAL
+BNJ.RKSLTNHSDN,Ruko Sultan Hasanuddin Binjai,"Ruko Sultan Hasanuddin Binjai, Jl. Sultan Hasanuddin No.100, Kartini, Kec. Binjai Kota, Kota Binjai, Sumatera Utara 20714, Indonesia",19000,NORMAL
+BNJ.SZYBM,Suzuya Plaza Binjai,"Suzuya Binjai Medan, Ground Floor, Jl. Sutomo No.21, Pahlawan, Kec. Binjai Utara, Kota Binjai, Sumatera Utara 20743",19000,NORMAL
+BOTANI,Botani Square,"Botani Square Mall, Eatery Lantai 2, Jl. Raya Pajajaran No.69-71,Bogor Tengah",19000,NORMAL
+BP.DELATINOS,BP BSD Delatinos,"BP BSD Delatinos, Jl. Rawa Buntu RT 006 RW 001, Rawa Buntu, Serpong, Tangerang Selatan, Banten - 15318",19000,NORMAL
+BP.JABABEKA,BP Jababeka Hollywood,"BP Jababeka Hollywood, Jl. H.Usmar Ismail, Mekarmukti, Kec. Cikarang Utara, Bekasi, Jawa Barat 17530",19000,NORMAL
+BP.KARAWANG,BP Karawang Barat,"BP Karawang Barat, Jl. Interchange Karawang Barat, Margakarya, Telukjambe Barat, Karawang, Jawa Barat - 41361",19000,NORMAL
+BP.KTJINDAH,BP Kertajaya Indah,"BP Kertajaya Indah, Jl. Raya Kertajaya Indah, Manyar Sabrangan, Kec. Mulyorejo, Surabaya, Jawa Timur - 60117",19000,NORMAL
+BPP.EWALK,E WALK BALIKPAPAN,"E Walk Balikpapan, Lantai GF Island B2 Unnamed Road, Gn. Bahagia, Kecamatan Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur 76114",22000,MAHAL
+BPP.PLZBNSY,Plaza Bunsay (Drive Thru),"Plaza Bunsay (Drive Thru), Jl. Letjen Suprapto, Baru Ilir, Kec. Balikpapan Bar, Kota Balikpapan, Kalimantan Timur 76123",19000,NORMAL
+BPP.RKAHYANI,Ruko Ahmad Yani Balikpapan,"Ruko Ahmad Yani Balikpapan, Jl. Jend. A. Yani No. 33, RT 039, Kel. Klandasan Ilir, Kec. Balikpapan Kota, Kota Balikpapan, Kalimantan Timur",19000,NORMAL
+BPP.RKMLWRN,Ruko Mulawarman Balikpapan,"Ruko Mulawarman Balikpapan, Jl. Mulawarman No. 94 Sepinggan, Kec. Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur",19000,NORMAL
+BPP.RKMTHRY,Ruko MT Haryono Balikpapan 2,"Ruko MT Haryono Balikpapan 2, Jl. MT Haryono Batu Ampar, Kec. Balikpapan Utara, Kota Balikpapan, Kalimantan Timur 76114",19000,NORMAL
+BPP.RKMTHRYNO,Ruko Jl. MT Haryono Balikpapan,"Jl. MT Haryono Damai, Balikpapan Kota, Kalimantan Timur 76114",19000,NORMAL
+BPP.RKRUHUIRHY,Ruko Ruhui Rahayu Balikpapan,"Ruko Ruhui Rahayu Balikpapan, Jl. Ruhui Rahayu 1, Gn. Bahagia, Kecamatan Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur 76114",19000,NORMAL
+BPP.RKSOETTA,Ruko Soekarno Hatta Balikpapan,"Ruko Soekarno Hatta Balikpapan, JL.Soekarno Hatta KM 3.5 Batu Ampar kec. Balikpapan utara,  Kota Balikpapan, Kalimantan timur 76136",19000,NORMAL
+BTG.RAK360B,Rest Area 360B Batang,"Rest Area 360B Batang, Jl. Tol Semarang - Batang Km. 360, Gondang, Kec. Subah, Kabupaten Batang, Jawa Tengah 51263",22000,MAHAL
+BTG.RAK379A,Rest Area Km 379A (Container),"Rest Area Km 379A (Container), Jl. Tol Semarang - Batang No.Km 379 A, Plelen Lor, Plelen, Kec. Gringsing, Kabupaten Batang, Jawa Tengah 51281",22000,MAHAL
+BTM.BOTANIA,Botania Batam,"Botania Batam, Komplek Repindo Industrial Estate Blok B1 No1&2",19000,NORMAL
+BTM.CITYSQR,Batam City Square,"Batam City Square, Jl. Bunga Raya, Batu Selicin, Kec. Lubuk Baja, Kota Batam, Kepulauan Riau 29442",22000,MAHAL
+BTM.GRANDMALL,Grand Batam Mall,"Grand Batam Mall, Jl. Pembangunan, Batu Selicin, Kec. Lubuk Baja, Kota Batam, Kepulauan Riau 29444",22000,MAHAL
+BTM.MEGAMALL,Megamall Batam,"Megamall Batam, Jl. Engku Putri No.1, Belian, Kec. Batam Kota, Kota Batam, Kepulauan Riau 29461",22000,MAHAL
+BTM.PANBILMALL,Panbil Mall Batam,"Panbil Mall Batam, Panbil Mall Batam - Muka Kuning, Kec. Sei Beduk, Kota Batam, Kepulauan Riau 29433",19000,NORMAL
+BTM.RKPALMSPRG,Ruko Palm Spring Batam,"Ruko Palm Spring Batam, Komplek Ruko Palm Spring Blok B2, Batam, Taman Baloi, Batam Kota, Taman Baloi, Kec. Batam Kota, Kota Batam, Kepulauan Riau 29444",19000,NORMAL
+BTM.RKTBAN,Ruko Tiban Batam,"Ruko Tiban Batam, Jl. Gajah Mada, Patam Lestari, Kec. Sekupang, Kota Batam, Kepulauan Riau 29424",19000,NORMAL
+BYW.RKGENTENG,Ruko Genteng Banyuwangi,"Ruko Genteng Banyuwangi, Jl. Gajah Mada No.281, Dusun Krajan, Genteng Kulon, Kec. Genteng, Kabupaten Banyuwangi, Jawa Timur 68465",19000,NORMAL
+BYW.RKRGJPI,Ruko Rogojampi Banyuwangi,"Ruko Rogojampi Banyuwangi, Dusun Sidomulyo, Gitik, Kec. Rogojampi, Kabupaten Banyuwangi, Jawa Timur 68462",19000,NORMAL
+BYW.ROXY,Roxy Banyuwangi,"Roxy Banyuwangi, Jl. Jenderal Ahmad Yani No.21, Penganjuran, Kec. Banyuwangi, Kabupaten Banyuwangi, Jawa Timur 68416",19000,NORMAL
+CBN.RKKTCLDG,Ruko Kota Ciledug Cirebon,"Ruko Kota Ciledug Cirebon, Jl. Merdeka Barat No.31, Pabuaran Kidul, Kec. Ciledug, Kabupaten Cirebon, Jawa Barat 45188",19000,NORMAL
+CBN.RKPRJGN,Ruko Perjuangan Cirebon,"Ruko Perjuangan Cirebon,  Jl. Majasem No.1, Karyamulya, kec. Kesambi, Kota Cirebon, Jawa Barat 45131",19000,NORMAL
+CBN.RSMTRPLMBN,RS Mitra Plumbon (Container),"RS Mitra Plumbon (Container), Jl. Raya Plumbon - Palimanan No.KM.11, Gombang, Kec. Plumbon, Kabupaten Cirebon, Jawa Barat 45155",19000,NORMAL
+CILEGON.CM,Cilegon Centre Mall,"Cilegon Centre Mall, Lt. GF, Jl. Jend. Ahmad Yani, Sukmajaya, Kec. Jombang, Kota Cilegon, Banten 42416",19000,NORMAL
+CIMB,Graha CIMB Niaga,"Graha CIMB Niaga, Lantai Ground Floor, SCBD, Jl. Jend. Sudirman Kav. 58, Karet Semanggi",19000,NORMAL
+CINERE.MALL,Cinere Mall,"Mall Cinere, Lantai 1, Jl. Cinere Raya, Blok Haji Rosyid No. 38, Cinere, Depok, Jawa Barat - 16514",19000,NORMAL
+CIPUTRA.SBY,Ciputra World Surabaya,"Ciputra World Surabaya, LG, Jl. Mayjen Sungkono No. 89, Gunung Sari, Dukuhpakis, Surabaya, Jawa Timur - 60224",19000,NORMAL
+CITOS,Cilandak Town Square,"Cilandak Town Square, Lantai 1, Jl. TB Simatupang Kav. 17, RT.2/RW.1, Cilandak Barat, Cilandak, Jakarta Selatan - 12430",19000,NORMAL
+CITRA.KMY,Citra Tower Kemayoran,"Citra Tower Kemayoran, LG, Jl. Casa No.170, RT.13/RW.6, Kebon Kosong, Kemayoran, Jakarta Pusat, Jakarta, 10630",19000,NORMAL
+CKR.BPCKR,BP Cikarang,"BP Cikarang Sriwijaya, Jl. Sriwijaya No. 22, Lippo, Cikarang Selatan, Bekasi, Jawa Barat 17530",19000,NORMAL
+CLP.RKAYCLCP,Ruko Ahmad Yani Cilacap,"Ruko Ahmad Yani Cilacap, Jl Ahmad Yani No 74 Dafam Cilacap Sidakaya, Kec. Cilacap Selatan, Jawa Tengah",19000,NORMAL
+CMH.RKPDSUKA,Ruko Padasuka Cimahi,"Ruko Padasuka Cimahi, Jl. Jend. H. Amir Machmud No.462, Padasuka, Kec. Cimahi Tengah, Kota Cimahi, Jawa Barat 40525",19000,NORMAL
+CMH.SPBUCMH,Pertamina 34.40502 Kota Cimahi,"SPBU Pertamina 34.40502 Kota Cimahi, Jl. Jend. H. Amir Machmud No.294, Cibabat, Kec. Cimahi Utara, Kota Cimahi, Jawa Barat 40513",19000,NORMAL
+CP,Central Park 1,"Central Park, Lower Ground Floor, Letjen S. Parman Street No.28, RT.12/RW.6, Tanjung Duren Selatan, Grogol petamburan, Jakarta Barat, 11470",22000,MAHAL
+CPT.RKCEGER,Ruko Ceger,"Ruko Ceger, Jl. Ceger Raya No.9, RT.3/RW.4, Jurang Manggu Tim., Kec. Pd. Aren, Kota Tangerang Selatan, Banten 15222, Indonesia",19000,NORMAL
+CRB.RAK207A,"Rest Area Km 207A, Cirebon (Container)","Rest Area 207A (Container) (Relocation), Setupatok, Mundu, Cirebon, West Java 45173",22000,MAHAL
+CRB.RAK228A,Rest Area 228A Cirebon (Container),"Rest Area 228A Cirebon (Container), 4P93+F96, Jatirenggang, Pabuaran, Cirebon, West Java 45188, Indonesia",22000,MAHAL
+CRB.SHELL,Shell Cirebon,"Shell Cirebon, Jl. Kesambi No. 130, Sunyaragi, Kec Kesambi, Kota Cirebon, Jawa Barat 45132",19000,NORMAL
+CRB.SHELLCL,Shell Citraland Cirebon (Drive Thru),"Jl. Ciremai Raya, Kalijaga, Kec. Harjamukti, Kota Cirebon, Jawa Barat 45144 Shell (Citraland Cirebon)",19000,NORMAL
+CRB.SRGMLL,Grage Mall Cirebon,"Grage Mall Cirebon, Jl. Tentara Pelajar No.1, Kejaksan, Kec. Kejaksan, Kota Cirebon, Jawa Barat 45123
+Lantai 1, Unit F1 RT 61-62",19000,NORMAL
+CRB.YGCHERJUNC,Toserba Yogya (Cherbon Junction),"Toserba Yogya (Cherbon Junction), Ground Floor, Depan Kassa 3, Jl. Kartini No.26, Sukapura, Kec. Kejaksan, Kota Cirebon, Jawa Barat 45123",19000,NORMAL
+DMALL,D'Mall Depok,"Dmall, Lantai Ground Floor, Jl. Margonda Raya Kav. 88, Kemiri Muka, Beji,",19000,NORMAL
+DOCOKK.BKS.GRDRSDNCT,Grand Residence City,"Grand Residence City, Jl. Grand Residence Boulevard No.456, Burangkeng, Kec. Setu, Kabupaten Bekasi, Jawa Barat 17320",19000,NORMAL
+DOCOKK.BKS.MTRGDGCTY,Mutiara Gading City Bekasi,"Mutiara Gading City Bekasi (DOCO), Jl. Mutiara Gading City Ruko Palazo R1 No.7, Babelan Kota, Kec. Tarumajaya, Kabupaten Bekasi, Jawa Barat",19000,NORMAL
+DOCOKK.BTM.KSQMALL,K Square Mall Batam,"K Square Mall Batam, Jl. Sudirman No.25-35, Sukajadi, Kec. Batam Kota, Kota Batam, Kepulauan Riau 29444",19000,NORMAL
+DOCOKK.DPK.RKCNRYE1,Cinere Raya English 1 Cinere,"Ruko Cinere Raya E1 Cinere, English 1 Cinere. Jl. Cinere Raya No.28-29 Blok A, RT.2/RW.4, Cinere, Kec. Cinere, Kota Depok, Jawa Barat 16514",19000,NORMAL
+DOCOKK.JKT.BLVGLILNE1,Boulevard Golf Island English 1 PIK,"Boulevard Golf Island E1 PIK, English 1 PIK. Jl.Boulevard Ruko Golf Island Blok L no.65-66, Daerah Khusus Ibukota Jakarta 14460",19000,NORMAL
+DOCOKK.JKT.KPDSTKBGS,Kopindosat Kebagusan,"Kopindosat Kebagusan (DOCO), Jl. Kebagusan I No.4, RT.1/RW.2, Ps. Minggu, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12520",19000,NORMAL
+DOCOKK.JKT.PSDLDPNK,Pusdiklat Depnaker,"Pusdiklat Depnaker, Jl. Pusdiklat Depnaker No.30, RT.9/RW.6, Pinang Ranti, Kec. Makasar, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13570",19000,NORMAL
+DOCOKK.KBM.KSMKBM,Kusuma Kebumen,"Kusuma Kebumen, Jl. Kusuma No.3, RW No.RT.5, Wonoyoso, Bumirejo, Kec. Kebumen, Kabupaten Kebumen, Jawa Tengah 54316",19000,NORMAL
+DOCOKK.MLG.BNDWSO,Bondowoso Malang,"Bondowoso Malang, Jl. Bondowoso No.44, Gading Kasri, Kec. Klojen, Kota Malang, Jawa Timur 65115",19000,NORMAL
+DOCOKK.MLG.SPBAPDNTO,SPBU Ampeldento Malang,"SPBU Ampeldento Malang, Jl. Raya Ampeldento Jl. Raya Bamban No.1, Meduran, Asrikaton, Kec. Pakis, Kabupaten Malang, Jawa Timur 65154",19000,NORMAL
+DOCOKK.MLG.TLGMS,Tlogomas Malang,"Tlogomas Malang (DOCO), Jl. Raya Tlogomas No.20, Tlogomas, Kec. Lowokwaru, Kota Malang, Jawa Timur 65144",19000,NORMAL
+DOCOKK.MND.PNKI,Paniki Manado,"Paniki Manado, Jl. A.A. Maramis, Paniki Dua, Kec. Mapanget, Kota Manado, Sulawesi Utara 95257",19000,NORMAL
+DOCOKK.MND.WLTRMGNSD,Wolter Monginsidi Manado,"Wolter Monginsidi Manado, Jl. Wolter Monginsidi No.105 B, Malalayang Satu, Kec. Malalayang, Kota Manado, Sulawesi Utara 95162",19000,NORMAL
+DOCOKK.PAL.SIAJFRI,Palu Arena,"Sis Aljufri Palu, Jl. Sis Aljufri Kawasan Wisata Religi Siranindi, Palu, Sulawesi Tengah",22000,MAHAL
+DOCOKK.PAL.VTLMPRK,Vatulemo Park Palu,"Vatulemo Park Palu, Jl. Balai Kota Utara, Lolu Utara, Kec. Palu Selatan, Kota Palu, Sulawesi Tengah 94111",22000,MAHAL
+DOCOKK.PBR.MTPLTCTY,Metropolitan City Pekanbaru,"Metropolitan City Pekanbaru, Jl. HR. Soebrantas No.KM. 12.5, Simpang Baru, Kec. Tampan, Kota Pekanbaru, Riau 29211",19000,NORMAL
+DOCOKK.PSN.SPBKBNAGNG,SPBU Kebonagung Pasuruan,"SPBU Kebonagung Pasuruan (DOCO), SPBU 54.671, Jl. Urip Sumoharjo No.50, Kebonagung, Kec. Purworejo, Kota Pasuruan, Jawa Timur 67171",19000,NORMAL
+DOCOKK.SBY.CTRYUNS,Citra Raya Unesa,"Citra Raya Unesa, Tenant No. 4 Lab Kewirausahaan Unesa, Jalan Citra Raya Kelurahan Lidah Wetan, Kecamatan Lakarsantri, Surabaya, Jawa Timur",19000,NORMAL
+DOCOKK.SBY.GRDHRVEST,Grand Harvest Surabaya,"Grand Harvest Surabaya, Surabaya, Balas Klumprik, Wiyung, Surabaya, East Java 60222",19000,NORMAL
+DOCOKK.SBY.MNKNWTN,Manukan Wetan Surabaya,"Manukan Wetan Surabaya (DOCO), Jl. Sikatan I No.49, Manukan Wetan, Kec.
+Tandes, Surabaya, Jawa Timur 60185",19000,NORMAL
+DOCOKK.SMG.CTRGRND,Citra Grand Semarang,"Citra Grand Semarang, Sambiroto, Semarang City, Central Java",19000,NORMAL
+DOCOKK.SMR.RSABDWHSHR,RS Abdul Wahab Sjahranie Samarinda,"RS Abdul Wahab Sjahranie Samarinda, Jl. Palang Merah No.1, Sidodadi, Kec. Samarinda Ulu, Kota Samarinda, Kalimantan Timur 75123",19000,NORMAL
+DOCOKK.SMR.RSMRMDKCT,RS Samarinda Medika Citra,"RS Samarinda Medika Citra (DOCO), Jl. Kadrie Oening No.85, RT.35, Air Putih, Kec. Samarinda Ulu, Kota Samarinda, Kalimantan Timur 75124",22000,MAHAL
+DOCOKK.SNG.RAK101,Rest Area 101,"Rest Area 101, Rest Area 101 Jl. Tol Cikopo - Palimanan No.Km 101, Batusari, Kec. Dawuan, Kabupaten Subang, Jawa Barat 41271",22000,MAHAL
+DOCOKK.SNG.RAK102,Rest Area 102,"Rest Area 102, Rest Area 102 Jl. Tol Cikopo - Palimanan No.Km 102, Batusari, Kec. Dawuan, Kabupaten Subang, Jawa Barat 41271",22000,MAHAL
+DOCOKK.TNG.EFGDGSRPG,Graha Emerald English 1 Gading Serpong,"EF Gading Serpong, Jl. Gading Serpong Boulevard Blk. M5 No.7, Pakulonan Bar., Kec. Klp. Dua, Kabupaten Tangerang, Banten 15810",19000,NORMAL
+DOCOKK.TNG.RKGLRDE1,Golden Road English 1 BSD,"Ruko Golden Road E1 BSD, English 1 BSD. Ruko Sektor VII B (Golden Road) Blok S No. 106-110 Jl. Pahlawan Seribu Tangerang, Lengkong Wetan, Serpong Sub-District, South Tangerang City, Banten 15322",19000,NORMAL
+DOCOKK.TNG.SPBCSUK,SPBU Cisauk Tangerang,"SPBU Cisauk Tangerang, Jl. Raya Cisauk Lapan No.3, Situ Gadung, Kec. Pagedangan, Kabupaten Tangerang, Banten 15338",19000,NORMAL
+DOCOKK.TNG.TMNRYLCPD,Taman Royal Cipondoh,"Taman Royal Cipondoh, Jl. Permata Raya, RT.004/RW.015, Tanah Tinggi, Kec. Cipondoh, Kota Tangerang, Banten 15119",19000,NORMAL
+DPK.APTKROXY,Apotik Roxy Depok,"Apotek Roxy Nusantara Depok (Container), Jalan Nusantara Raya, Beji, Kecamatan Beji, Kota Depok, Jawa Barat 16421",19000,NORMAL
+DPK.FMIPAUI,FMIPA UI,"FMIPA UI, Komplek Fakultas Mipa Universitas Indonesia, Jl. Prof. DR. Sudjono D. Pusponegoro, Pondok Cina, Kecamatan Beji, Kota  Depok, Jawa Barat 16424",19000,NORMAL
+DPK.GIANTBJGSR,Hyfresh Bojongsari,"Hyfresh Bojong Sari, Jl. Raya Bojongsari No.43 G, Bojongsari Lama, Kec. Bojongsari, Kota Depok, Jawa Barat 16516",19000,NORMAL
+DPK.LVPLZCNR,Living Plaza Cinere Depok,"Living Plaza Cinere, Ground Floor  G-11/ G-11A, Jl. Cinere Raya No.20, Cinere, Kec. Cinere, Kota Depok, Jawa Barat 16514",19000,NORMAL
+DPK.MRGCITY,Margo City Depok,"Margocity, LG-14, Jl. Margonda Raya No. 358, Kemiri Muka, Kecamatan Beji, Kota Depok, Jawa Barat 16423",22000,MAHAL
+DPK.RKCTYMCNTER,Ruko Citayam Centre,"Ruko Citayam Centre, Jl Raya Citayam Bojong Pondok Terong Cipayung Depok Jawa Barat",19000,NORMAL
+DPK.RKGNDL,Ruko Gandul,"Ruko Gandul, Ruko Mutiara Gandul Kav.Toko 8 Gandul Depok Jawa Barat 16514",19000,NORMAL
+DPK.RKKJYAN,Ruko Kejayaan Depok,"Ruko Kejayaan Depok, Jl. Kejayaan No. 4 Abadijaya, Kec. Sukmajaya. Kota Depok, Jawa Barat 16417",19000,NORMAL
+DPK.RKMRGD,Ruko Margonda,"Ruko Margonda, Jl. Raya Margonda No.485, Kelurahan Pondok Cina, Kecamatan Beji, Kota Depok, Jawa Barat 16424",19000,NORMAL
+DPK.RKSAWANGAN,Ruko Sawangan Depok,"Ruko Sawangan Depok, Jl. Raya Sawangan, Depok (ex Indomaret), RT.004, RW.004, Kel. Rangkapan Jaya, Kec. Pancoran Mas, Kota Depok, Jawa Barat 16435",19000,NORMAL
+DPK.RKTAPOS,Ruko Tapos Pekapuran Depok,"Ruko Tapos Pekapuran Depok, Jl. Pekapuran No.9, Sukamaju Baru, Kec. Tapos, Kota Depok, Jawa Barat 16455",19000,NORMAL
+DPK.RKTLISKNDR,Ruko Tole Iskandar,"Ruko Tole Iskandar, Jl. Tole Iskandar, Mekarjaya, Kec. Sukmajaya, Kota Depok 16415",19000,NORMAL
+DPK.RKWATPARK,Ruko Waterpark Grand Depok City,"Ruko Waterpark Grand Depok City, Jl. Boulevard Grand Depok City Raya No.19, Tirtajaya, Kec. Sukmajaya, Kota Depok, Jawa Barat 16412",19000,NORMAL
+DPK.SPBUCLGKP,Pertamina 34-16920 Cilangkap,"SPBU 34-16920 Cilangkap, Jl.Raya Bogor No. 5 RT. 2 / RW. 13, Cilangkap, Tapos, Pabuaran, Depok, Jawa Barat 16916",19000,NORMAL
+DPK.SPBUDDSWBR,Pertamina Sawangan Baru Depok,"SPBU Pertamina 34.165.11 Sawangan Baru Depok (Container), Jl. Raya Muchtar, Sawangan Baru, Kec. Sawangan, RT 03 RW 07 Sawangan, Kota Depok, Jawa Barat 16511",19000,NORMAL
+DPK.SPBUGASLAM,Pertamina DODO Pertamina Gas Alam,"SPBU DODO Pertamina 34-16419 Gas Alam (Container), Jl. Raya Gas Alam RT.3/4 Depok Jawa Barat 16454",19000,NORMAL
+DPK.SPBUJUANDA,Pertamina Juanda Depok,"SPBU Pertamina 34-16410 Juanda Depok (Container), Jl. Hj Ir Juanda Bakti Jaya Depok 16416",19000,NORMAL
+DPK.SPBUKRTN,Pertamina Kartini,"SPBU Pertamina 34-16411 Kartini (Container), Jl. R.A Kartini No. 7, Pancoranmas, Depok, Jawa Barat, Indonesia 16431",19000,NORMAL
+DPK.SPBULIMORA,Pertamina Limo Raya,"SPBU Pertamina 34.165.12 Limo Raya (Container), Jl. Limo Raya No. 2, Limo, Kec. Limo,Kota Depok, Jawa barat",19000,NORMAL
+DPK.UNIVIDN,Universitas Indonesia,"Universitas Indonesia, lantai 1, Gedung Pascasarjana Fakultas Ekonomi dan Bisnis Kampus  UI Depok, Jl. Prof. Dr. Sumitro Djojohadikusumo, Kampus UI Depok, 16424",19000,NORMAL
+DPR.BUNGURHRAI,Terminal Kedatangan Domestik Bandara Ngurah Rai Bali,"Terminal Kedatangan Domestik Bandara Ngurah Rai Bali, Jl. Raya Gusti Ngurah Rai, Tuban, Kec. Kuta, Kabupaten Badung, Bali 80362",32000,MAHAL
+DPR.L21MALL,Level 21 Mall Bali,"Level 21 Mall Bali, Jl. Teuku Umar No.1, Dauh Puri Klod, Kec. Denpasar Bar., Kota Denpasar, Bali",19000,NORMAL
+DPR.RENON,Renon Bali,"Renon Bali, Jl. Cok Agung Tresna No.37, Dangin Puri Klod, Kec. Denpasar Tim., Kota Denpasar, Bali 80234",19000,NORMAL
+DPR.RKBTBLN,Ruko Batubulan,"Ruko Batubulan, Jl. Raya Batubulan, Batubulan, Kec. Sukawati, Kabupaten Gianyar, Bali 80237",19000,NORMAL
+DPR.RKGATSU,Ruko Gatot Subroto Bali,"Ruko Gatot Subroto Barat Bali, Jl. Gatot Subroto 31 Denpasar Utara",19000,NORMAL
+DPR.RKSSTAN,Ruko Sesetan,"Ruko Sesetan, Jl. Raya Sesetan No.221c, Sesetan, Denpasar Selatan, Kota Denpasar, Bali 80223",19000,NORMAL
+DPS.RKTKUMAR,Ruko Teuku Umar Bali,"Ruko Teuku Umar Bali, Jl. Teuku Umar Barat, Pemecutan Klod, Kec. Denpasar Bar., Kota Denpasar, Bali 80119, Indonesia",19000,NORMAL
+EMPORIUM.PL,Emporium Pluit,"Emporium Pluit, Lantai 4, FC-32 Jl. Pluit Putra Kencana, RT 23/RW 8, Penjaringan, Penjaringan, Jakarta Utara - 14440",22000,MAHAL
+FC.SUNTER,Food Centrum Sunter,"Food Centrum, Lantai 1, Ruko Puri Mutiara, Jl. Griya Utama Blok BA-BB-BC, Tj. Priok",19000,NORMAL
+GANCIT,Gandaria City (Island),"Gandaria City (Island), Lower Ground Floor #IU-L03B. Jl. Arteri Pd. Indah, RT. 10 / RW. 6, Kebayoran Lama Utara, Kec. Kby. Lama, Jakarta Selatan 12240",22000,MAHAL
+GARUDA.HQ,Garuda Head Quarter,"Garuda HQ (Container) Relocation,Garuda City Center, RT.001/RW.010, Pajang, Kec. Benda, Kota Tangerang, Banten 15126",19000,NORMAL
+GI,Central Grand Indonesia 2nd Floor,"Central Grand Indonesia 2nd Floor (East Mall), Jl. M.H. Thamrin No.1, Kb. Melati, Kec. Menteng, Kota Jakarta Pusat",22000,MAHAL
+GRS.SPBUGRESIK,Pertamina Gresik,"SPBU 54.61104 Gresik, Jl. Veteran No.2, Injen Timur, Gapurosukolilo  Kec. Gresik, Kabupaten Gresik, Jawa Timur 61122",19000,NORMAL
+GRT.RKIBC,Ruko IBC Garut,"Ruko IBC Garut, Ruko IBC Blok A No.9, Pakuwon, Garut Kota, Garut Regency, West Java 44117",19000,NORMAL
+GSK.RAKM726,Rest Area KM 726,"Rest Area KM 726, Jl. Tol Surabaya - Mojokerto, Area Sawah/Kebun, Pasinan Lemahputih, Kec. Wringinanom, Kabupaten Gresik, Jawa Timur 61176",22000,MAHAL
+GSK.RKKTBARU,Ruko Gresik Kota Baru,"Ruko Gresik Kota Baru, Jl Kalimantan 74 Blok RV 54, GKB, Wonorejo, Yosowilangun, Manyar, Kab. Gresik, Jawa Timur",19000,NORMAL
+GSK.RKM725A,Rest Area 725A Gresik (Container) Drive Thru,"Rest Area 725A Gresik (Container) Drive Thru, Jalan Tol Mojokerto - Surabaya KM 725 , Pasinan Lemahputih, Wringinanom, Gresik Regency, East Java 61176",22000,MAHAL
+JAMSOSTEK,Menara Jamsostek,"Gedung Parkir Menara Jamsostek, Lantai 1, Jl. Jendral Gatot Subroto No.Kav.38, Mampang Prapatan, Jakarta Selatan, 12710",19000,NORMAL
+JKT.ALFAPGLGN,Alfamidi Penggilingan,"Alfamidi Penggilingan, Jl. Raya Penggilingan, RT.13/RW.7, Cakung, East Jakarta City, Jakarta 13940",19000,NORMAL
+JKT.AMKEBLAMA,Alfamidi Kebayoran Lama (Bondex),"Jl. Raya Kby. Lama No.20, RT.2/RW.11, Grogol Sel., Kec. Kby. Lama, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12220",19000,NORMAL
+JKT.AMSMRBATU,Alfamidi Sumur Batu (Container),"Alfamidi Sumur Batu (Container), Jl. Sumur Batu Raya No.2, RT.11/RW.2, Sumur Batu, Kemayoran, Central Jakarta City, Jakarta 10640",19000,NORMAL
+JKT.ARTHAGDG,Mall Artha Gading,"Mall Artha Gading, Ground Floor, Jl. Artha Gading Selatan No. 1, Kelapa Gading, RT.18/RW.8, Kec. Kelapa Gading, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14240",22000,MAHAL
+JKT.ATPBTRC,Apartement Pakubuwono Terrace,"Apartement Pakubuwono Terrace (Downgrade Container), Jl. Ciledug Raya No. 99, RT. 2 / RW. 5, Cipulir, Kec. Kebayoran Lama, Jakarta Selatan 12230",19000,NORMAL
+JKT.AURUM,Gedung Aurum,"Gedung Aurum Container, Jl. Ampera Raya No.12, RT.8/RW.2, Cilandak Tim., Kec. Ps. Minggu, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12560",19000,NORMAL
+JKT.BNI46,Wisma BNI 46,"Wisma BNI 46, Lantai 1, Jl. Jend. Sudirman No.Kav 1, RT.6/RW.8, Kb. Melati, Kecamatan Tanah Abang, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10220",19000,NORMAL
+JKT.BPMRY,BP Meruya,"BP Meruya (Container), Jl. Meruya no.26 RT 001 Rw 005, Jakarta Barat",19000,NORMAL
+JKT.BTWOFCP,Beltway Office Park,"Beltway Office Park, Jl. Ampera Raya, RW.2, Ragunan, Kec. Ps. Minggu, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12540",19000,NORMAL
+JKT.CAKUNGMALL,Grand Cakung Mall,"Grand Cakung Mall, Ground Floor, Jl. Sri Sultan Hamengkubuwono IX KM.25, RW.1, Ujung Menteng, Kec. Cakung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13960",19000,NORMAL
+JKT.CAROLUS,RS Saint Carolus Jakarta,"RS. Saint Carolus, Unit C9, Jl. Salemba Raya No.41, RT.3/RW.5, Paseban, Kec. Senen, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10440",19000,NORMAL
+JKT.CDMNTG,Cik Ditiro Menteng,"Cik Ditiro Menteng, Jl. Tengku Cik Ditiro 29A, Menteng, Jakarta Pusat,10310",19000,NORMAL
+JKT.CFPIM2,PIM 2,"Pondok Indah Mall 2, Lantai 3, Food Court Unit FC 03, Jl. Metro Pondok Indah No.Kav. IV, Kebayoran Lama, Kota Jakarta Selatan, 12310",22000,MAHAL
+JKT.CGFLWTC,WTC Sudirman,"World Trade Center 6, Lantai Ground, Jl. Jenderal Sudirman Kav. No.29 RT 8/23 Kuningan Karet Setiabudi Jakarta Selatan 12920.",22000,MAHAL
+JKT.CGRKPTKGN,Ruko Petukangan,"Petukangan, Jl Cileduk Raya No.3 Kel.Petukangan Selatan",19000,NORMAL
+JKT.CLNGKP,Cilangkap,"Cilangkap, Jl. Raya Cilangkap No.10, RT.2/RW.1, Cilangkap, Kec. Cipayung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13870",19000,NORMAL
+JKT.CPTRYA,Cipete Raya,"Cipete Raya, Jl. Cipete Raya, Cipete Selatan, Kec. Cilandak, Kota Jakarta Selatan, DKI Jakarta 12410",19000,NORMAL
+JKT.CRESTWEST,The Crest West Vista,"The Crest West Vista, Shop House, Jl. Lingkar Luar Barat No.8, RT.9/RW.6, Duri Kosambi, Cengkareng, Jakarta Barat - 11750",19000,NORMAL
+JKT.CRPALMERAH,Dapur Kitchen Palmerah,Palmerah,,UNKNOWN
+JKT.CYBRTWR,Food Hub Cyber Tower 2,"Food Hub Cyber Tower 2, GF, Jl. H. R. Rasuna Said No.13, RT.7/RW.2, Kuningan, Kuningan Tim., Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12950",19000,NORMAL
+JKT.FCPIM1A51,Food Court PIM 1 - Area 51,"Food Court PIM 1 - Area 51, Metro Pondok Indah Kav. IV, Pd. Pinang, Kec. Kby. Lama, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta",22000,MAHAL
+JKT.FCPIM3,Food Court PIM 3,"Foodcourt PIM 3, Jl. Kartika Utama No.1, Kebayoran Lama - Jakarta Selatan",22000,MAHAL
+JKT.FXSDRM,FX Sudirman,"FX Mall Sudirman, The Common Unit FB #25,T25,OT25, Jl. Jend. Sudirman, RT.1/RW.3, Gelora, Kecamatan Tanah Abang, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10270",22000,MAHAL
+JKT.GANDCITY,Gandaria City,"Gandaria City, Mainstreet Ground Floor #MG-10 & S-10. Jl. Arteri Pd. Indah, RT. 10 / RW. 6, Kebayoran Lama Utara, Kec. Kby. Lama, Jakarta Selatan 12240",22000,MAHAL
+JKT.GDGKBI,Gedung GKBI,"Gedung GKBI, Suite G-01D, Jl. Jend Sudirman No. 28, Karet Tengsin, Tanah Abang, Jakarta Pusat, Indonesia 10210",19000,NORMAL
+JKT.GMMATWR,Gama Tower,"Gama Tower, GAMA TOWER Jl. H. R. Rasuna Said No.2, Karet Kuningan, Kecamatan Setiabudi, Daerah Khusus Ibukota Jakarta 12940",19000,NORMAL
+JKT.GRTRCMALL,Green Terrace Mall,"Green Terrace Mall, Lt GF Jl. Pintu Utama 1, Ceger, Kec. Cipayung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13820",19000,NORMAL
+JKT.ITLNDTWR,Intiland Tower,"Intiland Tower, Jl. Jenderal Sudirman No.Kav. 32, RW.2, Karet Tengsin, Tanah Abang, Jakarta Pusat, DKI Jakarta 10220",19000,NORMAL
+JKT.JBTOWER,JB Tower,"Jakarta Box Tower, Basement Floor, Jl. Kebon Sirih No.48-50, RT.11/RW.2, Gambir, Jakarta Pusat, Jakarta, 10110",19000,NORMAL
+JKT.KMYRANDT,Kemayoran (Drive Thru),"Kemayoran (DT), Jl Garuda, RT. 15 / RW. 1, Gunung Sahari, Kemayoran, Jakarta Pusat 10610",22000,MAHAL
+JKT.KRMTJYKJ,Ruko Kramat Jaya Koja,"Ruko Kramat Jaya Koja, Jl. Lagter GG 1 no. 2A RT.003/RW.001, Kel. Lagoa, Kec. Koja, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14270",19000,NORMAL
+JKT.LATERRACE,LA Terrace,"LA Terrace, Ground Floor & Upper Ground, unit B6, Gedung Blok B, Jl. Raya Lenteng Agung No.18, Srengseng Sawah, Kec. Jagakarsa, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12630",19000,NORMAL
+JKT.LIPPOKMG,Lippo Mall Kemang,"Lippo Mall Kemang, Lantai LG, Jl. Pangeran Antasari No. 33A, Kemang, Mampang Prapatan, Jakarta Selatan - 12150",19000,NORMAL
+JKT.LTSHAVNU,Lotte Mall Jakarta (LG),"Lotte Shopping Avenue (Lower Ground), Jl. Prof. DR. Satrio Kav 3-5, Kuningan, Karet Kuningan, Kec. Setiabudi, Jakarta Selatan 12940",22000,MAHAL
+JKT.MALCIPDAH,Mall Cipinang Indah,"Mal Cipinang Indah, Lower Ground no.7, Jl. Raya Kalimalang No.kav. 88, RT.18/RW.3, Pd. Bambu, Kec. Duren Sawit, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13420",19000,NORMAL
+JKT.MANGGA2SQ,Mangga Dua Square,"Mangga Dua Square, Jl. Gn. Sahari No.1, RT.11/RW.6, Ancol, Kec. Pademangan, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14420",19000,NORMAL
+JKT.MENTENOFC,M Ten,"Menara Tendean Office, Ground Floor unit GF.9, Jl. Kapten Tendean No. 6, RT.1, RW.5, Kuningan Barat, Mampang Prapatan, Jakarta Selatan",19000,NORMAL
+JKT.MLGRHCJTG,Mall Graha Cijantung,"Mall Graha Cijantung, GF, Jl. Pendidikan I No. 1, RT.1/RW.4, Cijantung, Pasar Rebo, Jakarta Timur - 13770",19000,NORMAL
+JKT.MNRMNDRI,Menara Mandiri,"Menara Mandiri, Jl. Jendral Sudirman No 5, Rw 3 Senayan, Kebayoran Baru, Jakarta 12190",19000,NORMAL
+JKT.MTRPARK,Metro Park Residence,"Metro Park Residence, Jl. Pilar Mas Utama No.Kav. 28, Kedoya Sel., Kec. Kb. Jeruk, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11520",19000,NORMAL
+JKT.NGSWALACAS,Naga Swalayan Ciracas,"Naga Swalayan Ciracas, Jl. Raya Bogor km26 No.6, RT.3/RW.7, kel.Ciracas, Kec. Ciracas, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13740",19000,NORMAL
+JKT.ONEBELLPRK,One Bell Park Cinere,"One Belpark, Jl. RS. Fatmawati Raya No.1, RW.1, Pd. Labu, Kec. Cilandak, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12450",19000,NORMAL
+JKT.PANCORANCT,Pancoran China Town,"Pancoran China Town Poin, Ground Floor, Jl. Pancoran, RT.9/RW.2, Glodok, Kec. Taman Sari, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11120",19000,NORMAL
+JKT.PLAZBIN1,Plaza Bintaro Satoe (Superindo),"Plaza Bintaro Satoe (Superindo), Unit Ground Floor, Jl. Bintaro Utama I No.5, RW.6, Bintaro, Kec. Pesanggrahan, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12330",19000,NORMAL
+JKT.PLZSLIPIJY,Plaza Slipi Jaya,"Plaza Slipi Jaya, Jl. Letjen S. Parman, RT.14/RW.1, Kemanggisan, Kec. Palmerah, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11480",19000,NORMAL
+JKT.PMDTANBANG,Pusat Mode Tanah Abang,"Pusat Mode Tanah Abang, Jl. H. Fachrudin No.51, RT.14/RW.6, Kp. Bali, Kecamatan Tanah Abang, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10250",19000,NORMAL
+JKT.POINTSQ,Poins Square,"Poins Square, Jalan R.A.Kartini No.1 RW.7 RT.09, Lb. Bulus, Kec. Cilandak, Daerah Khusus Ibukota Jakarta 12440",19000,NORMAL
+JKT.PSJTNHK,Pusat Jantung Nasional Harapan Kita,"Pusat Jantung Nasional Harapan Kita, Jl. Letjen S. Parman Kav.87, RW.8, Kota Bambu Utara, Kec. Palmerah, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11420",19000,NORMAL
+JKT.PSJYTG2,Pasar Jaya Teluk Gong 2,"Pasar Jaya Teluk Gong 2, Jl. Teluk Gong Raya No.16, RT.10/RW.7, Pejagalan, Kec. Penjaringan, Kota Jakarta Utara, Daerah Khusus Ibukota Jakarta 14450",19000,NORMAL
+JKT.PSKENARI,Pasar Kenari (Bondex),"Pasar Kenari (Bondex), RT.1/RW.3, Kenari, Kec. Senen, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10430",19000,NORMAL
+JKT.PURDAHMALL,Puri Indah Mall,"Puri Indah Mall, Lantai Dasar - Unit #70A, Jl. Puri Agung No.1, RT.1/RW.2, Kembangan Sel., Kec. Kembangan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11610",22000,MAHAL
+JKT.RAFFLESJND,Raffles Square Juanda Jakarta,"Raffles Square Juanda Jakarta, Jalan Veteran 2A 8 1, RT.8/RW.1, Ps. Baru, Kecamatan Gambir, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10110",19000,NORMAL
+JKT.RCVTRN,RC Veteran (Container) Drive Thru,"RC Veteran (Drive Thru), Jl. RC. Veteran Raya, RT.1/RW.1, Bintaro, Kec. Pesanggrahan,  Kota Jakarta Selatan, DKI Jakarta 12330",19000,NORMAL
+JKT.RKARDINCBB,Ruko Arundina Cibubur,"Ruko Arundina Cibubur, Komplek Ruko Cibubur Indah Jl. Lapangan Tembak, Cibubur, East Jakarta, RT.2/RW.11, Cibubur, Ciracas, East Jakarta City, Jakarta 13720",19000,NORMAL
+JKT.RKBEKMRD,Ruko Jalan Bek. Murad,"Ruko Jalan Bek. Murad, Jl. Bek Murad No. 30, Kuningan, Karet Pedurenan, Jakarta Selatan, 12940",19000,NORMAL
+JKT.RKBLVD,Ruko Boulevard Kelapa Gading,"Ruko Boulevard Kelapa Gading, Jl Boulevard Raya Blok LA4 No 20-21, Kelapa Gading – Jakarta Utara",19000,NORMAL
+JKT.RKCDG,Ruko Cideng,"Ruko Cideng, Jl. Cideng Barat No.57, RT.12/RW.1, Cideng, Kecamatan Gambir, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10150",19000,NORMAL
+JKT.RKCPDH,Ruko Cipondoh,"Ruko Cipondoh, Jl. KH. Hasyim Ashari No.118 Ruko-6, RT.001/RW.010, Cipondoh, Kec. Cipondoh, Kota Tangerang, Banten 15146",19000,NORMAL
+JKT.RKCPKPTH,Ruko Cempaka Putih,"Jl. Cemp. Putih 107-12, RT.7/RW.8, Cemp. Putih Tim., Kec. Cemp. Putih, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10510",19000,NORMAL
+JKT.RKCPYG,Ruko Cipayung,"Ruko Cipayung, Jalan raya binamarga no.6 kelurahan cipayung kecamatan cipayung, jakarta timur 13840",19000,NORMAL
+JKT.RKCTR6,Ruko Citra 6,"Ruko Citra 6, Ruko Sixth Avenue Blok H6A No. 34, Perumahan Citra Garden 6, RT.1/RW.5, Tegal Alur, Kec. Kalideres, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 15125",19000,NORMAL
+JKT.RKCTR7,Ruko Citra 7,"Ruko Citra 7, Jl. Peta Barat Citra 7, blok A.02 no.10, Kelurahan Pegadungan, Kecamatan Kalideres, Jakarta Barat",19000,NORMAL
+JKT.RKDNSURUT,Ruko Danau Sunter Utara,"Ruko Danau Sunter Utara, Jalan Danau Sunter Utara, RT.8/RW.15, Sunter Agung, Kec. Tj. Priok, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14350",19000,NORMAL
+JKT.RKDTMAS,Ruko Duta Mas Jelambar,"Ruko Duta Mas Jelambar, Ruko taman duta mas blok D 9A, No.3 RT 011/05, RT.11/RW.5, Wijaya Kusuma, Kec. Grogol Petamburan, Jakarta Barat, Daerah Khusus Ibukota Jakarta 11460",19000,NORMAL
+JKT.RKDWSRTKA,Ruko Dewi Sartika,"Ruko Dewi Sartika, Jl. Dewi Sartika No.292B, Cawang, Kec. Kramat jati, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13630",19000,NORMAL
+JKT.RKGRLKSNTR,Ruko Green Lake Sunter,"Ruko Green Lake Sunter, Jl. Danau Sunter Selatan RT 15/16 Sunter Agung, Tanjung Priok Jakarta Utara",19000,NORMAL
+JKT.RKGRNVIL,Ruko Greenville,"Ruko Greenville, Jalan Taman Ratu Indah Blok AA-2 No.30, Kel, RT.14/RW.7, Kedoya Utara, Kebon Jeruk, Jakarta, 11520",19000,NORMAL
+JKT.RKJOGLO,Ruko Joglo,"Ruko Joglo, Jalan Joglo Raya RT.6/RW.4, Joglo, Kec. Kembangan, Jakarta Barat",19000,NORMAL
+JKT.RKLANGLAUT,Ruko Elang Laut,"Ruko Elang Laut, Jl. Boulevard Raya No. 37, PIK, Jakarta Utara",19000,NORMAL
+JKT.RKLBKBULUS,Ruko Lebak Bulus,"Ruko lebak bulus Jl. Lebak Bulus Raya No.45a, RT.10/RW.7, Pd. Pinang, Kec. Kby. Lama, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12310",19000,NORMAL
+JKT.RKLGDWST,Ruko Legenda Wisata,"Ruko Legenda Wisata, Jl. Legenda wisata boulevard, Ruko newton square U19/01, Nagrak, Gunung Putri, Bogor, 16965",19000,NORMAL
+JKT.RKMETROPI,Ruko Metro Pondok Indah,"Ruko Metro Pondok Indah, Blok UA II 56, Taman Duta I, Sektor II, Pondok Pinang, Kebayoran lama, Jakarta Selatan 12310",19000,NORMAL
+JKT.RKMMPG,Ruko Mampang Business Park,"Ruko Mampang Business Park, Blok A.6 Jl. Warung Buncit Raya No.301, RT.10/RW.2, Duren Tiga, Kec. Pancoran, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12760",19000,NORMAL
+JKT.RKMOI,Ruko MOI,"Ruko MOI, Ruko Italian walk Blok J11, MOI, Kelapa Gading, Jakarta Utara 14350",19000,NORMAL
+JKT.RKMRKRG,Ruko Muara Karang,"Ruko Muara Karang, Blok A8 Utara, Jl. Muara Karang Raya No.15, RT.13/RW.17, Pluit, Penjarigan, Jakarta Utara",19000,NORMAL
+JKT.RKMRYSN,Ruko Meruya Selatan Jakarta,"Ruko Meruya Selatan Jakarta, Jl. Meruya Selatan, RT.7/RW.2, Meruya Sel., Kec. Kembangan, Kota Jakarta Barat",19000,NORMAL
+JKT.RKOTISTA,Ruko Otista,"Ruko Otista, Jl. Otto Iskandardinata No.64c, RT.1/RW.4, Bidara Cina, Kecamatan Jatinegara, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13330",19000,NORMAL
+JKT.RKPDBMBU,Ruko Pondok Bambu (FCK),"Ruko Pondok Bambu, Jl. Pahlawan Revolusi No.18, RT.8/RW.9, Pd. Bambu, Kec. Duren Sawit, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13430",19000,NORMAL
+JKT.RKPSGRHN,Ruko Pesanggrahan,"Ruko Pesanggrahan, Jl Pesanggrahan No. 8B, Kembangan Selatan, Kembangan Sel., Kec. Kembangan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta",19000,NORMAL
+JKT.RKPSRBO,Ruko Pasar Rebo,"Ruko Pasar Rebo, Jl. TB. Simatupang, Gedong, Kec. Pasar Rebo, Jakarta Timur, DKI Jakarta 13760",19000,NORMAL
+JKT.RKPTCPULGA,Ruko Pulogadung Trade Center (PTC),"Ruko Pulogadung Trade Center (PTC),  Blok I No.11, Jl.Raya Bekasi KM 21, Rawa Terate, Cakung, Jakarta Timur",19000,NORMAL
+JKT.RKRADAL,Ruko Radio Dalam (FCK),"Ruko Radio Dalam, Jl. Antene I No.3, RT.10/RW.1, Gandaria Utara, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12140",19000,NORMAL
+JKT.RKTAMRAPLM,Ruko Taman Mutiara Palem,"Ruko Taman Mutiara Palem, Blok A-5/07, Cengkareng Timur, Jakarta Barat 11730",19000,NORMAL
+JKT.RMHKNGN,Rumah Kenangan,"Jalan Senopati No.33, RT.6/RW.3, Senayan, Kebayoran Baru, RT.6/RW.3, RT.6/RW.3, Senayan, Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota 12190",19000,NORMAL
+JKT.RSHRPBD,RS Harapan Bunda,"RS Harapan Bunda, Jalan Raya Jakarta - Bogor No.KM 22 No.44, RT.8/RW.2, Rambutan, Kec. Ciracas, Kota Jakarta Timur, DKI Jakarta 13830",19000,NORMAL
+JKT.RSHSDA,RS Husada (Container),"RS Husada (Container), Jl. Raya Mangga Besar No.137-139, RW.1, Mangga Dua Sel., Kecamatan Sawah Besar, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10730",19000,NORMAL
+JKT.RSJKT,Rumah Sakit Jakarta,"Rumah Sakit Jakarta, Jl. Jend. Sudirman Kav 49, RT.5/RW.4, Karet Semanggi, Kecamatan Setiabudi, Jakarta Selatan 12930",19000,NORMAL
+JKT.RSPELNI,RS Pelni,"Rumah Sakit Pelni, Jl. K.S. Tubun RT.10/RW.1, Slipi, Kec. Palmerah, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11410",19000,NORMAL
+JKT.RSPOLRI,RS. Polri,"RS. Polri, Jl. Raya Bogor No.5, RT.1/RW.5, Kramat Jati, Kec. Kramat jati, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13510",19000,NORMAL
+JKT.RSYRSJKPS,RS Yarsi Jakarta Pusat,"RS Yarsi Jakarta Pusat, Jl. Letjen Suprapto Kav 13, RT. 10 / RW. 5, Cempaka Putih Timur, Kec. Cempaka Putih, Jakarta Pusat 10510",19000,NORMAL
+JKT.RUKOPIK,Ruko PIK,"Ruko PIK, Ruko Crown Golf Blok A No. 56, Kamal Muara, Penjaringan, Jakarta Utara - 14470",19000,NORMAL
+JKT.RUKORWM,Ruko Rawamangun (Jl. Paus),"Jl. Paus No. 8C, RT 001 RW 007, Rawamangun, Kec. Pulo Gadung, Kota Jakarta Timur, Daerah Khusus Ibu Kota Jakarta 13220",19000,NORMAL
+JKT.SHELLANTSR,Shell Antasari,"Shell Antasari, Jl. Pangeran Antasari No.68, RT.4/RW.11, Cipete Utara, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12150",19000,NORMAL
+JKT.SHELLCIPUT,Shell Ciputat 1,"Shell Ciputat 1, Jl. Ciputat Raya No. 1-4, Pondok Pinang, Kebayoran Lama, RT.5/RW.7, Pd. Pinang, Kec. Kby. Lama, Jakarta Selatan 12310",19000,NORMAL
+JKT.SHELLCPNG,Shell Cipinang,"Shell Cipinang, Jl. Bekasi Tim. Raya No.154, RT.8/RW.13, Cipinang Besar Utara, Kecamatan Jatinegara, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13410",19000,NORMAL
+JKT.SHELLKDYCR,Shell Kedoya,"Shell Kedoya, Jl. Kedoya Raya No.4, RT.11/RW.7, Kedoya Utara, Kec. Kb. Jeruk, Kota Jakarta Barat, 11520",19000,NORMAL
+JKT.SHELLPSMGG,Shell Pasar Minggu,"Shell Pasar Minggu, Jl. Raya Pasar Minggu No.10, RT.2/RW.4, Kalibata, Kec. Pancoran, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12740",19000,NORMAL
+JKT.SHELLSEKO,Shell Semper Koja,"Shell Semper Koja (Container), Pintu Masuk, Jl. Plumpang Semper No.16, RT.1/RW.4, Tugu Utara, Kec. Koja, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14260",19000,NORMAL
+JKT.SHELLSHRI,Shell Gunung Sahari,"Shell Gunung Sahari, Jl. Gn. Sahari No.54, RT.1/RW.1, Gn. Sahari Sel., Kec. Kemayoran, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10720",19000,NORMAL
+JKT.SLDGOT1,Shell Daan Mogot 1,"Shell Daan Mogot 1, Jl. Raya Daan Mogot No.147, RT.4/RW.5, Duri Kepa, Kec. Kb. Jeruk, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11510",19000,NORMAL
+JKT.SLTJSPT,SPBU Tanah Tinggi,"SPBU Pertamina 34.105.05 Letjen Suprapto (Container), Jl Letjen Suprapto No. 56, Tanah Tinggi, Johar Baru Kota Jakarta Pusat DKI Jalarta 10540",19000,NORMAL
+JKT.SNYPRK,Senayan Park,"Senayan Park, Lt UG-32, Jl. Gerbang Pemuda No.3, RT.1/RW.3, Gelora, Kecamatan Tanah Abang, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10270",19000,NORMAL
+JKT.SPBMGKB,SPBU Minangkabau Jakarta Selatan (Container),"SPBU Minangkabau Jakarta Selatan (Container), Jl. Minangkabau Timur No.33, RT.6/RW.8, Ps. Manggis, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12970",19000,NORMAL
+JKT.SPBUARTGDG,SPBU Artha Gading,"SPBU Artha Gading, Jalan Bulevard Artha Gading BI A2 West Kelapa Gading, RT.18/RW.RT.18, RW.8, Kec. Klp. Gading, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14240",19000,NORMAL
+JKT.SPBUCCGPSR,SPBU Pertamina (Gandaria Pasar Rebo),"SPBU Pertamina 31.137.01 Gandaria Pasar Rebo, Jl. Raya Bogor KM.28, Pekayon, Pasar Rebo 13710",19000,NORMAL
+JKT.SPBUCCKDSW,SPBU Pertamina (Kalimalang Duren Sawit),"SPBU Pertamina 31.134.02 Kalimalang Duren Sawit, Jl.Raya Kalimalang RT 1/7 Duret Sawit Jakarta Timur 13440",19000,NORMAL
+JKT.SPBUCCKTEN,SPBU Pertamina (Kapten Tendean),"SPBU Pertamina 31.12702 Kapten Tendean, Jln. Kapten Tendean No. 38 12710",19000,NORMAL
+JKT.SPBUCCLAGU,SPBU Pertamina (Lenteng Agung),"SPBU Pertamina 31.126.01 Lenteng Agung (Container), 31-12601, Jl. Raya Lenteng Agung No.08, , RT.6/RW.1, Lenteng Agung, Jagakarsa, Jakarta, 12630",19000,NORMAL
+JKT.SPBUCCSPAR,Pertamina S. Parman,"SPBU Pertamina COCO S Parman, 31.114.01, Jl. S. Parman, Slipi, Jakarta Barat 11410",19000,NORMAL
+JKT.SPBUCKINI,Pertamina COCO 31.103.03 Cikini,"SPBU Pertamina COCO 31.103.03 Cikini, Jl. Cikini Raya No.113-115 10 4, RT.10/RW.4, Cikini, Kec. Menteng, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10340",19000,NORMAL
+JKT.SPBUCNDRWSH,Pertamina 34.11711 Cendrawasih Cengkareng,"SPBU 34.11711 Cendrawasih Cengkareng (Container), Jl. Cendrawasih Raya No.99, RT.6/RW.6, Cengkareng Bar., Kecamatan Cengkareng, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11730",19000,NORMAL
+JKT.SPBUDDKLMR,SPBU Pertamina (Kamal Muara),"SPBU Pertamina Kamal Muara. JKT Jln. Kapuk Kamal Raya No.15 RT.1/RW.3 Kamal Muara Penjaringan, Kota Jakarta Utara 14470.",19000,NORMAL
+JKT.SPBUDDKLPD,Pertamina Panjang Kelapa Dua,"SPBU Pertamina 34.115.08 Panjang Kelapa Dua (Container), Jl. Panjang Arteri Klp. Dua Raya No.18, RT.2/RW.2, Kb. Jeruk, Kec. Kb. Jeruk, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11530",19000,NORMAL
+JKT.SPBUDDMKAF,SPBU Pertamina (M. Kahfi II),"SPBU Pertamina 34.126.10 M. Kahfi II Jagakarsa , Jl. Moch. Kahfi II Jl. Muamalah II No.20, RT.4/RW.3, Cipedak, Kec. Jagakarsa, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12630",19000,NORMAL
+JKT.SPBUDDPMUT,Pertamina Palmerah Utara,"SPBU Pertamina 34.114.05 Palmerah Utara (Container), Jl. Palmerah Utara No.56B, RT.3/RW.6, Palmerah, Kec. Palmerah, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11480",19000,NORMAL
+JKT.SPBUDDRCON,SPBU DODO (Raya Condet),"SPBU DODO 34-13502 Raya Condet, Jl. Raya Condet No.9, RT.1/RW.3, Batu Ampar, Kec. Kramat jati, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13520",19000,NORMAL
+JKT.SPBUDDRJCK,SPBU Pertamina (Radjiman Cakung),"SPBU Pertamina 34.139.09 Radjiman Cakung (Container), Jl. Dr. KRT Radjiman Widyodiningrat No.25, RT.3/RW.7, Jatinegara, Kec. Cakung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13930",19000,NORMAL
+JKT.SPBUDDSMKD,Pertamina Satu Maret Kalideres,"SPBU Pertamina 34.118.06 Satu Maret Taman Surya (Container), Jl. Satu Maret No.18, RT.9/RW.4, Pegadungan, Kec. Kalideres, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11830",19000,NORMAL
+JKT.SPBUDNMGOT,Pertamina 34-11803 Daan Mogot,"SPBU 34-11803 Daan Mogot (Container), Jl. Daan Mogot KM. 18 No. 15 RT.11/RW.6, Kalideres, RT.11/RW.6, Kalideres, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11840",19000,NORMAL
+JKT.SPBUDODOKR,SPBU Pertamina DODO (Kp. Rambutan),"SPBU Pertamina DODO Kampung Rambutan, 34.138.06, Jl. TB Simatupang No. 27, Rambutan, Ciracas, Jakarta 13830",19000,NORMAL
+JKT.SPBUDODOTB,Shell (Tanjung Barat),"Shell Tanjung Barat (Container), 34.125.05, Jl. Tj. Barat Raya No. 120, Jagakarsa, Jakarta Selatan 12530",19000,NORMAL
+JKT.SPBUDRKSMBI,Pertamina 34-11708 Duri Kosambi,"SPBU 34-11708 Duri Kosambi, Jl. Raya Duri Kosambi No.80, RT.1/RW.8, Duri Kosambi, Kecamatan Cengkareng, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11750",19000,NORMAL
+JKT.SPBUGATSU,SPBU Pertamina (Gatot Subroto),"SPBU Pertamina 34.129.02 Gatot Subroto (Container), Jl. Gatot Subroto No.kav 31, RT.4/RW.3, Kuningan, Kuningan Tim., Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12950",19000,NORMAL
+JKT.SPBUGDPJG,SPBU Pertamina (Gedong Panjang),"SPBU Pertamina 34.144.14 Gedong Panjang (Container), Jl. Gedong Panjang No.1, RT.1/RW.5, Penjaringan, Kec.Penjaringan, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14440",19000,NORMAL
+JKT.SPBUHGLKR,Pertamina 34.10206 Hanglekir,"SPBU Pertamina 34.10206 Hanglekir  (Container), Jl. Hang Lekir I No.4, RT.1/RW.3, Gelora, Kecamatan Tanah Abang, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10270",19000,NORMAL
+JKT.SPBUJLNPJG,Pertamina Jalan Panjang,"SPBU Jalan Panjang, Jl. Panjang No.45C, RT.1/RW.11, Kb. Jeruk, Kec. Kb. Jeruk, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11530",19000,NORMAL
+JKT.SPBUJOGLO,Pertamina 34-11609 Joglo,"SPBU 34-11609 Joglo (Container), Jl. Joglo Raya No.77, RT.1/RW.8, Joglo, Kec. Kembangan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11640",19000,NORMAL
+JKT.SPBUJTPDNG,SPBU Pertamina (Jatipadang),"Jl. Taman Margasatwa Raya No.21-22
+RT.7/RW.5, Jati Padang
+Kec. Ps. Minggu
+Kota Jakarta Selatan
+Daerah Khusus Ibukota Jakarta 12540",19000,NORMAL
+JKT.SPBUKBBWG,SPBU Pertamina (Tongkol),"SPBU Pertamina 34-14304 Tongkol (Container), Jl. Tongkol Kebon Bawang,Tanjung Priok, RT.6/RW.8, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14310",19000,NORMAL
+JKT.SPBUMRYUT,Pertamina 34.116.12 Meruya Utara,"SPBU Pertamina Meruya Utara 34.116.12, Jalan Kembang Kerep No. 56, RT 02 / RW 02 Meruya Utara Kembangan RT.2, RT.2/RW.2, Meruya Utara, Kec. Kembangan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11620",19000,NORMAL
+JKT.SPBUPASMIN,SPBU Volvo,"SPBU Volvo (Bondex), Jl. Raya Pasar Minggu (SPBU Volvo) Pejaten Timur, Kec. Pasar Minggu, Jakarta Selatan 12760",19000,NORMAL
+JKT.SPBUPLGB,SPBU Pertamina (Pulo Gebang),"SPBU Pertamina 34-13907 Pulo Gebang (Container), Jl. Raya pulogebang blok nangka rt. 10/06 Jakarta Timur",19000,NORMAL
+JKT.SPBURATEN,SPBU DODO Pertamina (Raden Inten),"SPBU Raden Inten DODO 34-13409 (Container), Jl. Raden Inten II No.17, RT.7/RW.10, Duren Sawit, Kec. Duren Sawit, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13440",19000,NORMAL
+JKT.SPKBYLM,SPBU 34.122.08 Kebayoran Lama,"SPBU 34.122.08 Kebayoran Lama, Jl. Ciputat Raya No.9, RW.8, Kby. Lama Utara, Kec. Kby. Lama, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12240",19000,NORMAL
+JKT.SPKMYRN,Pertamina 34.14413 Kemayoran,"SPBU 34.14413 Kemayoran, VR6W+6WJ, Jl. Benyamin Suaeb, Pademangan Tim., Kec. Pademangan, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14410",19000,NORMAL
+JKT.SPPDKPI,SPBU Pertamina 34-134.15 Pondok Kopi,"SPBU Pertamina 34-134.15 Pondok Kopi, Jl. Jend. R.S. Soekanto, RT.4/RW.2, Pd. Kopi, Kec. Duren Sawit, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13460",19000,NORMAL
+JKT.SPSHLAA,Shell Hasyim Ashari,"SPBU Shell Hasyim Ashari Jakarta Pusat, Jl. KH. Hasyim Ashari No.8-10, RT.1/RW.4, Petojo Utara, Kecamatan Gambir, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10130",19000,NORMAL
+JKT.SSPRKMR,SPBU Pertamina 34.132.05 Perintis Kemerdekaan Jakarta Timur,"SPBU Pertamina 34.132.05 Perintis Kemerdekaan Jakarta Timur, Jl. Perintis Kemerdekaan No.50, Kayu Putih, Kec. Pulo Gadung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13210",19000,NORMAL
+JKT.STDRKBT,Stasiun Duren Kalibata,"Stasiun Duren Kalibata, Jl. Raya Kalibata, Rajawati, Kec. Pancoran, Kota Jakarta Selatan 12750",19000,NORMAL
+JKT.STGAMBIR,Stasiun Gambir Selatan,"Stasiun Gambir Selatan, Jl. Medan Merdeka Tim. No.1, Gambir, Kecamatan Gambir, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10110",22000,MAHAL
+JKT.STKCJBHLM,Stasiun KCJB Halim,"Stasiun KCJB Halim, Jalan Tol Jakarta – Cikampek KM 0+800 RT. 14/RW. 15, Halim Perdana Kusuma, Makasar, Jakarta Timur 13610",22000,MAHAL
+JKT.STPSRMG,Stasiun Pasar Minggu,"Stasiun Pasar Minggu, Jl. Raya Pasar Minggu, Pejaten Timur, Kec. Pasar Minggu, Kota Jakarta Selatan 12520",19000,NORMAL
+JKT.STSDURI,Stasiun Duri,"Stasiun Duri, Jl Duri Utara, Duri Utara, Kec. Tambora, Kota Jakarta Barat, DKI Jakarta 11270",22000,MAHAL
+JKT.STSENEN,Stasiun Senen,"Stasiun Senen, Jl. Pasar Senen No. 3, Senen, Kec. Senen, Jakarta Pusat 10410",22000,MAHAL
+JKT.STSPLMRH,Stasiun Palmerah,"Stasiun Palmerah, RT.1/RW.3, Gelora, Tanah Abang, Central Jakarta City, Jakarta 10270",19000,NORMAL
+JKT.TAMINI,Tamini Square,"Tamini Square, Ground Floor, Jl. Taman Mini I No. 1, RT.3/RW.2, Pinang Ranti, Makasar, Jakarta Timur - 13560",19000,NORMAL
+JKT.THAMCIT,Thamrin City,"Thamrin City, Lantai Dasar, Jl. K.H. Mas Mansyur, Kb. Melati, Kecamatan Tanah Abang, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10230",19000,NORMAL
+JKT.TIM,Taman Ismail Marzuki,"Taman Ismail Marzuki (Gedung Ali Sadikin Lt.2), Jl. Cikini Raya No.73, RT.8/RW.2, Cikini, Kec. Menteng, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta",22000,MAHAL
+JKT.TTWRALS,The Tower Jakarta,"The Tower by Alam Sutera, Jl. Gatot Subroto No.27, RW.4, Karet Semanggi, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12930",19000,NORMAL
+JKT.UTANKAYU,Utan Kayu (Container),"Utan Kayu (Container), Jl. Utan Kayu Raya No.24, RT.6/RW.5, Utan Kayu Utara, Kec. Matraman, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13120, Indonesia",19000,NORMAL
+JKT.WRKASUT,Warakas Jakarta Utara,"Warakas Jakarta Utara, VVMG+5WQ, Jl. Warakas III Gg. 6, RT.7/RW.1, Warakas, Kec. Tj. Priok, Kota Jkt Utara, Daerah Khusus Ibukota Jakarta 14370",19000,NORMAL
+JMB.PRIMALL,Jambi Prima Mall,"Jambi Prima Mall, Lantai Dasar Unit 32, Jl. Jend. Sudirman No.90, Talang Jauh, Kec. Jelutung, Kota Jambi, Jambi 36133",19000,NORMAL
+JMB.RKBRGIN,Ruko Beringin Jambi,"Ruko Beringin Jambi, Jl. H. Adam Malik No.41, Handil Jaya, Kec. Jelutung, Kota Jambi, Jambi 36125",19000,NORMAL
+JMB.RKSLNCH,Ruko Selincah Jambi,"Ruko Selincah Jambi, Jl. Sentot Alibasyah, Payo Selincah, Kec. Jambi Tim., Kota Jambi, Jambi 36121",19000,NORMAL
+JMB.SPNJMDT,Sipin Jambi (Container) Drive Thru,"Sipin Jambi (Container) Drive Thru, Jl. Sumantri Brojonegoro 135-20, Selamat, Kec. Telanaipura, Kota Jambi, Jambi 36124",19000,NORMAL
+JMB.SPSTGJM,Pertamina Samsat Jelutung,"SPBU 24.361.06 Samsat Gajah Mada Jambi (Container), Jl. Gajah Mada No.51, Jelutung, Kec. Jelutung, Kota Jambi, Jambi 36124",19000,NORMAL
+JMB.WTCBTGI,WTC Batanghari,"WTC Batanghari, Jl. Sultan Thaha No.17, Ps. Jambi, Kec. Ps. Jambi, Kota Jambi, Jambi 36123",19000,NORMAL
+JMR.RKSMBSARI,Ruko Sumbersari Jember,"Ruko Sumbersari Jember, Jl. Kalimantan No.84b, Krajan Timur, Sumbersari, Kec. Sumbersari, Kabupaten Jember, Jawa Timur 68121",19000,NORMAL
+JMR.ROXYSQR,Roxy Square Jember,"Roxy Square Jember, Jl. Hayam Wuruk No.50-58, Gerdu, Sempusari, Kec. Kaliwates, Kabupaten Jember, Jawa Timur 68131",19000,NORMAL
+JOG.LIPPOPLAZA,Lippo Plaza Jogja,"Lippo Plaza Jogja, Ground Floor, Jl. Laksda Adisucipto No. 32-34, Demangan, Gondokusuman, Yogyakarta, DIY - 55221",19000,NORMAL
+JOG.RAMAIMBR,Ramai Malioboro,"Ramai Malioboro, Jl. Jend. Ahmad Yani No.73, Ngupasan, Kec. Gondomanan, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55122",22000,MAHAL
+JOG.RKJLNSTRN,Ruko Jalan Seturan,"Ruko Jalan Seturan, Jl. Seturan Raya, Ngropoh, Condongcatur, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55281",19000,NORMAL
+JOG.SIPRGTRS,Super Indo Parangtritis Yogyakarta,"Super Indo Parangtritis Yogyakarta (Container),  Jl. Menukan No.1-3, Brontokusuman, Kec. Mergangsan, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55153",19000,NORMAL
+JOG.SLEMANHALL,Sleman City Hall,"GF, Jl. Grojogan No.Km. 1, Penggung, Tridadi, Kec. Sleman, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55511",19000,NORMAL
+KALCIT,Kalibata City,"Apartement Kalibata City, Lantai Ground Floor,  Jl. Raya Kalibata No.1, RT.9/RW.4, Pancoran",19000,NORMAL
+KARYA,Menara Karya,"Menara Karya, Lantai Basement Unit.F Jl. H.R Rasuna Said, Kuningan Timur, Jakarta Selatan, 12950",19000,NORMAL
+KDI.RKANDNU,Ruko Anduonohu Kendari,"Ruko Anduonohu Kendari, Jalan Jendral A.H. Nasution, Kambu, Kec. Kambu, Kota Kendari, Sulawesi Tenggara 93231",19000,NORMAL
+KDI.RKEDSBI,Ruko Edi Sabara Kendari,"Ruko Edi Sabara Kendari, Jl. Edi Sabara, Korumba, Kec. Mandonga, Kota Kendari, Sulawesi Tenggara 93461",19000,NORMAL
+KDI.RKRBM,Ruko Rabam Kendari,"Ruko Rabam Kendari, Jl. Jend. Ahmad Yani, Pondambea, Kec. Kadia, Kota Kendari, Sulawesi Tenggara 93111",19000,NORMAL
+KDR.RKHYMWRK,Ruko Hayam Wuruk Kediri,"Ruko Hayam Wuruk Kediri, Jl. Hayam Wuruk, Dandangan, Kec. Kota Kediri, Kota Kediri Jawa Timur 64129",19000,NORMAL
+KHI.BKS,BP KHI Boulevard,"BP KHI Boulevard, Jl. Harapan Indah Boulevard, RT.10/RW.8, Pusaka Rakyat, Tarumajaya, Bekasi, Jawa Barat - 17214",19000,NORMAL
+KK.ARM.ARMNHSUTR,Airmadidi Minahasa Utara,"Airmadidi Minahasa Utara, Sarongsong Satu, Airmadidi, North Minahasa Regency, North Sulawesi",19000,NORMAL
+KK.BBS.RKJAYNIBBS,Ruko Jend. A Yani Brebes,"Ruko Jend. A Yani Brebes, Jl. Jenderal A. Yani, Pesangrahan, Brebes, Kec. Brebes, Kabupaten Brebes, Jawa Tengah 52212",19000,NORMAL
+KK.BDG.23PSKL,23Paskal Bandung,"23Paskal Bandung, Jl. Pasir Kaliki No. 25-27, Kb. Jeruk, Kec. Andir, Kota Bandung, Jawa Barat 40241",19000,NORMAL
+KK.BDG.BRNGRNGBDG,Burangrang Bandung,"Burangrang Bandung, Jl. Burangrang No.1 Malabar, Kec. Lengkong, Kota Bandung, Jawa Barat 40262",19000,NORMAL
+KK.BDG.GPRMRTDNT,Graha POS RE Martadinata,"Jl. Banda No.30, Citarum, Kec. Bandung Wetan, Kota Bandung, Jawa Barat 40115",22000,MAHAL
+KK.BDG.RKJLMRDKALV,Ruko JL. Merdeka Bandung (ALVA),"Ruko JL. Merdeka Bandung (ALVA), Jl. Merdeka No.21, Babakan Ciamis, Kec. Sumur Bandung, Kota Bandung, Jawa Barat 40117",19000,NORMAL
+KK.BDG.RKKPBDG,Ruko Kopo Bihbul,"Ruko Kopo Bihbul, Jl. Kopo Bihbul, Margahayu Tengah, Kec. Margahayu, Kab. Bandung, Jawa Barat 40228",19000,NORMAL
+KK.BDG.RSDHSNSDK,RSUP Dr Hasan Sadikin Bandung,Rsup hasan sadikin bandung,19000,NORMAL
+KK.BDG.SMBDG,Summarecon Mall Bandung Island,"Summarecon Mall Bandung Island, Summarecon Mall Lantai  1F - IC 807, Jl Boulevard  Utama, Cisaranten Kidul, Gedebage, Kota Bandung, Jawa Barat 40295",19000,NORMAL
+KK.BDG.TSMBDG,Trans Studio Mall Bandung,"Trans Studio Mall Bandung, Jl. Gatot Subroto No.289, Cibangkong, Kec. Batununggal, Kota Bandung, Jawa Barat 40273",22000,MAHAL
+KK.BDG.UBERTOS,Ubertos Bandung,"Ubertos, Ujung Berung Town Square, GF-26B, Jl. A. H. Nasution No. 46A, Pakemitan, Kec. Ujung Berung, Kota Bandung, Jawa Barat 40611",19000,NORMAL
+KK.BGL.RKMTHRYNO,Ruko MT Haryono Bengkulu,"Ruko MT Haryono Bengkulu, Jl. M.T. Haryono No 1, Pengantungan, Kec. Teluk Segara, Kota Bengkulu, Bengkulu 38114",19000,NORMAL
+KK.BGL.RKSPRMN,Ruko S Parman Bengkulu,"Ruko S Parman Bengkulu, Jl. S. Parman No 44 - 45, Kebun Kenanga, Kec. Ratu Agung, Kota Bengkulu, Bengkulu 38222",19000,NORMAL
+KK.BGR.DRMGBGR,Dramaga Bogor,"Dramaga Bogor, Jl. Raya Dramaga Km 7, RT.001 RW.003, Ciherang, Kec. Dramaga, Kabupaten Bogor, Jawa Barat 16680",19000,NORMAL
+KK.BGR.LVWKTWST,Living World Kota Wisata,Kota wisata Bogor,19000,NORMAL
+KK.BGR.MRKLNSTL,Marktlane Sentul,"Marktlane Sentul, Upper Ground Floor (UG-07), Jl. Pakuan No.3, Sumur Batu, Kec. Babakan Madang, Kabupaten Bogor, Jawa Barat 16810",19000,NORMAL
+KK.BGR.RKBKTDGO,Ruko Bukit Dago,"Ruko Bukit Dago, Jl. Pendidikan No. 19 Blok AA3, Rawakalong, Kec. Gn. Sindur, Kab. Bogor, Jawa Barat 16340",19000,NORMAL
+KK.BGR.RKCTIDSQJGL,Ruko Citra Indah Square Jonggol,"Ruko Citra Indah Square Jonggol, Ruko Citra Indah Square 2, RCS.01/07, Jl Raya Cileungsi Jonggol, Jonggol, Cipeucang, Kec. Cileungsi, Kab. Bogor, Jawa Barat 16820",19000,NORMAL
+KK.BGR.RKGNGPTRI,Ruko Gunung Putri,"Ruko H. Untung No. 3,Jl. Raya Ciangsana Kp. Babakan RT.3 RW.15 ,Desa Ciangsana Kec. Gunung Putri Kab. Bogor",19000,NORMAL
+KK.BGR.RKPDMRTJ,Ruko Podomoro Tenjo,"Ruko Podomoro Tenjo, MC7R+H47, Tenjo, Bogor Regency, West Java 16370",19000,NORMAL
+KK.BGR.RKPHLWN,Ruko Pahlawan Bogor,"Ruko Pahlawan Bogor, Jl. Pahlawan No.150, RT.02/RW.08, Empang, Kec. Bogor Selatan, Kota Bogor, Jawa Barat 16132",19000,NORMAL
+KK.BGR.RKTNNMPRG,Ruko Tananima Parung,"Ruko Tananima Parung, Jl. Raya Parung, Pemagarsari, Kec. Parung, Kabupaten Bogor, Jawa Barat 16330",19000,NORMAL
+KK.BGR.SMBGR,Summarecon Bogor,"Summarecon Bogor, Mountain View Terrace-Right Area, Jl.Summarecon Bogor Boulevard Utama Unit No 9 Type M-02, Sukatani, Kec.Sukaraja, Kab Bogor, Jawa Barat 16710",22000,MAHAL
+KK.BGR.SPBPALSNTL,SPBU BP Alternatif Sentul,"Jl Alternatif Sentul Kelurahan Cijujung, Kecamatan Sukaraja, Kabupaten Bogor, Jawa Barat
+Kabupaten Bogor
+16711",19000,NORMAL
+KK.BIT.RKWLTRMGSD,Ruko Wolter Monginsidi Bitung,"Ruko Wolter Monginsidi Bitung, Jl. Wolter Monginsidi, Girian Atas, Kec. Girian, Kota Bitung, Sulawesi Utara",19000,NORMAL
+KK.BJB.QMALL,Q-Mall Banjarbaru,"Q Mall Banjarbaru, Unit L1 - 09, Jl Ahmad Yani KM. 36,8, Komet, Kec. Banjarbaru Utara, Kota Banjar Baru, Kalimantan Selatan 70714",19000,NORMAL
+KK.BJM.AHMDYNI,Ahmad Yani Banjarmasin,"Ahmad Yani Banjarmasin, Jl. Ahmad Yani Km.7,4 Pemurus Luar, Kec. Banjarmasin Timur, Kota Banjarmasin, Kalimantan Selatan 70654",19000,NORMAL
+KK.BJM.KNTRPOS,Kantor Pos Banjarmasin,"Kantor Pos Banjarmasin, Jl. Lambung Mangkurat, Kertak Baru Ilir, Kec. Banjarmasin Tengah, Kota Banjarmasin, Kalimantan Selatan 70231",19000,NORMAL
+KK.BJM.RKPGRNHDYTULH,Ruko Pangeran Hidayatullah Banjarmasin,"Ruko Pangeran Hidayatullah Banjarmasin, Jl. Pangeran Hidayatullah, Sungai Jingah, Kec. Banjarmasin Utara, Kota Banjarmasin, Kalimantan Selatan 70122",19000,NORMAL
+KK.BKL.BKLMDRA,Bangkalan Madura,"Bangkalan Madura, Jl Kh Nomer Jl. KH. Moh. Kholil No.54, Demangan Timur, Demangan, Kec. Bangkalan, Kabupaten Bangkalan, Jawa Timur 69115",19000,NORMAL
+KK.BKS.AEMLDTMS,AEON Mall Deltamas,"AEON Mall Deltamas Unit FF1 - 091, Jl. Ganesha Boulevard, Kota Deltamas, Kec. Cikarang Pusat, Kab. Bekasi, Jawa Barat 17530",19000,NORMAL
+KK.BKS.CBBRDT,Cibubur (Drive Thru),"Cibubur (Drive Thru), Jl. Alternatif Cibubur, RT.002/RW.009, Jatisampurna, Kec. Jatisampurna, Kota Bks, Jawa Barat 17435",19000,NORMAL
+KK.BKS.LWGRWST,Living World Grand Wisata,"Living World Grand Wisata, Esplanade Ave, Lambangjaya, Tambun Selatan, Bekasi Regency, West Java 17510",19000,NORMAL
+KK.BKS.MGRGNCY,Mega Regency Bekasi,"Mega Regency Bekasi, Jl. Mega Raya No.5, Sukaragam, Serang Baru, Bekasi Regency, West Java 17330",19000,NORMAL
+KK.BKS.PKWNMALL,Pakuwon Mall Bekasi,"Pakuwon Mall Bekasi, Jl. Raya Pekayon No.002, RT.001, Pekayon Jaya, Kec. Bekasi Sel., Kota Bks, Jawa Barat",19000,NORMAL
+KK.BKS.PSKTPDGD,Pasar Kota Pondok Gede,"Pasar Kota Pondok Gede, Jl Raya Pondok Gede, Jatirahayu, Kec. Pondok Melati, Kota Bekasi, Jawa Barat 17415",19000,NORMAL
+KK.BKS.RKBNTRGBG,Ruko Bantar Gebang,"Ruko Bantar Gebang, Jl. Meranti Raya Jl. Perumahan Bumi Bekasi Baru 4 No.177, RT.003/RW.005, Bojong Menteng, Kec. Rawalumbu, Kota Bks, Jawa Barat",19000,NORMAL
+KK.BKS.RKBSH,Ruko Bosih Bekasi,"Ruko Bosih Bekasi, Jl. Bosih Raya, Wanasari, Kec. Cibitung, Kabupaten Bekasi, Jawa Barat 17520",19000,NORMAL
+KK.BKS.RKHKMJTWN,Ruko Hankam Jatiwarna,"Jl. Raya Hankam, RT 003/RW 004, Jatimelati, Kec. Bekasi Barat, Kota Bekasi, Jawa Barat, 17415",19000,NORMAL
+KK.BKS.RKPKYN,Ruko Pekayon Bekasi,"Ruko Pekayon Bekasi, Jl. Raya Pekayon Nomor 10 E-F, RT 003 / RW 021, Pekayon Jaya, Kec. Bekasi Selatan, Kota Bekasi, Jawa Barat 17148",19000,NORMAL
+KK.BKS.RKSYPNHRPIDH,Ruko Symphonie Harapan Indah Bekasi,"Ruko Symphonie Harapan Indah Bekasi, Ruko Symphoni Blok HX1 no. 89, Jl. Lintas Harapan Indah - Kanal, Tim, Pusaka Rakyat, Kec. Tarumajaya, Kab. Bekasi 17214",19000,NORMAL
+KK.BKS.RKTMNGLXY,Ruko Taman Galaxy,"Ruko Taman Galaxy, Jl. Taman Galaxy Raya No.#15, RT.002/RW.014, Jaka Setia, Kec. Bekasi Sel., Kota Bks, Jawa Barat 17147",19000,NORMAL
+KK.BKS.RSMDKCKR,RS Sentra Medika Cikarang,"RS Sentra Medika Cikarang, Jl. Raya Industri, Pasir Gombong, Kec. Cikarang Utara, Kab. Bekasi, Jawa Barat 17530",19000,NORMAL
+KK.BKS.SHLCTMTA,Shell Cut Mutia,"Shell Cut Mutia, Jl. Cut Mutia No.139b, RT.001/RW.002, Sepanjang Jaya, Kec. Rawalumbu, Kota Bks, Jawa Barat 17114",19000,NORMAL
+KK.BKT.RKAHMDKRM,Ruko Ahmad Karim Bukittinggi,"Ruko Ahmad Karim Bukittinggi, Jl. Ahmad Karim No. 8 C, Kel. Benteng Pasar Atas, Kec. Guguk Panjang, Kota Bukittinggi, Sumatera Barat 26113",19000,NORMAL
+KK.BKT.RKBNHMPU,Ruko Banuhampu Bukittinggi,"Ruko Banuhampu Bukittinggi, Jl. Raya Kapas Panji, Pertokoan Panama Petak 4, Taluak Ampek Suku, Kec. Banuhampu, Kabupaten Agam, Bukittinggi, Sumatera Barat 26181",19000,NORMAL
+KK.BLN.RKBTLCN,Ruko Batulicin,"Ruko Batulicin, Jl. Transmigrasi Plajau Rt.08/02 Bersujud, Kec. Simpang Empat, Kab. Tanah Bumbu, Kalimantan Selatan 72211",19000,NORMAL
+KK.BLS.RKDSHRPNMDUDR,Ruko Desa Harapan Mandau Duri,"Ruko Desa Harapan Mandau Duri, Jl. Desa Harapan, Rt 003 Rw 012, Kel. Air Jamban, Kec. Mandau, Kabupaten Bengkalis, Riau 2878",19000,NORMAL
+KK.BNJ.TMBGLNKTDT,Timbang Langkat Binjai (DT),"Timbang Langkat Binjai (DT), Jl. Soekarno Hatta No.20-14, Timbang Langkat, Kec. Binjai Tim., Kota Binjai, Sumatera Utara 20735",19000,NORMAL
+KK.BPP.RKBPPSPRBLK,Ruko Balikpapan Superblock,"Ruko Balikpapan Superblock, Unit A19, Jl. Jenderal Sudirman, Gunung Bahagia, Kec. Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur 76114",19000,NORMAL
+KK.BPP.RKMKRSRI,Ruko Mekarsari Balikpapan,"Ruko Mekarsari Balikpapan, Jl. Ahmad Yani, Mekarsari, Kec. Balikpapan Tengah, Kota Balikpapan, Kalimantan Timur 76113",19000,NORMAL
+KK.BPP.RKMNGGR,Ruko Manggar Balikpapan,"Ruko Manggar Balikpapan, Jl. Mulawarman No. 6E Rt.54 Kel. Manggar, Kec. Balikpapan Timur, Kota Balikpapan, Kalimantan Timur 76117",19000,NORMAL
+KK.BTA.RKDRMHTTA,Ruko Dr M Hatta Baturaja,"Ruko Dr M Hatta Baturaja, Jl. Dr. M. Hatta Nomor 05., Baturaja Lama, Kec. Baturaja Timur, Kabupaten Ogan Komering Ulu, Sumatera Selatan 32111",19000,NORMAL
+KK.BTL.GODANYYK,Godean Yogyakarta,"Godean Yogyakarta, Jl. Godean No. 23B, Kembang, Ngestiharjo, Kec. Kasihan, Kab. Bantul, Daerah Istimewa Yogyakarta 55182",19000,NORMAL
+KK.BTM.BYFRTMALL,Bayfront Mall Batam,"Bayfront Mall Batam, Harbourbay Downtown, Jl. Harbour Bay, Sungai Jodoh, Kec. Batu Ampar, Kota Batam, Kepulauan Riau 294533",32000,MAHAL
+KK.BTM.RKGRNBTCTR,Ruko Greenland Batam Center,"Ruko Greenland Batam Center, 42FW+VV7, Jl. Raja M Tahir, Tlk. Tering, Kec. Batam Kota, Kota Batam, Kepulauan Riau 29444",19000,NORMAL
+KK.BTM.RKNGYHILL,Ruko Nagoya Hill Batam,"Ruko Nagoya Hill Batam, Jl. Teuku Umar Blok P No 2, Lubuk Baja Kota, Kec. Lubuk Baja, Kota Batam, Kepulauan Riau 29443",19000,NORMAL
+KK.CBN.RKCRBSPB,Ruko Cirebon Superblock,"Ruko Cirebon Superblock, 7HM2+232, Pekiringan, Kesambi, Cirebon City, West Java 45131",19000,NORMAL
+KK.CBN.RKTPREV,Ruko Tuparev Cirebon,"Ruko Tuparev Cirebon, Jl. Tuparev No.105, Kertawinangun, Kec. Kedawung, Kabupaten Cirebon, Jawa Barat 45153",19000,NORMAL
+KK.CBN.RSMDKGMP,RS Sentra Medika Gempol,"RS Sentra Medika Gempol, Jl. KH. Agus Salim Blok Ketipa Desa Kedungbunder, Gempol, Cirebon – Jawa Barat - 45161",19000,NORMAL
+KK.CJR.RKCJR,Ruko Cianjur,"Ruko Cianjur, Jl. KH. Abdullah Bin Nu, Sawah Gede, Kec. Cianjur, Kab.Cianjur Jawa Barat 43212",19000,NORMAL
+KK.CKR.CKRNGAVN,Cikarang Avenue,"Cikarang Avenue, Unit Building B, Jl MH. Thamrin, Cibatu, Cikarang Selatan, Kab.Bekasi, Jawa Barat 17530",19000,NORMAL
+KK.CKR.RKGRNMKJBBK,Ruko Green Market Jababeka,"Ruko Green Market Jababeka, Jababeka Green Market, Simpangan, Cikarang Utara, Bekasi Regency, West Java 17530",19000,NORMAL
+KK.CKR.RKTRMBRT,Ruko Tarum Barat Cikarang,"Ruko Tarum Barat Cikarang, Ruko Midi Niaga, Jl. Tarum Bar. II pintu 11 jababeka Blok D.1 no.10, Jayamukti, Kec. Cikarang Pusat, Kabupaten Bekasi, Jawa Barat 17530",19000,NORMAL
+KK.CLG.RKCBBER,Ruko Cibeber Cilegon,"Ruko Cibeber Cilegon, Ruka Grand Cilegon Residence, Jl. Perumnas No.6, Kec. Cibeber, 42423",19000,NORMAL
+KK.CLG.SPBGRGL,SPBU Grogol Cilegon,"SPBU Grogol Cilegon, Jalan Mayjend. Soetoyo Km. Merak, Kotasari, Gerogol, Cilegon, Banten 42436",19000,NORMAL
+KK.CLG.TRTYSA,Tirtayasa Cilegon,"Tirtayasa Cilegon, Jl. SA. Tirtayasa No.144A, Masigit, Kec. Jombang, Kota Cilegon, Banten 42411",19000,NORMAL
+KK.CLP.RKSPRMN,Ruko S Parman Cilacap,"Ruko S Parman Cilacap, Jl. S. Parman (Sebelah Krisbow), Cilacap, Sidanegara, Kec. Cilacap Tengah, Kabupaten Cilacap, Jawa Tengah 53223",19000,NORMAL
+KK.DPK.ALFRDRARI,Alfamidi Radar Auri,"Alfamidi Radar Auri, Jl. Radar Auri No.94 4, RT.4/RW.14, Cibubur, Kec. Ciracas, Kota Depok, Jawa Barat 16452",19000,NORMAL
+KK.DPK.APGVCMG,Agung Podomoro Golf View Cimanggis,"Agung Podomoro Golf View Cimanggis, Podomoro Golf View, Jl. Raya Bojong Nangka, Bojong Nangka, Kec. Tapos, Kota Depok, Jawa Barat 16963",19000,NORMAL
+KK.DPK.BJGSRSWG,Bojongsari Sawangan,"Bojongsari Sawangan, Jl. Raya Bojongsari Kecamatan No.Kelurahan, RT.02/RW.04, Bojongsari Lama, Kec. Bojongsari, Kota Depok, Jawa Barat 16517",19000,NORMAL
+KK.DPK.BPRFLSJT,BP Raffless,"BP Raffless, Jl. Alternatif Cibubur, RW.5, Harjamukti, Kec. Cimanggis, Kota Depok, Jawa Barat 16454",19000,NORMAL
+KK.DPK.MKAHFI,M Kahfi,"M Kahfi, Jl. Moh Kahfi 1 Rt 07/03, Tanah Baru, Kec. Beji, Kota Depok, Jawa Barat 16426",19000,NORMAL
+KK.DPK.RKMKSRI,Ruko Mekarsari,"Ruko Mekarsari, No.15D, Jl. Mekarsari Raya No.15D, Mekarsari, Kec. Cimanggis, Kota Depok, Jawa Barat 16452",19000,NORMAL
+KK.DPK.RKMRGNDA,Ruko Pondok Cina Depok,"Ruko Pondok Cina Depok, Jl. Margonda Raya, Pondok Cina, Kec. Beji, Kota Depok, Jawa Barat 16424",19000,NORMAL
+KK.DPK.RKNSNTRA,Ruko Nusantara Depok,"Ruko Nusantara Depok, Jl. Nusantara Raya No.294, Depok Jaya, Kec. Pancoran Mas, Kota Depok, Jawa Barat 16432",19000,NORMAL
+KK.DPK.RKPDKDT,Ruko Pondok Duta Depok,"Ruko Pondok Duta Depok, Ruko Aile Square, Jl. Raya Pondok Duta, Bakti Jaya, Sukma Jaya, Kota Depok, Jawa Barat 16951",19000,NORMAL
+KK.DPK.RKPRMHNJTJR,Ruko Perumahan Jatijajar Depok,"Ruko Perumahan Jatijajar Depok, Jl. Perumahan Jatijajar, Jatijajar, Kec. Tapos, Kota Depok, Jawa Barat 16451",19000,NORMAL
+KK.DPK.SPBLWNANGUNG,SPBU Leuwinanggung,"SPBU Leuwinanggung, SPBU 34.169.37, Jl. Raya Leuwinanggung, Leuwinanggung, Kec. Tapos, Kota Depok",19000,NORMAL
+KK.DPK.TSMCBBR,TransStudio Mall Cibubur,"Trans Studio Mall Cibubur, Unit F3 - 52A, Jl. Alternatif Cibubur, Harjamukti, Kec. Cimanggis, Kota Depok, Jawa Barat 16454",19000,NORMAL
+KK.DPR.SMPG6TKUMR,Simpang 6 Teuku Umar Bali,"Simpang 6 Teuku Umar Bali, Jl. Pulau Tarakan No.31C, Dauh Puri Klod, Kec. Denpasar Bar., Kota Denpasar, Bali 80112",22000,MAHAL
+KK.DUM.RKSDRMAN,Ruko Sudirman Dumai,"Ruko Sudirman Dumai, Jl. Jend. Sudirman No. 158, Bintan, Kec. Dumai Timur, Kota Dumai, Riau 28826",19000,NORMAL
+KK.DUM.RKSLTNHSNDN,Ruko Sultan Hasanuddin Dumai,"Ruko Sultan Hasanuddin Dumai, Jl. Sultan Hasanuddin, Rimba Sekampung, Kec. Dumai Kota, Kota Dumai, Riau 28825",19000,NORMAL
+KK.GSK.RKDRYJOKTBR,Ruko Driyorejo Kota Baru S03 - 018 & 019,"Ruko Driyorejo Kota Baru S03 - 018 & 019, Jl. Raya Petiken, Mulung, Petiken, Kec. Driyorejo, Kabupaten Gresik, Jawa Timur 61177",19000,NORMAL
+KK.GSK.SPBBNDR,SPBU Bunder Gresik,"SPBU Bunder Gresik, RHJR+J2M, Jl. Dr. Wahidin Sudirohusodo, Dahanrejo, Kembangan, Kecamatan Gresik, Kabupaten Gresik, Jawa Timur 61124",19000,NORMAL
+KK.GTO.NNWTRBN,Nani Wartabone Gorontalo,"Nani Wartabone Gorontalo, Jl. Basuki Rahmat / Jl. Nani Wartabone, Heledulaa Selatan, Kota Timur, Kota Gorontalo, Gorontalo 96112",22000,MAHAL
+KK.JBG.RKWHDHSYM,Ruko Wahid Hasyim Jombang,"Ruko Wahid Hasyim Jombang, Jl. KH. Wahid Hasyim No.181, Kec. Jombang, Kabupaten Jombang, Jawa Timur 61419",19000,NORMAL
+KK.JKT.BLKMPLZ,Blok M Plaza (LG),"Blok M Plaza (LG), Panglima Polim St No.76, RT.6/RW.6, Kramat Pela, Kebayoran Baru, South Jakarta City, Jakarta 12130",19000,NORMAL
+KK.JKT.CEGER,"Ceger, Jakarta Timur","Ceger, Jakarta Timur, Jl. Raya Ceger No.65 E, RT.:002/RW:002/RW.1, Ceger, Kec. Cipayung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13840",19000,NORMAL
+KK.JKT.CLCNGLDKJU,Cilincing Landak Jakarta Utara,"Cilincing Landak Jakarta Utara, Jl. Sungai Landak No.15, RT.10/RW.8, Cilincing, Kec. Cilincing, Jkt Utara, Daerah Khusus Ibukota Jakarta 14120",19000,NORMAL
+KK.JKT.EPCTRMWLK,Epicentrum Walk,"Epicentrum Walk, Mediawalk Unit GF W137 & T137, Jl. Epicentrum Boulevard Barat, Karet Kuningan, Kec. Setiabudi, Jakarta Selatan, DKI Jakarta 12240",22000,MAHAL
+KK.JKT.GJHMDMDTRNA,Gajah Mada Mediterania,"Gajah Mada Mediterania, Jl. Ketentraman No.50B 1, RT.1/RW.5, Keagungan, Kec. Taman Sari, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11130",19000,NORMAL
+KK.JKT.GPRTLKMKG3,Grapari Telkomsel Mall Kelapa Gading 3,"Grapari Telkomsel Mall Kelapa Gading 3, MKG 3, RT.13/RW.18, East Kelapa Gading, Kelapa Gading, North Jakarta City, Jakarta 14240",22000,MAHAL
+KK.JKT.JKTLVIGSTR,JKT Living Star,"JKT Living Star, Jl. Lap. Tembak Cibubur No.10, RT.4/RW.4, Pekayon, Kec. Ps. Rebo, Kota Jakarta Timur, Jakarta 13710",19000,NORMAL
+KK.JKT.JLLTAGGDT,Lenteng Agung (Drive Thru),"Jl. Lenteng Agung (DT), Jl. Raya Lenteng Agung, RT.7/RW.2, Lenteng Agung, Kec. Jagakarsa, Kota Jakarta Selatan,  Jakarta 12630",19000,NORMAL
+KK.JKT.LPMALLNSNTR,Lippo Mall Nusantara,"Lippo Mall Nusantara, Kawasan Bisnis Granadha, Jl. Jend. Sudirman No.Kav. 50 Lt. LG (Alun-alun Nusantara), Karet Semanggi, Kecamatan Setiabudi, Kota Jakarta Selatan",19000,NORMAL
+KK.JKT.LTJSPRPTCMPT,Letjen Suprapto Cempaka Putih,"Letjen Suprapto Cempaka Putih, Jl. Letjen Suprapto No.8D, RT.2/RW.1, Cempaka Putih, Kec. Kemayoran, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10640",19000,NORMAL
+KK.JKT.MMPNG,Mampang,"Mampang, Jl. Mampang Prapatan Raya, Tegal Parang, Kec. Mampang Prapatan, Jakarta Selatan, DKI Jakarta 12790",19000,NORMAL
+KK.JKT.MNRIPRM,Menara Imperium,"Menara Imperium, Jl. H. R. Rasuna Said Kav. 1, Guntur, Kecamatan Setiabudi, Jakarta Selatan 12980",19000,NORMAL
+KK.JKT.MTA,Mall Taman Anggrek Jakarta,"Mall Taman Anggrek, GF Floor, Letjen S. Parman St, RT.12/RW.1, South Tanjung Duren, Grogol petamburan, West Jakarta City, Jakarta 11470",22000,MAHAL
+KK.JKT.PHXGRGL,PHX Grogol,"PHX Grogol, Jl. Dr Susilo Raya No.342 RT.05/05 Grogol, Kec. Grogol Petamburan, Jakarta Barat, DKI Jakarta 11450",22000,MAHAL
+KK.JKT.PNDKPNANG,Pondok Pinang,"Pondok Pinang, Jl. Ciputat Raya No 101, RT.1 / RW.4, Pondok Pinang, Kec. Kebayoran Lama, Jakarta Selatan 12240",19000,NORMAL
+KK.JKT.RAK10JGRW,Rest Area KM 10A Jagorawi,"Rest Area KM 10A Jagorawi, Rest Area KM 10A Cibubur, Tol Jagorawi KM 10,5 Cibubur, Kec. Cipayung, Kota Jakarta Timur, DKI Jakarta 13720",22000,MAHAL
+KK.JKT.RKBKDRTBT,Ruko Bukit Duri Tebet,"Ruko Bukit Duri Tebet, Jl. Bukit Duri Tanjakan No. 108 A, RT.6/RW.9, Bukit Duri, Kec. Tebet, Jakarta Selatan 12840",19000,NORMAL
+KK.JKT.RKBNDUNGNHLR,Ruko Bendungan Hilir (FCK),"Ruko Bendungan Hilir, Jl. Bendungan Hilir No.1B, RT.12/RW.1, Bend. Hilir, Kecamatan Tanah Abang, Jakarta Pusat, 10210",22000,MAHAL
+KK.JKT.RKHNAWI,Ruko H Nawi,"Ruko H Nawi, Jl. H. Nawi Raya No.6 No.45B Block C-2, RT.6/RW.10, North Gandaria, Kebayoran Baru, South Jakarta City, Jakarta 12140",19000,NORMAL
+KK.JKT.RKJHRBRU,Ruko Johar Baru,"Ruko Johar Baru, Jl. Percetakan Negara II No. 16 11, RT.11/RW.6, Johar Baru, Kec. Johar Baru, Kota Jakarta Pusat 10560",19000,NORMAL
+KK.JKT.RKKLPDAWTN,Ruko Kelapa Dua Wetan,"Ruko Kelapa Dua Wetan, Raya No Ciracas, Jl. Klp. Dua Wetan V No.3, RT.8/RW.1, Klp. Dua Wetan, Kec. Ciracas, Kota Jakarta Timur",19000,NORMAL
+KK.JKT.RKKLSR,Ruko Kalisari,"Ruko Kalisari, Jl. Kalisari Raya Blok Mandiri No.58, RT.10/RW.1, Kalisari, Kec. Ps. Rebo, Kota Jakarta Timur,Jakarta 13790",19000,NORMAL
+KK.JKT.RKKRGTNGHLB,Ruko Karang Tengah Lebak Bulus,"Ruko Karang Tengah Lebak Bulus, Jl. Karang Tengah Raya No.52, RT.6/RW.4, Lb. Bulus, Kec. Cilandak, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12440",19000,NORMAL
+KK.JKT.RKKRNDNG,Ruko Krendang,"Ruko Krendang, Jl. KH.Moh.Mansyur No.120E 4, RT.4/RW.8, Tanah Sereal, Kec. Tambora, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11210",19000,NORMAL
+KK.JKT.RKMLKSR,Ruko Malaka Sari,"Ruko Malaka Sari, Jl. Teratai Putih Raya Rt 01/01, Malaka Jaya, Kec. Duren Sawit, Kota Jakarta Timur, DKI Jakarta 13460",19000,NORMAL
+KK.JKT.RKMNDLATMG,Ruko Mandala Tomang,"Ruko Mandala Tomang, Jl. Mandala Raya No.26, RT.1/RW.2, Tomang, Kec. Grogol petamburan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11440",19000,NORMAL
+KK.JKT.RKMTLDCKG,Ruko Metland Cakung,"Ruko Metland Cakung, Ruko Maison De Wisteria Metland, Blok Collins 1-7, RT 1 / RW 2, Ujung Menteng, Cakung, Jakarta Timur 13960",19000,NORMAL
+KK.JKT.RKMTRMNJT,Ruko Matraman Jakarta Timur,"Ruko Matraman Jakarta Timur, Jl. Matraman Raya No. 212 Unit C - D, RT 4 / RW 3, Bali Mester, Kec. Jatinegara, Jakarta Timur 13320",22000,MAHAL
+KK.JKT.RKPCNGAN,Ruko Pecenongan Jakarta Pusat,"Ruko Pecenongan Jakarta Pusat, Jalan Pecenongan, Raya F No.67, Kecamatan Gambir, Jakarta, Daerah Khusus Ibukota Jakarta 10120",22000,MAHAL
+KK.JKT.RKPJTENRYA,Ruko Pejaten Raya,"Ruko Pejaten Raya, Jl. Pejaten Raya, Pejaten Barat, Pasar Minggu, Jakarta Selatan, DKI Jakarta 12510",19000,NORMAL
+KK.JKT.RKPNDKKLPA,Ruko Pondok Kelapa,"Ruko Pondok Kelapa, Jl Pondok Kelapa Raya, Pondok Kelapa, Kec. Duren Sawit, Jakarta Timur, DKI Jakarta 13450",19000,NORMAL
+KK.JKT.RKPSNGAN,Ruko Pisangan,"Ruko Pisangan, Jalan Pisangan Lama III No.2A RT002 RW007, Pisangan Timur, Kec. Pulo Gadung, Jakarta Timur 13230",19000,NORMAL
+KK.JKT.RKRSFTMWT,Ruko RS Fatmawati,"Ruko RS Fatmawati, Jl RS Fatmawati Raya, Cilandak Barat, Kec. Cilandak, Jakarta Selatan, DKI Jakarta 12430",19000,NORMAL
+KK.JKT.RKSBGJKPS,Ruko Sabang Jakarta Pusat,"Ruko Sabang Jakarta Pusat, Jl. H. Agus Salim No.40, Gondangdia, Menteng, Central Jakarta City, Jakarta 10340",19000,NORMAL
+KK.JKT.RKSDYCT,Ruko Sedayu City,"Ruko Sedayu City, Jl. Sedayu City Boulevard Raya Blok B Unit SCBRB/033, Cakung Barat, Kec. Cakung, Jakarta Timur 13910",19000,NORMAL
+KK.JKT.RKSNSTAVNC8,Ruko Sunset Avenue Citra 8,"Ruko Sunset Avenue Citra 8, Jl. Sunset Avenue Blok K-03A No. 8-11, Citra Garden City No.8 Lantai 2, West Jakarta City, Jakarta 11830",19000,NORMAL
+KK.JKT.RKTMNSTRIDH,Ruko Taman Sunter Indah,"Ruko Taman Sunter Indah, Jl. Taman Sunter Indah No.2 blok HJ2, Sunter Jaya, Kec. Tj. Priok, Jakarta, Daerah Khusus Ibukota Jakarta 14360",19000,NORMAL
+KK.JKT.RSCMGDKRN,RSCM Gedung Kirana,"RSCM Gedung Kirana, Jl. Kimia No 8 - 10 RT.10 / RW.1, Pegangsaan, Kec. Menteng, Jakarta Pusat 1032",19000,NORMAL
+KK.JKT.RWBLNGJKT,Rawa Belong Jakarta,"Rawa Belong Jakarta, Jl. Rw. Belong No.12 3, RT.3/RW.15, Palmerah, Kec. Palmerah, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11540",22000,MAHAL
+KK.JKT.SMMHTJBRT,Samesta Mahata Tanjung Barat,"Samesta Mahata Tanjung Barat, Lantai 2 Unit No 2 - 18, Jl. Raya Lenteng Agung No. 5A, RT.4/RW.1, Lenteng Agung, Kec. Jagakarsa, Jakarta Selatan 12530",19000,NORMAL
+KK.JKT.SPBJGKRSA,SPBU Jagakarsa,"SPBU Jagakarsa, SPBU Pertamina 34 - 12508 Jl. Jagakarsa, RT. 1 /RW. 7, Kec. Jagakarsa, Jakarta Selatan 12620",19000,NORMAL
+KK.JKT.SPBSHGATSU,SPBU Shell Gatot Subroto,"SPBU Shell Gatot Subroto, Jl. Gatot Subroto No.63, Menteng Dalam, Kec. Tebet, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12870",19000,NORMAL
+KK.JKT.SPBSTRKMYRN,SPBU Sunter Kemayoran,"SPBU Sunter Kemayoran, 45, Jl. Sunter Kemayoran No.45, RW.9, Sunter Jaya, Kec. Tj. Priok, Jkt Utara, Daerah Khusus Ibukota Jakarta 14350",19000,NORMAL
+KK.JKT.SPBUJGMNTNG,SPBU Pertamina (Ujung Menteng),"SPBU Pertamina (Ujung Menteng), SPBU Pertamina 34-13908, Jl Raya Bekasi Rt.05/02, Ujung Menteng, Kec. Cakung, Kota Jakarta Timur, DKI Jakarta 17132",19000,NORMAL
+KK.JKT.THMRNINE,Thamrine Nine,"Thamrine Nine, Jl. MH Thamrin Plaza UOB No.10, RT.14/RW.20, Kb. Melati, Tanah Abang, DKI Jakarta",19000,NORMAL
+KK.JKT.TPRKPJTN,The Park Pejaten,"The Park Pejaten, Jl. Warung Jati Barat No.39, RT.1/RW.5, Jati Padang, Ps. Minggu, Kota Jakarta Selatan, 12540",19000,NORMAL
+KK.JKT.UBNHUBPLMRH,Urban Hub Palmerah,"Urban Hub Palmerah, Jl. Gelora IX no. 20-28, Palmerah, Jakarta Barat",19000,NORMAL
+KK.JMB.RKMYGMRI,Ruko Mayang Mangurai,"Ruko Mayang Mangurai, 9H5J+M5Q, Jl. Sk. Rd. Syahbudin, Mayang Mangurai, Kec. Kota Baru, Kota Jambi, Jambi 36129",19000,NORMAL
+KK.JMB.RKUNJA,Ruko UNJA Jambi,"Ruko UNJA Jambi, 9GRC+FVJ, Mendalo Darat, Jambi Luar Kota, Muaro Jambi Regency, Jambi 36361",19000,NORMAL
+KK.JPA.KRTNI,Kartini Jepara,"Kartini Jepara, Jl. Kartini No. 36, Kelurahan Panggang, Kecamatan Jepara, Kabupaten Jepara, Jawa Tengah 59411",19000,NORMAL
+KK.KDI.RKMTHRYNO,Ruko MT Haryono Kendari,"Ruko MT Haryono Kendari, Jl. Jenderal M.t. Haryono No.25G, Bende, Kec. Kadia, Kota Kendari, Sulawesi Tenggara 93117",19000,NORMAL
+KK.KDR.RKWCHSM,Ruko Wachid Hasyim Kediri,"Ruko Wachid Hasyim Kediri, Jl. KH Wachid Hasyim No 197A, Bandar Lor, Kec. Mojoroto, Kota Kediri, Jawa Timur 64118",19000,NORMAL
+KK.KDS.RKDRSLSQJSDM,Ruko Dersalam Square Jend. Sudirman Kudus,"Ruko Dersalam Square Jend. Sudirman Kudus, Ruko Dersalam Square No A&B, Jl. Jend. Sudirman No. 470, Salam Kidul, Dersalam, Kec. Bae, Kab. Kudus Jawa Tengah 59321",19000,NORMAL
+KK.KIS.RKHCKROAMNTO,Ruko Hos Cokroaminoto Kisaran,"Ruko Hos Cokroaminoto Kisaran, Jl. HOS Cokroaminoto, Mekar Baru, Kec. Kota Kisaran Barat, Kabupaten Asahan, Sumatera Utara 21211",19000,NORMAL
+KK.KNG.RKSLWNGI,Ruko Siliwangi Kuningan,"Ruko Siliwangi Kuningan, Jl. Siliwangi, Purwawinangun, Kec. Kuningan, Kab. Kuningan, Jawa Barat 45512",19000,NORMAL
+KK.KWG.GLHMAS,Galuh Mas Karawang,"Galuh Mas Karawang, M7CW+F95, Jl. Arteri Galuh Mas, Sukaharja, Telukjambe Timur, Karawang, Jawa Barat 41361",22000,MAHAL
+KK.KWG.KWGCTPLZ,Karawang Central Plaza,"Karawang Central Plaza Lobby Barat (LB 1) Jl. Galuh Mas Raya, Sukaharja, Telukjambe Timur, Karawang, Jawa Barat 41361",19000,NORMAL
+KK.KWG.RKKLRI,Ruko Klari Karawang,"Ruko Klari Karawang, Jl. Raya Kosambi I No. 7, Duren, Kec. Klari, Karawang, Jawa Barat 41371",19000,NORMAL
+KK.LBK.STMLBPKM,Sutomo Lubuk Pakam,"Ruko Sutomo Lubuk Pakam, Jl. DR. Sutomo No.42, Tj. Garbus Satu, Kec. Lubuk Pakam, Kabupaten Deli Serdang, Sumatera Utara 20518",19000,NORMAL
+KK.LBP.CTRLNDHLVTA,Citraland Helvetia,"Citraland Helvetia, Jl. Pertempuran, Tj. Gusta, Kec. Sunggal, Kabupaten Deli Serdang, Sumatera Utara 20116",19000,NORMAL
+KK.LGS.LGSACH,Langsa Aceh,"Langsa Aceh, FXC9+67X, Gampong Jawa, Langsa Kota, Langsa City, Aceh 24375",19000,NORMAL
+KK.LHT.RKBNDRAGNG,Ruko Bandar Agung Lahat,"Ruko Bandar Agung Lahat, Jl. Lintas Sumatera, Bandar Agung, Kec. Lahat, Kab. Lahat, Sumatera Selatan 31419",19000,NORMAL
+KK.LLG.RKLLGSS,Ruko Lubuklinggau Sumatera Selatan,"Ruko Lubuklinggau Sumatera Selatan, Jl. Yos Sudarso No 35 - 36, Taba Jemekeh, Kec. Lubuk Linggau Timur I, Kota Lubuklinggau, Sumatera Selatan 31628",19000,NORMAL
+KK.LMG.RKLMGRJO,Ruko Lamongrejo Lamongan,"Ruko Lamongrejo Lamongan, CP8+JVV, Jl. Lamongrejo, Dapur Barat, Sidokumpul, Kec. Lamongan, Kabupaten Lamongan, Jawa Timur 62213",19000,NORMAL
+KK.LSM.RKLHKSMWACH,Ruko Lhokseumawe Aceh,"Ruko Lhokseumawe Aceh, Jl. Merdeka No.15-16, Simpang Empat, Kec. Banda Sakti, Kota Lhokseumawe, Aceh",19000,NORMAL
+KK.MDN.GATSUDT,Gatot Subroto Medan (Drive Thru),"Gatot Subroto Medan (Drive Thru), Jl. Gatot Subroto, Sei Sikambing D, Kec. Medan Petisah, Kota Medan, Sumatera Utara 20114",19000,NORMAL
+KK.MDN.KUALNMUAPDPTR,Kualanamu Airport - Departure,"Kualanamu Airport - Departure, Jl. Bandara Kuala Namu, Ps. Enam Kuala Namu, Kec. Beringin, Kab. Deli Serdang, Sumatera Utara 20553",32000,MAHAL
+KK.MDN.MTATLI,Multatuli Medan,"Multatuli Medan, Jl. Multatuli 29-35, Hamdan, Kec. Medan Maimun, Kota Medan, Sumatera Utara 20212",19000,NORMAL
+KK.MDN.PNCNG,Drive Thru Pancing Medan,"Pancing Medan, Jl. Pancing No.184, Sidorejo Hilir, Kec. Medan Tembung, Kota Medan, Sumatera Utara 20371",19000,NORMAL
+KK.MDN.RKBRAYN,Ruko Brayan Medan,"Ruko Brayan Medan, Tanjung Mulia, Medan Deli, Medan City, North Sumatra 20239",19000,NORMAL
+KK.MDN.RKGLGRDRT,Ruko Glugur Darat - UMSU,"Ruko Glugur Darat - UMSU, Gaharu Town House, Glugur Darat II, Kec. Medan Tim., Kota Medan, Sumatera Utara 20238",19000,NORMAL
+KK.MDN.RKJLDNI,Ruko Jl Denai Medan,"Ruko Jl Denai Medan, Jl. Denai No.232, Tegal Sari Mandala II, Kec. Medan Denai, Kota Medan, Sumatera Utara 20317",19000,NORMAL
+KK.MDN.RKJMNGTG,Ruko Jamin Ginting Medan,"Ruko Jamin Ginting Medan, Jalan Jamin Ginting, Titi Rantai, Medan, Titi Rantai, Kec. Medan Baru, Kota Medan",19000,NORMAL
+KK.MDN.RKTNJGMRW,Ruko Tanjung Morawa,"Ruko Tanjung Morawa, Jl. Pahlawan No.29, Bandar Labuhan, Kec. Tj. Morawa, Kabupaten Deli Serdang, Sumatera Utara 20362",19000,NORMAL
+KK.MDN.SPBAPLS,SPBU Amplas,"SPBU Amplas, Jl. Panglima Denai, A M P L A S, Kec. Medan Amplas, Kota Medan, Sumatera Utara 20229",19000,NORMAL
+KK.MDN.SPBKTMSLM,SPBU Kapten Muslim,"SPBU Kapten Muslim, Jl. Kapten Muslim No.97, Dwi Kora, Kec. Medan Helvetia, Kota Medan, Sumatera Utara 20118",19000,NORMAL
+KK.MGG.PMDKTMGG,Pemuda Kota Magelang,"Pemuda Kota Magelang, Jl. Pemuda No. 70, Kemirirejo, Kec. Magelang Tengah, Kota Magelang, Jawa Tengah 56122",22000,MAHAL
+KK.MGW.UDYHBJBRN,Udayana Hub Jimbaran,"Udayana Hub Jimbaran, Jl. Raya Kampus Unud, Jimbaran, Kec. Kuta Sel., Kabupaten Badung, Bali 80361",19000,NORMAL
+KK.MJK.RKGJHMDA,Ruko Gajah Mada Mojokerto,"Ruko Gajah Mada Mojokerto, Jl. Gajah Mada No.137, Mergelo, Balongsari, Kec. Magersari, Kota Mojokerto, Jawa Timur 61314",19000,NORMAL
+KK.MJK.SNRISMALL,Sunrise Mall Mojokerto,"Sunrise Mall Mojokerto, Jl. Benteng Pancasila No.9, Mergelo, Balongsari, Kec. Magersari, Kota Mojokerto, Jawa Timur 61314",19000,NORMAL
+KK.MJL.RKCPTLPNT,Ruko Capital Point Majalengka,"Ruko Capital Point Majalengka, Ruko Capital Point Unit 8G, Jl. Raya KH. Abdul Halim, Cigasong, Cikijing, Kab. Majalengka, Jawa Barat 45418",19000,NORMAL
+KK.MKS.PTTRNI,Pettarani Makassar,"Pettarani Makassar, Jl. A. P. Pettarani No.04, Mannuruki, Kec. Tamalate, Kota Makassar, Sulawesi Selatan 90221",22000,MAHAL
+KK.MKS.RKSLTNHSANDN,Ruko Sultan Hassanuddin Makassar,"Ruko Sultan Hassanuddin Makassar, Jl. Sultan Hasanuddin, Baru, Kec. Ujung Pandang, Kota Makassar, Sulawesi Selatan 90112",22000,MAHAL
+KK.MKS.RKURPSMHRJ,Ruko Urip Sumoharjo Makassar,"Ruko Urip Sumoharjo Makassar, Jl. Urip Sumoharjo No.36B, Karuwisi Utara, Kec. Panakkukang, Kota Makassar, Sulawesi Selatan 90231",19000,NORMAL
+KK.MKS.SNSTQUAY,Sunset Quay,"Sunset Quay, Centre Point Of Indonesia (CPI, Sunset Quay A, Citraland No.04, Kota Makassar, Sulawesi Selatan 90224",19000,NORMAL
+KK.MKS.TSMMKSR,Trans Studio Mall Makassar,"Trans Studio Mall Makassar, LGA No 15 & 15A, Jl. Metro Tj. Bunga, Maccini Sombala, Kec. Tamalate, Kota Makassar, Sulawesi Selatan 90224",22000,MAHAL
+KK.MLG.MLGTWNSQ,Malang Town Square Mall,"Malang Town Square, Jl. Veteran No.2, Penanggungan, Kec. Klojen, Kota Malang, Jawa Timur 65111",19000,NORMAL
+KK.MLG.RKSKN,Ruko Sukun Malang,"Ruko Sukun Malang, Jl. S. Supriadi No.70CD, Sukun, Kec. Sukun, Kota Malang, Jawa Timur 65147",19000,NORMAL
+KK.MLG.SPBKRNGLO,Pertamina Gas Station 54.651.75 Karanglo Malang,"Pertamina Gas Station 54.651.75 Karanglo Malang, SPBU 54.651.75, Jl. Raya Karanglo No.131, Karanglo, Banjararum, Kec. Singosari, Kabupaten Malang, Jawa Timur 65153",19000,NORMAL
+KK.MLG.SWOJJR,Sawojajar Malang,"Sawojajar Malang, Jl. Dirgantara No.3, Lesanpuro, Kec. Kedungkandang, Kota Malang, Jawa Timur 65139",19000,NORMAL
+KK.MRE.RKJDSDRMN,Ruko Jend. Sudirman Muara Enim,"Ruko Jend. Sudirman Muara Enim, Jl. Jend. Sudirman No. 78, Muara Enim Kab. Lematang Ilir, Ogan Tengah, Kab. Muara Enim, Sumatera Selatan 31314",19000,NORMAL
+KK.MRS.RKJDSDMNMRS,Ruko Jendral Sudirman Maros,"Ruko Jendral Sudirman Maros, Jl. Jend. Sudirman, Pettuadae, Kec. Turikale, Kabupaten Maros, Sulawesi Selatan 90516",19000,NORMAL
+KK.PAD.SPBAIEPCH,SPBU Aie Pacah Padang,"SPBU Aie Pacah Padang, SPBU Pertamina 14.251.525, Jl. By Pass, Aie Pacah, Kec. Koto Tangah, Kota Padang, Sumatera Barat 25586",19000,NORMAL
+KK.PBM.RKPDTKRY,Ruko Padat Karya Prabumulih,"Ruko Padat Karya Prabumulih, Jl Padat Karya Nomor 7, Gn. Ibul, Kec. Prabumulih Timur, Kota Prabumulih, Sumatera Selatan 31146",19000,NORMAL
+KK.PBR.ARFNAHMDT,Arifin Ahmad Pekanbaru (DT),"Arifin Ahmad Pekanbaru (DT), Jl. Arifin Ahmad Jl. Paus, Tengkerang Bar., Kec. Marpoyan Damai, Kota Pekanbaru, Riau 28282",19000,NORMAL
+KK.PDG.RKJNDRAYNI,Ruko Jenderal Ahmad Yani Pandeglang,"Ruko Jenderal Ahmad Yani Pandeglang, Jl. Jenderal Ahmad Yani, Pandeglang, Kec. Pandeglang, Kab. Pandeglang, Banten 42213",19000,NORMAL
+KK.PKL.RKDPNEGRO,Ruko Diponegoro Pekalongan,"Ruko Diponegoro Pekalongan, Jl. Diponegoro No 43 G, Dukuh, Kec. Pekalongan Utara, Kota Pekalongan, Jawa Tengah 51146",19000,NORMAL
+KK.PLG.RKBKTLMA,Ruko Bukit Lama Palembang,"Ruko Bukit Lama Palembang, Jl. Srijaya Negara No. 29 B, Bukit Lama, Kec. Ilir Barat I, Kota Palembang, Sumatera Selatan 30121",19000,NORMAL
+KK.PLG.RKJDSDRMN,Ruko Jend. Sudirman Palembang,"Ruko Jend. Sudirman Palembang, Jl. Jend. Sudirman No 408, Blok D-03 Rt 035 Rw 11, Sekip Jaya, Kec. Kemuning, Palembang, Sumatera Selatan 30126",19000,NORMAL
+KK.PLG.RKKPTARVI,Ruko Kapten A Rivai Palembang,"Ruko Kapten A Rivai Palembang, Jl. Kapten A. Rivai No 52-53, 26 Ilir D.I, Kec. Ilir Barat I, Kota Palembang, Sumatera Selatan 30135",19000,NORMAL
+KK.PLG.RKSMPGBDR,Ruko Simpang Bandara Palembang,"Ruko Simpang Bandara Palembang, Komplek Ruko Bandara Mas No 10, Jl. Soekarno Hatta, Kel. Karya Baru, Kec. Alang-Alang Lebar, Kota Palembang, Sumatera Selatan 30121",19000,NORMAL
+KK.PMK.PMKMDRA,Pamekasan Madura,"Pamekasan Madura, Jl. Jokotole No.26, Rw. 03, Barurambat Kota, Kec. Pamekasan, Kabupaten Pamekasan, Jawa Timur 69317",19000,NORMAL
+KK.PRE.RKJLLHLD,Ruko Jl. Lahalede Pare Pare,"Ruko Jl. Lahalede Pare Pare, Ujung Lare, Soreang, Parepare, South Sulawesi",19000,NORMAL
+KK.PRW.RKPRSWU,Ruko Pringsewu Lampung,"Ruko Pringsewu Lampung, Jl. Ahmad Yani, Pringsewu Utara, Kec. Pringsewu, Kabupaten Pringsewu, Lampung 35373",19000,NORMAL
+KK.PSR.RA792ATGPL,Rest Area 792 A Tol Gempol Pasuruan (DT),"Rest Area 792 A Tol Gempol Pasuruan, Kec. Pohjentrek, Pasuruan, Jawa Timur 67171	East Java	Pasuruan",22000,MAHAL
+KK.PTK.RFMSI,Reformasi Pontianak,"Reformasi Pontianak, Jl Reformasi, Bansir Laut, Kec. Pontianak Tenggara, Kota Pontianak, Kalimantan Barat 78124",19000,NORMAL
+KK.PTK.RKGJHMDA,Ruko Gajah Mada Pontianak,"Ruko Gajah Mada Pontianak, Jl. Gajah Mada No. 245, Benua Melayu Darat, Kec. Pontianak Selatan, Kota Pontianak, Kalimantan Barat 78122",19000,NORMAL
+KK.PWT.RKJNSDRMN,Ruko Jend. Sudirman Purwokerto,"Ruko Jend. Sudirman Purwokerto, Jl. Jendral Sudirman No 606 dan 608, Kongsen, Purwokerto Kulon, Purwokerto Selatan, Kabupaten Banyumas, Jawa Tengah 53141",19000,NORMAL
+KK.RAP.RKAMDYNI,Ruko Ahmad Yani Rantau Prapat Medan,"Ruko Ahmad Yani Rantau Prapat Medan, Jl. Jend. Ahmad Yani No.153, Kartini, Kec. Rantau Utara, Kab. Labuhanbatu, Sumatera Utara 21411",19000,NORMAL
+KK.RAP.SZYRTAUMAL,Suzuya Rantau Prapat Mall,"Suzuya Rantau Prapat Mall, Jl. SM. Raja, Bakaran Batu, Kec. Rantau Sel., Kab. Labuhanbatu, Sumut 21418",19000,NORMAL
+KK.RKB.RKMLTATLI,Ruko Multatuli Rangkasbitung,"Ruko Multatuli Rangkasbitung, Jl. Multatuli No.45 Muara Ciujung Barat, Kec. Rangkasbitung, Kab. Lebak, Banten 42312",19000,NORMAL
+KK.SBY.ADTWMN,Adityawarman Surabaya,"Adityawarman Surabaya, Unit No.1 Jl. Adityawarman No.22-24 Darmo, Kec. Wonokromo, Surabaya, Jawa Timur 60242",19000,NORMAL
+KK.SBY.BPEBGMLGDT,BP Embong Malang (DT),"BP Embong Malang (DT), Jl. Embong Malang, Kedungdoro, Kec. Tegalsari, Surabaya, Jawa Timur 60261",19000,NORMAL
+KK.SBY.DPNEGORO,Diponegoro Surabaya,"Diponegoro Darmo Surabaya, Jl. Diponegoro No.129A, RT.011/RW.01, Darmo, Kec. Wonokromo, Surabaya, Jawa Timur 60241",22000,MAHAL
+KK.SBY.FIRWYNNE,Fairway Nine,"Fairway Nine, Jl. Bukit Darmo Boulevard No.9, Pradahkalikendal, Kec. Dukuhpakis, Surabaya, Jawa Timur",19000,NORMAL
+KK.SBY.GRHPNA,Graha Pena Surabaya (Relokasi),"Graha Pena Surabaya, Jl. Ahmad Yani No. 88, Ketintang, Kec. Gayungan, Surabaya, Jawa Timur 60231",19000,NORMAL
+KK.SBY.KPNGJYA,Kupang Jaya Surabaya,"Kupang Jaya Surabaya, Jl. Kupang Jaya, Simomulyo, Kec. Sukomanunggal, Surabaya, Jawa Timur 60189",19000,NORMAL
+KK.SBY.MERRNGKTDT,MERR Rungkut Surabaya (DT),"MERR Rungkut Surabaya (DT), Jl. Dr. Ir. H. Soekarno No.483, Penjaringan Sari, Kec. Rungkut, Surabaya, Jawa Timur 60293",19000,NORMAL
+KK.SBY.RKKTTG,Ruko Ketintang Surabaya,"Ruko Ketintang Surabaya, Ruko Lotus Regency, Jl. Gayung Kebonsari Timur D 26, Ketintang, Gayungan, Surabaya, Jawa Timur 60235",19000,NORMAL
+KK.SBY.SLWSI,Sulawesi Surabaya,"Sulawesi Surabaya, PPFX+4P2, Jl. Sulawesi, Ngagel, Kec. Wonokromo, Surabaya, Jawa Timur 60281",22000,MAHAL
+KK.SBY.THSQRE,The Square Surabaya,"The Square Surabaya, The Square Unit LG / A2 - A3, Jl. Siwalankerto No. 146-148, Siwalankerto, Kec. Wonocolo, Surabaya, Jawa Timur 60236",19000,NORMAL
+KK.SDA.GLRANDT,Geluran (DT),"Geluran (DT), Jl. Raya Geluran No.124b, Geluran, Kec. Taman, Kabupaten Sidoarjo, Jawa Timur 61257",19000,NORMAL
+KK.SDA.RKDLTSRIDH,Ruko Delta Sari Indah Sidoarjo,"Ruko Delta Sari Indah Sidoarjo, Jalan Delta Sari Indah blok AN no 20, Krajan Kulon, Kureksari, Waru, Sidoarjo Regency, East Java 61256",19000,NORMAL
+KK.SDA.RKPDJTI,Ruko Pondokjati Sidoarjo,"Ruko Pondokjati Sidoarjo, Jl. Pd. Jati Ai-21B, Pondokjati, Pagerwojo, Kec. Sidoarjo, Kabupaten Sidoarjo, Jawa Timur 61252",19000,NORMAL
+KK.SDA.RKSKDNO,Ruko Sukodono Sidoarjo,"Ruko Sukodono Sidoarjo, Jl. Raya Sukodono No.21, Sawo, Sukodono, Kec. Sukodono, Kabupaten Sidoarjo, Jawa Timur 61258",19000,NORMAL
+KK.SDA.SPBKDGTR,SPBU Kedungturi Sidoarjo,"SPBU Kedungturi Sidoarjo, Jl. Raya Kedung Turi, Bungurasih, Kec. Waru, Kabupaten Sidoarjo, Jawa Timur 61257",19000,NORMAL
+KK.SDA.TBUSPRBYA,Terminal Bus Purabaya Sidoarjo Jawa Timur,"Terminal Bus Purabaya Sidoarjo Jawa Timur, Jl. Letjen Soetoyo, Kasian, Bungurasih, Kec. Waru, Kab. Sidoarjo, Jawa Timur 61256",19000,NORMAL
+KK.SGM.RKPLGAGWA,Ruko Pallangga Gowa,"Ruko Pallangga Gowa, Jl. Poros Limbung KM. 10 Mangalli, Tetebatu, Kec. Pallangga, Kabupaten Gowa, Sulawesi Selatan 92161",19000,NORMAL
+KK.SGN.RKSKOWTI,Ruko Sukowati Sragen,"Ruko Sukowati Sragen, Jl. Sukowati, Magero, Sragen Tengah, Kec. Sragen, Kabupaten Sragen, Jawa Tengah 57214",19000,NORMAL
+KK.SGR.SGRBLI,Singaraja Bali,"Singaraja Bali, Jl. A. Yani No.102, Kaliuntu, Kec. Buleleng, Kabupaten Buleleng, Bali 81116",19000,NORMAL
+KK.SKB.CIBADAK,Cibadak Sukabumi,"Cibadak Sukabumi, Ruko 23A, Jl. Siliwangi No.123, Cibadak, Kec. Cibadak, Kabupaten Sukabumi, Jawa Barat 43351",19000,NORMAL
+KK.SKH.RKGNTAN,Ruko Gentan Sukoharjo,"Ruko Gentan Sukoharjo, Jl. Joko Tingkir Nomor 36, Ngebrak, Gentan, Kec. Baki, Kabupaten Sukoharjo, Jawa Tengah 57556",19000,NORMAL
+KK.SKT.KPRABN,Keprabon Surakarta,"Keprabon Surakarta, Jl. Teuku Umar No. 17, Keprabon, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57131",22000,MAHAL
+KK.SKT.RKLTJSTYO,Ruko Letjend Sutoyo Surakarta,"Ruko Letjend Sutoyo Surakarta, Jl. Letjen Sutoyo No 21-B, Nusukan, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57135",19000,NORMAL
+KK.SLW.SLWJTENG,Slawi Jawa Tengah,"Slawi Jawa Tengah, Jl. Jenderal Ahmad Yani No. 24, Procot, Kec. Slawi, Kabupaten Tegal, Jawa Tengah 52411",19000,NORMAL
+KK.SMD.RKJTNGOR,Ruko Jatinangor,"Ruko Jatinangor, Jl. Raya Jatinangor, Cikeruh, Kec. Jatinangor, Kab. Sumedang, Jawa Barat 45363",19000,NORMAL
+KK.SMG.ANJSMRO,Anjasmoro Semarang,"Anjasmoro Semarang, Jl. Anjasmoro Raya No. 44, Karangayu, Kec. Semarang Barat, Kota Semarang, Jawa Tengah 50149",22000,MAHAL
+KK.SMG.MNREH,Menoreh Semarang,"Menoreh Semarang, Jl. Menoreh Raya No. 67, Sampangan, Kec. Gajahmungkur, Semarang, Jawa Tengah 50232",19000,NORMAL
+KK.SMG.RKGJHMDA,Ruko Gajah Mada Semarang,"Ruko Gajah Mada Semarang, Jl. Gajahmada No 72 C, Bangunharjo, Kec. Semarang Tengah, Kota Semarang, Jawa Tengah 50133",19000,NORMAL
+KK.SMN.RKCLBOYYK,Ruko Colombo Yogyakarta,"Ruko Colombo Yogyakarta, Jl. Colombo No. 06, Kel. Catur Tunggal, Kec. Depok, Kab. Sleman, Daerah Istimewa Yogyakarta",22000,MAHAL
+KK.SMN.RKKLRGK5YYK,KK Ruko Kaliurang KM5 Bawah,"Ruko Kaliurang Km 5 Yogyakarta, Jalan Kaliurang Km 5 No 36 Rt 013 Rw 05, Karang Wuni, Caturtunggal, Kec Depok, Kab. Sleman, Daerah Istimewa Yogyakarta 55284",22000,MAHAL
+KK.SMR.RAK36BSMR,Rest Area KM 36B Samarinda,"Rest Area KM 36B Samarinda, Tol Samarinda Balikpapan Km 36 Bukit Merdeka, Samboja, Kab, Kutai Kartanegara, Kalimantan Timur 75273",22000,MAHAL
+KK.SMR.RKIRHJNDA,Ruko Ir H Juanda Samarinda,"Ruko Ir H Juanda Samarinda, Jl. Ir. H. Juanda, Air Hitam, Kec. Samarinda Ulu, Kota Samarinda, Kalimantan Timur 75243",19000,NORMAL
+KK.SMR.RKPMNOOR,Ruko PM Noor Samarinda,"Ruko PM Noor Samarinda, Ruko PM Noor Unit No.2 Jl. PM. Noor, Sempaja Selatan, Kec. Samarinda Utara, Kota Samarinda, Kalimantan Timur 75119",19000,NORMAL
+KK.SMR.SLMTRYDI,Slamet Riyadi Samarinda,"Slamet Riyadi Samarinda, Jl. Slamet Riyadi No.4 Karang Asam Ilir, Kec. Sungai Kunjang, Kota Samarinda, Kalimantan Timur 75126",19000,NORMAL
+KK.SNG.LTJNSPPTO,Letjend Suprapto Subang,"Letjend Suprapto Subang, Jl. Letjend Suprapto, Karanganyar, Kec. Subang, Kab. Subang, Jawa Barat 41211",22000,MAHAL
+KK.SRG.ANYRCLG,Anyer Cilegon,"Anyer Cilegon, Jl. Raya Anyer-Sirih No. 75 RT.001/005, Kec, Kec. Anyar, Kabupaten Serang, Banten 42166",19000,NORMAL
+KK.TAB.RKTBNBLI,Ruko Tabanan Bali,"Ruko Tabanan Bali, Jl. Dr. Ir. Soekarno, Banjar Anyar, Kec. Kediri, Kabupaten Tabanan, Bali 82123",19000,NORMAL
+KK.TBN.RKBSKRHMT,Ruko Basuki Rahmat Tuban,"Ruko Basuki Rahmat Tuban, Jalan Basuki Rahmat, 424X+3P9, Ronggomulyo, Tuban, Tuban Regency, East Java 62313",19000,NORMAL
+KK.TBT.RKMHTHMRIN,Ruko MH Thamrin Tebing Tinggi Medan,"Ruko MH Thamrin Tebing Tinggi Medan, Jl. M.H. Thamrin No.59, Ps. Gambir, Kec. Tebing Tinggi Kota, Kota Tebing Tinggi, Sumatera Utara 20614",19000,NORMAL
+KK.TGL.ARHKM,AR Hakim Tegal,"AR Hakim Tegal, Jl. AR Hakim No 17, Mangkukusuman, Kec. Tegal Timur, Kota Tegal, Jawa Tengah 52123",19000,NORMAL
+KK.TGR.RKALGIOSRPG,Ruko Melody Gading Serpong,"Ruko Melody Gading Serpong, Jl. Boulevard Allogio, Ruko Melody 2, Gading Serpong, Medang, Kec. Pagedangan, Kabupaten Tangerang, Banten 15334",19000,NORMAL
+KK.TGR.RKCKPA,Ruko Pantura,"Ruko Pantura, Jl. Raya Serang Km.21, Kawidaran, Cibadak, Kec. Cikupa, Kabupaten Tangerang, Banten 15710",19000,NORMAL
+KK.TGR.RKPMDTGRKS,Ruko Pemda Tigaraksa,"Ruko Pemda Tigaraksa, Jl. Pemda Tigaraksa No. 89, Sukamulya, Kec. Cikupa, Kabupaten Tangerang, Banten 15710",19000,NORMAL
+KK.TGR.RKPRMNTPTLS,Ruko Paramount Petals,"Ruko Paramount Petals, Ruko Calico Square No 6 & 7, Cukang Galih, Kec. Curug, Kabupaten Tangerang, Banten 15810",19000,NORMAL
+KK.TGR.RKSRTGDSRPG,Ruko Sorrento Gading Serpong,"Ruko Sorrento Gading Serpong, Ruko North Sorrento Square, Jl. Ir.Sukarno, Cihuni, Kec. Pagedangan, Kabupaten Tangerang, Banten 15332",19000,NORMAL
+KK.TGR.RKTICNBSD,Ruko The Icon BSD,"Ruko The Icon BSD, Jl. Horizon Broadway, Ruko M 1 No. 17, Kec. Cisauk, Kabupaten Tangerang, Banten 15345",19000,NORMAL
+KK.TLG.TLNGAGNG,Tulungagung,"Tulungagung, Jl. I Gusti Ngurah Rai, Kepatihan, Kec. Tulungagung, Kabupaten Tulungagung, Jawa Timur 66218",19000,NORMAL
+KK.TMH.TOMOHON,Tomohon,"Tomohon, Paslaten Satu, Tomohon Timur, Tomohon City, North Sulawesi",19000,NORMAL
+KK.TNG.ALMSTRADT,Alam Sutera (DT),"Alam Sutera (DT), Jl. Jalur Sutera No.Kav.22C-2 RT.002/RW.006, East Panunggangan, Pinang, Tangerang City, Banten 15143",22000,MAHAL
+KK.TNG.BPLGK,BP Legok,"BP Legok, Jl. Raya Legok - Karawaci No.10, RT.1/RW.5, Klp. Dua, Kec. Klp. Dua, Kabupaten Tangerang, Banten 15810",19000,NORMAL
+KK.TNG.ESTVRABSD,Eastvara BSD,"Eastvara BSD, Eastvara Mall, Jl. BSD Boulevard Utara, Cijantra, Kec. Pagedangan, Kabupaten Tangerang, Banten 15854",19000,NORMAL
+KK.TNG.GRHRYPNANG,Graha Raya Pinang Tangerang (FCK),"Graha Raya Pinang Tangerang, Jl. Graha Raya - Ciledug, Sudimara Pinang, Kec. Pinang, Kota Tangerang, Banten 15145",19000,NORMAL
+KK.TNG.HSCKRMNTO,Hos Cokroaminoto Ciledug,"Hos Cokroaminoto Ciledug, QPF6+RHH, RT.001/RW.007, Sudimara Jaya, Ciledug, Tangerang City, Banten 15151",19000,NORMAL
+KK.TNG.JNDACPT,Ruko Juanda Ciputat,"Ruko Juanda Ciputat, Ruko Ciputat, Jl. Ir H. Juanda No.364, Ciputat, Kec. Ciputat Tim., Kota Tangerang Selatan, Banten 15419",19000,NORMAL
+KK.TNG.PSRLMA,Pasar Lama Tangerang,"Pasar Lama Tangerang, Jl. Kisamaun No.3, RT.003/RW.007, Sukasari, Kec. Tangerang, Kota Tangerang, Banten 15118",19000,NORMAL
+KK.TNG.RAKM14,Rest Area KM 14,"Rest Area KM 14, QMPG+8RC, RT.011/RW.002, Kunciran Jaya, Pinang, Tangerang City, Banten 15144",22000,MAHAL
+KK.TNG.RKBCLNBSD,Ruko Barcelona BSD,"Ruko Barcelona BSD, Jl. Letnan Sutopo No.39 Blok E9, Rw. Mekar Jaya, Kec. Serpong, Kota Tangerang Selatan, Banten 15322",19000,NORMAL
+KK.TNG.RKBLSNA,Ruko Bolsena,"Ruko Bolsena Blok B No 18 & 19, Kelapa Dua, Tangerang Regency, Banten 15810",19000,NORMAL
+KK.TNG.RKBRGRY,Ruko Beringin Raya,"Ruko Beringin Raya, Jl. Beringin Raya, RT.002/RW.002, Nusa Jaya, Kec. Karawaci, Kota Tangerang, Banten 15116",19000,NORMAL
+KK.TNG.RKCLDGMCNG,Ruko Ciledug Mencong,"Ruko Ciledug Mencong, Jl. H. Mencong Rt 03/03 Sudimara Timur, Kec. Ciledug, Kota Tangerang, Banten 15151",19000,NORMAL
+KK.TNG.RKCMNPNTRA,Ruko Cimone Pantura Tangerang,"Ruko Cimone Pantura Tangerang, Jl. Raya Merdeka No.1, RT.1/RW.001, Pabuaran, Kec. Karawaci, Kota Tangerang, Banten 15114",19000,NORMAL
+KK.TNG.RKCTRYCKP,Ruko Citra Raya Cikupa,"Ruko Citra Raya Cikupa, Ruko Taman Puspita Raya Jl. Citra Raya Boulevard No.11R BLOK H1, Cikupa, Tangerang Regency, Banten 15710",19000,NORMAL
+KK.TNG.RKJMBGRY,Ruko Jombang Raya,"Ruko Jombang Raya, Jl. Jombang Raya, RT.03/RW.06, Pd. Kacang Tim., Kec. Pd. Aren, Kota Tangerang Selatan, Banten 15227",19000,NORMAL
+KK.TNG.RKJTUWG,Ruko Jatiuwung Tangerang (FCK),"Ruko Jatiuwung Tangerang, Jl. Gatot Subroto Blok JS No, RT.003/RW.001, Keroncong, Kec. Jatiuwung, Kota Tangerang, Banten 15134",19000,NORMAL
+KK.TNG.RKMDSGRND,Ruko Madison Grande,"Ruko  Madison Grande, Ruko Madison Serpong, Jl Boulevard Diponegoro, Gading, Kec.Serpong, Kab. Tangerang, Banten 15334",19000,NORMAL
+KK.TNG.RKPDBTNG,Ruko Pondok Betung,"Ruko Pondok Betung, Jl. Pondok Betung Raya, Pondok Betung, Kec. Pondok Aren, Kota Tangerang Selatan, Banten 15412",19000,NORMAL
+KK.TNG.RKPRUTCP,Ruko Puri Utama Cipondoh,"Ruko Puri Utama Cipondoh, Jl. Puri Utama Blok H1 No 10, Petir, Kec. Cipondoh, Kota Tangerang, Banten 15147",19000,NORMAL
+KK.TNG.RKRYSRPNG,Ruko Raya Serpong Tangerang,"Ruko Raya Serpong Tangerang, Jl. Raya Serpong No.77, Serpong, Kec. Serpong, Kota Tangerang Selatan, Banten 15310",19000,NORMAL
+KK.TNG.RKSOTCTALV,Ruko South City (ALVA),"Ruko South City (ALVA), South City Square, Jl Raya Wahyudi No.B1/16, Pd. Cabe Udik, Kec. Pamulang, Kota Tangerang Selatan, Banten 15418",19000,NORMAL
+KK.TNG.RKTMNUBDKRC,Ruko Taman Ubud Karawaci,"Ruko Taman Ubud Karawaci, Lippo Village, Jl. Ruko Star of Asia No.B15 No.26, Kabupaten, Kec. Karawaci, Kabupaten Tangerang, Banten 15810",19000,NORMAL
+KK.TNG.RKVZAGHRYA,Ruko Vazza Graha Raya,"Ruko Vazza Graha Raya, Jl. Graha Raya Bintaro, Pd. Kacang Bar., Kec. Pd. Aren, Kota Tangerang Selatan, Banten",19000,NORMAL
+KK.TNG.UTWNBTRO,U Town Bintaro,"U Town Bintaro, Blok UH/A-08, Sawah Baru, Kec. Ciputat, Kota Tangerang Selatan, 15413",19000,NORMAL
+KK.TPG.BTNCNTR,Bintan Center Tanjung Pinang,"Bintan Center Tanjung Pinang, Komp. Bintan Bestari Jl. D.I. Panjaitan No.28-29 Km 8, Air Raja, Kec. Tanjungpinang Tim., Kota Tanjung Pinang, Kepulauan Riau 29123",22000,MAHAL
+KK.TPG.RYDMPK,Raya Dompak Tanjung Pinang,"Raya Dompak Tanjung Pinang, Jl. Raya Dompak, Batu IX, Kec. Bukit Bestari, Kota Tanjung Pinang, Kepulauan Riau",22000,MAHAL
+KK.TRG.RKAMDMKSIN,Ruko Ahmad Muksin Tenggarong,"Ruko Ahmad Muksin Tenggarong, Jl. KH. Ahmad Muksin, Timbau, Kec. Tenggarong, Kab. Kutai Kartanegara, Kalimantan Timur 755133",22000,MAHAL
+KK.YYK.BNTRBDYA,Kota Baru Jogja,"Bentara Budaya Yogyakarta, Jl. Suroto No.4, Kotabaru, Kec. Gondokusuman, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55224",22000,MAHAL
+KK.YYK.SPBTMHO,SPBU Timoho Yogyakarta,"SPBU Timoho Yogyakarta, SPBU Pertamina 44.551.19, Jl. Ipda Tut Harsono No.28, Muja Muju, Kec. Umbulharjo, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55165",19000,NORMAL
+KK.YYK.SPBTRBN,SPBU Terban Yogyakarta,"SPBU Terban Yogyakarta, SPBU Pertamina 44.552.06 Terban, Jl. C. Simanjuntak No.17, Terban, Kec. Gondokusuman, Kota Yogyakarta, DIY 55223",19000,NORMAL
+KLN.RKPMDAN,Ruko Pemuda Klaten,"Ruko Pemuda Klaten, Jl. Pemuda No. 58, Mlinjon, Tonggalan, Kec. Klaten Tengah Kabupaten Klaten, Jawa Tengah 57411",19000,NORMAL
+KLN.SPBJGGN,Pertamina 44.574.03 Jonggrangan Klaten,"SPBU 44.574.03 Jonggrangan Klaten (Container), Jl Raya Solo, Peraksangkal, Jonggrangan, Kec. Klaten Utara, Kabupaten Klaten, Jawa Tengah 57435",19000,NORMAL
+KOKAS,Kota Kasablanka,"Mall Kota Kasablaka (The Common Unit GF-FSG 07)
+Jl. Casablanca No.88, RT.2/RW.14, Menteng Dalam, Kec. Tebet, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12870",22000,MAHAL
+KRW.RKSYEHQURO,Ruko Syeh Quro Karawang,"Ruko Syeh Quro Karawang, Ruko Syeh Quro Karawang, Jl. Raya Syeh Quro, Palumbonsari, Kec. Karawang Tim., Kabupaten Karawang Jawa Barat 41313",19000,NORMAL
+KWG.MALLCKMPK,Ruko Mall Cikampek,"Ruko Mall Cikampek, Ruko A07, Kios A 117-118, Jl. Ahmad Yani No 76, Dawuan Timur,  Kec. Cikampek, Kabupaten Karawang, Jawa Barat 41373",19000,NORMAL
+KWG.RAKM57,Rest Area KM 57,"Rest Area KM 57, Jl. Tol Cikampek KM 57+500, Wanasari, West Telukjambe, Karawang Regency, West Java 41361",22000,MAHAL
+KWG.RAKM62B,Rest Area KM 62B,"Cikampek - jakarta Toll Rd No KM62B ,mekarjaya ,purwasari , karawang regency , west java 41373",22000,MAHAL
+KWG.RKJNDCKMPK,Ruko Juanda Cikampek,"Ruko Juanda Cikampek, Jl. Ir. H. Juanda, Sarimulya, Kecamatan Kotabaru, Kabupaten Karawang Jawa Barat 41374",19000,NORMAL
+KWG.RKKDGJY,Ruko Kondangjaya Karawang,"Ruko Kondangjaya Karawang, Jl. Krajan 2, Kondangjaya Klari Kec. Karawang Timur, Kab. Karawang, Jawa Barat 41371",19000,NORMAL
+KWG.RKTLGKSM,Ruko Telagasari Kosambi Karawang,"Ruko Telagasari Kosambi Karawang, Jl. Raya Telagasari - Kosambi No. KM 3, Balendung, Kec. Klari, Kabupaten Karawang, Jawa Barat 41371",19000,NORMAL
+KWG.SHELLGLMAS,Shell Galuhmas Karawang,"Shell Galuhmas, Jl. Arteri Galuh Mas, Puseurjaya, Kec. Telukjambe Tim., Kabupaten Karawang, Jawa Barat 41361",19000,NORMAL
+KWG.SPBUTELJAM,Pertamina Teluk Jambe,"SPBU Pertamina 34.41323 Teluk Jambe (Container), Jl. Raya Teluk Jambe No. 5, Telukjambe, Kecamatan, Telukjambe Tim, kabupaten karawang, jawa barat 41361",19000,NORMAL
+KWG.SPBUWDAS,Pertamina 34.413.28 Wadas Karawang,"SPBU 34.413.28 Wadas Karawang (Container), Jl. International Karawang Barat, Wadas, Kec. Telukjambe Timur, Karawang, Jawa Barat 41361",19000,NORMAL
+KWG.TSBYGKWG,Toserba Yogya Karawang,"Toserba Yogya (Karawang), GF,  Jl. Kertabumi Blok, Gg. Harum Manis No.2 No.43, RT.1/RW.19, Karawang Kulon, Kec. Karawang Bar., Kabupaten Karawang, Jawa Barat 41311",19000,NORMAL
+LA.CODEFIN,La Codefin Kemang,"La Codefin Kemang, GF, Jl. Kemang I No. 3-5, RT.11/RW.1, Bangka, Mampang Prapatan, Jakarta Selatan - 12780",19000,NORMAL
+LA.MTRLMPG,Metro Lampung,"Metro Lampung, Jl. Ade Irma Suryani, Imopuro, Kec. Metro Pusat, Kota Metro, Lampung 34125",19000,NORMAL
+LA.PGALKDTN,ZA Pagar Alam Kedaton,"ZA Pagar Alam Kedaton, Jl. ZA. Pagar Alam No.51, Labuhan Ratu, Kec. Kedaton, Kota Bandar Lampung, Lampung 35132",19000,NORMAL
+LA.RKAHMADYANI,Ruko Ahmad Yani Lampung,"Ruko Ahmad Yani, Jl Ahmad Yani No 34 Lampung 35111",19000,NORMAL
+LA.RKANTASARI,Ruko Antasari Lampung,"Ruko Antasari, Jl Pangeran Antasari Bandar Lampung  35132",19000,NORMAL
+LA.RKCNDTLKBTG,Ruko Chandra Teluk Betung,"Ruko Chandra Teluk Betung, Jl. Ikan Bawal No.29, Pesawahan, Kec. Telukbetung Selatan, Kota Bandar Lampung, Lampung 35221",19000,NORMAL
+LAGOON.AVE,Lagoon Avenue Sungkono,"Lagoon Avenue Sungkono, GF, Jl. Abdul Wahab Siamin Kav. 9-10, Dukuh Kupang, Dukuh Pakis, Surabaya, Jawa Timur - 60225.",19000,NORMAL
+LBP.SZYTM,Suzuya Plaza Tamora,"Jalan Medan - Lubuk Pakam, Dusun IV Jl. Tj. Morawa No.KM. 17, Tj. Morawa A, Tj. Morawa, Kabupaten Deli Serdang, Sumatera Utara 2051",19000,NORMAL
+LIPPO-PURI,Lippo Mall Puri,"Lippo Mall Puri, Lantai Lower Ground Floor, Jl. Puri Indah Boulevard Blok U No. 1, Puri Indah, Jakarta Barat",22000,MAHAL
+LIPPO.BATU,Lippo Plaza Batu,"Lippo Plaza Batu, GF,  Jl. Diponegoro No.1, Sisir, Kec. Batu, Kota Batu, Jawa Timur 65314",19000,NORMAL
+LIPPO.CIKA,Lippo Cikarang,"Lippo Cikarang, Lantai 1, Jl. MH. Thamrin, Cibatu, Cikarang Selatan, Jawa Barat, 17550",19000,NORMAL
+LIPPO.KJ,Lippo Plaza KJI,"Lippo Plaza Kramat Jati, Ground Floor, Jl. Raya Bogor KM.19, RT.14/RW.6, Kramat Jati, Jakarta Timur, 13510",19000,NORMAL
+LIVING.WORLD,Living World Alam Sutera,"Living World Alam Sutera, GF, Jl. Alam Sutera Boulevard Kav. 2, Serpong Utara, Kota Tangerang Selatan, Banten, 15325",22000,MAHAL
+LMP2,Lippo Mall Puri 2,"Lippo Mall Puri @ The St. Moritz, GF, Jl. Puri Indah Boulevard Blok U No. 1, Kembangan Selatan, Kembangan, Jakarta Barat - 11610",22000,MAHAL
+LOKASARI,Lokasari Square,"Lokasari Square, Ground Floor, Jl. Mangga Besar IX No.81, RT.6/RW.2, Tangki, Taman Sari, Jakarta Barat - 11170",19000,NORMAL
+LOTTEB,Lottemart Bintaro,"Lotte Mart Bintaro, Lantai Ground Floor, JL M.H. Thamrin CBD Area Kav. Blok B7 01-06, Tangerang Selatan, 15224",22000,MAHAL
+LP.JABABEKA,Living Plaza Jababeka,"Living World Plaza Jababeka, Lantai GF, Mekarmukti, Cikarang Utara, Bekasi, Jawa Barat - 17530",19000,NORMAL
+MAD.RKCKRMNT,Ruko Cokroaminoto Madiun,"Ruko Cokroaminoto Madiun, Jl. Cokroaminoto No.76C, Kejuron, Kec. Taman, Kota Madiun, Jawa Timur 63133",19000,NORMAL
+MAD.SPBPNJTN,Pertamina 54.631.05 Panjaitan Madiun,"SPBU Pertamina 54.631.05 Panjaitan Madiun (Container), Jl. Di. Panjaitan, Pandean, Kec. Taman, Kota Madiun, Jawa Timur 63133",19000,NORMAL
+MALL.CIPUTRA,Mall Ciputra Jakarta,"Citraland Mall, LG, Jl. S. Parman, Tanjung Duren Utara, Grogol Petamburan, Jakarta Barat - 11470",19000,NORMAL
+MALL.KARAWACI,Supermall Karawaci,"Supermall Karawaci, Lantai 1, Jl. Boulevard Palem Raya No. 7, Bencongan, Kelapa Dua, Tangerang, Banten - 15810",22000,MAHAL
+MAYAPADAHOS,Mayapada Hospital,"Mayapada Hospital, Lantai Ground Floor, Jl. Lebak Bulus I kav. 29,Cilandak Barat, Jakarta Selatan, 12440",19000,NORMAL
+MDN.CENPOINT,Centre Point Medan,"Centre Point Medan, LG-Island-8, Jl Jawa No 8 Medan, Sumatera Utara 20231",22000,MAHAL
+MDN.CMBRCITY,Cambridge City Square,"Cambridge City Store, Jl. Zainul Arifin dan S. Parman Medan, Lantai Ground (G)",22000,MAHAL
+MDN.DELIPARK,Deli Park,"Deli Park, Lower Mezzanine, Jalan Guru Patimpus Blok OPQ No.1, Kesawan, Kec. Medan Barat, Kota Medan, Sumatera Utara 20111",22000,MAHAL
+MDN.HACMRASR,Pertamina H. Anif Cemara Asri,"Jl. H. Anif, Medan Estate, Kec. Percut Sei Tuan, Kota Medan, Sumatera Utara 20221",19000,NORMAL
+MDN.KUALANAMU,Terminal Kedatangan Domestik Bandara Kualanamu Deli Serdang,"Bandara Kualanamu, Jl. Bandara Kuala Namu, Ps. Enam Kuala Namu, Kabupaten Deli Serdang, Sumatera Utara 20553",32000,MAHAL
+MDN.MANHATTAN,Manhattan Time Square,"Manhattan Time Square, LG, Jl. Gatot Subroto No.217, Sei Sikambing B, Kec. Medan Sunggal, Kota Medan, Sumatera Utara 20123",19000,NORMAL
+MDN.MEDANFAIR,Medan Fair,"Medan Fair, Lantai 1, Jl. Gatot Subroto No.30, Sekip, Kec. Medan Petisah, Kota Medan, Sumatera Utara 20113",22000,MAHAL
+MDN.RKHLVTA,Ruko Helvetia Medan,"Ruko Helvetia Medan,  Jl. Setia No. 26 Tanjung Gusta, Kec. Medan Helvetia, Kota Medan, Sumatera Utara 20126",19000,NORMAL
+MDN.RKISKANMUD,Ruko Iskandar Muda Medan,"Jl. Iskandar Muda No.11, Merdeka, Kec. Medan Baru, Kota Medan, Sumatera Utara 20222",19000,NORMAL
+MDN.RKJCITY,Ruko JCity Square,"Ruko JCity Square AA-6, Jl. Karya Wisata Kel.Pangkalan Masyhur Kecamatan Medan Johor",19000,NORMAL
+MDN.RKJLKRY,Ruko Jalan Karya,"Ruko Jl. Karya, Jl. Karya Sudut Gang Sepakat Sei, Agul, Medan Barat",19000,NORMAL
+MDN.RKKRKT,Ruko Jl. Krakatau Medan,"Ruko Jl. Krakatau Medan, Pulo Brayan Darat II, Kec. Medan Tim., Kota Medan, Sumatera Utara 20237",19000,NORMAL
+MDN.RKMRCI,Ruko Merci Medan,"Ruko Merci Medan, Jl. Merci Raya no 33 , Suka Makmur, Kec. Deli Tua, Kabupaten Deli Serdang, Sumatera Utara 20147",19000,NORMAL
+MDN.RKMYMN,Ruko M. Yamin Medan,"Ruko M. Yamin Medan, Jl. Prof. HM. Yamin Sh No.606, Pahlawan, Kec. Medan Perjuangan Kota Medan, Sumatera Utara 20222",19000,NORMAL
+MDN.RKOCBC,Ruko Komplek OCBC Medan,"Ruko Komplek OCBC Medan, Jl. Ringroad Komp.OCBC No.66, Medan Selayang, Medan, Sumatera Utara, 20133",19000,NORMAL
+MDN.RKPEMSINTR,Ruko Pematang Siantar,"Ruko Pematang Siantar, Jl.Sutomo, no. 5i, Proklamasi, Siantar Barat, Proklamasi Kec. Siantar Barat., Kota Pematang 21144",19000,NORMAL
+MDN.RKSEBU,Ruko Setiabudi Medan,"Ruko Setiabudi Medan (Relocation), Jl. Setia Budi No.203 B, Tj. Rejo, Kec. Medan Sunggal, Kota Medan, Sumatera Utara 20122",19000,NORMAL
+MDN.SGPRSTAM,Singapore Station 2 Adam Malik,"Jl. H. Adam Malik No.11, Sekip, Kec. Medan Petisah, Kota Medan, Sumatera Utara 20114",19000,NORMAL
+MDN.SGPRSTBK,Singapore Station Brig. Katamso,"Jl. Brigjend Katamso No.266, Sei Mati, Kec. Medan Maimun, Kota Medan, Sumatera Utara 20159",19000,NORMAL
+MDN.SMMRLAN,Irian Supermarket Marelan,"Jl. Marelan Raya Ps. II, Rengas Pulau, Kec. Medan Marelan, Kota Medan, Sumatera Utara 20255",19000,NORMAL
+MDN.SPBLCHI,Pertamina 142011144 Lau Chi,"SPBU Lau Chi 142011144, Jl. Jamin Ginting No.KM 14,5, Sidomulyo, Kec. Medan Tuntungan, Kota Medan, Sumatera Utara 20137",19000,NORMAL
+MDN.SPBUBTGKS,Pertamina DODO Pertamina Batang Kuis Medan,"SPBU DODO BUNTU BEDIMBAR, Jl.Sultan Serdang Pasar 9 DSN IV.Desa Buntu Bedimbar",19000,NORMAL
+MDN.SPBUDDSSBM,Pertamina Singapore Station Belawan,"SPBU Pertamina Singapore Station Belawan, Belawan II, Medan Kota Belawan, Medan City, North Sumatra",19000,NORMAL
+MDN.SPBUDODOAR,Pertamina AR Hakim Medan,"SPBU Pertamina DODO AR Hakim No 118 Medan, SPBU AR Hakim Medan 14-202.14 Jalan A.R. Hakim No. 118 (Medan Area), Medan, Sumatera Utara, 20126",19000,NORMAL
+MDN.SPBUDODOMA,Pertamina Sisingamangaraja Medan,"SPBU Pertamina 14.202.126 Sisingamangaraja Medan, Jl. Sisingamangaraja No.45, Sitirejo II, Kec. Medan Amplas, Kota Medan, Sumatera Utara 20217",19000,NORMAL
+MDN.SPBULBPK,Pertamina 14.203.1156 Lubuk Pakam Medan,"SPBU 14.203.1156 Lubuk Pakam Medan (Container), JI. Imam Bonjol, Tj. Garbus Satu, Kec. Lubuk Pakam, Kabupaten Deli Serdang, Sumatera Utara, 20518",19000,NORMAL
+MDN.SPBUMARDAL,Pertamina Marindal Medan,"SPBU Pertamina 14.201.127 Marindal Medan (Container), Jl. SM Raja Km. 6,6 No. 28 A Kel. Harjosari II, Kec. Medan Amplas",19000,NORMAL
+MDN.SPBUSGGL,Pertamina 14.203.116 Sunggal Medan,"SPBU 14.203.116 Sunggal Medan, Jl. Medan - Binjai No.Km. 12, Mulyorejo, Kec. Sunggal, Kabupaten Deli Serdang, Sumatera Utara 20351",19000,NORMAL
+MDN.SPBUSLAYUT,Pertamina Selayang Utama,"SPBU Pertamina 14.201.1157 Selayang Utama (Container), Jl. Setia Budi No. 82, Tj Rejo, Medan Sunggal, Kota Medan, Sumatera Utara 20154",19000,NORMAL
+MDN.SPBUSMYG,Pertamina 14.203.1117 Semayang Medan,"SPBU 14.203.1117 Semayang Medan (Container), JI. Medan - Binjai, Medan Krio, Kee. Sunggal, Kabupaten Deli Serdang, Sumatera Utara 20228",19000,NORMAL
+MDN.SPBUTMBG,Pertamina 14.202.113 Tembung Medan,"SPBU 14.202.113 Tembung Medan (Container), JI. Tembung, Tembung, Kec. Medan Tembung, Kota Medan Sumatera Utara 20371",19000,NORMAL
+MDN.SPLTDNG,Pertamina Laut Dendang,"SPBU Laut Dendang (Container), Jl. Perhubungan, Tembung, Kec. Percut Sei Tuan, Kabupaten Deli Serdang, Sumatera Utara 20371",19000,NORMAL
+MDN.SPTJMRW,Pertamina Tanjung Morawa,"SPBU Tanjung Morawa (Container), Jl. Tj. Morawa No. km 12, RW. 8, Ujung Serdang, Kec. Tj. Morawa, Kab. Deli Serdang, Sumatera Utara 20362",19000,NORMAL
+MDN.SUNPLAZA,Sun Plaza,"Sun Plaza, Lantai 4, Jl. KH. Zainul Arifin No.7, Madras Hulu, Kec. Medan Polonia, Kota Medan, Sumatera Utara 20152",22000,MAHAL
+MEGA.BKS,Mega Bekasi Hypermall,"Mega Bekasi Hypermall, Lantai 3, Jl. Jend. Ahmad Yani No.1, Marga Jaya, Bekasi Selatan, Bekasi, Jawa Barat, 17141",19000,NORMAL
+MGG.ARMNTOS,Armada Town Square Magelang,"Armada Town Square Magelang, Jl. Mayjen Bambang Soegeng No.1, Kedungdowo, Mertoyudan, Kec. Mertoyudan, Kabupaten Magelang, Jawa Tengah 56172",19000,NORMAL
+MGG.PKLAN,Pakelan Magelang (Container),"Pakelan Magelang (Container), Jl. Magelang Jl. Magelang - Salaman No.99, Kedungingas, Banyurojo, Kec. Mertoyudan, Kota Magelang, Jawa Tengah 56172",19000,NORMAL
+MGG.RKMTLN,Ruko Muntilan Magelang,"Ruko Muntilan Magelang, Jl. Semarang - Yogyakarta, Tegal Slerem, Sedayu, Kec. Muntilan, Kabupaten Magelang, Jawa Tengah 56412",19000,NORMAL
+MGG.SPBBLDN,Pertamina 44.564.04 Baledono Magelang,"SPBU 44.564.04 Baledono Magelang, Jl. Magelang No.Km 20, Jagang Lor, Salam, Kec. Salam, Kabupaten Magelang, Jawa Tengah 56484",19000,NORMAL
+MGW.RKCANGGU,Ruko Canggu Raya Bali,"Ruko Canggu Raya Bali, Jl. Raya Canggu No, 4 Kerobokan, Kec. Kuta Utara, Kabupaten Badung, Bali 80361",19000,NORMAL
+MGW.RKDWSRI,Ruko Dewi Sri,"Ruko Dewi Sri, Jl.Dewi Sri No.47F Pertokoan Kimia Farma 2, Kuta, Kabupaten Badung, Bali 80361",19000,NORMAL
+MGW.RKNGRHRAI,Ruko By Pass Ngurah Rai,"Ruko By Pass Ngurah Rai, Jl. Bypass Ngurah Rai No.7, Tuban, Kuta, Kabupaten Badung, Bali 80361",19000,NORMAL
+MGW.RKPDLWH,Ruko Padang Luwih Bali,"Ruko Padang Luwih Bali, Jl. Raya Padang Luwih Dalung No. 210, Padang Luwih Dalung, Kecamatan Kuta Utara, Kabupaten Badung Bali 80361",19000,NORMAL
+MK,Mangkuluhur City (HANA),"Mangkuluhur City (Hana Bank) Jl. Jend. Gatot Subroto Kav. 1-3, Karet Semanggi,Kota Jakarta Selatan, 12930",19000,NORMAL
+MKG3,Mall Kelapa Gading 3,"Mall Kelapa Gading 3, Lantai Ground Floor, Jl. Bulevar Kelapa Gading, Klp. Gading, Jakarta Utara, 14240",22000,MAHAL
+MKS.CTRLDCLBS,Ruko Citraland Celebes Makassar,"Ruko Citraland Celebes Makassar, Per.Citraland Celebes A, Blk. 1A, Tombolo, Kec. Somba Opu, Kota Makassar 90233",19000,NORMAL
+MKS.PNKGMALL,Panakkukang Mall,"Panakkukang Mall, Lantai Dasar, Gedung B, Jl. Boulevard No.1, Masale, Kec. Panakkukang, Kota Makassar, Sulawesi Selatan 90231",19000,NORMAL
+MKS.RKALDIN,Ruko Alauddin,"Ruko Alauddin Makassar,Ruko Kompleks Clariti@alaudin,Jl.Sultan Alaudin,Kel.Gn Sari,Kec.Rappocini-Kota Makasar 90221",19000,NORMAL
+MKS.RKBWKREENG,Ruko Bawakaraeng Makassar,"Ruko Bawakareeng Makassar, Jl. G. Bawakaraeng, Maccini, Gusung, Kota Makassar, Sulawesi Selatan",19000,NORMAL
+MKS.RKCNDRWSH,Ruko Cendrawasih Makassar,"Ruko Cendrawasih Makassar, Jl. Cendrawasih, Sambung Jawa, Kec. Mamajang, Kota Makassar, Sulawesi Selatan",19000,NORMAL
+MKS.RKLNDK,Ruko Landak Makassar,"Ruko Landak Makassar, Jl. Andi Djemma No.76, Banta-Bantaeng, Kec. Rappocini, Kota Makassar, Sulawesi Selatan 90222",19000,NORMAL
+MKS.RKPRNTIS,Ruko Perintis Makassar,"Perintis Makassar, Jl. Perintis Kemerdekaan Km. 9, Tamalanrea Jaya, Makassar, Sulawesi Selatan",19000,NORMAL
+MKS.RKTMGPA,Ruko Tamangapa Makassar,"Ruko Tamangapa Makassar, Jl. Tamangapa Raya No.39 G, Bangkala, Kec. Manggala, Kota Makassar, Sulawesi Selatan 90235",19000,NORMAL
+MKS.RKYANI,Ruko A. Yani Makassar,"Ruko A.Yani Makasar,Jl.Ahmad Yani,Pattunuang.Kec.Wajo,Kota Makasar Sulawesi Selatan 90171",19000,NORMAL
+MKS.SPBUCCPRTS,SPBU Pertamina (Perintis Makassar),"Jl.Perintis kemerdekaan No.KM.19,Pai,Kec.Biringkanaya,Kota Makassar,Sulawesi Selatan 90242",19000,NORMAL
+MKS.SPBUDDADLS,SPBU Pertamina (Andalas Makassar),"Jl.Andalas No.147,Parang Layang,Kec.Bontoala,Kota Makasar,Sulawesi Selatan 90154",19000,NORMAL
+MKS.SPPGYMN,SPBU 74.902.25 Pengayoman Makassar,"SPBU 74.902.25 Pangayoman Makassar, Jl. Pengayoman No.20, Masale, Kec. Panakkukang, Kota Makassar, Sulawesi Selatan 90231",19000,NORMAL
+MLG.JLNSKRNHT,Ruko Jalan Soekarno Hatta,"Ruko Jalan Soekarno Hatta, Ruko Soekarno Hatta Business Center, Jl. Soekarno Hatta kav. 5A-10 Malang, 65141",19000,NORMAL
+MLG.RKIJEN,Stand Alone Ijen Malang,"Stand Alone Ijen, Jl. Ijen No.90-92, RT.005/RW.05, Klojen, Kota Malang 65116",19000,NORMAL
+MLG.RKKAWI,Ruko Kawi,"Ruko Kawi, Jl. Kawi Atas No.34B, Kelurahan Bareng, Kec. Klojen, Kota Malang, Jawa Timur  65116",19000,NORMAL
+MLG.SPBUPLSAN,Pertamina 54.651.63 Plaosan Blimbing,"SPBU Pertamina 54.651.63 Plaosan Blimbing (Container), Jl. Raden Panji Suroso, Purwodadi, Kec. Blimbing, Kota Malang, Jawa Timur 65126",19000,NORMAL
+MM.BKS,Metropolitan Mall Bekasi,"Metropolitan Mall, Lantai 2, Jl. KH. Noer Ali, Pekayon Jaya, Bekasi Selatan, Kota Bekasi, Jawa Barat, 17148",19000,NORMAL
+MND.MANTOS,Manado Town Square,"Manado Town Square 2 Jl. Piere Tendean, Sulawesi Utara 95114",22000,MAHAL
+MND.MEGAMAS,Kawasan Megamas Manado,"Kawasan Megamas Manado, Jl. Laksda John Lie, Titiwungan Utara, Kec. Sario, Kota Manado, Sulawesi Utara",22000,MAHAL
+MND.RKBAHU,Ruko Bahu Manado,"Ruko Bahu Manado, Jl. Wolter Monginsidi, Bahu, Kec. Malalayang, Kota Manado, Sulawesi Utara",19000,NORMAL
+MND.RKSDRMN,Ruko Sudirman Manado,"Ruko Sudirman Manado, Jl. Jendral Sudirman No.Kel, Lawangirung, Kec. Wenang, Kota Manado, Sulawesi Utara",19000,NORMAL
+MND.RKYOSSDRSO,Ruko Yos Sudarso Paal Dua Manado,"Ruko Yos Sudarso Paal Dua Manado,  Jl. Yos Sudarso, Paal Dua, Tikala, Manado City, North Sulawesi",19000,NORMAL
+MND.SAMRTULNGI,Ruko Sam Ratulangi Manado,"Ruko Sam Ratulangi Manado, Jl. Sam Ratulangi, Ranotana, Kec. Sario, Kota Manado, Sulawesi Utara 95116",19000,NORMAL
+MND.SPBSRO,Pertamina 74.951.08 Sario Manado,"SPBU 74.951.08 Sario Manado, Jl. Bethesda, Sario Tumpaan, Kec. Sario, Kota Manado, Sulawesi Utara",19000,NORMAL
+MSC,Menara Standard Chartered,"Menara Standard Chartered, Lantai Ground Floor, Jl. Prof. DR. Satrio No.164 Setiabudi Kota Jakarta Selatan",19000,NORMAL
+NEO.SOHO,Central Park 2,"NEO SOHO, Lt. GF, Letjen S. Parman Street No.Kav. 28, RT.3/RW.5, Grogol petamburan, Jakarta Barat, Jakarta, 11470",22000,MAHAL
+NPM.STTABING,Stasiun Tabing Padang (Bondex),"Stasiun Tabing Padang (Bondex), Jl. Adinegoro, Katapiang Selatan, Padang Pariaman 25586",19000,NORMAL
+PAD.RKARAU,Ruko Arau Padang,"Ruko Arau Padang, Jl. Batang Arau No.60, Berok Nipah, Kec. Padang Bar., Kota Padang, Sumatera Barat 25118",19000,NORMAL
+PAD.RKGJHMDA,Ruko Gajah Mada Padang,"Ruko Gajah Mada Padang, Jl. Gajah Mada, Kp. Olo, Kec. Nanggalo, Kota Padang, Sumatera Barat 25173",19000,NORMAL
+PAD.RKPRKLMS,Ruko Tarandam (Proklamasi Padang),"Ruko Proklamasi Padang, Jl. Proklamasi No.51E, Alang Laweh, Kec. Padang Sel., Kota Padang, Sumatera Barat 25133",19000,NORMAL
+PAD.RKSTMO,Ruko Sutomo Padang,"Ruko Sutomo Padang, Jl. Dr. Sutomo 146-158, Kubu Marapalam, Kec. Padang Timur, Kota Padang Sumatera Barat 25173",19000,NORMAL
+PAD.SPBUKHSLMN,Pertamina 14.251.583 Khatib Sulaeman Padang,"SPBU 14.251.583 Khatib Sulaeman Padang (Container), Jl. Khatib Sulaiman No.7, Ulak Karang Sel., Kec. Padang Utara, Kota Padang 60253",19000,NORMAL
+PAKUWAN.MALL,Pakuwon Mall,"Pakuwon Mall, Second Floor, Jl. Mayjen Yono Suwoyo No.2, Babatan, Wiyung, Kota SBY, Jawa Timur 60216",22000,MAHAL
+PASARAYA,Pasaraya Blok M,"Pasaraya Blok M, Lantai Ground Floor, Jl. Iskandarsyah II, Kebayoran Baru, Jakarta Selatan, 12160",22000,MAHAL
+PAVI,Tempo Pavilion 1,"Tempo Pavilion 1, Lantai Ground Floor, Jl. H. R. Rasuna Said No.11 Kuningan Timur, Jakarta Selatan, 12950",19000,NORMAL
+PBR.LWPKNBR,Living World Pekanbaru,"Living World Pekanbaru, Lantai Ground Unit Island G- Unit 03, Jl. Soekarno - Hatta, Tengkerang Bar., Kec. Marpoyan Damai, Kota Pekanbaru",22000,MAHAL
+PBR.MALLSKA,Mall SKA Pekanbaru,"Mall SKA Pekanbaru, Jl. Soekarno - Hatta No.114, Delima, Kec. Tampan, Kota Pekanbaru, Riau 28292, Lantai Dasar Unit 17A",22000,MAHAL
+PBR.RKAWLBROSS,Ruko Sudirman Awal Bros Pekanbaru,"Ruko Sudirman Awal Bros Pekanbaru, Jalan Jend. Sudirman, PRSL 03260, Marpoyan Damai - Pekanbaru",19000,NORMAL
+PBR.RKGBHPU,Ruko Gobah Pekanbaru,"Ruko Gobah Pekanbaru, Jl. Beringin No.16, Suka Maju, Kec. Sail, Kota Pekanbaru, Riau 28127",19000,NORMAL
+PBR.RKHTUJG,Ruko Hang Tuah Ujung,"Ruko Hang Tuah Ujung, Jl Hang Tuah Ujung, Rejosari, Kec. Tenayan Raya, Kota Pekanbaru, Riau 28112",19000,NORMAL
+PBR.RKJLNRIU,Ruko Jl. Riau,"Ruko Jl. Riau, Jl. Riau No.59, Kp. Baru, Kec. Senapelan, Kota Pekanbaru, Riau",19000,NORMAL
+PBR.RKPANAM,Ruko Panam Pekanbaru,"Ruko Panam Pekanbaru, Jl. H. R. Soebratas, Delima, Kec. Tampan, Kota Pekanbaru, Riau 28289, Indonesia",19000,NORMAL
+PBR.RKSUDIRMAN,Ruko Sudirman Pekanbaru,"Ruko Sudirman Pekanbaru, Jl. Jend Sudirman No.137, Kota Tinggi - Pekanbaru",19000,NORMAL
+PGC,Pusat Grosir Cililitan,"Pusat Grosir Cililitan, Lantai Lower Ground, Jl. Dewi Sartika, Cililitan, Kramatjati, Kota Jakarta Timur, 13640",19000,NORMAL
+PLAZA.INDO,Plaza Indonesia,"Plaza Indonesia, Lantai LB, Jl. M.H. Thamrin No.Kav. 28-30, RT.9/RW.5, Gondangdia, Menteng, Jakarta Pusat, 10350",22000,MAHAL
+PLG.KTNFDMRKT,Kenten Food Market,"Kenten Food Market, GF, Jl. MP. Mangkunegara No.11-10, 8 Ilir, Kec. Ilir Tim. II, Kota Palembang, Sumatera Selatan 30961",19000,NORMAL
+PLG.OPIMALL,Opi Mall,"Opi Mall, GF, Jl. Gubernur H. A Bastari, Sungai Kedukan, Kec. Rambutan, Kabupaten Banyu Asin, Sumatera Selatan 30257",19000,NORMAL
+PLG.PLGINDH,Palembang Indah Mall,"Palembang Indah Mall, UG, Jl. Letkol Iskandar No.18, 24 Ilir, Kec. Bukit Kecil, Kota Palembang, Sumatera Selatan 30134",19000,NORMAL
+PLG.RKDMG,Ruko Demang Palembang,"Ruko Demang Palembang, Jl. Demang Lebar Daun 507 No. 8 RT 051 / RW 015, Lorok Pakjo, IIr Barat I, Palembang, Sumatera Selatan",19000,NORMAL
+PLG.RKLEMABANG,Ruko Lemabang Palembang,"Ruko Lemabang Palembang, Ruko Komplek Lemabang Mas no.1380, Jl. Yos Sudarso, Palembang, Sumatera Selatan 30118",19000,NORMAL
+PLG.RKPLAJU,Ruko Plaju,"Ruko Plaju, Jl. Jenderal Ahmad Yani, 9/10 Ulu, Kecamatan Seberang Ulu I, Kota Palembang, Sumatera Selatan 30116",19000,NORMAL
+PLG.RKTRADCEN,Ruko Palembang Trade Center,"Ruko Palembang Trade Center, Jln. R. Sukamto Komplex Ruko PTC Blok G-7, Kec. Ilir Timur II, Kel. 8 Ilir, Palembang, Sumatera Selatan 30118",19000,NORMAL
+PLG.SGRSTMISA,Singapore Station M. Isa,"Singapore Station M. Isa, Jalan Doktor Muhammad Isa No. 16, Duku, Kec. Ilir Tim. II, Kota Palembang, Sumatera Selatan 30114",19000,NORMAL
+PLG.SOCMARKET,Social Market Palembang,"Social Market Palembang (Container), Jl. Veteran No. 999, IIir Timur II Palembang, Sumatera Selatan 30113",19000,NORMAL
+PLG.SPINDBSLCA,Super Indo Basilica,"Super Indo Basilica, Komp. The Basilica, Bukit Sangkal, Kec. Kalidoni, Kota Palembang, Sumatera Selatan 30163",19000,NORMAL
+PLUIT.VILL,Pluit Village,"Pluit Village, GF Floor, Jl. Pluit Karang Ayu Barat, RT.15/RW.4, Pluit, Penjaringan, Jakarta Utara, 14450",22000,MAHAL
+PMS.RKAHYANI,Pertamina 14.211.205 A. Yani Pematang Siantar,"SPBU 14.211.205 A. Yani Pematang Siantar, Jl. Ahmad Yani No.206, Asuhan, Kec. Siantar Tim., Kota Pematang Siantar, Sumatera Utara 21143, Indonesia",19000,NORMAL
+PMS.RKMGLAND,Ruko Megaland Pematang Siantar,"Ruko Megaland Pematang Siantar,  Jl. Sangnawaluh, Siopat Suhu, Kec. Siantar Tim., Kota Pematang Siantar, Sumatera Utara 21151",19000,NORMAL
+PP,Pacific Place,"Pacific Place, Lantai Lower Ground, Jl. Jend. Sudirman No.52-53, Kby. Baru, Kota Jakarta Selatan, 12190",22000,MAHAL
+PRAMUKA,Green Pramuka Square,"Green Pramuka Square, Lantai Ground Floor, Jl. Rawa Jaya No.49, Cemp. Putih, Kota Jakarta Pusat, 10570",19000,NORMAL
+PSN.RAKM66A,Rest Area KM 66A (Arah ke Malang) Container,"Rest Area KM 66 A (Container), Tol Pandaan Malang KM 66, Bejigeneng, Sumbersuko, Purwosari, Pasuruan, Jawa Timur 67162",22000,MAHAL
+PSN.RAKM66B,Rest Area KM 66B (Arah ke Surabaya) DT,"Rest Area KM 66 B (Container) Drive Thru, Tol Malang Pandaan KM 66, Bejigeneng, Sumbersuko, Purwosari, Pasuruan, Jawa Timur 67162",22000,MAHAL
+PSN.RKTMDYP,Ruko Taman Dayu Pandaan,"Ruko Taman Dayu Pandaan, Jl. Raya Surabaya-Malang No.15, Sukorejo, Karang Jati, Kec. Pandaan, Pasuruan, Jawa Timur 67156",19000,NORMAL
+PTK.RKSLTABD,Ruko Sultan Abdurrahman Pontianak,"Ruko Sultan Abdurrahman Pontianak, Jl. Sultan Abdurrahman No.29, Sungai Bangkong, Kec. Pontianak Kota, Kota Pontianak, Kalimantan Barat 78113",19000,NORMAL
+PWK.RAKM88,Rest Area KM 88A Cipularang (Container),"Rest Area KM 88A Cipularang (Container), Jalan Tol Purbaleunyi Rest Area Tol No.Km 88 A, Sukajaya, Kec. Sukatani, Kabupaten Purwakarta, Jawa Barat 41167",22000,MAHAL
+PWK.RKBGRSARI,Ruko Bungursari,"Ruko Bungursari, Jl. Raya Bungursari, Bungursari, Kec. Bungursari, Kabupaten Purwakarta, Jawa Barat 41181 (samping Alfamidi seberang RS Siloam)",19000,NORMAL
+PWK.RKVETERAN,Ruko Veteran Purwakarta,"Ruko Veteran Purwakarta
+Jl. Veteran Blok Beringin No.143 Nagri Kaler Purwakarta 41115",19000,NORMAL
+PWT.AMWHDHSYM,Alfamidi Wahid Hasyim Purwokerto (Bondex),"Alfamidi Wahid Hasyim Purwokerto (Bondex), H62V+G98, Windusara, Karangklesem, Kec. Purwokerto Sel., Kabupaten Banyumas, Jawa Tengah 53144",19000,NORMAL
+PWT.RKSHRSO,Ruko Suharso Purwokerto,"Ruko Suharso Purwokerto, Jl. Prof. Dr. Suharso Kelurahan No.6, Rt 01 Rw 01 Arcawinangun, Kec. Purwokerto Tim., Kabupaten Banyumas, Jawa Tengah 53113",19000,NORMAL
+PWT.SPBUKRGLEWAS,Pertamina 44.531.23 Karanglewas,"SPBU 44.531.23 Karanglewas (Container), Jl. Yos Sudarso No.141, Karanglewas Lor, Kec. Karanglewas, Kabupaten Banyumas, Jawa Tengah 53135",19000,NORMAL
+RA.72,Rest Area km 72,"BP Rest Area KM 72, Toll Road Cipularang KM 72A, Purwakarta, Jawa Barat (Arah Bandung)",22000,MAHAL
+RTD.BCR,Kopi Kenangan Hanya Untukmu,irian jaya,,UNKNOWN
+SAHID,Sahid Sudirman,"Sahid City Kav. 86, Lantai Dasar GF, Jl. Jend. Sudirman, Tanah Abang, Jakarta Pusat,10220",22000,MAHAL
+SBY.AHMDYNMJO,Ahmad Yani Surabaya (Drive Thru),"Jl. Ahmad Yani, Kec. Wonocolo, Surabaya, Jawa Timur 60238",22000,MAHAL
+SBY.BGJNCTION,BG Junction,"BG JUNCTION, Lobby Level - C42, C55, Jl. Bubutan No 1-7 Surabaya 60174",19000,NORMAL
+SBY.BPMARGORJ,BP Margorejo Surabaya,"BP Margorejo, Jl. Margorejo Indah No.237, Margorejo, Kec. Wonocolo, Kota SBY, Jawa Timur 60238",19000,NORMAL
+SBY.BPPEMUDA,BP Pemuda Surabaya,"BP Pemuda, Jl. Pemuda No 72 RT 001 RW 03 Embong Kaliasin, Genteng, Surabaya, 60271",19000,NORMAL
+SBY.GWALK,Ruko G Walk,"Ruko G Walk, Ruko Villa Taman Telaga Citraland Niaga Gapura Road, Lidah Kulon, Kec. Lakarsantri, Surabaya, Jawa Timur 60213",19000,NORMAL
+SBY.PASARATOM,Pasar Atom  Mall,"Pasar Atom , Lantai 1 tahap 3 Jl.Bunguran No.45,Pabean Cantian,Surabaya, Jawa Timur - 60161",19000,NORMAL
+SBY.RAKM754,Rest Area KM 754 (Arah ke Sidoarjo) DT,"Rest Area KM 754 (Container), Porong Hwy No.26, Ngepung, Sidokepung, Buduran, Kabupaten Sidoarjo, Jawa Timur 61252",22000,MAHAL
+SBY.RKAVNUE,Ruko Avenue A-6 (MERR Surabaya),"Ruko Avenue A-6 (MERR Surabaya),Jl. Dr. Ir. H. Soekarno No.18-21, Semolowaru, Kec. Sukolilo, Kota SBY, Jawa Timur 60119",19000,NORMAL
+SBY.RKDRMHSDA,Ruko Dharmahusada Surabaya,"Ruko Dharmahusada Surabaya, Jl. Dharmahusada 72-58, Mojo, Kec. Gubeng, Kota SBY, Jawa Timur 60285",19000,NORMAL
+SBY.RKISMUD,Ruko Iskandar Muda Surabaya,"Ruko Iskandar Muda Surabaya, Jl. Sultan Iskandar Muda 37-45, Ampel, Kec. Semampir, Kota SBY, Jawa Timur 60151",19000,NORMAL
+SBY.RKMNKN,Ruko Manukan Surabaya,"Ruko Manukan Surabaya, Jl. Manukan Taman Raya 36, RT.12/RW.03, Kec. Tandes, Kota Surabaya Jawa Timur 60185",19000,NORMAL
+SBY.RKMNYR,Ruko Manyar Surabaya,"""Ruko Manyar Surabaya, Jl. Manyar Kertoarjo, 33, Mojo, Kec. Gubeng
+Kota Surabaya, Jawa Timur 60285 """,19000,NORMAL
+SBY.RKMULYOSBY,Ruko Mulyosari Surabaya,"Ruko Mulyosari Surabaya, Jl Mulyosari No 76G Kec. Mulyorejo, Kel. Kalisari, Surabaya 60112",19000,NORMAL
+SBY.RKNGAGEL,Ruko Ngagel,"Ruko Ngagel, Jl. Ngagel Jaya Selatan Blok B, Baratajaya, Gubeng, Surabaya, Jawa Timur, 60284",19000,NORMAL
+SBY.RKRGKTMDY,Ruko Rungkut Madya Surabaya,"Ruko Rungkut Madya Surabaya, Jl. Rungkut Madya No.81 E, Rungkut Kidul, Kec. Rungkut, Kota SBY, Jawa Timur 60293",19000,NORMAL
+SBY.RKWYG,Ruko Wiyung Surabaya,"Ruko Wiyung Surabaya, Ruko Taman Pd. Indah A-22, Komplek, Wiyung, Surabaya City, East Java 60228",19000,NORMAL
+SBY.RSPHC,Rs. PHC Surabaya,"Rs. PHC Surabaya (Container), Jl. Prapat Kurung Selatan No.1, Perak Utara, Kec. Pabean Cantian, Kota SBY, Jawa Timur 60165",19000,NORMAL
+SBY.RYLPLZ,Royal Plaza Surabaya,"Royal Plaza Surabaya, LG, Jl. Ahmad Yani No. 16-18, Ketintang, Gayungan, Surabaya, Jawa Timur - 60231",19000,NORMAL
+SBY.RYLRDCSQ,Royal Residence Square,"Royal Residence Square, Royal residence B007 Kav 02-10 Sumur Welut Lakarsantri Surabaya Jawa Timur",19000,NORMAL
+SBY.SHLDPAK,Shell Dupak,"Shell Dupak, Jl. Dupak No. 81, Gundih, Kec. Bubutan, Kota SBY, Jawa Timur 60172",19000,NORMAL
+SBY.SICTRLND,Super Indo Citraland Utara Surabaya,"Super Indo Citraland Utara Surabaya, Babat Jerawat, Pakal, Surabaya City, East Java 60197",19000,NORMAL
+SBY.SIMSTRP,Super Indo Mastrip,"Super Indo Mastrip, Jl. Raya Mastrip No.4, Kebraon, Kec. Karang Pilang, Kota SBY, Jawa Timur 60222",19000,NORMAL
+SBY.SPBUJMSR,Pertamina COCO 51.601.65 Jemusari Surabaya,"SPBU Pertamina Coco 51.601.65 Jemusari Surabaya (Bondex), Jl. Raya Jemursari No.113-123, Jemur Wonosari, Kec. Wonocolo, Kota SBY, Jawa Timur 60237",19000,NORMAL
+SBY.SPBUKJRAN,Pertamina 54.601.42 Kenjeran Surabaya,"SPBU 54.601.42 Kenjeran Surabaya, Jl. Kenjeran No.118, Tambakrejo, Kec. Simokerto, Kota SBY, Jawa Timur 60142",19000,NORMAL
+SBY.SPBUNGAGEL,SPBU Pertamina (Ngagel) (Drive Thru),"Jl. Ngagel No.185, Ngagel, Kec. Wonokromo, Kota SBY, Jawa Timur 60246",19000,NORMAL
+SBY.SPBUPJGJW,Pertamina Panjang Jiwo,"SPBU Pertamina 54.60264 Panjang Jiwo Surabaya (Container), Jl. Panjang Jiwo No.54 Panjang Jiwo, Kecamatan Tenggilis Mejoyo Kota Surabaya Jawa Timur 60299",19000,NORMAL
+SBY.SPBUSTRJO,Pertamina 54.60.115 Sutorejo,"SPBU 54.60.115 Sutorejo (Container), Jl. Kenjeran No.661, Dukuh Sutorejo, Kec. Mulyorejo, Kota SBY, Jawa Timur 60134",19000,NORMAL
+SBY.STGBENG,Stasiun Gubeng Surabaya,"Stasiun Gubeng Surabaya, Pacar Keling, Kec. Tambaksari, Kota Surabaya, Jawa Timur 60131",22000,MAHAL
+SBY.STPSRTURI,Stasiun Pasar Turi,"Stasiun Pasar Turi, Jl. Semarang No.1, Tembok Dukuh, Kec. Bubutan, Kota SBY, Jawa Timur 60173",22000,MAHAL
+SDA.RAK753,Rest Area KM 753 (Arah ke Surabaya) Non DT,Rest Area Km753 Sidoarjo,22000,MAHAL
+SDA.RKCTRHRMN,Ruko Citra Harmoni Sidoarjo,"Ruko Citra Harmoni Sidoarjo, Ruko Gateway no.14 Jalan Citra Harmoni, Bringin Kulon, Bringin Bendo, Taman, Sidoarjo Regency, East Java 61257",19000,NORMAL
+SDA.RSSDAJT,RSUD Sidoarjo Jawa Timur,"RSUD Sidoarjo Jawa Timur, Jl. Mojopahit No.667, Sidowayah, Celep, Kec. Sidoarjo, Kabupaten Sidoarjo, Jawa Timur 61215",19000,NORMAL
+SDA.SPBUGDGN,Pertamina 54.61208 Gedangan,"SPBU Pertamina 54.61208 Gedangan, Jl. Raya Gedangan 97-99, Desa Seruni Gedangan, Sidoarjo, Jawa Timur 61254",19000,NORMAL
+SDA.SPBUGLAM,Pertamina 54.61252 Gelam Sidoarjo,"SPBU Pertamina 54.61252 Gelam Sidoarjo, Jl. Raya Gelam No.46, Gelam, Kec. Candi, Kabupaten Sidoarjo, Jawa Timur 61271",19000,NORMAL
+SDA.SPBUJNDA,Pertamina 54.612.63 Juanda Sidoarjo,"SPBU Pertamina 54.612.63 Juanda Sidoarjo (Container), Jl. Raya Bandara Juanda No.46, Semawalang, Sawotratap, Kec. Gedangan, Kabupaten Sidoarjo, Jawa Timur 61254",19000,NORMAL
+SDA.SPBUJNGLO,Pertamina 54.612.36 Jenggolo,"SPBU Pertamina 54.612.36 Jenggolo (Container), Jl. Jenggolo No.58 A, Pucang, Kec. Sidoarjo, Kabupaten Sidoarjo, Jawa Timur 61219SPBU Pertamina 54.612.36 Jenggolo",19000,NORMAL
+SDA.SPBUTRPDO,Pertamina 54.612.55 Tropodo Sidoarjo,"SPBU Pertamina 54.612.55 Tropodo Sidoarjo, Jl. Raya Tropodo No.62, Tropodo Wetan, Tropodo, Kec. Waru, Kabupaten Sidoarjo, Jawa Timur 61256",19000,NORMAL
+SDA.SPBUWARU,Pertamina 54.612.58 Waru,"SPBU Pertamina 54.612.58 Waru (Container), Jalan S Parman 4, Waru, Krajan Kulon, Waru, Kec. Waru, Kabupaten Sidoarjo, Jawa Timur 61256",19000,NORMAL
+SEASON.CITY,Season City,"Season City, GF 1, Jl. Prof. Dr. Latumeten No.33, RT.13/RW.1, Jemb. Besi, Kec. Tambora, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11320",19000,NORMAL
+SERPONG.PARA,Serpong Paradise Walk,"Serpong Paradise Walk, GF, Jl. Raya Puspiptek, Babakan, Setu, Tangerang, Banten, 15315",19000,NORMAL
+SKB.RKGRHASLW,Ruko Graha Siliwangi Sukabumi,"Ruko Graha Siliwangi Sukabumi, Graha Siliwangi Blok A. No. 2 Cikole, Sukabumi",19000,NORMAL
+SKT.RKJLSTRT,Ruko Jl. Sutarto (RSUD Moewardi),"Ruko Jl. Sutarto (RSUD Moewardi), Jebres Square Ruko No. 2 Jl. Kolonel Sutarto, RT. 01 / RW. 05 Kelurahan Jebres, Kecamatan Jebres Kota Surakarta Jawa Tengah 57126",19000,NORMAL
+SKT.STSLOBLP,Stasiun Solo Balapan,"Stasiun Solo Balapan, Jalan Wolter Monginsidi No.112, Kestalan, Kec. Banjarsari, Kota Surakarta, Jawa Tengah 57133",22000,MAHAL
+SKYLINE,Skyline Building,"Skyline Building, Lantai 1, Jl Mh. Thamrin No. 9, Jakarta Pusat, 12920",19000,NORMAL
+SLO.ALFMDADSCPT,Alfamidi Adi Sucipto Solo,"Alfamidi Adi Sucipto Solo, Jl. Adi Sucipto, Blukukan Dua, Blulukan, Kec. Colomadu, Kabupaten Karanganyar, Jawa Tengah 57174",19000,NORMAL
+SLO.RKHARLIN,Ruko Harlin Solo,"Ruko Harlin Solo,Ruko Harlin Malangjiwan Blok B 11,Jl.Adi Sumarmo Colomadu 57177",19000,NORMAL
+SLO.SPINRGGWST,Super Indo Ronggowarsito,"Super Indo Ronggowarsito,Jln Ronggo Warsito No.23,Rt 00/Rw 05,Kelurahan Timuran,Kec.Banjarsari,Surakarta Solo",19000,NORMAL
+SLT.RKKLKPTMR,Ruko Kaloka Patimura Salatiga,"Ruko Kaloka Patimura Salatiga, Jl. Patimura, Salatiga, Kec. Sidorejo Kota Salatiga, Jawa Tengah 50711",19000,NORMAL
+SLT.RKKRTN,Ruko Kartini Salatiga,"Ruko Kartini Salatiga, Jl. Kartini No. 34, Salatiga, Kec. Siderejo, Kota Salatiga, Jawa Tengah 50711",19000,NORMAL
+SLT.SPBUVTRN,Pertamina Pasar Sapi Veteran Salatiga,"SPBU 44.507.06 Veteran Salatiga, Jl. Veteran No.135, Tegalrejo, Kec. Argomulyo, Kota Salatiga, Jawa Tengah 50733",19000,NORMAL
+SMB,Summarecon Mall Bekasi,"Summarecon Mall Bekasi, Downtown Walk, Jl. Boulevard Ahmad Yani, Marga Mulya, Bekasi Utara, Kota Bekasi, Jawa Barat, 17142",22000,MAHAL
+SMD.JTNGTWNSQ,Jatinangor Town Square,"Jatinangor Square, Lt FF Extension, Jl. Raya Jatinangor No.150, Cikeruh, Kec. Jatinangor, Kabupaten Sumedang, Jawa Barat 45363",19000,NORMAL
+SMG.DPMALL,DP Mall,"DP Mall, Lantai 1, Jl. Pemuda No.150, Sekayu, Kec. Semarang Tengah, Kota Semarang, Jawa Tengah 50132",19000,NORMAL
+SMG.GDKAIVTRN,Gedung KAI Veteran,"Gedung KAI Veteran, Jl. Veteran No.4, Bendungan, Kec. Gajahmungkur, Kota Semarang, Jawa Tengah 50231, Indonesia",19000,NORMAL
+SMG.MJPHT,Jl. Majapahit No. 324 Semarang,Jl. Majapahit  No 324 F Semarang (Container),19000,NORMAL
+SMG.PARAGON,Paragon Mall Semarang,"Paragon Mall Semarang, Lantai 3, Jl. Pemuda No.118, Sekayu, Kec. Semarang Tengah, Kota Semarang, Jawa Tengah 50132",19000,NORMAL
+SMG.QCTYSMG,Queen City Semarang,"Queen City Semarang, Lt GF Main Lobby, Jl. Pemuda No.29, Pandansari, Kec. Semarang Tengah, Kota Semarang, Jawa Tengah 50139",19000,NORMAL
+SMG.RAKM429,Rest Area Km 429 Semarang,"Rest Area 429, Tol Bawen km 22, Kalianyar, Kalirejo, Kec. Ungaran Tim., Semarang, Jawa Tengah 50515",22000,MAHAL
+SMG.RAKM456,Rest Area Pendopo B (KM 456),"Resta 456, Resta Pendopo 456, Rest Area KM 456 Tol Semarang-Solo, Baok, Ujung-Ujung, Kec. Pabelan, Semarang, Jawa Tengah 50771",22000,MAHAL
+SMG.RKAYUGRN,Ruko A. Yani Ungaran Semarang,"Ruko A. Yani Ungaran Semarang, Jl. Ahmad Yani, Putotan, Sidomulyo, Kec. Ungaran Tim., Kabupaten Semarang,  Jawa Tengah 50514",19000,NORMAL
+SMG.RKBYMNK,Ruko Banyumanik Semarang,"Ruko Banyumanik Semarang, Jl. Ngesrep Tim. V No.79, Sumurboto, Kec. Banyumanik, Kota Semarang, Jawa Tengah 50269",19000,NORMAL
+SMG.RKKDGMU,Ruko Kedungmundu Semarang,"Ruko Kedungmundu Semarang,Jl.Sambiroto Raya 58 E 58 F Sambiroto,Kec.Tembalang,Kota Semarang Jawa Tengah  50276",19000,NORMAL
+SMG.RKNGLYN,Ruko Ngaliyan,"Ruko Ngaliyan, Ruko Komplek Citandel No.B, Ngalian, Semarang, Jawa Tengah 50184",19000,NORMAL
+SMG.RKTLGSARI,Ruko Tlogosari Semarang,"Ruko Tlogosari Semarang, Jl. Tlogosari Raya II No.47, Tlogosari Kulon, Kec. Pedurungan, Kota Semarang, Jawa Tengah 50196Ruko Tlogosari Semarang",19000,NORMAL
+SMG.SIMSQ,SIM Square,"SIM Square, IL 03, Jl. Kh Ahmad Dahlan No.39, Pekunden, Kec. Semarang Tengah, Kota Semarang, Jawa Tengah 50136",19000,NORMAL
+SMG.SPBUKLWRU,Pertamina 41.502.02 Kaliwiru,"SPBU Pertamina 41.502.02 Kaliwiru, Jl. Sisingamangaraja, Kaliwiru, Kec. Candisari, Kota Semarang, Jawa Tengah 50253",19000,NORMAL
+SMG.SPBUPMLSH,Pertamina 44.501.19 Pamularsih,"SPBU Pertamina 44.501.19, Pamularsih (Container),Jl.Pamularsih raya No.50 Salamanmloyo kec.Semarang Baru,Kota Semarang  Jawa Tengah 50149",19000,NORMAL
+SMG.STTWG,Stasiun Tawang,"Stasiun Tawang, Jl. Taman Tawang No.1, Tj. Mas, Kec. Semarang Utara, Kota Semarang, Jawa Tengah 50211",19000,NORMAL
+SMN.RKKLURG,Ruko Kaliurang KM6 Atas,"Ruko Kaliurang Yogyakarta, Jl. Kaliurang No.51 B, Kentungan, Condongcatur, Depok, Sleman, Yogyakarta 55281",19000,NORMAL
+SMN.SPBUADISCPT,Pertamina COCO 41.552.01 Laksda Adisucipto Yogyakarta,"SPBU Pertamina COCO 41.552.01 Laksda Adisucipto Yogyakarta (Container), Jl. Laksda Adisucipto Km. 6, Caturtunggal, Kec. Sleman, Caturtunggal, Kecamatan Depok, Ngentak, Caturtunggal, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55282",19000,NORMAL
+SMR.BIGMALL,Big Mall Samarinda,"Big Mall Samarinda, Lantai GF, Jl. Untung Suropati No.08, Karang Asam Ulu, Kec. Sungai Kunjang, Kota Samarinda, Kalimantan Timur 75243",22000,MAHAL
+SMR.CENTPLZA,Samarinda Central Plaza,"Samarinda Central Plaza, Jl. Pulau Irian No.1, Karang Mumus, Kec. Samarinda Kota, Kota Samarinda, Kalimantan Timur 75113 - Unit GF Floor",22000,MAHAL
+SMR.MLCPTRA,Mall Ciputra Semarang,"Mall Ciputra Semarang, Unit GF, EMT 17, Jl. Simpang Lima No.70, Pekunden, Kec. Semarang Tengah, Kota Semarang, Jawa Tengah 50134",19000,NORMAL
+SMR.RKALY,Ruko Alaya Samarinda,"Jl. Ruko Alaya Junction, Sungai Pinang Dalam, Kec. Sungai Pinang, Kota Samarinda, Kalimantan Timur 75243",19000,NORMAL
+SMR.RKBTOMO,Ruko Bung Tomo Samarinda,"Ruko Bung Tomo Samarinda, Jl. Bung Tomo No. 68 e, Sungai Keledang, Kec. Samarinda Seberang, Kota Samarinda, Kalimantan Timur 75131",19000,NORMAL
+SMR.RKMERAK,Ruko Merak Samarinda,"Ruko Merak Samarinda, Jl. Hasan Basri Komp. Ruko Merak Blok B No. 11",19000,NORMAL
+SMR.RKMYMN,Ruko M Yamin Samarinda,"Ruko M Yamin Samarinda, Jl. M. Yamin Square Blok A No 6, Gn. Kelua, Kec. Samarinda Ulu, Kota
+Samarinda, Kalimantan Timur 75243",19000,NORMAL
+SMR.RKPASGAR,Ruko Pasar Segar,"Ruko Pasar Segar, Jl. Segar Blok RB - 10 Rt 026 Rw 00 Gn. Samarinda Baru, Balikpapan Utara",19000,NORMAL
+SMR.SPBUKARSAM,Pertamina Karang Asam,"SPBU Pertamina COCO 61.751.02 Slamet Riyadi Samarinda, Jalan Slamet Riyadi Karang Asam Ulu, Tlk. Lerong Ulu, Kec. Sungai Kunjang, Kota Samarinda, Kalimantan Timur 75243",19000,NORMAL
+SMR.SPBUKSMBGS,Pertamina COCO 61.751.01 Kesuma Bangsa Samarinda,"SPBU Pertamina COCO 61.751.01 Kesuma Bangsa Samarinda (Container), Jalan Kesuma Bangsa Bugis Samarinda Ulu, Bugis, Kec. Samarinda Kota, Kota Samarinda, Kalimantan Timur 75124",19000,NORMAL
+SMR.SPBURIPSMHJ,Pertamina DODO 64.751.14 Jl.Urip Sumoharjo,"SPBU Pertamina DODO 64.751.14 Jl. Urip Sumoharjo, Jl. Urip Sumoharjo No.111, Sidomulyo, Kec. Samarinda Ilir, Kota Samarinda, Kalimantan Timur 75242",19000,NORMAL
+SMS,Summarecon Mall Serpong,"Summarecon Mall Serpong, Lantai Ground Floor, Gading Serpong, Sentra. Jl. Boulevard Raya Gading Serpong, Kelapa Dua, Tangerang,15810",22000,MAHAL
+SNG.RKOTST,Ruko Otista Subang,"Ruko Otista Subang, Jl. Otto Iskandardinata No.19, Karanganyar, Kec. Subang, Kabupaten Subang, Jawa Barat 41211",19000,NORMAL
+SNG.SPBRWBDK,Pertamina 34.41212 Rawa Badak Subang,"SPBU 34.41212 Rawa Badak Subang (Container), Jalan Raya Badak Subang, Karanganyar, Kec. Subang, Kabupaten Subang, Jawa Barat 41211",19000,NORMAL
+SOLO.SQUARE,Solo Square,"Solo Square, Lantai 3, Jl. Slamet Riyadi No. 451-455, Pajang, Laweyan, Surakarta, Jawa Tengah - 57146",19000,NORMAL
+SOLO.THEPARK,The Park Mall Solo,"The Park Mall, Lantai 1, Jl. Ir. Soekarno, Madegondo, Grogol, Sukoharjo, Jawa Tengah - 57552",19000,NORMAL
+SONE,Setiabudi One,"Setiabudi One, Lantai 1 Unit. B211, Jl. H. R. Rasuna Said, Setiabudi Kota Jakarta Selatan, 12920",19000,NORMAL
+SOPODEL,Sopo Del Tower,"Sopo Del Tower, Lantai Ground Floor, Jl. Mega Kuningan Barat III, Kuningan Timur, Jakarta Selatan",22000,MAHAL
+SRG.CTRLNPR,Ruko Citraland Puri Serang,"Ruko Citraland Puri Serang, Jl. Perum Taman Puri Indah Rt. 001 Rw. 017, Serang, Kec. Serang, Kota Serang, Banten 42116",19000,NORMAL
+SRG.MALLOFSRG,Mall of Serang,"Mall of Serang, Ground Floor, Jl. Lingkar Kemang, Kotabaru, Cipocok Jaya, Serang City, Banten 42112",19000,NORMAL
+SRG.RKSRG,Ruko Serang,"Ruko Serang, Jl. Jend. Ahmad Yani, RT.003/RW.004, Cipare, Serang, Banten 42117",19000,NORMAL
+SRG.SPBUBGLYMG,Pertamina Benggala Yumaga Serang,"SPBU Benggala Yumaga Serang, Jl. Term. Khatib No.11, Cipare, Kec. Serang, Kota Serang, Banten 42117",19000,NORMAL
+SUDIRMAN.PARK,Sudirman Park,"Ruko Sudirman Park Blok B, No. 1, Lantai Dasar GF, Jl. K.H. Mas Mansyur No.Kav.35, RT.12/RW.11, Karet Tengsin, Tanahabang, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta, 10220",19000,NORMAL
+SUMMIT,Summitmas Tower,"Summitmas Tower, Lantai Lower Ground, Jl. Jend. Sudirman No.52-53, Senayan Jakarta Selatan",19000,NORMAL
+TANJUNGDUREN,Ruko Tanjung Duren,"Ruko Tanjung Duren Square, Jl. Tanjung Duren Raya No.1, Tanjung Duren Selatan, Grogol Petamburan, Jakarta Barat - 11470",,UNKNOWN
+TGL.PCFCMALTGL,Pacific Mall Tegal,"Pacific Mall Tegal, Jl. Kapten Sudibyo, Pekauman, Kec. Tegal Bar., Kota Tegal, Jawa Tengah 52125",19000,NORMAL
+TGL.RKCTRLNDTGL,Ruko Citraland Tegal,"Ruko Citraland Tegal, Komplek Ruko Iwalk Belleza Plaza No.19-30, Jl. Sipelem BLok C1, Kraton, Kec. Tegal Bar., Kota Tegal, Jawa Tengah 52112",19000,NORMAL
+TGR.BALKOTTGR,Mall Balekota Tangerang,"Mall Balekota Tangerang, GC 03A, Jl. Jenderal Sudirman Km. 10, Buaran Indah, Tangerang, Banten 15119",19000,NORMAL
+TGR.BINTAROPLZ,Bintaro Plaza,"Bintaro Plaza, Lantai 1, Jl. Raya Bintaro Utama Sektor 3A, Pondok Betung, Pondok Aren, Tangerang Selatan, Banten - 15221",19000,NORMAL
+TGR.BINTAROXC,Bintaro Exchange,"Bintaro Jaya Exchange Mall, UG, Boulevard Bintaro Jaya Blok O-2 Bintaro Jaya Sektor VII, Perigi Lama, Pondok Aren, Tangerang, 15227",22000,MAHAL
+TGR.BPMETLAND,BP Metland,"BP Metland, Jl. STA 11, Green Lake City, Metland, Parung Jaya, Karang Tengah, Tangerang, Banten - 15159",19000,NORMAL
+TGR.CPKTBM,City Plaza Kotabumi,"City Plaza Kotabumi, GF, Jl. Raya Kutabumi, Kuta Baru, Kec. Ps. Kemis, Tangerang, Banten 15560",19000,NORMAL
+TGR.CTRPMLG,BP Ciater Pamulang,"Jl. Ciater Raya Blok Rh No.17, RT.1/RW.8, Rawa Mekar Jaya, Serpong Sub-District, South Tangerang City, Banten 15310",19000,NORMAL
+TGR.GEXPONCAB,Super Indo Gaplek,"Super Indo Pondok Cabe Gaplek, Lt Dasar, G-02 Area Lobby, Jl. RE Martadinata No.18, Pamulang Tim., Kec. Pamulang, Kota Tangerang Selatan, Banten 15417",19000,NORMAL
+TGR.GRNBATAVIA,Grand Batavia (Drive Thru),"Grand Batavia (Container) (Drive Thru), Jl. Raya Cadas - Kukun No.88, Sindangsari, Kec. Ps. Kemis, Tangerang, Banten 15560",19000,NORMAL
+TGR.LPBINTARO,Living Plaza Bintaro,"Living Plaza Bintaro, Ground Floor, Jalan Bintaro Utama Raya Kav. 11 Blok B7 No. A1, Sektor CBD, Pondok Karya, Pondok Aren, Pondok Jaya, Kota Tangerang Selatan, Banten 15225",19000,NORMAL
+TGR.PDGMDKBIN,Padang Merdeka Bintaro,"Padang Merdeka Bintaro, Ruko Kebayoran Square Business Park, Jalan Boulevard Bintaro Jaya, Parigi, Kec. Pd. Aren, Kota Tangerang Selatan, Banten 15227",19000,NORMAL
+TGR.RKAZRS,Ruko Azores,"Ruko Azores, Perumahan Banjar WIjaya Blok B7A No 15, Tangerang",19000,NORMAL
+TGR.RKBALARAJA,Ruko Balaraja,"Ruko Balaraja, Jl. Raya Kresek, Ruko No. 7 & 8, Tobat, Kec. Balaraja Tangerang, Banten 15610",19000,NORMAL
+TGR.RKBDRMAS,Ruko Bandara Mas,"Ruko Bandara Mas, Jln. Marsekal Suryadharma, Gedung Milenium, Rt 001 Rw 001, Kebun Sayur, Kelurahan Selapang Jaya, Kec Neglasari, tangerang",19000,NORMAL
+TGR.RKDAANMOG,Ruko Daan Mogot,"Ruko Daan Mogot, Jl Daan Mogot Rt.001 Rw.004, Sukarasa, Tangerang, Banten 15111",19000,NORMAL
+TGR.RKGRAYA,Ruko Graha Raya,"Ruko Graha Raya, Jl. Boulevard Graha Raya Ruko Orlin Arcade Blk. JA Paku Jaya, Kec. Tangerang, Kota Tangerang Selatan, Banten 15810",19000,NORMAL
+TGR.RKHARPKRWC,Ruko Harapan Kita Karawaci Tangerang,"Ruko Harapan Kita Karawaci Tangerang, Jl. Borobudur Raya Blok M No 8 Kel. Bencongan Kec. Curug Tangerang Banten 15138",19000,NORMAL
+TGR.RKMJGN,Ruko Menjangan,"Ruko Menjangan, Ruko Harvest No. 20 Jl. Merpati Raya, Sawah Baru, Ciputat, Tangerang Selatan",19000,NORMAL
+TGR.RKPALSEM,Ruko Palem Semi Karawaci,"Ruko Palem Semi Karawaci, Jl Lingkar Palem Semi Ruko CBD No 3A, Tangerang 15810",19000,NORMAL
+TGR.RKPORIS,Ruko Poris,"Ruko Poris, Jl. Poris Paradise Eksklusif No. 6 RT 003 / RW 003 . Poris Gaga Kec. Cipondoh Kota Tangerang Banten 15122",19000,NORMAL
+TGR.RKPURIBETA,Ruko Puri Beta,"Ruko Puri Beta, Jl. HOS Cokroaminoto, Larangan Utara, Kec. Larangan, Kota Tangerang, Banten 15154",19000,NORMAL
+TGR.RKSEPATAN,Ruko Sepatan Tangerang,"Ruko Sepatan Tangerang, Jl. Raya Mauk km 11 no 88 Sepatan, Kecamatan Sepatan, Tangerang Banten 1552",19000,NORMAL
+TGR.RKSHNT,Shinta Tangerang,"Shinta Tangerang, Jl. Teuku Umar No.83, RT.004/RW.005, Karawaci, Kec. Karawaci, Kota Tangerang, Banten 15115",19000,NORMAL
+TGR.RKUIN,Ruko UIN (FCK),"Ruko UIN, Jl. IR. H Juanda No. 107, Pisangan, Ciputat Timur, Tangerang, Banten 15412",19000,NORMAL
+TGR.SDCSERPONG,Summarecon Digital Center (SDC Serpong),"Summarecon Digital Serpong (SDC Serpong), Unit #GF-C 11A, Garden Walk, SDC Serpong, Jl. Scientia Boulevard Curug Sangereng Kelapa Dua Tangerang 15810",22000,MAHAL
+TGR.SHELLPMLG,Shell Pamulang,"West Pamulang, Pamulang, South Tangerang City, Banten 15417",19000,NORMAL
+TGR.SHELLPPTK,Shell Puspitek Tangerang,"Shell Puspitek, Jl. Raya Puspiptek, Bakti Jaya, Kec. Setu, Kota Tangerang Selatan, Banten 15310",19000,NORMAL
+TGR.SHELLSWRNA,Shell Suwarna Cengkareng,"Kawasan Bandara Internasional Soekarno-Hatta, Jalan Cengkareng Golf Club, Pajang, Benda, RT.001/RW.010, Pajang, Benda, Kota Tangerang, Banten 15126",19000,NORMAL
+TGR.SPBUCCBSD,Pertamina BSD,"SPBU Pertamina 31.153.02 BSD Pahlawan Seribu, Jl. Pahlawan Seribu Kav. Commercial BSD City",19000,NORMAL
+TGR.SPBUDDALSU,Pertamina Alam Sutra,"SPBU Pertamina 34.153.19 Alam Sutera (Container), Pakualam, North Serpong, South Tangerang City, Banten 15320",19000,NORMAL
+TGR.SPBUDDCKP,Pertamina Cikupa,"SPBU Pertamina 34.157.12 Cikupa (Container), Sukadamai, Cikupa, Tangerang, Banten 15710",19000,NORMAL
+TGR.SPBUDDCPTT,Pertamina Ciputat,"SPBU Pertamina 34.154.26 Ciputat (Container), Jl. RE Martadinata No.35, Cipayung, Kec. Ciputat, Kota Tangerang Selatan, Banten 15411",19000,NORMAL
+TGR.SPBUDDCTRY,Pertamina Citra Raya Tangerang,"SPBU Pertamina 34.157.10 Citra Raya Tangerang (Container), Jl. Widara Raya No.2, Mekar Bakti, Kec. Panongan, Tangerang, Banten 15710",19000,NORMAL
+TGR.SPBUDDPKBI,Pertamina Pasar Kemis,"SPBU Pertamina 34.155.02 Pasar Kemis Bumi Indah, Jl. Raya Ps. Kemis No.48, Gelam Jaya, Kec. Ps. Kemis, Kota Tangerang, Banten 15560",19000,NORMAL
+TGR.SPBUDDRYSP,Pertamina MH Thamrin Serpong,"SPBU Pertamina 34.151.32 MH Thamrin Serpong (Container), Jl. MH. Thamrin, RT.001/RW.001, Panunggangan, Kec. Pinang, Kota Tangerang, Banten 15117",19000,NORMAL
+TGR.SPBUDODOCG,Pertamina DODO Curug,"SPBU Pertamina DODO Curug, 34.158.02, Jl. Raya STPI Curug No.KM 05 No.80, Curug Wetan, Kec. Curug, Tangerang, Banten 15810",19000,NORMAL
+TGR.SPBUDODOCR,Pertamina DODO Cirendeu Raya,"SPBU DODO Pertamina Cirendeu Raya, 34.154.04, Jl. Raya Cirendeu No. 29 B, Cirendeu, Ciputat, Tangerang Selatan",19000,NORMAL
+TGR.SPBUJATAKE,Pertamina Jatake,"SPBU Pertamina 34-15109 Jatake (Bondex), Jl. Jend Gatot Subroto KM 5, Jati Uwung Rt.001/Rw. 004, Jatake, Tangerang, Kota Tangerang, Banten 15136",19000,NORMAL
+TGR.SPBUPNKCNG,Pertamina Pondok Kacang,"SPBU Pertamina 34.15207 Pondok Kacang (Container), Jl. Raya Pondok Kacang, Parung Serab, Pondok Aren, Pd. Kacang Tim., Kec. Pd Aren, Kota Tangerang, Banten 15226",19000,NORMAL
+TGR.SPBUPPTK,Pertamina Puspitek,"SPBU 34. 153.12 Puspitek, Jl. Raya Taman Makam Pahlawan Seribu, Kademangan, Setu, Kademangan, Kec. Setu, Kota Tangerang Selatan, Banten 15314",19000,NORMAL
+TGR.SPBUTGRKS,Pertamina Tigaraksa,"SPBU Pertamina 34-15704 Tigaraksa (Container), Jl. KH Syekh Nawawi Kadu Agung Kec.Tigaraksa 15720",19000,NORMAL
+TGR.STPDKRNJ,Alfamidi Stasiun Pondok Ranji,"Alfamidi Stasiun Pondok Ranji (Container), Jalan Kampung Utan No.354, RT.5/RW.2, Rengas, Kec. Ciputat Tim., Kota Tangerang Selatan, Banten 15412",19000,NORMAL
+TGR.T2EKBSA,T2E Kedatangan Bandara Soekarno Hatta,"Terminal 2 E Kedatangan Bandara Soekarno Hatta, Bandar Udara International Soekarno Hatta Terminal 2E, Pajang, Benda, Tangerang City, Banten 15126",32000,MAHAL
+TGR.TERASKOTA,Teras Kota,"Teras Kota, Ground Floor, CBD Lot VII B, Jl. Pahlawan Seribu, Lengkong Gudang, Kec. Serpong, Kota Tangerang Selatan, Banten 15322",22000,MAHAL
+TGR.TGRCITY,Tangerang City Mall,"Tangerang City Mall, GF, Jalan Jend. Sudirman No. 1 Cikokol, RT.001/RW.005, Babakan, Kec. Tangerang, Kota Tangerang, Banten 15117",19000,NORMAL
+THE.VIDA,The Vida Kebon Jeruk,"The Vida, GF, Jl. Perjuangan No.8 1 7, RT.1/RW.7, Kb. Jeruk, Kec. Kb. Jeruk, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11530",19000,NORMAL
+TNG.FKDUPH,Fakultas Kedokteran UPH,"Fakultas Kedokteran UPH, Jl. Jenderal Sudirman No.20, Bencongan, Kec. Kelapa Dua, Kab. Tangerang, Banten 15810",19000,NORMAL
+TNG.MRCNDHPST,Marchand Hype Station,"Marchand Hype Station, Ruko No. 08, Jl. Emerald Boulevard, Parigi, Kec. Pd. Aren, Kota Tangerang Selatan, Banten 15227",19000,NORMAL
+TNG.RAKM13,"Rest Area KM 13,5","Rest Area KM 13,5, Rest Area Palm Square, Jl. Tol Jakarta - Merak Km 13,5, Pinang, RT.001/RW.007, Pinang, Kec. Pinang, Kota",22000,MAHAL
+TNG.RKBDRCM,Ruko Bandara City Mall Tangerang,"Ruko Bandara City Mall Tangerang, Ruko SA-26 Jl. Perancis Rt 3, / Rw 4, Dadap, Kecamatan Kosambi, Kabupaten Tangerang Banten 15211",19000,NORMAL
+TNG.RKCGLC,Ruko Cordoba Green Lake City,"Ruko Cordoba Green Lake City, Ruko Cordoba blok D nomor 11, Jl. Green Lake City Boulevard No. 11, RT.006/RW.009, Petir, Kec. Cipondoh, Kota Tangerang, Banten 15147",19000,NORMAL
+TNG.RKGDGSRPG,Ruko Maggiore Gading Serpong,"Ruko Gading Serpong, Ruko Maggiore Square, Jl. Lausanne Boulevard No. 30, Gading Serpong, Kel. Cihuni, Pagedangan, Kab. Tangerang",19000,NORMAL
+TNG.RKKRGTGH,Ruko Karang Tengah,"Ruko Karang Tengah, Jl. Raden Saleh Ruko Metro-One D-E RT.005/RW.005, Karang Mulya, Kecamatan Karang Tengah, Kota Tangerang Banten 15157",19000,NORMAL
+TNG.RKMTOHA,Ruko Moh Toha Tangerang,"Ruko Moh Toha Tangerang, Jl. Moh. Toha, Margasari, Kec. Tangerang, Kota Tangerang, Banten 15114",19000,NORMAL
+TNG.RKPDBNDA,Ruko Pondok Benda Tangerang,"Ruko Pondok Benda Tangerang, Jl Pamulang Permai II-14 05, Pondok Benda, Pamulang Tangerang Selatan",19000,NORMAL
+TNG.RKSRPGGRD,Ruko Serpong Garden,"Ruko Serpong Garden, Komplek Serpong Garden Ruko 3 No. 2, Kel. Cibogo, Kec. Cisauk Banten",19000,NORMAL
+TNG.RKSRYKCN,Ruko Surya Kencana Pamulang,"Ruko Surya Kencana Pamulang, Jl. Surya Kencana No.21, Pamulang Bar., Kec. Pamulang, Kota Tangerang Selatan, Banten 15417",19000,NORMAL
+TNG.SOETTA2,T2D Keberangkatan Bandara Soekarno Hatta,"Bandara Soekarno Hatta Terminal 2D, Bandara Terminal 2 D, RT.001/RW.010, Pajang, Benda, Tangerang City, Banten 15126",32000,MAHAL
+TNG.SPBUDTGRDN,Pertamina 34.15131 Duta Garden,"SPBU 34.15131 Duta Garden (Container), Jl. Husein Sastranegara No.25, RT.005/RW.10, Jurumudi, Benda, Kota Tangerang, Banten 15124",19000,NORMAL
+TNG.SPBUMDRNLND,Pertamina COCO 31.151.02 Modernland,"SPBU COCO 31.151.02 Modernland (Container), Jl. Hartono Raya, RT.001/RW.006, Klp. Indah, Kec. Tangerang, Kota Tangerang, Banten 15117",19000,NORMAL
+TNG.SPRNDPNG,Super Indo Pinang (Container),"Super Indo Pinang (Container), Jalan KH. Hasyim Ashari, Pinang, RT.004/RW.001, Pinang, Kec. Pinang, Kota Tangerang, Banten 10150",19000,NORMAL
+TNG.SPSGJYA,Pertamina Sangiang Jaya,"SPBU Sangiang Jaya, Jl. Prabu Kian Santang No.34, RT.004/RW.004, Sangiang Jaya, Kec. Periuk, Kota Tangerang, Banten 15132",19000,NORMAL
+TNG.T2FSOETA,T2F Keberangkatan Bandara Soekarno Hatta,"Terminal 2F Soekarno Hatta Airport, Terminal 2F Bandar Udara Internasional Soekarno–Hatta, Pajang, Benda, Kota Tangerang, Banten 15126",32000,MAHAL
+TNG.TLGSRI,Telaga Bestari,"Telaga Bestari, Jl. Taman Palem Raya, Wana Kerta, Kec. Sindang Jaya, Kab. Tangerang, Banten 15560",19000,NORMAL
+TNG.TOKHUB,Tokyo Hub Pantai Indah Kapuk 2,"Tokyo Hub Pantai Indah Kapuk 2, Lemo, Teluknaga, Tangerang Regency, Banten 15510",22000,MAHAL
+TP3.SBY,Tunjungan Plaza 3,"Tunjungan Plaza 3, Lantai 5, Jl. Basuki Rahmat No.107, Tegalsari, Surabaya, 60261",22000,MAHAL
+TSM.PLZASIA,Plaza Asia,"Plaza Asia,  Jl. KHZ. Mustofa No.326, Tugujaya, Kec. Cihideung, Tasikmalaya, Jawa Barat 46126",19000,NORMAL
+TSM.RKMRTNA,Ruko Martadinata Tasikmalaya,"Ruko Martadinata Tasikmalaya, Jl. R.E. Martadinata No.14, Panglayungan, Kec. Cipedes, Kab. Tasikmalaya, Jawa Barat 46134",19000,NORMAL
+TSM.SPBURCBG,Pertamina 34.46106 Rancabango,"SPBU Pertamina 34.46106 Rancabango (Container), Jl Insinyur Haji Juanda KM 3 Tasikmalaya 46134",19000,NORMAL
+TST,Tempo Scan Tower,"Tempo Scan Tower, Lantai Basement Jl. H. R. Rasuna Said No.Kav3-4 Setia Budi, Jakarta Selatan, 12950",19000,NORMAL
+YOGYA.CITYMALL,Jogja City Mall,"Yogya City Mall, Lantai 2, Jl. Magelang KM 6 No. 18, Sinduadi, Mlati, Sleman, Yogyakarta - 55284",19000,NORMAL
+YOGYA.HARTONO,Pakuwon Jogja,"Pakuwon Mall, Lantai LG, Jl. Ringroad Utara, Sanggrahan, Kaliwaru Condong Catur, Depok, Sleman, Yogyakarta - 55281",22000,MAHAL
+YYK.AMSPRKG,Alfamidi Super Kaliurang KM 9,"Alfamidi Super Sinduharjo, Kaliurang St Blok A No.1, Gondangan, Sinduharjo, Ngaglik, Sleman Regency, Special Region of Yogyakarta 55581",19000,NORMAL
+YYK.RKTMNSWA,Ruko Taman Siswa Yogyakarta,"Ruko Taman Siswa Yogyakarta, Jl. Taman Siswa No.75, Wirogunan, Kec. Mergangsan, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55151",19000,NORMAL
+YYK.RSDRSJT,RSUP Dr. Sardjito Yogyakarta,"RSUP Dr. Sardjito Yogyakarta, Jl. Kesehatan Sendowo No.1, Sinduadi, Kec. Mlati, Kab. Sleman, Daerah Istimewa Yogyakarta 55281",19000,NORMAL

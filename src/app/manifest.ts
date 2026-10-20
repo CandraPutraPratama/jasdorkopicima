@@ -2,10 +2,10 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Jasdor - Jasa Order Kopi Kenangan',
+    name: 'Jasdor - Layanan Jasa Order',
     short_name: 'Jasdor',
     description:
-      'Layanan jasa order Kopi Kenangan hemat promo 50%. Pesan mudah langsung dari browser HP dan checkout otomatis ke WhatsApp.',
+      'Layanan jasa order minuman dan kopi brand favorit dengan promo hemat. Pesan mudah langsung dari browser HP dan checkout otomatis ke WhatsApp.',
     start_url: '/',
     display: 'standalone',
     background_color: '#FFFFFF',

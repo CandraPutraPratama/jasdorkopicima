@@ -33,41 +33,41 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
       role={isOrderable ? 'button' : undefined}
       tabIndex={isOrderable ? 0 : undefined}
       aria-label={isOrderable ? `Pilih outlet ${outlet.name}` : `${outlet.name} - ${statusBadgeText}`}
-      className={`p-4 bg-white rounded-2xl border transition shadow-xs outline-hidden ${
+      className={`p-4 rounded-2xl border-2 transition outline-hidden ${
         isOrderable
-          ? 'border-[#EFE5D8] hover:border-[#D9A74A]/60 hover:shadow-md cursor-pointer active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-[#C67D0A]'
-          : 'border-[#EFE5D8]/60 bg-[#FAF7F2]/60 cursor-default'
+          ? 'bg-[#FFFDF9] border-[#2B1D12] shadow-[4px_4px_0px_#2B1D12] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_#2B1D12] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer focus-visible:ring-2 focus-visible:ring-[#C67D0A]'
+          : 'border-dashed border-[#2B1D12]/40 bg-[#FAF4E8]/60 cursor-default'
       }`}
     >
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h3 className="font-display font-bold text-base text-[#26150B] leading-snug">
+        <h3 className="font-display font-black text-base text-[#2B1D12] leading-snug">
           {outlet.name}
         </h3>
         <span
-          className={`shrink-0 px-2.5 py-0.5 text-[11px] font-bold rounded-full border ${
+          className={`shrink-0 px-2.5 py-0.5 text-[11px] font-black rounded-lg border-2 border-[#2B1D12] shadow-[1px_1px_0px_#2B1D12] ${
             isOrderable
-              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-              : 'bg-[#F2EAE0] text-[#735F52] border-[#E3D6C5]'
+              ? 'bg-[#D9F3EA] text-[#2B1D12]'
+              : 'bg-[#FEF2F2] text-[#DC2626]'
           }`}
         >
           {statusBadgeText}
         </span>
       </div>
 
-      <p className="text-xs text-[#6A584D] leading-relaxed line-clamp-2 mb-3">
-        {outlet.address || 'Alamat outlet Kopi Kenangan'}
+      <p className="text-xs text-[#4A3628] leading-relaxed line-clamp-2 mb-3 font-medium">
+        {outlet.address || 'Alamat outlet resmi'}
       </p>
 
       {outlet.openTime && outlet.closeTime && (
         <div
           className={`flex items-center gap-1.5 text-[11px] mb-3 ${
-            isOrderable ? 'text-[#735F52]' : 'text-[#3D2817]'
+            isOrderable ? 'text-[#4A3628]' : 'text-[#7A6658]'
           }`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className={`h-3.5 w-3.5 ${
-              isOrderable ? 'text-[#A66908]' : 'text-[#5C4028]'
+              isOrderable ? 'text-[#C67D0A]' : 'text-[#7A6658]'
             }`}
             fill="none"
             viewBox="0 0 24 24"
@@ -76,17 +76,17 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={2.3}
               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span className={isOrderable ? 'font-medium' : 'font-semibold text-[#3D2817]'}>
+          <span className={isOrderable ? 'font-bold text-[#2B1D12]' : 'font-semibold text-[#7A6658]'}>
             {outlet.openTime.slice(0, 5)} - {outlet.closeTime.slice(0, 5)} WIB
           </span>
           {outlet.distanceStr && (
             <>
-              <span className={isOrderable ? 'text-[#C8B8A6]' : 'text-[#6A584D]'}>•</span>
-              <span className={isOrderable ? 'font-medium' : 'font-semibold text-[#3D2817]'}>
+              <span className="text-[#2B1D12]/30 font-black">•</span>
+              <span className="font-bold text-[#2B1D12]">
                 {outlet.distanceStr}
               </span>
             </>
@@ -94,8 +94,8 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
         </div>
       )}
 
-      <div className="pt-2.5 border-t border-[#F2EAE0] flex items-center justify-between">
-        <span className="text-[11px] text-[#735F52] font-medium">
+      <div className="pt-2.5 border-t-2 border-[#2B1D12]/10 flex items-center justify-between">
+        <span className="text-[11px] text-[#4A3628] font-bold">
           {isOrderable ? 'Pickup jasa order tersedia' : 'Tidak menerima pesanan'}
         </span>
 
@@ -106,7 +106,7 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
             onClick={(e) => {
               e.stopPropagation();
             }}
-            className="min-h-[44px] px-4 py-2 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] active:scale-95 text-xs font-display font-bold rounded-xl flex items-center gap-1.5 transition shadow-xs"
+            className="min-h-[44px] px-4 py-2.5 bg-[#2B1D12] text-[#FAF4E8] hover:bg-[#3D2817] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-display font-black rounded-xl flex items-center gap-1.5 transition-all border-2 border-[#2B1D12] shadow-[3px_3px_0px_#C67D0A]"
           >
             <span>Pilih Outlet</span>
             <svg
@@ -128,7 +128,7 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
           <button
             type="button"
             disabled
-            className="min-h-[44px] px-4 py-2 bg-[#F2EAE0] text-[#8C7667] text-xs font-semibold rounded-xl cursor-not-allowed opacity-75"
+            className="min-h-[44px] px-4 py-2 bg-[#FAF4E8] text-[#7A6658] text-xs font-bold rounded-xl cursor-not-allowed border-2 border-[#2B1D12]/20 opacity-75"
           >
             Tidak Tersedia
           </button>

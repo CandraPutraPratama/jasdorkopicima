@@ -56,8 +56,8 @@ Pesanan:
   Catatan: Less Coffee, Extra Ice
 - 1x Oatmeal Raisin Soft Baked Cookie Rp9.500
 
-Sub Total: Rp34.500
-Biaya Jasa (Rp2.000 x 2 item): Rp4.000
+Sub Total Normal (2 item): Rp34.500
+Biaya Jasa Normal: Rp4.000
 Total: Rp38.500
 
 Kamu hemat Rp26.500 dari harga normal!
@@ -91,8 +91,8 @@ test('buildWhatsAppMessage handles single item order with Biaya Jasa (1 item): R
     items,
   });
 
-  assert.match(message, /Biaya Jasa \(1 item\): Rp4\.000/);
-  assert.match(message, /Sub Total: Rp10\.000/);
+  assert.match(message, /Biaya Jasa Normal: Rp4\.000/);
+  assert.match(message, /Sub Total Normal \(1 item\): Rp10\.000/);
   assert.match(message, /Total: Rp14\.000/);
 });
 
@@ -121,7 +121,7 @@ test('buildWhatsAppMessage handles scheduled pickup format', () => {
   });
 
   assert.match(message, /Pickup: Terjadwal jam 15:30/);
-  assert.match(message, /Biaya Jasa \(Rp2\.000 x 2 item\): Rp4\.000/);
+  assert.match(message, /Biaya Jasa Normal: Rp4\.000/);
 });
 
 test('buildWhatsAppMessage produces exact required template string for Korea Banana Latte with grouped addons and flat additions', () => {
@@ -304,3 +304,135 @@ test('buildOrderWhatsAppConfirmationMessage fallbacks to outlet_code if outlet_n
   assert.ok(message.includes('Total: Rp15.000'));
   assert.ok(message.includes('Nama: Siti Aminah'));
 });
+
+test('buildOrderWhatsAppConfirmationMessage formats Bundling 3 Reguler exactly as required', async () => {
+  const { buildOrderWhatsAppConfirmationMessage } = await import('../src/lib/whatsapp.ts');
+
+  const order = {
+    id: 'CG-BND001',
+    brand_slug: 'kopi-kenangan',
+    customer_name: 'Candra',
+    outlet_name: 'Lippo Mall Puri',
+    outlet_code: 'LIPPO-PURI',
+    pickup_time: '15:30',
+    subtotal: 28500, // 57.000 * 50%
+    fee: 4000,
+    total: 32500, // 28.500 + 4.000
+    items: [
+      {
+        name: 'Bundling 3 Reguler',
+        quantity: 1,
+        subtotal: 28500,
+        isBundle: true,
+        bundleType: 'bundle-3-reguler',
+        bundleNormalPrice: 57000,
+        bundleDetails: [
+          {
+            name: 'Kopi Kenangan Mantan',
+            variantDescription: 'Less Sugar, Normal Ice',
+            normalPrice: 19000,
+            promoPrice: 9500,
+          },
+          {
+            name: 'Americano',
+            variantDescription: 'Normal Sugar, Normal Ice',
+            normalPrice: 15000,
+            promoPrice: 7500,
+            notes: 'Pisah es',
+          },
+          {
+            name: 'Milo Dinosaurus',
+            variantDescription: 'Less Sugar, Less Ice',
+            normalPrice: 23000,
+            promoPrice: 11500,
+          },
+        ],
+      },
+    ],
+  };
+
+  const message = buildOrderWhatsAppConfirmationMessage(order);
+
+  const expected = [
+    'Halo Kak, saya sudah bayar pesanan #CG-BND001',
+    '',
+    'Brand: Kopi Kenangan',
+    'Nama: Candra',
+    'Outlet: Lippo Mall Puri',
+    'Pickup: Dijadwalkan jam 15:30',
+    '',
+    'Pesanan:',
+    '- 1x Bundling 3 Reguler',
+    '  \u2022 Kopi Kenangan Mantan (Less Sugar, Normal Ice) \u2014 Rp9.500',
+    '  \u2022 Americano (Normal Sugar, Normal Ice) \u2014 Rp7.500',
+    '    Catatan: Pisah es',
+    '  \u2022 Milo Dinosaurus (Less Sugar, Less Ice) \u2014 Rp11.500',
+    '',
+    'Sub Total Bundling (1 item): Rp28.500',
+    'Biaya Jasa Bundling: Rp4.000',
+    'Total: Rp32.500',
+    '',
+    'Kamu hemat Rp24.500 dari harga normal!',
+    '',
+    'Mohon konfirmasi pesanan saya. Terima kasih!',
+  ].join('\n');
+
+  assert.equal(message.trim(), expected.trim());
+});
+
+test('buildOrderWhatsAppConfirmationMessage formats Bundling 2 Large with pickup now and created_at', async () => {
+  const { buildOrderWhatsAppConfirmationMessage } = await import('../src/lib/whatsapp.ts');
+
+  const order = {
+    id: 'CG-BND002',
+    brand_slug: 'kopi-kenangan',
+    customer_name: 'Dewi Lestari',
+    outlet_name: 'Grand Indonesia',
+    outlet_code: 'GI-JAKARTA',
+    pickup_time: 'now',
+    created_at: '2026-10-17T07:00:00Z', // 14:00 WIB -> +15m = 14:15
+    subtotal: 26000, // 52.000 * 50%
+    fee: 3500,
+    total: 29500,
+    items: [
+      {
+        name: 'Bundling 2 Large',
+        quantity: 1,
+        subtotal: 26000,
+        isBundle: true,
+        bundleType: 'bundle-2-large',
+        bundleNormalPrice: 52000,
+        bundleDetails: [
+          {
+            name: 'Kopi Kenangan Mantan',
+            variantDescription: 'Less Sugar, Normal Ice',
+            normalPrice: 26000,
+            promoPrice: 13000,
+          },
+          {
+            name: 'Latte',
+            variantDescription: 'No Sugar, Less Ice',
+            normalPrice: 26000,
+            promoPrice: 13000,
+          },
+        ],
+      },
+    ],
+  };
+
+  const message = buildOrderWhatsAppConfirmationMessage(order);
+
+  assert.ok(message.includes('Halo Kak, saya sudah bayar pesanan #CG-BND002'));
+  assert.ok(message.includes('Brand: Kopi Kenangan'));
+  assert.ok(message.includes('Outlet: Grand Indonesia'));
+  assert.ok(message.includes('Pickup: Sekarang (estimasi siap ~jam 14:15)'));
+  assert.ok(message.includes('- 1x Bundling 2 Large'));
+  assert.ok(message.includes('  \u2022 Kopi Kenangan Mantan (Less Sugar, Normal Ice) \u2014 Rp13.000'));
+  assert.ok(message.includes('  \u2022 Latte (No Sugar, Less Ice) \u2014 Rp13.000'));
+  assert.ok(message.includes('Sub Total Bundling (1 item): Rp26.000'));
+  assert.ok(message.includes('Biaya Jasa Bundling: Rp3.500'));
+  assert.ok(message.includes('Total: Rp29.500'));
+  // Hemat = 52.000 - 29.500 = 22.500
+  assert.ok(message.includes('Kamu hemat Rp22.500 dari harga normal!'));
+});
+

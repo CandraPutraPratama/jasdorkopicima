@@ -36,10 +36,10 @@ export const NAMA_BRAND: string = 'Jasdor Kopi Cima';
 
 export const NAMA_BRAND_SHORT: string = 'Jasdor';
 
-export const TAGLINE: string = 'Jasa Order Kopi Kenangan Promo Setengah Harga';
+export const TAGLINE: string = 'Layanan Jasa Order Kopi & Minuman Favorit Hemat';
 
 export const DISCLAIMER_RESMI: string =
-  'Jasdor adalah layanan jasa order • Bukan afiliasi resmi Kopi Kenangan.';
+  'Jasdor adalah layanan jasa order untuk pemesanan menu brand pilihan Anda.';
 
 /**
  * Angka real dari catatan order manual pemilik - update jika berubah.
@@ -117,7 +117,7 @@ export const TEKS_PEMBAYARAN_LANGKAH_ORDER: string =
   'Bayar via QRIS langsung di website - scan QR, bayar sesuai nominal, lalu konfirmasi via WhatsApp.';
 
 export function getAdminWhatsAppUrl(customMessage?: string): string {
-  const defaultText = `Halo Admin ${NAMA_BRAND_SHORT}, saya ingin bertanya tentang layanan jasa order Kopi Kenangan promo 50%.`;
+  const defaultText = `Halo Admin ${NAMA_BRAND_SHORT}, saya ingin bertanya tentang layanan jasa order.`;
   const text = customMessage || defaultText;
   return `https://wa.me/${NOMOR_WHATSAPP_ADMIN}?text=${encodeURIComponent(text)}`;
 }
@@ -128,7 +128,9 @@ export function getAdminWhatsAppUrl(customMessage?: string): string {
 
 export const QRIS_CONFIG = {
   imagePath: '/payment/qris-cima-group.webp',
+  svgPath: '/payment/qris-cima-group.svg',
   merchantName: 'CIMATIX_ID',
+  nmid: 'ID1025374796700',
   expiryDurationMinutes: 60,
 } as const;
 
@@ -261,6 +263,7 @@ export const BRANDS: Record<string, BrandConfig> = {
     themeColor: '#BE123C',
     bannerGradient: 'from-[#4B5563] to-[#1F2937]',
     status: 'coming_soon',
+    logo: '/brand-logos/tomoro-coffee-logo.webp',
     // Catatan koreksi pengguna: Hapus teks "0 outlet" pada brand Segera Hadir
     outletCountLabel: undefined,
     adminWhatsApp: NOMOR_WHATSAPP_ADMIN,

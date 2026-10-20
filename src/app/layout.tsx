@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from 'next';
-import { Outfit, Plus_Jakarta_Sans } from 'next/font/google';
+import { Baloo_2, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 
-const outfit = Outfit({
+const baloo2 = Baloo_2({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-outfit',
-  weight: ['500', '600', '700', '800', '900'],
+  variable: '--font-baloo',
+  weight: ['500', '600', '700', '800'],
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -21,11 +21,11 @@ import { Footer } from '@/components/Footer';
 export const metadata: Metadata = {
   metadataBase: new URL('https://jasdor.cimagroup.my.id'),
   title: {
-    default: 'Jasdor - Jasa Order Kopi Kenangan Promo Setengah Harga',
-    template: '%s | Jasdor - Jasa Order Kopi Kenangan',
+    default: 'Jasdor - Jasa Order Minuman & Kopi Favorit Promo Hemat',
+    template: '%s | Jasdor - Layanan Jasa Order',
   },
   description:
-    'Jasa order Kopi Kenangan hemat promo setengah harga (diskon 50%). Pesan mudah langsung dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
+    'Layanan jasa order minuman dan kopi brand favorit (Kopi Kenangan, Fore Coffee, dan lainnya) dengan promo hemat. Pesan mudah dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
   applicationName: 'Jasdor',
   appleWebApp: {
     capable: true,
@@ -42,9 +42,9 @@ export const metadata: Metadata = {
     apple: '/icons/apple-touch-icon.png',
   },
   openGraph: {
-    title: 'Jasdor - Jasa Order Kopi Kenangan Promo Setengah Harga',
+    title: 'Jasdor - Jasa Order Minuman & Kopi Favorit Promo Hemat',
     description:
-      'Jasa order Kopi Kenangan hemat promo setengah harga (diskon 50%). Pesan mudah langsung dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
+      'Layanan jasa order minuman dan kopi brand favorit (Kopi Kenangan, Fore Coffee, dan lainnya) dengan promo hemat. Pesan mudah dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
     url: 'https://jasdor.cimagroup.my.id',
     siteName: 'Jasdor',
     images: [
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Jasdor - Jasa Order Kopi Kenangan Promo Setengah Harga',
+        alt: 'Jasdor - Jasa Order Minuman & Kopi Favorit Promo Hemat',
       },
     ],
     locale: 'id_ID',
@@ -60,9 +60,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Jasdor - Jasa Order Kopi Kenangan Promo Setengah Harga',
+    title: 'Jasdor - Jasa Order Minuman & Kopi Favorit Promo Hemat',
     description:
-      'Jasa order Kopi Kenangan hemat promo setengah harga (diskon 50%). Pesan mudah langsung dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
+      'Layanan jasa order minuman dan kopi brand favorit (Kopi Kenangan, Fore Coffee, dan lainnya) dengan promo hemat. Pesan mudah dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
     images: ['/og-image.png'],
   },
 };
@@ -81,14 +81,14 @@ export default function RootLayout({
   const cfAnalyticsToken = process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN;
 
   return (
-    <html lang="id" className={`${outfit.variable} ${plusJakartaSans.variable}`}>
+    <html lang="id" className={`${baloo2.variable} ${plusJakartaSans.variable}`}>
       <head>
         <link rel="manifest" href="/manifest.webmanifest" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-        <meta name="theme-color" content="#26150B" />
+        <meta name="theme-color" content="#2B1D12" />
       </head>
-      <body className="bg-[#F5EFEB] text-[#26150B] font-sans antialiased selection:bg-amber-300 selection:text-amber-950">
-        <div className="min-h-screen max-w-md mx-auto bg-[#FBF8F4] shadow-2xl flex flex-col relative overflow-x-clip border-x border-[#EDE3D6]/70">
+      <body className="bg-[#F3ECE0] text-[#2B1D12] font-sans antialiased selection:bg-amber-300 selection:text-amber-950">
+        <div className="min-h-screen max-w-md mx-auto bg-[#FAF4E8] shadow-[0_0_40px_rgba(43,29,18,0.1)] flex flex-col relative overflow-x-clip border-x-2 border-[#2B1D12]">
           <div className="flex-1 flex flex-col">
             {children}
           </div>

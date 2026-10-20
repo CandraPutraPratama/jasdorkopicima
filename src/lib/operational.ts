@@ -1,29 +1,55 @@
 import { BUSINESS_CONFIG } from '../config/business.ts';
 import type { OperationalConfig } from '../config/business.ts';
+import type { OperationalOverride } from './site-settings.ts';
+
+export type OperationalDayType = 'open' | 'tentative' | 'closed';
 
 export interface OperationalStatusResult {
   /** Apakah Jasdor sedang buka untuk menerima pesanan */
   isOpen: boolean;
+  /** Status operasional hari ini: 'open' | 'tentative' | 'closed' */
+  dayStatus: OperationalDayType;
+  /** Apakah hari ini berstatus tentatif (Selasa) */
+  isTentative: boolean;
+  /** Catatan tentatif jika hari Selasa (mis. 'Hari ini tentative - konfirmasi ke admin dulu ya') */
+  tentativeNote: string | null;
   /** Waktu saat ini di zona WIB dalam format HH:mm */
   currentWibTime: string;
+  /** Nama hari saat ini dalam bahasa Indonesia (mis. 'Jumat', 'Selasa', dll) */
+  dayName: string;
   /** Jam operasional buka */
   openTime: string;
   /** Jam operasional tutup */
   closeTime: string;
   /** Pesan status informatif untuk user */
   message: string;
+  /** Nilai kontrol manual buka/tutup ('auto' | 'force_open' | 'force_closed') */
+  overrideType?: OperationalOverride;
+  /** Menandakan apakah Jasdor dibuka secara manual oleh admin */
+  isManualOpen?: boolean;
 }
 
+const INDONESIAN_DAY_NAMES = [
+  'Minggu', // 0
+  'Senin',  // 1
+  'Selasa', // 2
+  'Rabu',   // 3
+  'Kamis',  // 4
+  'Jumat',  // 5
+  'Sabtu',  // 6
+];
+
 /**
- * Mengonversi tanggal ke komponen jam dan menit di zona waktu WIB (Asia/Jakarta).
+ * Mengonversi tanggal ke komponen jam, menit, dan hari di zona waktu WIB (Asia/Jakarta).
  */
 export function getWibTimeParts(
   date: Date = new Date(),
   timeZone: string = BUSINESS_CONFIG.operational.timeZone || 'Asia/Jakarta'
-): { hour: number; minute: number; timeString: string } {
+): { hour: number; minute: number; timeString: string; dayOfWeek: number; dayName: string } {
   try {
     const formatter = new Intl.DateTimeFormat('en-US', {
       timeZone,
+      weekday: 'short',
       hour: '2-digit',
       minute: '2-digit',
       hourCycle: 'h23',
@@ -32,16 +58,30 @@ export function getWibTimeParts(
     const parts = formatter.formatToParts(date);
     let hourStr = '00';
     let minuteStr = '00';
+    let weekdayStr = 'Sun';
 
     for (const part of parts) {
       if (part.type === 'hour') hourStr = part.value;
       if (part.type === 'minute') minuteStr = part.value;
+      if (part.type === 'weekday') weekdayStr = part.value;
     }
 
     let hour = parseInt(hourStr, 10);
     const minute = parseInt(minuteStr, 10);
     if (hour === 24) hour = 0;
 
+    const dayMap: Record<string, number> = {
+      Sun: 0,
+      Mon: 1,
+      Tue: 2,
+      Wed: 3,
+      Thu: 4,
+      Fri: 5,
+      Sat: 6,
+    };
+    const dayOfWeek = dayMap[weekdayStr] ?? 0;
+    const dayName = INDONESIAN_DAY_NAMES[dayOfWeek] || 'Minggu';
+
     const formattedHour = String(hour).padStart(2, '0');
     const formattedMinute = String(minute).padStart(2, '0');
 
@@ -49,13 +89,17 @@ export function getWibTimeParts(
       hour,
       minute,
       timeString: `${formattedHour}:${formattedMinute}`,
+      dayOfWeek,
+      dayName,
     };
   } catch {
     // Fallback matematis UTC+7 (Asia/Jakarta) jika Intl timeZone tidak tersedia
-    const utcMs = date.getTime() + date.getTimezoneOffset() * 60000;
-    const wibDate = new Date(utcMs + 7 * 3600000);
+    const wibDate = new Date(date.getTime() + 7 * 3600000);
     const hour = wibDate.getUTCHours();
     const minute = wibDate.getUTCMinutes();
+    const dayOfWeek = wibDate.getUTCDay();
+    const dayName = INDONESIAN_DAY_NAMES[dayOfWeek] || 'Minggu';
+
     const formattedHour = String(hour).padStart(2, '0');
     const formattedMinute = String(minute).padStart(2, '0');
 
@@ -63,20 +107,26 @@ export function getWibTimeParts(
       hour,
       minute,
       timeString: `${formattedHour}:${formattedMinute}`,
+      dayOfWeek,
+      dayName,
     };
   }
 }
 
 /**
  * Mengecek apakah jasdorkopicima sedang beroperasi.
- * Jam operasional: 08:00 sampai 23:20 WIB.
- * Di luar jam tersebut website tutup total.
+ *
+ * Jadwal Resmi Jasdor:
+ * - PASTI BUKA: Jumat (5), Sabtu (6), Minggu (0) - 08:00 sampai 23:20 WIB.
+ * - TENTATIF: Selasa (2) - 08:00 sampai 23:20 WIB (tidak pasti, konfirmasi admin via WhatsApp terlebih dahulu).
+ * - TUTUP TOTAL: Senin (1), Rabu (3), Kamis (4) seharian penuh.
+ * - Di luar 08:00 sampai 23:20 WIB: Tutup total.
  */
 export function getJasdorOperationalStatus(
   date: Date = new Date(),
   config: OperationalConfig = BUSINESS_CONFIG.operational
 ): OperationalStatusResult {
-  const { hour, minute, timeString } = getWibTimeParts(date, config.timeZone);
+  const { hour, minute, timeString, dayOfWeek, dayName } = getWibTimeParts(date, config.timeZone);
 
   const [openHour, openMinute] = config.openTime.split(':').map(Number);
   const [closeHour, closeMinute] = config.closeTime.split(':').map(Number);
@@ -85,33 +135,135 @@ export function getJasdorOperationalStatus(
   const startMinutes = openHour * 60 + openMinute;
   const endMinutes = closeHour * 60 + closeMinute;
 
-  const isOpen = currentMinutes >= startMinutes && currentMinutes <= endMinutes;
+  const isWithinHours = currentMinutes >= startMinutes && currentMinutes <= endMinutes;
 
-  const message = isOpen
-    ? `Jasdor sedang buka (Operasional: ${config.openTime} - ${config.closeTime} WIB).`
-    : `Jasdor sedang tutup. Jam operasional: ${config.openTime} - ${config.closeTime} WIB.`;
+  const isRegularOpenDay = dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6;
+  const isTentativeDay = dayOfWeek === 2;
+  const isClosedDay = !isRegularOpenDay && !isTentativeDay;
+
+  let isOpen = false;
+  let dayStatus: OperationalDayType = 'closed';
+  let isTentative = false;
+  let tentativeNote: string | null = null;
+  let message = '';
+
+  if (isClosedDay) {
+    isOpen = false;
+    dayStatus = 'closed';
+    isTentative = false;
+    tentativeNote = null;
+    message = `Jasdor sedang libur hari ini (${dayName}). Jadwal buka: Jumat, Sabtu, Minggu (${config.openTime} - ${config.closeTime} WIB) dan Selasa tentatif.`;
+  } else if (!isWithinHours) {
+    isOpen = false;
+    dayStatus = isTentativeDay ? 'tentative' : 'open';
+    isTentative = isTentativeDay;
+    tentativeNote = isTentativeDay ? 'Hari ini tentative - konfirmasi ke admin dulu ya' : null;
+    message = `Jasdor sedang tutup. Jam operasional: ${config.openTime} - ${config.closeTime} WIB.`;
+  } else {
+    // Di dalam jam operasional (08:00 - 23:20 WIB) pada hari buka atau tentatif
+    isOpen = true;
+    if (isTentativeDay) {
+      dayStatus = 'tentative';
+      isTentative = true;
+      tentativeNote = 'Hari ini tentative - konfirmasi ke admin dulu ya';
+      message = `Jasdor sedang buka dengan jadwal tentatif. Silakan konfirmasi ke admin terlebih dahulu (${config.openTime} - ${config.closeTime} WIB).`;
+    } else {
+      dayStatus = 'open';
+      isTentative = false;
+      tentativeNote = null;
+      message = `Jasdor sedang buka (Operasional: ${config.openTime} - ${config.closeTime} WIB).`;
+    }
+  }
 
   return {
     isOpen,
+    dayStatus,
+    isTentative,
+    tentativeNote,
     currentWibTime: timeString,
+    dayName,
     openTime: config.openTime,
     closeTime: config.closeTime,
     message,
+    overrideType: 'auto',
+    isManualOpen: false,
   };
 }
 
 /**
- * Shortcut boolean untuk mengecek apakah Jasdor buka.
+ * Mengevaluasi status operasional efektif dengan mempertimbangkan kontrol manual override admin.
+ *
+ * Prioritas Evaluasi:
+ * 1. 'force_open' -> isOpen true (abaikan hari/jam), pesan buka manual oleh admin.
+ * 2. 'force_closed' -> isOpen false (tutup total), pesan tutup manual oleh admin.
+ * 3. 'auto' -> gunakan logika day-aware jadwal resmi tanpa perubahan.
  */
-export function isJasdorOpen(
+export function getEffectiveJasdorOperationalStatus(
   date: Date = new Date(),
+  override: OperationalOverride = 'auto',
   config: OperationalConfig = BUSINESS_CONFIG.operational
-): boolean {
-  return getJasdorOperationalStatus(date, config).isOpen;
+): OperationalStatusResult {
+  const base = getJasdorOperationalStatus(date, config);
+
+  if (override === 'force_open') {
+    return {
+      ...base,
+      isOpen: true,
+      dayStatus: 'open',
+      isTentative: false,
+      tentativeNote: null,
+      message: 'Jasdor sedang dibuka manual oleh admin.',
+      overrideType: 'force_open',
+      isManualOpen: true,
+    };
+  }
+
+  if (override === 'force_closed') {
+    return {
+      ...base,
+      isOpen: false,
+      dayStatus: 'closed',
+      isTentative: false,
+      tentativeNote: null,
+      message: 'Jasdor sedang ditutup sementara oleh admin.',
+      overrideType: 'force_closed',
+      isManualOpen: false,
+    };
+  }
+
+  return {
+    ...base,
+    overrideType: 'auto',
+    isManualOpen: false,
+  };
 }
 
 /**
- * Mengevaluasi status operasional dengan mempertimbangkan parameter simulasi (?simulate=open / closed).
+ * Shortcut boolean untuk mengecek apakah Jasdor buka (mendukung override opsional).
+ */
+export function isJasdorOpen(
+  date: Date = new Date(),
+  configOrOverride?: OperationalConfig | OperationalOverride,
+  overrideArg?: OperationalOverride
+): boolean {
+  let config: OperationalConfig = BUSINESS_CONFIG.operational;
+  let override: OperationalOverride = 'auto';
+
+  if (typeof configOrOverride === 'string') {
+    override = configOrOverride;
+  } else if (configOrOverride) {
+    config = configOrOverride;
+  }
+
+  if (overrideArg) {
+    override = overrideArg;
+  }
+
+  return getEffectiveJasdorOperationalStatus(date, override, config).isOpen;
+}
+
+/**
+ * Mengevaluasi status operasional dengan mempertimbangkan parameter simulasi (?simulate=open / tentative / closed).
  *
  * PENJAGA KERAS DUA LAPIS (SECURITY HARDENING):
  * 1. Di lingkungan production (process.env.NODE_ENV === 'production'), mode simulasi
@@ -137,7 +289,21 @@ export function resolveOperationalStatusWithSimulation(
     return {
       ...baseStatus,
       isOpen: true,
+      dayStatus: 'open',
+      isTentative: false,
+      tentativeNote: null,
       message: `${baseStatus.message} (Simulasi Buka Aktif)`,
+    };
+  }
+
+  if (simulateParam === 'tentative') {
+    return {
+      ...baseStatus,
+      isOpen: true,
+      dayStatus: 'tentative',
+      isTentative: true,
+      tentativeNote: 'Hari ini tentative - konfirmasi ke admin dulu ya',
+      message: `${baseStatus.message} (Simulasi Tentatif Aktif)`,
     };
   }
 

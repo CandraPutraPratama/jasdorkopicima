@@ -6,6 +6,7 @@ import {
   type OrderPricingResult,
   type OrderItemInput,
 } from './pricing.ts';
+import { getStartOfTodayWIB } from './order-stats.ts';
 import type { CartItem } from './cart-reducer.ts';
 import type { OrderRecord, OrderStatus, OrderItemSnapshot } from '../types/order.ts';
 
@@ -76,9 +77,40 @@ export function calculateServerOrderPricing(items: CartItem[]): OrderPricingResu
     variantAddition: it.variantAddition || 0,
     toppingTotal: it.toppingTotal || 0,
     quantity: it.quantity,
+    isBundle: it.isBundle,
+    bundleType: it.bundleType,
+    bundleFee: it.bundleFee,
+    bundleNormalPrice: it.bundleNormalPrice,
   }));
 
   return calculateOrderPricing(pricingInputs);
+}
+
+/**
+ * Validasi batasan minimal dan maksimal pembelian menu reguler (50k - 60k harga normal)
+ * saat Mode Minimal Pembelian 50k aktif.
+ */
+export function validateRegularOrderSubtotal(params: {
+  regularQuantity: number;
+  regularNormalSubtotal: number;
+  isMinOrderMode: boolean;
+}): { isValid: boolean; error?: string } {
+  if (!params.isMinOrderMode || params.regularQuantity === 0) {
+    return { isValid: true };
+  }
+  if (params.regularNormalSubtotal < 50000) {
+    return {
+      isValid: false,
+      error: 'Minimal pembelian Rp50.000 (harga normal)',
+    };
+  }
+  if (params.regularNormalSubtotal > 60000) {
+    return {
+      isValid: false,
+      error: 'Maksimal pembelian Rp60.000 (harga normal)',
+    };
+  }
+  return { isValid: true };
 }
 
 /**
@@ -141,7 +173,21 @@ export function createOrderRecord(params: CreateOrderParams): OrderRecord {
       variantAddition: it.variantAddition || 0,
       toppingTotal: it.toppingTotal || 0,
       quantity: it.quantity,
+      isBundle: it.isBundle,
+      bundleType: it.bundleType,
+      bundleFee: it.bundleFee,
+      bundleNormalPrice: it.bundleNormalPrice,
     });
+
+    // Rincian opsi varian: untuk bundling, tampilkan rincian isi paket
+    let variantOptions: string[] = [];
+    if (it.isBundle && it.bundleDetails && it.bundleDetails.length > 0) {
+      variantOptions = it.bundleDetails.map(
+        (d) => `${d.name}${d.variantDescription ? ` (${d.variantDescription})` : ''}`
+      );
+    } else if (it.variantDescription) {
+      variantOptions = [it.variantDescription];
+    }
 
     return {
       id: it.id || `item-${idx + 1}`,
@@ -153,9 +199,14 @@ export function createOrderRecord(params: CreateOrderParams): OrderRecord {
       originalPrice: itemPricing.originalPricePerItem,
       quantity: it.quantity,
       subtotal: itemPricing.subtotalItem,
-      variantOptions: it.variantDescription ? [it.variantDescription] : [],
+      variantOptions,
       addons: (it.addons || []).map((a) => ({ name: a.name, price: a.price })),
       notes: it.notes || '',
+      isBundle: it.isBundle,
+      bundleType: it.bundleType,
+      bundleNormalPrice: it.bundleNormalPrice,
+      bundleFee: it.bundleFee,
+      bundleDetails: it.bundleDetails,
     };
   });
 
@@ -172,7 +223,7 @@ export function createOrderRecord(params: CreateOrderParams): OrderRecord {
     total: pricing.total,
     status: 'menunggu_pembayaran',
     notes,
-    pickup_time: pickupTime,
+    pickup_time: (pickupTime || '').replace(/[\r\n]/g, '').trim() || undefined,
     created_at: now.toISOString(),
     expires_at: expiresAt.toISOString(),
   };
@@ -281,7 +332,8 @@ export async function confirmOrderPayment(orderId: string): Promise<OrderRecord>
  */
 export async function updateOrderStatusByAdmin(
   orderId: string,
-  newStatus: OrderStatus
+  newStatus: OrderStatus,
+  cancellationReason?: string
 ): Promise<OrderRecord> {
   const allowedStatuses: OrderStatus[] = ['diproses', 'dibatalkan'];
   if (!allowedStatuses.includes(newStatus)) {
@@ -291,9 +343,21 @@ export async function updateOrderStatusByAdmin(
   const order = await getOrderById(orderId);
   const supabase = getSupabaseServerClient();
 
+  const updatePayload: Record<string, any> = { status: newStatus };
+  if (newStatus === 'dibatalkan') {
+    if (cancellationReason) {
+      updatePayload.cancellation_reason = cancellationReason;
+    } else {
+      updatePayload.cancellation_reason = 'Dibatalkan oleh admin';
+    }
+    if (order.status === 'menunggu_konfirmasi') {
+      updatePayload.needs_refund = true;
+    }
+  }
+
   const { error } = await supabase
     .from('orders')
-    .update({ status: newStatus })
+    .update(updatePayload)
     .eq('id', orderId);
 
   if (error) {
@@ -301,7 +365,65 @@ export async function updateOrderStatusByAdmin(
   }
 
   order.status = newStatus;
+  if (updatePayload.cancellation_reason) {
+    order.cancellation_reason = updatePayload.cancellation_reason;
+  }
   return order;
+}
+
+/**
+ * Membatalkan otomatis pesanan yang belum selesai saat pergantian hari (00:00 WIB).
+ * - Hanya membatalkan status non-final: 'menunggu_pembayaran' dan 'menunggu_konfirmasi'.
+ * - Status 'diproses', 'dibatalkan', dan 'kedaluwarsa' TIDAK disentuh.
+ * - Mencatat cancellation_reason: "Otomatis dibatalkan - melewati batas hari operasional"
+ * - Menandai needs_refund: true jika status awal adalah 'menunggu_konfirmasi' (karena pelanggan sudah bayar via QRIS).
+ */
+export async function autoCancelEodOrders(
+  referenceDate?: Date
+): Promise<{ updatedCount: number; orderIds: string[] }> {
+  const supabase = getSupabaseServerClient();
+  const startOfTodayWIB = getStartOfTodayWIB(referenceDate);
+  const cancellationReason = 'Otomatis dibatalkan - melewati batas hari operasional';
+
+  // 1. Batch update pesanan menunggu_pembayaran (needs_refund = false)
+  const { data: unpaidData, error: unpaidError } = await supabase
+    .from('orders')
+    .update({
+      status: 'dibatalkan',
+      cancellation_reason: cancellationReason,
+      needs_refund: false,
+    })
+    .eq('status', 'menunggu_pembayaran')
+    .lt('created_at', startOfTodayWIB)
+    .select('id');
+
+  if (unpaidError) {
+    console.error('[OrderService] Gagal auto-cancel pesanan menunggu_pembayaran:', unpaidError.message);
+    throw new OrderError('Gagal membatalkan pesanan belum bayar', 'DB_UPDATE_ERROR', 500, unpaidError);
+  }
+
+  // 2. Batch update pesanan menunggu_konfirmasi (needs_refund = true)
+  const { data: paidData, error: paidError } = await supabase
+    .from('orders')
+    .update({
+      status: 'dibatalkan',
+      cancellation_reason: cancellationReason,
+      needs_refund: true,
+    })
+    .eq('status', 'menunggu_konfirmasi')
+    .lt('created_at', startOfTodayWIB)
+    .select('id');
+
+  if (paidError) {
+    console.error('[OrderService] Gagal auto-cancel pesanan menunggu_konfirmasi:', paidError.message);
+    throw new OrderError('Gagal membatalkan pesanan sudah bayar', 'DB_UPDATE_ERROR', 500, paidError);
+  }
+
+  const unpaidIds = (unpaidData || []).map((row: any) => row.id);
+  const paidIds = (paidData || []).map((row: any) => row.id);
+  const orderIds = [...unpaidIds, ...paidIds];
+
+  return { updatedCount: orderIds.length, orderIds };
 }
 
 /**

@@ -44,13 +44,13 @@ export function Header({
     <header
       className={`${
         sticky ? 'sticky top-0 z-20' : 'relative z-10'
-      } bg-[#FBF8F4] border-b border-[#EFE5D8] px-3 py-1.5 flex items-center justify-between min-h-[50px] h-[50px] transition-colors`}
+      } bg-[#FAF4E8] border-b-2 border-[#2B1D12] px-3 py-1.5 flex items-center justify-between min-h-[52px] h-[52px] transition-colors`}
     >
       <div className="flex items-center gap-2 flex-1 min-w-0">
         {showBack ? (
           <Link
             href={backHref}
-            className="min-h-[40px] min-w-[40px] flex items-center justify-center text-[#4A3225] hover:text-[#26150B] active:scale-95 transition -ml-1 rounded-xl shrink-0"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#2B1D12] hover:text-[#C67D0A] active:scale-95 transition -ml-1 rounded-xl shrink-0"
             aria-label={backLabel}
           >
             <svg
@@ -59,17 +59,17 @@ export function Header({
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              strokeWidth={2.3}
+              strokeWidth={2.5}
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </Link>
         ) : (
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative w-9 h-9 rounded-full overflow-hidden shadow-xs shrink-0 flex items-center justify-center">
+            <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] shrink-0 flex items-center justify-center bg-[#FFFDF9]">
               <Image
-                src="/brand/logo-cima.webp"
-                alt="Cima Group Logo"
+                src="/logo-jasdorkopicima.png"
+                alt="Jasdor Kopi Cima Logo"
                 fill
                 sizes="36px"
                 className="object-contain group-hover:scale-105 transition"
@@ -77,11 +77,11 @@ export function Header({
               />
             </div>
             <div className="flex flex-col justify-center">
-              <span className="font-display text-base font-extrabold tracking-tight text-[#26150B] block leading-tight">
+              <span className="font-display text-base font-black tracking-tight text-[#2B1D12] block leading-tight">
                 {brandName || 'jasdorkopicima'}
               </span>
-              <span className="text-[10px] text-[#A66908] font-bold tracking-wider block leading-none uppercase mt-0.5">
-                {brandSub || 'JASA ORDER KOPI KENANGAN'}
+              <span className="font-display text-[11px] text-[#C67D0A] font-black tracking-tight block leading-none mt-0.5 whitespace-nowrap">
+                {brandSub || 'LAYANAN JASA ORDER'}
               </span>
             </div>
           </Link>
@@ -90,7 +90,7 @@ export function Header({
         {/* Jika ada title khusus (misalnya nama outlet pada compact sticky header) */}
         {title && (
           <div className="flex-1 min-w-0 pr-1">
-            <h1 className="font-display font-bold text-sm text-[#26150B] truncate leading-tight">
+            <h1 className="font-display font-black text-sm text-[#2B1D12] truncate leading-tight">
               {title}
             </h1>
           </div>
@@ -99,33 +99,33 @@ export function Header({
 
       {showBack && !title && (
         <Link href="/" className="flex items-center gap-2 mr-2">
-          <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center">
+          <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] shrink-0 flex items-center justify-center bg-[#FFFDF9]">
             <Image
-              src="/brand/logo-cima.webp"
-              alt="Cima Group Logo"
+              src="/logo-jasdorkopicima.png"
+              alt="Jasdor Kopi Cima Logo"
               fill
               className="object-contain"
             />
           </div>
-          <span className="font-display text-sm font-bold text-[#26150B]">jasdorkopicima</span>
+          <span className="font-display text-sm font-black text-[#2B1D12]">jasdorkopicima</span>
         </Link>
       )}
 
-      <div className="flex items-center gap-1.5 shrink-0">
+      <div className="flex items-center gap-2 shrink-0">
         {showMyOrders && title !== 'Pesanan Saya' && (
           <Link
             href="/pesanan-saya"
-            className="relative flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-[#4A3225] hover:text-[#26150B] bg-white hover:bg-[#F2EAE0] border border-[#E0D4C5] rounded-full transition active:scale-95 shadow-2xs"
+            className="relative flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-extrabold text-[#2B1D12] bg-[#FFFDF9] hover:bg-[#FFE7D6] border-2 border-[#2B1D12] rounded-xl transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none shadow-[2px_2px_0px_#2B1D12] min-h-[36px]"
             title="Pesanan Saya"
             aria-label="Pesanan Saya"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-3.5 h-3.5 text-[#8C5D17] shrink-0"
+              className="w-3.5 h-3.5 text-[#2B1D12] shrink-0"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              strokeWidth={2}
+              strokeWidth={2.3}
             >
               <path
                 strokeLinecap="round"
@@ -136,7 +136,7 @@ export function Header({
             <span className="hidden xs:inline sm:inline">Pesanan</span>
             {activeCount > 0 && (
               <span
-                className="inline-flex items-center justify-center min-w-[16px] h-4 px-1 bg-[#D97706] text-white text-[9px] font-extrabold rounded-full animate-pulse shadow-xs"
+                className="inline-flex items-center justify-center min-w-[16px] h-4 px-1 bg-[#DC2626] text-white text-[9px] font-black rounded-full border border-[#2B1D12] shadow-xs"
                 suppressHydrationWarning
               >
                 {activeCount}
@@ -147,13 +147,13 @@ export function Header({
 
         {shouldShowChatAdmin && (
           <a
-            href={getAdminWhatsAppUrl(chatMessage || 'Halo Admin Jasdor, saya butuh info jasa order Kopi Kenangan.')}
+            href={getAdminWhatsAppUrl(chatMessage || 'Halo Admin Jasdor, saya butuh info layanan jasa order.')}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold text-[#15803D] bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 rounded-full transition active:scale-95 shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-extrabold text-white bg-[#15803D] hover:bg-[#166534] border-2 border-[#2B1D12] rounded-xl transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none shadow-[2px_2px_0px_#2B1D12] min-h-[36px]"
             title="Chat Admin WhatsApp"
           >
-            <WhatsAppIcon className="w-3.5 h-3.5 fill-[#15803D] shrink-0" />
+            <WhatsAppIcon className="w-3.5 h-3.5 fill-white shrink-0" />
             <span className="hidden sm:inline">Chat Admin</span>
             <span className="sm:hidden text-[10px]">Chat</span>
           </a>
@@ -161,22 +161,22 @@ export function Header({
 
         {badgeText ? (
           <span
-            className={`shrink-0 px-2.5 py-0.5 text-[10px] font-bold rounded-full border ${
+            className={`shrink-0 px-2.5 py-1 text-[10px] font-black rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] ${
               badgeVariant === 'emerald'
-                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                : 'bg-rose-50 text-rose-700 border-rose-200'
+                ? 'bg-[#D9F3EA] text-[#2B1D12]'
+                : 'bg-[#FEF2F2] text-[#DC2626]'
             }`}
           >
             {badgeText}
           </span>
         ) : isOpen !== undefined ? (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#F4EDE3] rounded-full border border-[#E5DACB]">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#FFFDF9] rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
             <span
-              className={`w-2 h-2 rounded-full ${
-                isOpen ? 'bg-emerald-600 animate-pulse' : 'bg-rose-500'
+              className={`w-2 h-2 rounded-full border border-[#2B1D12] ${
+                isOpen ? 'bg-[#15803D] animate-pulse' : 'bg-[#DC2626]'
               }`}
             />
-            <span className="text-[11px] font-semibold text-[#4A3225]">
+            <span className="text-[11px] font-bold text-[#2B1D12]">
               {isOpen ? 'Buka' : 'Tutup'}
             </span>
           </div>

@@ -1,8 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getExpectedAdminPassword } from '@/lib/admin-auth';
 import { ADMIN_CONFIG } from '@/lib/site-config';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  const clientIp = getClientIp(request.headers);
+  const rateLimit = checkRateLimit(`admin-auth:${clientIp}`, {
+    maxRequests: 5,
+    windowSeconds: 60,
+  });
+
+  if (!rateLimit.success) {
+    return NextResponse.json(
+      { error: 'Terlalu banyak percobaan masuk. Silakan tunggu beberapa saat.' },
+      {
+        status: 429,
+        headers: {
+          'Retry-After': String(rateLimit.resetInSeconds),
+          'X-RateLimit-Limit': String(rateLimit.limit),
+          'X-RateLimit-Remaining': '0',
+        },
+      }
+    );
+  }
+
   let body: { password?: string };
   try {
     body = await request.json();

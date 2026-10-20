@@ -67,7 +67,7 @@ export default function PrivacyPage() {
             <strong className="font-bold block text-emerald-950 mb-0.5">
               Jaminan Bebas Spam & Data Tidak Dibagikan
             </strong>
-            Data pesanan Anda hanya digunakan untuk memproses pesanan ke barista gerai Kopi Kenangan dan <strong>tidak pernah dibagikan, disewakan, atau dijual kepada pihak ketiga manapun</strong>.
+            Data pesanan Anda hanya digunakan untuk memproses pesanan ke barista gerai outlet pilihan Anda dan <strong>tidak pernah dibagikan, disewakan, atau dijual kepada pihak ketiga manapun</strong>.
           </div>
         </div>
 
@@ -121,7 +121,7 @@ export default function PrivacyPage() {
             <ul className="space-y-1.5 text-[#5C4A3E]">
               <li className="flex items-start gap-2">
                 <span className="text-[#C67D0A] font-bold">•</span>
-                <span>Meneruskan dan mendaftarkan pesanan ke kasir/barista outlet Kopi Kenangan pilihan Anda.</span>
+                <span>Meneruskan dan mendaftarkan pesanan ke kasir/barista gerai resmi pilihan Anda.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-[#C67D0A] font-bold">•</span>

@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { Header } from '@/components/Header';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import {
-  SITE_CONFIG,
   JAM_LAYANAN,
   JADWAL_OPERASIONAL_LENGKAP,
   NOMOR_WHATSAPP_ADMIN_FORMATTED,
@@ -14,7 +13,7 @@ import {
 export const metadata: Metadata = {
   title: 'FAQ - Pertanyaan Umum Layanan Jasa Order',
   description:
-    'Pertanyaan yang sering diajukan mengenai layanan jasa order Kopi Kenangan Jasdor: cara order, jadwal layanan, diskon 50%, biaya jasa order, metode pembayaran, dan refund.',
+    'Pertanyaan yang sering diajukan mengenai layanan jasa order Jasdor: cara order, jadwal layanan, promo hemat multi-brand, biaya jasa order, metode pembayaran, dan refund.',
 };
 
 interface FaqItem {
@@ -30,27 +29,20 @@ const FAQ_LIST: FaqItem[] = [
     id: 'tentang-jasdor',
     category: 'Layanan',
     q: 'Apa itu Jasdor dan bagaimana cara kerjanya?',
-    a: 'Jasdor adalah layanan jasa order khusus menu Kopi Kenangan. Kami membantu Anda memesan menu favorit dengan promo diskon 50% untuk harga dasar minuman, lalu pesanan langsung dikirimkan formatnya ke WhatsApp admin untuk diproses dan diambil di outlet pilihan Anda.',
-    highlight: 'Layanan Jasa Order • Diskon 50%',
-  },
-  {
-    id: 'status-afiliasi',
-    category: 'Status Resmi',
-    q: 'Apakah Jasdor berafiliasi resmi dengan Kopi Kenangan?',
-    a: 'Tidak. Jasdor adalah penyedia layanan jasa order pihak ketiga dan bukan merupakan perwakilan, mitra resmi, atau cabang dari PT Bumi Berkah Boga (Kopi Kenangan). Semua merek dagang, logo, dan nama menu adalah hak milik resmi Kopi Kenangan.',
-    highlight: 'Layanan Jasa Order',
+    a: 'Jasdor adalah portal layanan jasa order untuk berbagai brand minuman dan kopi favorit (seperti Kopi Kenangan, Fore Coffee, dan lainnya). Kami membantu Anda memesan menu dengan promo hemat spesial tiap brand, lalu pesanan diproses langsung ke gerai resmi pilihan Anda.',
+    highlight: 'Layanan Jasa Order Multi-Brand',
   },
   {
     id: 'cara-order',
     category: 'Pemesanan',
     q: 'Bagaimana alur cara memesan di Jasdor?',
-    a: 'Cukup 4 langkah praktis:\n1. Pilih outlet Kopi Kenangan terdekat yang berstatus buka di halaman depan.\n2. Pilih menu dan sesuaikan varian (ukuran cup, takaran gula, es, dan topping).\n3. Buka keranjang, masukkan nama pemesan serta pilih jadwal pickup (sekarang atau slot 15 menit).\n4. Klik "Kirim Pesanan via WhatsApp" untuk mengirim ringkasan pesanan ke WhatsApp admin Jasdor.',
+    a: 'Cukup 4 langkah praktis:\n1. Pilih brand kopi dan outlet terdekat yang berstatus buka di katalog Jasdor.\n2. Pilih menu dan sesuaikan varian (ukuran cup, takaran gula, es, dan topping).\n3. Buka keranjang, masukkan nama pemesan serta pilih jadwal pickup (sekarang atau slot 15 menit).\n4. Lanjutkan pembayaran dan konfirmasi ke WhatsApp admin Jasdor.',
   },
   {
     id: 'biaya-jasa',
     category: 'Tarif & Promo',
     q: 'Berapa biaya jasa order di Jasdor?',
-    a: 'Biaya jasa order kami transparan, hemat, dan otomatis dihitung di keranjang sebelum checkout:\n• Rp2.000 per item jika Anda memesan 2 item atau lebih.\n• Rp4.000 flat jika Anda hanya memesan 1 item saja.\nDiskon 50% dinikmati pada harga dasar menu minuman Kopi Kenangan.',
+    a: 'Biaya jasa order kami transparan, hemat, dan otomatis dihitung di keranjang sebelum checkout:\n• Rp2.000 per item jika Anda memesan 2 item atau lebih.\n• Rp4.000 flat jika Anda hanya memesan 1 item saja.\nPromo diskon hemat dinikmati sesuai ketentuan masing-masing brand (seperti diskon 50% pada menu minuman Kopi Kenangan atau promo Fore Coffee).',
     highlight: 'Mulai Rp2.000 / item',
   },
   {
@@ -136,7 +128,7 @@ export default function FaqPage() {
             <strong className="font-bold block text-[#78350F] mb-0.5">
               Layanan Jasa Order
             </strong>
-            {SITE_CONFIG.disclaimer} Seluruh pesanan diteruskan dan diproses langsung ke gerai resmi Kopi Kenangan pilihan Anda.
+            Jasdor adalah layanan jasa order yang meneruskan dan memproses seluruh pesanan langsung ke gerai resmi brand pilihan Anda.
           </div>
         </div>
 

@@ -57,6 +57,10 @@ export function useCart() {
         variantAddition: it.variantAddition,
         toppingTotal: it.toppingTotal,
         quantity: it.quantity,
+        isBundle: it.isBundle,
+        bundleType: it.bundleType,
+        bundleFee: it.bundleFee,
+        bundleNormalPrice: it.bundleNormalPrice,
       }))
     );
   }, [state.items]);

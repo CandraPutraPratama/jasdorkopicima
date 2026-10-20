@@ -12,12 +12,12 @@ import {
 export const metadata: Metadata = {
   title: 'Kontak - Hubungi Customer Service Jasdor',
   description:
-    'Hubungi admin layanan jasa order Kopi Kenangan Jasdor via WhatsApp resmi. Siap melayani pemesanan, ketersediaan outlet, konfirmasi pembayaran, dan refund.',
+    'Hubungi admin layanan jasa order Jasdor via WhatsApp resmi. Siap melayani pemesanan, ketersediaan outlet berbagai brand, konfirmasi pembayaran, dan refund.',
 };
 
 export default function ContactPage() {
   const waChatUrl = getAdminWhatsAppUrl(
-    'Halo Admin Jasdor, saya ingin bertanya tentang pemesanan jasa order Kopi Kenangan.'
+    'Halo Admin Jasdor, saya ingin bertanya tentang layanan jasa order.'
   );
 
   return (
@@ -108,7 +108,7 @@ export default function ContactPage() {
                   Jumat, Sabtu, Minggu (Pasti Buka)
                 </span>
                 <span className="text-[11px] text-[#2C5E3B] block mt-0.5">
-                  Layanan aktif penuh untuk seluruh outlet Kopi Kenangan yang buka.
+                  Layanan aktif penuh untuk seluruh outlet brand yang berstatus buka.
                 </span>
               </div>
               <span className="shrink-0 text-[11px] font-extrabold text-[#15803D] bg-white px-2 py-0.5 rounded-md border border-emerald-200">

@@ -31,4 +31,19 @@ test('portal page component and BrandCard exist and enforce Variant C specificat
   assert.ok(portalCode.includes('TrustStrip'), 'Portal harus memuat komponen TrustStrip');
   // Testimoni palsu tidak boleh ada di portal
   assert.ok(!portalCode.includes('Dimas R.'), 'Portal tidak boleh memuat testimoni teks palsu');
+
+  // 3. Verifikasi revisi kartu brand portal
+  // Badge jumlah brand aktif harus 1 Brand Aktif
+  assert.ok(portalCode.includes('1 Brand Aktif'), 'Portal harus menampilkan badge 1 Brand Aktif');
+
+  // Kartu Tomoro & Fore tidak lagi dimmed/dashed/grayscale
+  assert.ok(!cardCode.includes('border-dashed'), 'BrandCard tidak boleh menggunakan border-dashed');
+  assert.ok(!cardCode.includes('opacity-65'), 'BrandCard tidak boleh menggunakan opacity-65');
+  assert.ok(!cardCode.includes('grayscale'), 'BrandCard tidak boleh menggunakan grayscale');
+
+  // Kartu Tomoro memiliki placeholder teks/logo yang rapi dengan warna normal
+  assert.ok(cardCode.includes('#E11D48') || cardCode.includes('TOMORO'), 'BrandCard harus memuat placeholder Tomoro yang rapi');
+
+  // Hanya Kopi Kenangan yang bisa diklik
+  assert.ok(cardCode.includes("brand.slug === 'kopi-kenangan'"), 'Hanya Kopi Kenangan yang aktif diklik di portal');
 });

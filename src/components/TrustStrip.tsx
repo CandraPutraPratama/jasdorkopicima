@@ -42,32 +42,42 @@ export function TrustStrip({ className = '' }: TrustStripProps) {
 
   return (
     <div
-      className={`bg-white border border-[#EFE5D8] rounded-xl px-3 py-2.5 shadow-2xs ${className}`}
+      className={`bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-2xl py-2 px-1 shadow-[3px_3px_0px_#2B1D12] ${className}`}
     >
-      <div className="flex items-center justify-between gap-2 text-[11px] font-semibold text-[#5A4537] overflow-x-auto no-scrollbar">
-        {/* Item 1: Total Orderan */}
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-          <span>{formatTotalOrders(counts.total)} Total Orderan</span>
+      <div className="grid grid-cols-3 divide-x-2 divide-[#2B1D12]/20 items-center text-center">
+        {/* Segmen 1: Total Orderan */}
+        <div className="px-1 flex flex-col items-center justify-center">
+          <span className="font-display font-black text-xs sm:text-sm text-[#2B1D12] leading-tight">
+            {formatTotalOrders(counts.total)}
+          </span>
+          <span className="text-[10px] text-[#6A584D] font-bold leading-tight mt-0.5 whitespace-nowrap">
+            Total Orderan
+          </span>
         </div>
 
-        <span className="text-[#D9CEBF] shrink-0">•</span>
-
-        {/* Item 2: Orderan Hari Ini */}
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-          <span>{counts.today} Orderan Hari Ini</span>
+        {/* Segmen 2: Orderan Hari Ini */}
+        <div className="px-1 flex flex-col items-center justify-center">
+          <div className="flex items-center justify-center gap-1 leading-tight">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#15803D] border border-[#2B1D12] animate-pulse" />
+            <span className="font-display font-black text-xs sm:text-sm text-[#15803D]">
+              {counts.today} Order
+            </span>
+          </div>
+          <span className="text-[10px] text-[#6A584D] font-bold leading-tight mt-0.5 whitespace-nowrap">
+            Hari Ini
+          </span>
         </div>
 
-        <span className="text-[#D9CEBF] shrink-0">•</span>
-
-        {/* Item 3: Link Testimoni */}
+        {/* Segmen 3: Link Testimoni */}
         <Link
           href="/testimoni"
-          className="flex items-center gap-1 shrink-0 text-[#8B1E19] hover:text-[#691410] font-bold transition-colors group"
+          className="px-1 flex flex-col items-center justify-center group hover:bg-[#FFF8E7] rounded-xl transition-colors py-0.5"
         >
-          <span className="text-amber-500 text-xs">★</span>
-          <span className="underline decoration-[#8B1E19]/40 group-hover:decoration-[#8B1E19] underline-offset-2">
+          <div className="flex items-center justify-center gap-0.5 text-[#C67D0A] text-xs sm:text-sm leading-tight">
+            <span>★</span>
+            <span className="font-display font-black text-[#2B1D12] text-xs sm:text-sm">Real</span>
+          </div>
+          <span className="text-[10px] text-[#DC2626] font-black underline decoration-[#DC2626]/40 group-hover:decoration-[#DC2626] leading-tight mt-0.5 whitespace-nowrap">
             Testimoni
           </span>
         </Link>

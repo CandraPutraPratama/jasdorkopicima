@@ -17,6 +17,16 @@ import { SwitchOutletModal } from '@/components/SwitchOutletModal';
 import { determineActiveCategory } from '@/lib/category-scrollspy';
 import { isOutletClosed as checkIsOutletClosed } from '@/lib/orderability';
 import { resolveBrandSlugFromOutletCode } from '@/lib/site-config';
+import {
+  type BundlePackageConfig,
+  isBundlingPromoActive,
+  getAvailableBundlePackages,
+  getOutletTierDiff,
+} from '@/lib/bundling';
+import { useBundlingOnlyMode } from '@/hooks/useBundlingOnlyMode';
+import { getRecommendedProducts } from '@/lib/recommendations';
+import { BundlePackageCard } from '@/components/BundlePackageCard';
+import { BundlePickerBottomSheet } from '@/components/BundlePickerBottomSheet';
 import type { Outlet, MenuGroup, Product } from '@/types/domain';
 
 interface OutletMenuPageProps {
@@ -30,6 +40,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
 
   const { isOpen: isJasdorOpen, status: jasdorStatus, isLoading: isJasdorLoading, refetch } =
     useOperationalStatus();
+  const isBundlingOnly = useBundlingOnlyMode();
 
   const cart = useCart();
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -60,19 +71,54 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     return list;
   }, [menuGroups, isFavorite]);
 
-  // Kelompokkan dengan chip "Favorit" sebagai kategori paling kiri sebelum "Baru!"
+  // Deteksi brand Kopi Kenangan
+  const isKopiKenangan = brandSlug === 'kopi-kenangan' || !outletCode.toLowerCase().startsWith('fore-');
+
+  // Menu rekomendasi kurasi (ditampilkan saat favorit masih kosong)
+  const recommendedProducts = useMemo(() => {
+    return getRecommendedProducts(menuGroups, brandSlug);
+  }, [menuGroups, brandSlug]);
+
+  // Flatten semua produk outlet untuk ketersediaan bundling
+  const allOutletProducts = useMemo(() => {
+    return menuGroups.flatMap((g) => g.products || []);
+  }, [menuGroups]);
+
+  // Paket bundling yang memenuhi kuota minimal menu di outlet ini
+  const availableBundlePackages = useMemo(() => {
+    return getAvailableBundlePackages(allOutletProducts);
+  }, [allOutletProducts]);
+
+  // Hitung tier diff outlet untuk paket bundling
+  const tierDiff = useMemo(() => {
+    return getOutletTierDiff(allOutletProducts);
+  }, [allOutletProducts]);
+
+  // Kelompokkan dengan chip "Paket Bundling" (khusus KK & ada paket yang eligible) & "Favorit" / "Rekomendasi" di paling kiri
   const displayedGroups = useMemo<MenuGroup[]>(() => {
     if (menuGroups.length === 0) return [];
+    const hasFavorites = favoriteProducts.length > 0;
     const favGroup: MenuGroup = {
       code: 'favorit',
-      name: 'Favoritku',
-      products: favoriteProducts,
+      name: hasFavorites
+        ? `Favoritku - ${favoriteProducts.length} menu`
+        : 'Rekomendasi',
+      products: hasFavorites ? favoriteProducts : recommendedProducts,
     };
+    if (isKopiKenangan && isBundlingPromoActive(new Date(), isBundlingOnly) && availableBundlePackages.length > 0) {
+      const bundlingGroup: MenuGroup = {
+        code: 'paket-bundling',
+        name: '🎁 Paket Bundling',
+        products: [],
+      };
+      return [bundlingGroup, favGroup, ...menuGroups];
+    }
     return [favGroup, ...menuGroups];
-  }, [menuGroups, favoriteProducts]);
+  }, [menuGroups, favoriteProducts, recommendedProducts, isKopiKenangan, availableBundlePackages.length, isBundlingOnly]);
 
   // Bottom Sheet state
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedBundleConfig, setSelectedBundleConfig] = useState<BundlePackageConfig | null>(null);
 
   const categoryRefs = useRef<Record<string, HTMLElement | null>>({});
   const isManualClickRef = useRef<boolean>(false);
@@ -111,7 +157,13 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           const groups: MenuGroup[] = menuData.menuGroups || [];
           setMenuGroups(groups);
           if (groups.length > 0) {
-            setActiveCategoryCode(groups[0].code);
+            const allProds = groups.flatMap((g) => g.products || []);
+            const availBundles = getAvailableBundlePackages(allProds);
+            setActiveCategoryCode(
+              isKopiKenangan && isBundlingPromoActive() && availBundles.length > 0
+                ? 'paket-bundling'
+                : 'favorit'
+            );
           }
           setIsLoading(false);
         }
@@ -126,7 +178,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     return () => {
       isCancelled = true;
     };
-  }, [outletCode]);
+  }, [outletCode, isKopiKenangan]);
 
   // Klik chip = lompat instan ke awal bagian kategori (Sprint 2 Item 3.1)
   const handleSelectCategory = (code: string) => {
@@ -227,6 +279,8 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
         currentWibTime={jasdorStatus?.currentWibTime}
         openTime={jasdorStatus?.openTime}
         closeTime={jasdorStatus?.closeTime}
+        dayName={jasdorStatus?.dayName}
+        message={jasdorStatus?.message}
         onRefresh={refetch}
       />
     );
@@ -271,13 +325,13 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           </div>
           <h1 className="font-display text-base font-bold text-[#26150B] mb-1">Outlet Tidak Ditemukan</h1>
           <p className="text-xs text-[#6A584D] max-w-xs mb-5 leading-relaxed">
-            Outlet ini tidak terdaftar atau berada di luar jangkauan layanan Kopi Kenangan kami.
+            Outlet ini tidak terdaftar atau berada di luar jangkauan layanan kami.
           </p>
           <Link
             href={`/${brandSlug}`}
             className="min-h-[44px] px-6 py-2.5 bg-[#26150B] text-[#FBBF24] font-display font-bold text-xs rounded-xl flex items-center justify-center shadow-xs"
           >
-            Cari Outlet Kopi Kenangan
+            Cari Outlet Lainnya
           </Link>
         </div>
       )}
@@ -315,6 +369,26 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
       {/* Content Outlet Menu */}
       {!isLoading && !errorMessage && outlet && (
         <div className="flex-1 flex flex-col">
+          {/* Indikator Dibuka Manual oleh Admin */}
+          {jasdorStatus?.overrideType === 'force_open' && (
+            <div className="mx-4 mt-3 p-2.5 sm:p-3 bg-emerald-50 border border-emerald-400 rounded-2xl flex items-center gap-2.5 text-xs text-emerald-950">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse shrink-0" />
+              <div className="font-medium leading-snug">
+                <strong className="font-bold text-emerald-900">Dibuka manual oleh admin</strong> - Layanan menerima pesanan saat ini.
+              </div>
+            </div>
+          )}
+
+          {/* Banner Status Tentatif Hari Selasa */}
+          {jasdorStatus?.isTentative && (
+            <div className="mx-4 mt-3 p-3 bg-[#FEF3C7] border border-amber-300 rounded-2xl flex items-center gap-2.5 text-xs text-[#2B1D12]">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
+              <div className="font-medium leading-snug">
+                <strong className="font-bold">Info Layanan:</strong> {jasdorStatus.tentativeNote || 'Hari ini tentative - konfirmasi ke admin dulu ya.'}
+              </div>
+            </div>
+          )}
+
           {/* Hero Outlet Info Card (Alamat Lengkap & Jam Operasional - ikut scroll) */}
           <div className="p-4 bg-white border-b border-[#EFE5D8]">
             <p className="text-xs text-[#6A584D] leading-relaxed">
@@ -399,6 +473,19 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
 
           {/* Daftar Produk per Kategori */}
           <div className="p-4 space-y-6 pb-28">
+            {/* Banner Mode Minimal Pembelian 50k */}
+            {isKopiKenangan && isBundlingOnly && (
+              <div
+                role="status"
+                className="p-3.5 bg-[#FFF0C2] border-2 border-[#2B1D12] rounded-2xl shadow-[3px_3px_0px_#2B1D12] flex items-center gap-2.5 text-xs text-[#2B1D12]"
+              >
+                <span className="text-base shrink-0">ℹ️</span>
+                <div className="leading-snug">
+                  <span className="font-bold">Mode Minimal Pembelian Aktif:</span> Pesanan menu reguler minimal Rp50.000 dan maksimal Rp60.000 (harga normal).
+                </div>
+              </div>
+            )}
+
             {displayedGroups.length === 0 ? (
               <div className="p-8 bg-white rounded-3xl border border-[#EFE5D8] text-center">
                 <p className="text-xs text-[#6A584D]">
@@ -407,8 +494,48 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
               </div>
             ) : (
               displayedGroups.map((group) => {
+                if (group.code === 'paket-bundling') {
+                  return (
+                    <section
+                      key={group.code}
+                      id={`cat-${group.code}`}
+                      ref={(el) => {
+                        categoryRefs.current[group.code] = el;
+                      }}
+                      className="space-y-3 scroll-mt-[114px] scroll-mt-[68px]"
+                    >
+                      <div className="flex items-center justify-between pt-1">
+                        <div>
+                          <h2 className="font-display text-sm sm:text-base font-black text-[#2B1D12] tracking-tight flex items-center gap-2">
+                            <span>🎁 Paket Bundling Hemat</span>
+                            <span className="text-[10px] font-black uppercase tracking-wider bg-[#DC2626] text-white px-2 py-0.5 rounded-md border border-[#2B1D12]">
+                              Diskon 50%
+                            </span>
+                          </h2>
+                          <p className="text-xs text-[#7A6658] font-bold mt-0.5">
+                            Bebas pilih isi dari daftar menu favorit. Fee paket hemat menggantikan fee per item!
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-3">
+                        {availableBundlePackages.map((pkg) => (
+                          <BundlePackageCard
+                            key={pkg.id}
+                            config={pkg}
+                            tierDiff={tierDiff}
+                            onSelect={(selectedConfig) => setSelectedBundleConfig(selectedConfig)}
+                            isOutletClosed={isOutletClosed}
+                          />
+                        ))}
+                      </div>
+                    </section>
+                  );
+                }
+
                 const isFavoritSection = group.code === 'favorit';
-                const isFavoritEmpty = isFavoritSection && group.products.length === 0;
+                const isRekomendasi = isFavoritSection && favoriteProducts.length === 0;
+                const isGroupEmpty = group.products.length === 0;
 
                 return (
                   <section
@@ -421,18 +548,16 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                   >
                     <div className="flex items-center justify-between pt-1">
                       <h2 className="font-display text-sm font-black text-[#26150B] tracking-tight">
-                        {isFavoritSection
-                          ? `Favoritku - ${group.products.length} menu`
-                          : group.name}
+                        {group.name}
                       </h2>
-                      {!isFavoritSection && (
+                      {(!isFavoritSection || isRekomendasi) && (
                         <span className="text-[11px] text-[#8C7667] font-semibold">
                           {group.products.length} menu
                         </span>
                       )}
                     </div>
 
-                    {isFavoritEmpty ? (
+                    {isGroupEmpty ? (
                       <div className="p-5 bg-white rounded-2xl border border-dashed border-[#D9C8B5] text-center shadow-2xs">
                         <div className="w-10 h-10 rounded-full bg-[#FFF1F2] text-[#E11D48] flex items-center justify-center mx-auto mb-2">
                           <svg
@@ -449,10 +574,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                           </svg>
                         </div>
                         <p className="text-xs font-bold text-[#26150B] mb-0.5">
-                          Belum ada menu favorit
-                        </p>
-                        <p className="text-[11px] text-[#735F52]">
-                          Ketuk ikon hati untuk menyimpan favoritmu
+                          Belum ada menu yang tersedia
                         </p>
                       </div>
                     ) : (
@@ -477,6 +599,20 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
         </div>
       )}
 
+      {/* Lembar Pemilihan Isi Paket Bundling */}
+      {selectedBundleConfig && outlet && (
+        <BundlePickerBottomSheet
+          config={selectedBundleConfig}
+          liveProducts={allOutletProducts}
+          tierDiff={tierDiff}
+          onClose={() => setSelectedBundleConfig(null)}
+          onAddToCart={(bundleItem) => {
+            cart.addItem(bundleItem, outlet.code, outlet.name);
+            setIsCartDrawerOpen(true);
+          }}
+        />
+      )}
+
       {/* Lembar Detail Produk (Bottom Sheet) */}
       {selectedProduct && outlet && (
         <ProductBottomSheet
@@ -492,7 +628,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
       {cart.totalQuantity > 0 && (
         <FloatingCartBar
           totalQuantity={cart.totalQuantity}
-          subtotal={cart.pricing.subtotal}
+          subtotal={cart.pricing.total}
           onOpenCart={() => setIsCartDrawerOpen(true)}
         />
       )}

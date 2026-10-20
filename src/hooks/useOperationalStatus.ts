@@ -19,7 +19,7 @@ export function useOperationalStatus() {
       if (typeof window !== 'undefined') {
         const urlParams = new URLSearchParams(window.location.search);
         const sim = urlParams.get('simulate');
-        if (sim === 'open' || sim === 'closed') {
+        if (sim === 'open' || sim === 'closed' || sim === 'tentative') {
           simulateParam = `?simulate=${sim}`;
         }
       }
@@ -56,6 +56,9 @@ export function useOperationalStatus() {
   if (!OPERATIONAL_GATE_ENABLED) {
     return {
       isOpen: true,
+      isTentative: false,
+      isManualOpen: false,
+      overrideType: 'auto' as const,
       status: null,
       isLoading: false,
       error: null,
@@ -65,6 +68,9 @@ export function useOperationalStatus() {
 
   return {
     isOpen: status ? status.isOpen : false,
+    isTentative: status ? status.isTentative : false,
+    isManualOpen: status ? !!status.isManualOpen : false,
+    overrideType: status?.overrideType ?? 'auto',
     status,
     isLoading,
     error,

@@ -208,7 +208,30 @@ export async function POST(
     const allProducts = menuGroups.flatMap((g) => g.products || []);
     const unavailableItems: Array<{ name: string; reason: string }> = [];
 
+    const { normalizeProductName } = await import('@/lib/bundling');
+
     for (const item of items) {
+      if ((item as any).isBundle && Array.isArray((item as any).bundleDetails)) {
+        for (const detail of (item as any).bundleDetails) {
+          const normDetail = normalizeProductName(detail.name);
+          const freshProd = allProducts.find(
+            (p) => normalizeProductName(p.name) === normDetail
+          );
+          if (!freshProd) {
+            unavailableItems.push({
+              name: `${detail.name} (isi ${item.name})`,
+              reason: 'Menu tidak tersedia di outlet ini',
+            });
+          } else if (freshProd.isSoldOut) {
+            unavailableItems.push({
+              name: `${freshProd.name} (isi ${item.name})`,
+              reason: 'Stok sedang habis di outlet ini',
+            });
+          }
+        }
+        continue;
+      }
+
       const freshProd = allProducts.find((p) => p.bundleCode === item.bundleCode);
       if (!freshProd) {
         unavailableItems.push({

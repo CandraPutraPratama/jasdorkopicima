@@ -343,6 +343,14 @@ export async function getTotalOutletsCount(brand?: string): Promise<number> {
 }
 
 /**
+ * Meng-escape karakter wildcard SQL (% dan _) serta backslash (\)
+ * agar input pengguna tidak dapat digunakan untuk query wildcard.
+ */
+export function escapeSqlWildcards(str: string): string {
+  return (str || '').replace(/[%_\\]/g, (match) => `\\${match}`);
+}
+
+/**
  * Mengambil satu outlet berdasarkan kodenya (mendukung Fore Coffee & Kopi Kenangan).
  */
 export async function getOutletByCode(code: string): Promise<Outlet | null> {
@@ -353,10 +361,11 @@ export async function getOutletByCode(code: string): Promise<Outlet | null> {
 
   try {
     const supabase = getSupabaseServerClient();
+    const sanitizedCode = escapeSqlWildcards(trimmedCode);
     const { data, error } = await supabase
       .from('outlets')
       .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand')
-      .ilike('code', trimmedCode)
+      .ilike('code', sanitizedCode)
       .maybeSingle();
 
     if (!error && data) {
@@ -433,10 +442,11 @@ export async function verifyStoreScope(code: string, rawStore?: any): Promise<bo
 
   try {
     const supabase = getSupabaseServerClient();
+    const sanitizedCode = escapeSqlWildcards(upperCode);
     const queryPromise = supabase
       .from('outlets')
       .select('is_in_scope')
-      .ilike('code', upperCode)
+      .ilike('code', sanitizedCode)
       .maybeSingle();
 
     let timer: any;

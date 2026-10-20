@@ -15,6 +15,20 @@ export interface CartItem {
   variantDescription?: string;
   addons?: Addon[];
   notes?: string;
+  // Properti khusus paket bundling
+  isBundle?: boolean;
+  bundleType?: string;
+  bundleFee?: number;
+  bundleNormalPrice?: number;
+  bundleDetails?: Array<{
+    name: string;
+    category?: 'drink' | 'food';
+    variantDescription?: string;
+    liveBasePrice?: number;
+    normalPrice?: number;
+    promoPrice?: number;
+    notes?: string;
+  }>;
 }
 
 export interface CartState {
@@ -35,6 +49,12 @@ export type CartAction =
  * Item dengan produk, SKU, varian, topping, dan catatan yang sama persis akan memiliki hash yang sama.
  */
 export function generateCartItemId(item: Omit<CartItem, 'id'>): string {
+  if (item.isBundle) {
+    const detailsHash = (item.bundleDetails || [])
+      .map((d) => `${d.name}_${d.variantDescription || ''}`)
+      .join('|');
+    return `bundle_${item.bundleType || 'pkg'}_${detailsHash}`;
+  }
   const sortedAddons = (item.addons || [])
     .map((a) => a.sku)
     .sort()

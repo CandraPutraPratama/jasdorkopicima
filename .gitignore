@@ -53,3 +53,7 @@ scripts/*.json
 
 # codegraph index
 .codegraph/
+
+*.zip
+.opencode/
+supabase/.temp/

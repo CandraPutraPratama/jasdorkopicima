@@ -5,9 +5,17 @@ import { isOutletClosed } from '@/lib/orderability';
 import { verifyStoreScope } from '@/lib/outlet-service';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import { validateCustomerName, validateCustomerPhone } from '@/lib/sanitizer';
-import { getJasdorOperationalStatus } from '@/lib/operational';
+import { getEffectiveJasdorOperationalStatus } from '@/lib/operational';
 import { OPERATIONAL_GATE_ENABLED } from '@/lib/feature-flags';
-import { createOrderRecord, saveOrderToDb } from '@/lib/order-service';
+import {
+  createOrderRecord,
+  saveOrderToDb,
+  calculateServerOrderPricing,
+  validateRegularOrderSubtotal,
+} from '@/lib/order-service';
+import { getMinOrder50kMode, getOperationalOverride } from '@/lib/site-settings';
+import { validateAndSanitizePickupTime } from '@/lib/schedule-slots';
+import { resolveBrandSlugFromOutletCode } from '@/lib/site-config';
 import type { CartItem } from '@/lib/cart-reducer';
 
 export async function POST(request: NextRequest) {
@@ -67,9 +75,7 @@ export async function POST(request: NextRequest) {
   }
 
   const {
-    brandSlug = 'kopi-kenangan',
     outletCode,
-    outletName = '',
     customerName,
     customerWa,
     items,
@@ -79,6 +85,15 @@ export async function POST(request: NextRequest) {
 
   if (!outletCode || typeof outletCode !== 'string') {
     return NextResponse.json({ error: 'Kode outlet wajib disertakan' }, { status: 400 });
+  }
+
+  // Validasi brandSlug terhadap outlet hasil deteksi server
+  const serverBrandSlug = resolveBrandSlugFromOutletCode(outletCode);
+  if (body.brandSlug && body.brandSlug !== serverBrandSlug) {
+    return NextResponse.json(
+      { error: 'Brand yang dipilih tidak sesuai dengan outlet' },
+      { status: 400 }
+    );
   }
 
   const nameVal = validateCustomerName(customerName);
@@ -111,13 +126,30 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Validasi kuantitas tiap item di server: integer 1 sampai 99
+  for (const item of items) {
+    if (
+      typeof item.quantity !== 'number' ||
+      !Number.isInteger(item.quantity) ||
+      item.quantity < 1 ||
+      item.quantity > 99
+    ) {
+      return NextResponse.json(
+        { error: 'Jumlah pesanan tiap menu harus berupa angka bulat antara 1 sampai 99' },
+        { status: 400 }
+      );
+    }
+  }
+
   // 4. Periksa jam operasional Jasdor (jika feature flag aktif)
   if (OPERATIONAL_GATE_ENABLED) {
-    const jasdorStatus = getJasdorOperationalStatus();
+    const override = await getOperationalOverride();
+    const jasdorStatus = getEffectiveJasdorOperationalStatus(new Date(), override);
     if (!jasdorStatus.isOpen) {
       return NextResponse.json(
         {
           error:
+            jasdorStatus.message ||
             'Layanan Jasdor saat ini sedang di luar jam operasional. Silakan pesan kembali saat jam operasional buka.',
           isJasdorClosed: true,
         },
@@ -127,7 +159,7 @@ export async function POST(request: NextRequest) {
   }
 
   // 5. Penanganan khusus brand Fore Coffee
-  if (outletCode.toLowerCase().startsWith('fore-') || brandSlug === 'fore') {
+  if (serverBrandSlug === 'fore' || outletCode.toLowerCase().startsWith('fore-')) {
     try {
       const { getOutletByCode } = await import('@/lib/outlet-service');
       const { getForeMenuForOutlet } = await import('@/lib/fore-menu-data');
@@ -177,14 +209,27 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      // Validasi & sanitasi waktu pengambilan (pickupTime)
+      const pickupVal = validateAndSanitizePickupTime({
+        pickupTime,
+        outletOpen: storeObj.openTime,
+        outletClose: storeObj.closeTime,
+      });
+      if (!pickupVal.isValid) {
+        return NextResponse.json(
+          { error: pickupVal.errorMessage || 'Waktu pengambilan tidak valid' },
+          { status: 400 }
+        );
+      }
+
       const orderRecord = createOrderRecord({
         brandSlug: 'fore',
         outletCode,
-        outletName: outletName || storeObj.name || outletCode,
+        outletName: storeObj.name || outletCode,
         customerName: nameVal.sanitized,
         customerWa: phoneVal.sanitized,
         items,
-        pickupTime,
+        pickupTime: pickupVal.sanitized,
         notes,
       });
 
@@ -200,7 +245,7 @@ export async function POST(request: NextRequest) {
       console.error('[CreateOrder Fore] Kesalahan saat memproses pesanan:', err);
       return NextResponse.json(
         {
-          error: err.message || 'Terjadi kesalahan sistem saat membuat pesanan Fore.',
+          error: 'Terjadi kendala sistem saat memproses pesanan Fore. Silakan coba beberapa saat lagi.',
         },
         { status: 500 }
       );
@@ -246,13 +291,91 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 6. Validasi ketersediaan menu fresh dari outlet
+    // 6. Validasi ketersediaan menu fresh dari outlet & bundling
     const rawMenu = await kkApiClient.queryProductMenu(outletCode);
     const menuGroups = normalizeMenu(rawMenu);
     const allProducts = menuGroups.flatMap((g) => g.products || []);
     const unavailableItems: Array<{ name: string; reason: string }> = [];
 
+    const {
+      validateBundleSelection,
+      calculateBundlePricing,
+      normalizeProductName,
+      BUNDLE_PACKAGES,
+      isBundleAvailableAtOutlet,
+      getOutletTierDiff,
+    } = await import('@/lib/bundling');
+
+    const tierDiff = getOutletTierDiff(allProducts);
+
     for (const item of items) {
+      if (item.isBundle) {
+        const bundleType = item.bundleType as any;
+        if (!bundleType || !BUNDLE_PACKAGES[bundleType as keyof typeof BUNDLE_PACKAGES]) {
+          return NextResponse.json(
+            { error: `Tipe paket bundling tidak valid: ${item.bundleType}` },
+            { status: 400 }
+          );
+        }
+
+        if (!isBundleAvailableAtOutlet(bundleType, allProducts)) {
+          return NextResponse.json(
+            { error: `Paket ${BUNDLE_PACKAGES[bundleType as keyof typeof BUNDLE_PACKAGES].name} tidak tersedia di outlet ini karena pilihan menu tidak mencukupi` },
+            { status: 400 }
+          );
+        }
+
+        const details = item.bundleDetails || [];
+
+        // Cek stok & sinkronkan live base price untuk tiap item di bundle terlebih dahulu
+        for (const detail of details) {
+          const normDetail = normalizeProductName(detail.name);
+          const freshProd = allProducts.find(
+            (p) => normalizeProductName(p.name) === normDetail
+          );
+
+          if (!freshProd) {
+            unavailableItems.push({
+              name: `${detail.name} (isi ${item.name})`,
+              reason: 'Menu tidak tersedia di outlet ini',
+            });
+          } else if (freshProd.isSoldOut) {
+            unavailableItems.push({
+              name: `${freshProd.name} (isi ${item.name})`,
+              reason: 'Stok sedang habis di outlet ini',
+            });
+          } else if (freshProd.basePrice && freshProd.basePrice > 0) {
+            detail.liveBasePrice = freshProd.basePrice;
+          }
+        }
+
+        // Validasi pemilihan slot paket bundling dengan tierDiff outlet
+        const validation = validateBundleSelection(bundleType, details as any, tierDiff);
+        if (!validation.isValid) {
+          return NextResponse.json(
+            { error: validation.error || 'Konfigurasi paket bundling tidak valid' },
+            { status: 400 }
+          );
+        }
+
+        // Hitung ulang harga murni server dengan tierDiff outlet
+        const bundlePricing = calculateBundlePricing(bundleType, details as any, tierDiff);
+        item.bundleNormalPrice = bundlePricing.normalPrice;
+        item.basePrice = bundlePricing.normalPrice;
+        item.bundleFee = bundlePricing.bundleFee;
+
+        // Sinkronkan breakdown harga tier per item detail
+        for (let i = 0; i < details.length; i++) {
+          const breakdown = bundlePricing.itemBreakdown[i];
+          if (breakdown) {
+            details[i].normalPrice = breakdown.normalPrice;
+            details[i].promoPrice = breakdown.promoPrice;
+          }
+        }
+        continue;
+      }
+
+      // Validasi item reguler non-bundling
       const freshProd = allProducts.find((p) => p.bundleCode === item.bundleCode);
       if (!freshProd) {
         unavailableItems.push({
@@ -277,15 +400,49 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 7. Kalkulasi harga murni server dan simpan ke Supabase
+    // 7. Validasi mode minimal pembelian 50k (jika aktif)
+    const isMinOrderMode = await getMinOrder50kMode();
+    if (isMinOrderMode) {
+      const serverPricing = calculateServerOrderPricing(items);
+      const subtotalValidation = validateRegularOrderSubtotal({
+        regularQuantity: serverPricing.regularQuantity,
+        regularNormalSubtotal: serverPricing.regularNormalSubtotal,
+        isMinOrderMode,
+      });
+
+      if (!subtotalValidation.isValid) {
+        return NextResponse.json(
+          {
+            error: subtotalValidation.error,
+            regularNormalSubtotal: serverPricing.regularNormalSubtotal,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Validasi & sanitasi waktu pengambilan (pickupTime)
+    const pickupVal = validateAndSanitizePickupTime({
+      pickupTime,
+      outletOpen: storeObj.openTime,
+      outletClose: storeObj.closeTime,
+    });
+    if (!pickupVal.isValid) {
+      return NextResponse.json(
+        { error: pickupVal.errorMessage || 'Waktu pengambilan tidak valid' },
+        { status: 400 }
+      );
+    }
+
+    // 8. Kalkulasi harga murni server dan simpan ke Supabase
     const orderRecord = createOrderRecord({
-      brandSlug,
+      brandSlug: serverBrandSlug,
       outletCode,
-      outletName: outletName || storeObj.name || outletCode,
+      outletName: storeObj.name || outletCode,
       customerName: nameVal.sanitized,
       customerWa: phoneVal.sanitized,
       items,
-      pickupTime,
+      pickupTime: pickupVal.sanitized,
       notes,
     });
 
@@ -301,7 +458,7 @@ export async function POST(request: NextRequest) {
     console.error('[CreateOrder] Kesalahan saat memproses pesanan:', err);
     return NextResponse.json(
       {
-        error: err.message || 'Terjadi kesalahan sistem saat membuat pesanan.',
+        error: 'Terjadi kendala sistem saat membuat pesanan. Silakan coba beberapa saat lagi.',
       },
       { status: 500 }
     );

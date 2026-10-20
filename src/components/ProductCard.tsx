@@ -38,14 +38,14 @@ export function ProductCard({
           onSelectProduct(product);
         }
       }}
-      className={`p-3.5 bg-white border rounded-2xl flex gap-3 transition shadow-xs relative ${
+      className={`p-3.5 rounded-2xl flex gap-3 transition relative ${
         isSoldOut
-          ? 'border-[#EFE5D8]/60 bg-[#FAF7F2]/60 opacity-65 cursor-not-allowed'
-          : 'border-[#EFE5D8] hover:border-[#D9A74A]/60 hover:shadow-md cursor-pointer active:scale-[0.99]'
+          ? 'border-2 border-dashed border-[#2B1D12]/30 bg-[#FAF4E8]/60 opacity-65 cursor-not-allowed'
+          : 'bg-[#FFFDF9] border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#2B1D12] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer'
       }`}
     >
       {/* Gambar Produk */}
-      <div className="relative w-22 h-22 bg-[#F4EDE3] rounded-2xl overflow-hidden shrink-0 border border-[#EAE0D3]">
+      <div className="relative w-22 h-22 bg-[#FAF4E8] rounded-xl overflow-hidden shrink-0 border-2 border-[#2B1D12]">
         {product.image ? (
           <Image
             src={product.image}
@@ -56,7 +56,7 @@ export function ProductCard({
             className={`object-cover ${isSoldOut ? 'grayscale' : ''}`}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-[#BFAFA0]">
+          <div className="w-full h-full flex items-center justify-center text-[#7A6658]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-8 w-8"
@@ -75,8 +75,8 @@ export function ProductCard({
         )}
 
         {isSoldOut && (
-          <div className="absolute inset-0 bg-[#26150B]/60 flex items-center justify-center">
-            <span className="px-2 py-0.5 bg-[#4A3225] text-white text-[10px] font-bold rounded-md uppercase tracking-wider">
+          <div className="absolute inset-0 bg-[#2B1D12]/70 flex items-center justify-center">
+            <span className="px-2 py-0.5 bg-[#DC2626] text-white text-[10px] font-black rounded-md uppercase tracking-wider border border-white">
               Habis
             </span>
           </div>
@@ -87,13 +87,13 @@ export function ProductCard({
       <div className="flex-1 flex flex-col justify-between min-w-0">
         <div>
           <div className="flex items-start justify-between gap-1.5">
-            <h4 className="font-display text-sm font-bold text-[#26150B] leading-snug line-clamp-1 pr-1">
+            <h4 className="font-display text-sm font-black text-[#2B1D12] leading-snug line-clamp-1 pr-1">
               {product.name}
             </h4>
 
             <div className="flex items-center gap-1 shrink-0">
               {isSoldOut && (
-                <span className="text-[10px] font-bold text-[#735F52] px-1.5 py-0.2 bg-[#F2EAE0] border border-[#E3D6C5] rounded">
+                <span className="text-[10px] font-black text-[#7A6658] px-1.5 py-0.2 bg-[#FAF4E8] border border-[#2B1D12]/30 rounded">
                   Habis
                 </span>
               )}
@@ -110,15 +110,15 @@ export function ProductCard({
                     ? `Hapus ${product.name} dari favorit`
                     : `Simpan ${product.name} ke favorit`
                 }
-                className="p-1 -mr-1 -mt-0.5 text-[#8C7667] hover:text-[#E11D48] active:scale-90 transition rounded-full z-10"
+                className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-white hover:bg-[#FFF8E7] border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] flex items-center justify-center transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none z-10 shrink-0"
               >
                 <svg
-                  className={`w-4 h-4 transition-colors ${
+                  className={`w-4.5 h-4.5 transition-colors ${
                     isFavorite
-                      ? 'fill-[#E11D48] text-[#E11D48]'
-                      : 'fill-none stroke-current hover:stroke-[#E11D48]'
+                      ? 'fill-[#DC2626] text-[#DC2626] stroke-[#DC2626]'
+                      : 'fill-none stroke-[#2B1D12] hover:stroke-[#DC2626]'
                   }`}
-                  strokeWidth={2}
+                  strokeWidth={2.4}
                   viewBox="0 0 24 24"
                 >
                   <path
@@ -132,14 +132,14 @@ export function ProductCard({
           </div>
 
           {product.description && (
-            <p className="text-[11px] text-[#6A584D] line-clamp-2 mt-0.5 leading-relaxed">
+            <p className="text-[11px] text-[#4A3628] font-medium line-clamp-2 mt-0.5 leading-relaxed">
               {product.description}
             </p>
           )}
         </div>
 
         {/* Baris Harga Promo Punch & Tombol Plus */}
-        <div className="mt-2 pt-2 border-t border-[#F2EAE0] flex items-center justify-between gap-2">
+        <div className="mt-2 pt-2 border-t-2 border-[#2B1D12]/10 flex items-center justify-between gap-2">
           <div className="flex flex-col min-w-0">
             <div className="flex items-baseline gap-1.5 flex-wrap">
               {/* 1. Harga Promo (Punch Merah) */}
@@ -147,22 +147,22 @@ export function ProductCard({
                 {formatRupiah(pricing.promoPricePerItem)}
               </span>
               {/* 2. Harga Asli Dicoret */}
-              <span className="text-[11px] text-[#9C897B] line-through font-medium">
+              <span className="text-[11px] text-[#7A6658] line-through font-bold">
                 {formatRupiah(pricing.originalPricePerItem)}
               </span>
               {/* 3. Badge Diskon 50% (Punch Merah) */}
-              <span className="text-[9px] font-extrabold text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] px-1 py-0.2 rounded">
+              <span className="text-[9px] font-black text-[#DC2626] bg-[#FEF2F2] border border-[#DC2626] px-1 py-0.2 rounded">
                 -50%
               </span>
             </div>
 
             {/* 4. Keterangan Fee Jasa */}
-            <span className="text-[10px] font-medium text-[#735F52] mt-0.5">
+            <span className="text-[10px] font-bold text-[#4A3628] mt-0.5">
               fee {feeDescription}
             </span>
           </div>
 
-          {/* 5. Tombol Lingkaran Plus (Kanan Bawah) - dinonaktifkan jika outlet tutup */}
+          {/* 5. Tombol Plus (Kanan Bawah) - dinonaktifkan jika outlet tutup, proporsional dengan tombol love (min 40px) */}
           {!isSoldOut && (
             isOutletClosed ? (
               <button
@@ -170,10 +170,10 @@ export function ProductCard({
                 disabled
                 aria-label={`Outlet tutup - ${product.name} tidak dapat dipesan`}
                 title="Outlet sedang tutup - tidak dapat dipesan"
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#E5DACB] text-[#8C7667] flex items-center justify-center cursor-not-allowed opacity-75 shrink-0"
+                className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-[#FAF4E8] text-[#7A6658] border-2 border-[#2B1D12]/20 flex items-center justify-center cursor-not-allowed opacity-75 shrink-0"
               >
                 <svg
-                  className="w-4 h-4 stroke-[#8C7667]"
+                  className="w-4.5 h-4.5 stroke-[#7A6658]"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={2.5}
@@ -191,13 +191,13 @@ export function ProductCard({
                   onSelectProduct(product);
                 }}
                 aria-label={`Tambah dan kustomisasi ${product.name}`}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white flex items-center justify-center shadow-xs transition active:scale-90 shrink-0"
+                className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-[#15803D] hover:bg-[#166534] text-white flex items-center justify-center border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none shrink-0"
               >
                 <svg
-                  className="w-4 h-4 stroke-white"
+                  className="w-4.5 h-4.5 stroke-white"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth={2.8}
+                  strokeWidth={3}
                   stroke="currentColor"
                   aria-hidden="true"
                 >

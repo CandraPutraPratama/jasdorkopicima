@@ -6,6 +6,8 @@ interface ClosedScreenProps {
   currentWibTime?: string;
   openTime?: string;
   closeTime?: string;
+  dayName?: string;
+  message?: string;
   onRefresh?: () => void;
 }
 
@@ -13,6 +15,8 @@ export function ClosedScreen({
   currentWibTime,
   openTime = '08:00',
   closeTime = '23:20',
+  dayName,
+  message,
   onRefresh,
 }: ClosedScreenProps) {
   return (
@@ -33,7 +37,7 @@ export function ClosedScreen({
           jasdorkopicima
         </h1>
         <p className="text-xs uppercase tracking-widest text-[#A66908] font-bold mt-1">
-          Layanan Jasa Order Kopi Kenangan
+          Layanan Jasa Order Hemat
         </p>
       </div>
 
@@ -60,18 +64,29 @@ export function ClosedScreen({
           Jasdor Sedang Tutup
         </h2>
         <p className="text-xs text-[#6A584D] leading-relaxed mb-4">
-          Kami sedang beristirahat. Pemesanan jasa order hanya dapat diproses pada jam operasional.
+          {message || 'Kami sedang beristirahat. Pemesanan jasa order hanya dapat diproses pada jam operasional.'}
         </p>
 
         {/* Operating Hours Box */}
-        <div className="bg-[#FAF5EE] rounded-2xl p-3.5 border border-[#EFE5D8] text-sm">
-          <div className="text-xs text-[#735F52] font-semibold">Jam Operasional:</div>
-          <div className="font-display text-base font-bold text-[#26150B] mt-0.5">
-            {openTime.replace(':', '.')} - {closeTime.replace(':', '.')} WIB
+        <div className="bg-[#FAF5EE] rounded-2xl p-3.5 border border-[#EFE5D8] text-sm space-y-1.5 text-left">
+          <div className="text-xs text-[#735F52] font-semibold text-center">Jadwal Layanan Jasdor:</div>
+          <div className="pt-1 border-t border-[#EFE5D8]/80 space-y-1">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-bold text-[#26150B]">Jumat, Sabtu, Minggu</span>
+              <span className="text-[#A66908] font-bold">{openTime.replace(':', '.')} - {closeTime.replace(':', '.')} WIB</span>
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-medium text-[#26150B]">Selasa</span>
+              <span className="text-amber-800 text-[11px] font-semibold bg-amber-100/70 px-1.5 py-0.5 rounded">Tentatif</span>
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-medium text-[#735F52]">Senin, Rabu, Kamis</span>
+              <span className="text-[#8C7667] text-[11px]">Libur</span>
+            </div>
           </div>
           {currentWibTime && (
-            <div className="text-[11px] text-[#8C7667] mt-1">
-              Waktu server: {currentWibTime.replace(':', '.')} WIB
+            <div className="text-[11px] text-[#8C7667] pt-1.5 border-t border-[#EFE5D8]/80 text-center">
+              Waktu server: {currentWibTime.replace(':', '.')} WIB {dayName ? `(${dayName})` : ''}
             </div>
           )}
         </div>

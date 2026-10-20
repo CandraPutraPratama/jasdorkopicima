@@ -12,7 +12,9 @@
   },
   "vars": {
     "IMAGE_SOURCE": "r2",
-    "NEXT_PUBLIC_CF_ANALYTICS_TOKEN": "e2df28ebcd454d6ca4f467570d8e7f60"
+    "NEXT_PUBLIC_CF_ANALYTICS_TOKEN": "e2df28ebcd454d6ca4f467570d8e7f60",
+    "NEXT_PUBLIC_OPERATIONAL_GATE_ENABLED": "true",
+    "NEXT_PUBLIC_BUNDLING_ONLY_MODE": "false"
   },
   "routes": [
     {

@@ -26,7 +26,7 @@ test('getBrandConfig returns coming_soon status for tomoro', () => {
   assert.equal(brand?.name, 'Tomoro Coffee');
   assert.equal(brand?.status, 'coming_soon');
   assert.equal(brand?.promoBadge, 'Segera Hadir');
-  assert.equal(brand?.logo, undefined);
+  assert.equal(brand?.logo, '/brand-logos/tomoro-coffee-logo.webp');
   // Aturan koreksi user: jangan tampilkan teks "0 outlet" untuk brand segera hadir
   assert.equal(brand?.outletCountLabel, undefined);
 });
@@ -113,3 +113,22 @@ test('Fore menu and airport pricing tier override verification', async () => {
     }
   }
 });
+
+test('Kopi Kenangan hero displays Informasi Biaya Jasa box directly above KopiKenanganWifiBox', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const pageContent = fs.readFileSync(path.resolve('src/app/[brandSlug]/page.tsx'), 'utf-8');
+
+  // Harus memuat judul dan isi persis seperti yang diminta user
+  assert.ok(pageContent.includes('Informasi Biaya Jasa'));
+  assert.ok(pageContent.includes('- Biaya Jasa jika order hanya 1 menu = 4.000/menu'));
+  assert.ok(pageContent.includes('- Biaya Jasa jika order minimal 2 menu dst = 2.000/item'));
+
+  // Posisi harus tepat DI ATAS KopiKenanganWifiBox
+  const feeBoxIndex = pageContent.indexOf('Informasi Biaya Jasa');
+  const wifiBoxIndex = pageContent.indexOf('<KopiKenanganWifiBox />');
+  assert.ok(feeBoxIndex > 0, 'Info Biaya Jasa harus ada di file');
+  assert.ok(wifiBoxIndex > 0, 'KopiKenanganWifiBox harus ada di file');
+  assert.ok(feeBoxIndex < wifiBoxIndex, 'Info Biaya Jasa harus berada di atas KopiKenanganWifiBox');
+});
+

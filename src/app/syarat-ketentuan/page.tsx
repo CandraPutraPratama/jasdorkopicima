@@ -12,7 +12,7 @@ import {
 export const metadata: Metadata = {
   title: 'Syarat & Ketentuan - Aturan Layanan Jasa Order',
   description:
-    'Syarat dan ketentuan penggunaan layanan jasa order Kopi Kenangan Jasdor: alur pemesanan, pembayaran, garansi refund, dan batas tanggung jawab layanan.',
+    'Syarat dan ketentuan penggunaan layanan jasa order Jasdor: alur pemesanan, pembayaran, garansi refund, dan batas tanggung jawab layanan multi-brand.',
 };
 
 export default function TermsPage() {
@@ -43,7 +43,7 @@ export default function TermsPage() {
               Syarat & Ketentuan Jasdor
             </h1>
             <p className="text-xs text-[#E3D6C5] mt-1.5 leading-relaxed">
-              Harap membaca aturan berikut sebelum melakukan pemesanan jasa order Kopi Kenangan promo setengah harga.
+              Harap membaca aturan berikut sebelum melakukan pemesanan jasa order promo hemat melalui Jasdor.
             </p>
           </div>
         </div>
@@ -60,10 +60,10 @@ export default function TermsPage() {
           </div>
           <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
             <p>
-              1.1. <strong>Jasdor</strong> ({SITE_CONFIG.brandName}) adalah penyedia <strong>layanan jasa order</strong> yang membantu pelanggan memesan menu makanan dan minuman Kopi Kenangan dengan skema potongan promo 50% untuk harga dasar minuman.
+              1.1. <strong>Jasdor</strong> ({SITE_CONFIG.brandName}) adalah penyedia <strong>layanan jasa order</strong> yang membantu pelanggan memesan menu makanan dan minuman dari berbagai brand gerai resmi (seperti Kopi Kenangan, Fore Coffee, dan brand lainnya) dengan skema potongan promo hemat sesuai ketentuan masing-masing brand.
             </p>
             <p>
-              1.2. Jasdor <strong>bukan merupakan perwakilan, mitra resmi, karyawan, atau cabang resmi dari PT Bumi Berkah Boga (Kopi Kenangan)</strong>. Semua transaksi adalah murni kesepakatan jasa order antara pelanggan dan Jasdor.
+              1.2. Semua transaksi merupakan kesepakatan jasa order antara pelanggan dan Jasdor.
             </p>
           </div>
         </section>
@@ -83,7 +83,7 @@ export default function TermsPage() {
               2.1. <strong>Jadwal Operasional</strong>: {JADWAL_OPERASIONAL_LENGKAP}. Pemesanan pada hari libur (Senin, Rabu, Kamis) atau di luar jam tersebut akan diproses pada sesi layanan berikutnya.
             </p>
             <p>
-              2.2. Pelanggan wajib memilih outlet Kopi Kenangan yang berstatus <strong>Buka</strong> pada katalog website.
+              2.2. Pelanggan wajib memilih brand dan outlet yang berstatus <strong>Buka</strong> pada katalog website.
             </p>
             <p>
               2.3. Pelanggan wajib mengisi nama pemesan yang valid (maksimal 40 karakter) dan memilih opsi waktu pickup (sekarang atau slot 15 menit).
@@ -106,7 +106,7 @@ export default function TermsPage() {
           </div>
           <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
             <p>
-              3.1. Promo potongan 50% berlaku khusus pada <strong>harga dasar minuman</strong> Kopi Kenangan. Tambahan ukuran cup, varian susu (Oatside), biji kopi (Juwara Beans), dan addon (topping) dikenakan biaya tambahan transparan sesuai rincian di katalog.
+              3.1. Ketentuan promo potongan harga berlaku sesuai skema masing-masing brand (seperti diskon 50% untuk harga dasar minuman Kopi Kenangan atau promo hemat Fore Coffee). Tambahan ukuran cup, opsi susu, beans khusus, dan addon (topping) dikenakan biaya tambahan transparan sesuai rincian di katalog.
             </p>
             <p>
               3.2. <strong>Biaya Jasa Order</strong>:
@@ -160,7 +160,7 @@ export default function TermsPage() {
           </div>
           <div className="text-xs text-[#4A3525] leading-relaxed space-y-2 pl-8 pt-1">
             <p>
-              5.1. Jasdor bertindak sebagai perantara pemesanan (jasa order). Kualitas bahan baku, rasa, temperatur minuman, dan penyajian sepenuhnya merupakan standar operasional gerai resmi Kopi Kenangan.
+              5.1. Jasdor bertindak sebagai perantara pemesanan (jasa order). Kualitas bahan baku, rasa, temperatur minuman, dan penyajian sepenuhnya merupakan standar operasional gerai resmi brand yang dipesan.
             </p>
             <p>
               5.2. Pelanggan bertanggung jawab untuk mengambil pesanan di outlet sesuai dengan jadwal dan nama pemesan yang telah didaftarkan.

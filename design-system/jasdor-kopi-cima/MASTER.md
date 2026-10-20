@@ -1,14 +1,15 @@
-# Design System Master File
+# Design System Master File — Jasdor Kopi Cima
 
-> **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.
-> If that file exists, its rules **override** this Master file.
-> If not, strictly follow the rules below.
+> **DNA Visual:** Komik Doodle Stiker (Gaya Tahilalats / Mindblowon)
+> Selaras dengan karakter maskot JasdorKopiCima (pria ceria + kucing oranye kacamata hitam).
+> Setiap card, button, dan pill memiliki outline tegas dan hard offset shadow ala stiker komik pop.
 
 ---
 
 **Project:** Jasdor Kopi Cima
-**Generated:** 2026-10-15 01:01:06
-**Category:** Food Delivery / On-Demand
+**Generated / Updated:** 2026-10-17
+**Style:** Comic Doodle / Pop Sticker (Tahilalats Inspired)
+**Category:** Food Delivery / On-Demand Service
 
 ---
 
@@ -16,199 +17,100 @@
 
 ### Color Palette
 
-| Role | Hex | CSS Variable |
-|------|-----|--------------|
-| Primary | `#EA580C` | `--color-primary` |
-| On Primary | `#000000` | `--color-on-primary` |
-| Secondary | `#F97316` | `--color-secondary` |
-| On Secondary | `#000000` | `--color-on-secondary` |
-| Accent/CTA | `#2563EB` | `--color-accent` |
-| On Accent/CTA | `#FFFFFF` | `--color-on-accent` |
-| Background | `#FFF7ED` | `--color-background` |
-| Foreground | `#0F172A` | `--color-foreground` |
-| Card | `#FFFFFF` | `--color-card` |
-| Card Foreground | `#0F172A` | `--color-card-foreground` |
-| Muted | `#FDF4F0` | `--color-muted` |
-| Muted Foreground | `#475569` | `--color-muted-foreground` |
-| Border | `#FCEAE1` | `--color-border` |
-| Destructive | `#DC2626` | `--color-destructive` |
-| On Destructive | `#FFFFFF` | `--color-on-destructive` |
-| Ring | `#EA580C` | `--color-ring` |
+| Role | Hex | Tailwind Token | Catatan |
+|------|-----|----------------|---------|
+| Background Kertas | `#FAF4E8` | `bg-comic-paper` / `bg-[#FAF4E8]` | Warna dasar halaman ala kertas komik |
+| Ink / Outline / Text | `#2B1D12` | `text-[#2B1D12]` / `border-[#2B1D12]` | Garis outline tebal 2px & teks utama |
+| Ink Secondary | `#4A3628` | `text-[#4A3628]` | Teks sekunder / keterangan |
+| Ink Muted | `#7A6658` | `text-[#7A6658]` | Teks bantuan / placeholder |
+| Card Surface | `#FFFDF9` | `bg-[#FFFDF9]` | Warna latar kartu dengan kontras tinggi |
+| Primary Accent | `#C67D0A` | `bg-[#C67D0A]` | Karamel hangat kopi Jasdor |
+| Accent Hover | `#A66504` | `hover:bg-[#A66504]` | Hover karamel |
+| Promo & Diskon | `#DC2626` | `text-[#DC2626]` / `bg-[#DC2626]` | Merah promo diskon 50% |
+| Promo Bg/Tint | `#FEF2F2` | `bg-[#FEF2F2]` | Background badge promo |
+| WhatsApp Hijau | `#15803D` | `bg-[#15803D]` | Tombol resmi checkout WhatsApp |
+| WhatsApp Hover | `#166534` | `hover:bg-[#166534]` | Hover tombol WhatsApp |
 
-**Color Notes:** Appetizing orange + trust blue
+### Badge Kategori Pastel (Border 2px Ink)
+
+| Kategori | Background | Text & Border |
+|----------|------------|---------------|
+| Peach | `#FFE7D6` | `#2B1D12` |
+| Mint | `#D9F3EA` | `#2B1D12` |
+| Sky | `#DDF0FF` | `#2B1D12` |
+| Butter | `#FFF0C2` | `#2B1D12` |
+| Lavender | `#EFE4FF` | `#2B1D12` |
+
+---
 
 ### Typography
 
-- **Heading Font:** Playfair Display SC
-- **Body Font:** Karla
-- **Mood:** restaurant, menu, culinary, elegant, foodie, hospitality
-- **Google Fonts:** [Playfair Display SC + Karla](https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700&family=Playfair+Display+SC:wght@400;700&display=swap)
+- **Display Font:** Baloo 2 (`--font-baloo`, cursive/rounded bold) — Menggantikan Outfit untuk judul, angka, headline, dan nama brand.
+- **Body Font:** Plus Jakarta Sans (`--font-jakarta`, clean sans-serif) — Keterangan, copy penjelasan, harga, dan input.
+- **Hierarchy:**
+  - H1 / Hero: 22px - 28px, Baloo 2 font-black, leading-tight
+  - H2 / Section: 18px - 22px, Baloo 2 font-extrabold
+  - H3 / Card Title: 15px - 17px, Baloo 2 font-bold
+  - Body: 13px - 14px, Plus Jakarta Sans font-medium
+  - Caption / Badges: 10px - 12px, font-bold uppercase tracking-wider
 
-**CSS Import:**
+---
+
+### Comic Hard Shadow Tokens
+
+Gaya stiker komik Tahilalats menggunakan **hard offset shadow** (tanpa blur, solid ink `#2B1D12`):
+
 ```css
-@import url('https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700&family=Playfair+Display+SC:wght@400;700&display=swap');
+/* Card Pop Shadow */
+box-shadow: 4px 4px 0px #2B1D12;
+
+/* Button Pop Shadow */
+box-shadow: 3px 3px 0px #2B1D12;
+
+/* Small Tag / Pill Pop Shadow */
+box-shadow: 2px 2px 0px #2B1D12;
+
+/* Active / Pressed State */
+transform: translate(2px, 2px);
+box-shadow: 0px 0px 0px #2B1D12;
 ```
-
-### Spacing Variables
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--space-xs` | `4px` / `0.25rem` | Tight gaps |
-| `--space-sm` | `8px` / `0.5rem` | Icon gaps, inline spacing |
-| `--space-md` | `16px` / `1rem` | Standard padding |
-| `--space-lg` | `24px` / `1.5rem` | Section padding |
-| `--space-xl` | `32px` / `2rem` | Large gaps |
-| `--space-2xl` | `48px` / `3rem` | Section margins |
-| `--space-3xl` | `64px` / `4rem` | Hero padding |
-
-### Shadow Depths
-
-| Level | Value | Usage |
-|-------|-------|-------|
-| `--shadow-sm` | `0 1px 2px rgba(0,0,0,0.05)` | Subtle lift |
-| `--shadow-md` | `0 4px 6px rgba(0,0,0,0.1)` | Cards, buttons |
-| `--shadow-lg` | `0 10px 15px rgba(0,0,0,0.1)` | Modals, dropdowns |
-| `--shadow-xl` | `0 20px 25px rgba(0,0,0,0.15)` | Hero images, featured cards |
 
 ---
 
 ## Component Specs
 
-### Buttons
-
-```css
-/* Primary Button */
-.btn-primary {
-  background: #2563EB;
-  color: #FFFFFF;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-/* Secondary Button */
-.btn-secondary {
-  background: transparent;
-  color: #0F172A;
-  border: 2px solid #EA580C;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
+### 1. Cards (Stiker Komik)
+```html
+<div class="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-2xl p-4 shadow-[4px_4px_0px_#2B1D12] transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_#2B1D12]">
+  <!-- Konten Kartu -->
+</div>
 ```
 
-### Cards
-
-```css
-.card {
-  background: #FFF7ED;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: var(--shadow-md);
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
+### 2. Primary Buttons (Ink Button)
+```html
+<button class="bg-[#2B1D12] text-[#FAF4E8] font-display font-bold px-4 py-2.5 rounded-xl border-2 border-[#2B1D12] shadow-[3px_3px_0px_#C67D0A] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#C67D0A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">
+  Pesan Sekarang
+</button>
 ```
 
-### Inputs
-
-```css
-.input {
-  padding: 12px 16px;
-  border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 200ms ease;
-}
-
-.input:focus {
-  border-color: #EA580C;
-  outline: none;
-  box-shadow: 0 0 0 3px #EA580C20;
-}
+### 3. WhatsApp Action Button
+```html
+<a class="bg-[#15803D] hover:bg-[#166534] text-white font-display font-bold px-4 py-3 rounded-xl border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2">
+  <!-- WhatsApp Icon --> Checkout via WhatsApp
+</a>
 ```
 
-### Modals
-
-```css
-.modal-overlay {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-}
-
-.modal {
-  background: white;
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: var(--shadow-xl);
-  max-width: 500px;
-  width: 90%;
-}
-```
+### 4. Header Bar
+- Logo: `public/logo-jasdorkopicima.png` (avatar lingkaran doodle Tahilalats).
+- Border: `border-b-2 border-[#2B1D12]`.
+- Background: `#FAF4E8` kertas komik.
 
 ---
 
-## Style Guidelines
+## Aturan Khusus (Invariants)
 
-**Style:** Vibrant & Block-based
-
-**Keywords:** Bold, energetic, playful, block layout, geometric shapes, high color contrast, duotone, modern, energetic
-
-**Best For:** Startups, creative agencies, gaming, social media, youth-focused, entertainment, consumer
-
-**Key Effects:** Large sections (48px+ gaps), animated patterns, bold hover (color shift), scroll-snap, large type (32px+), 200-300ms
-
-### Page Pattern
-
-**Pattern Name:** Hero-Centric Design
-
-- **Conversion Strategy:** One primary CTA. Let the hero dominate the initial viewport without hiding the next content cue. Use a static hero and non-pulsing CTA when reduced motion is requested; provide video controls. Pause hero media offscreen/hidden and keep the final hero message and CTA static under reduced motion.
-- **CTA Placement:** Hero dominant (center/bottom) + Sticky nav CTA
-- **Section Order:** Full-bleed Hero (headline + visual) > Single value prop strip > Key benefit or proof > Primary CTA
-
----
-
-## Anti-Patterns (Do NOT Use)
-
-- ❌ Muted colors
-- ❌ Low energy
-
-### Additional Forbidden Patterns
-
-- ❌ **Emojis as icons** — Use SVG icons (Heroicons, Lucide, Simple Icons)
-- ❌ **Missing cursor:pointer** — All clickable elements must have cursor:pointer
-- ❌ **Layout-shifting hovers** — Avoid scale transforms that shift layout
-- ❌ **Low contrast text** — Maintain 4.5:1 minimum contrast ratio
-- ❌ **Instant state changes** — Always use transitions (150-300ms)
-- ❌ **Invisible focus states** — Focus states must be visible for a11y
-
----
-
-## Pre-Delivery Checklist
-
-Before delivering any UI code, verify:
-
-- [ ] No emojis used as icons (use SVG instead)
-- [ ] All icons from consistent icon set (Heroicons/Lucide)
-- [ ] `cursor-pointer` on all clickable elements
-- [ ] Hover states with smooth transitions (150-300ms)
-- [ ] Light mode: text contrast 4.5:1 minimum
-- [ ] Focus states visible for keyboard navigation
-- [ ] `prefers-reduced-motion` respected
-- [ ] Responsive: 375px, 768px, 1024px, 1440px
-- [ ] No content hidden behind fixed navbars
-- [ ] No horizontal scroll on mobile
+1. **Harga & Diskon**: Tetap merah `#DC2626` untuk promo setengah harga.
+2. **WhatsApp**: Tetap hijau resmi `#15803D`.
+3. **Terminologi**: Wajib selalu "jasa order", DILARANG menggunakan "jastip".
+4. **Copywriting**: Santai bahasa sehari-hari ("jajan hemat", "gak pake ribet", "anti boncos"), ramah, jelas, tanpa kata "independen", tanpa tanda em dash ("—").
+5. **A11y**: Kontras teks min 4.5:1 terhadap background, touch target minimal 44x44px untuk elemen interaktif.

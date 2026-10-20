@@ -1,64 +1,66 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   SITE_CONFIG,
-  NOMOR_WHATSAPP_ADMIN_FORMATTED,
-  getAdminWhatsAppUrl,
   JADWAL_OPERASIONAL_LENGKAP,
 } from '@/lib/site-config';
-import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 
 export function Footer() {
-  const waUrl = getAdminWhatsAppUrl(
-    'Halo Admin Jasdor, saya butuh bantuan terkait pesanan jasa order Kopi Kenangan.'
-  );
+  const pathname = usePathname();
+
+  // 5. Halaman /pesanan-saya: HAPUS footer sepenuhnya (hanya di halaman ini)
+  if (pathname === '/pesanan-saya' || pathname?.startsWith('/pesanan-saya/')) {
+    return null;
+  }
 
   return (
-    <footer className="mt-auto border-t border-[#EFE5D8] bg-[#F7F1E8]/90 text-[#5C4A3E] px-4 pt-6 pb-8">
-      <div className="max-w-md mx-auto space-y-4">
-        {/* Brand & Kontak Cepat */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E8DEC0]/60">
-          <div>
-            <span className="font-display font-extrabold text-sm text-[#26150B] block tracking-tight">
-              {SITE_CONFIG.brandName}
-            </span>
-            <span className="text-[11px] text-[#735F52] font-medium block mt-0.5 leading-snug">
-              Mau Hemat? Order disini aja!
-              <br />
-              <span className="text-[#8C5D17] font-semibold">{JADWAL_OPERASIONAL_LENGKAP}</span>
-            </span>
-          </div>
-
-          <a
-            href={waUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 shrink-0 whitespace-nowrap self-start px-2.5 py-1.5 bg-white hover:bg-[#F2EAE0] border border-[#E0D4C5] text-[#15803D] hover:text-[#166534] text-[11px] font-bold rounded-xl transition active:scale-95 shadow-2xs"
-            aria-label="Hubungi Admin WhatsApp"
-          >
-            <WhatsAppIcon className="w-3.5 h-3.5 fill-[#25D366] shrink-0" />
-            <span className="whitespace-nowrap">WA: {NOMOR_WHATSAPP_ADMIN_FORMATTED}</span>
-          </a>
+    <footer className="mt-auto border-t-2 border-[#2B1D12] bg-[#FAF4E8] text-[#2B1D12] px-4 pt-6 pb-8">
+      <div className="max-w-md mx-auto space-y-4 text-center">
+        {/* Hierarki 1: Nama Brand & Tagline */}
+        <div className="space-y-1">
+          <span className="font-display font-black text-base text-[#2B1D12] block tracking-tight">
+            {SITE_CONFIG.brandName}
+          </span>
+          <p className="text-xs text-[#6A584D] font-bold">
+            Mau Hemat? Order disini aja!
+          </p>
         </div>
 
-        {/* Link Halaman Navigasi Informasi */}
-        <nav
-          aria-label="Navigasi Informasi"
-          className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-semibold text-[#6A584D]"
-        >
-          {SITE_CONFIG.navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="hover:text-[#26150B] underline-offset-4 hover:underline transition"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        {/* Hierarki 2: Jam Operasional */}
+        <div className="pt-0.5 pb-1">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FFF8E7] border-2 border-[#2B1D12] rounded-full text-[11px] font-black text-[#C67D0A] shadow-[2px_2px_0px_#2B1D12]">
+            <span className="w-2 h-2 rounded-full bg-[#15803D] animate-pulse shrink-0" />
+            <span>{JADWAL_OPERASIONAL_LENGKAP}</span>
+          </div>
+        </div>
 
-        {/* Hak Cipta */}
-        <div className="pt-2 text-center">
-          <p className="text-[10px] text-[#A69485]">
+        {/* Hierarki 3: Deretan Link Navigasi Informasi */}
+        <div className="pt-2 border-t-2 border-[#2B1D12]/15">
+          <nav
+            aria-label="Navigasi Informasi"
+            className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1.5 text-xs font-bold text-[#2B1D12]"
+          >
+            {SITE_CONFIG.navLinks.map((link, idx) => (
+              <span key={link.href} className="inline-flex items-center gap-2.5">
+                <Link
+                  href={link.href}
+                  className="hover:text-[#C67D0A] underline-offset-4 hover:underline transition"
+                >
+                  {link.label}
+                </Link>
+                {idx < SITE_CONFIG.navLinks.length - 1 && (
+                  <span className="text-[#2B1D12]/30 text-[10px] select-none">•</span>
+                )}
+              </span>
+            ))}
+          </nav>
+        </div>
+
+        {/* Hierarki 4: Hak Cipta */}
+        <div className="pt-2 border-t border-[#2B1D12]/10">
+          <p className="text-[10px] text-[#7A6658] font-bold tracking-wide">
             © {new Date().getFullYear()} JasdorKopiCima • Seluruh hak cipta dilindungi.
           </p>
         </div>

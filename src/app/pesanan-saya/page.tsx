@@ -4,12 +4,12 @@ import { MyOrdersView } from '@/components/MyOrdersView';
 
 export const metadata: Metadata = {
   title: 'Pesanan Saya | Jasdor',
-  description: 'Daftar pesanan aktif dan riwayat jasa order Kopi Kenangan di Jasdor.',
+  description: 'Daftar pesanan aktif dan riwayat layanan jasa order di Jasdor.',
 };
 
 export default function PesananSayaPage() {
   return (
-    <div className="min-h-screen bg-[#FBF8F4] flex flex-col">
+    <div className="min-h-screen bg-[#FAF4E8] flex flex-col">
       <Header
         showBack={true}
         backHref="/"

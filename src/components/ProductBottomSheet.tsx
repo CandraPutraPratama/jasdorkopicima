@@ -254,17 +254,17 @@ export function ProductBottomSheet({
       <div className="fixed inset-0 touch-none" onClick={onClose} aria-hidden="true" />
 
       {/* Sheet Container (Mobile-first max-w-md) */}
-      <div className="relative w-full max-w-md max-h-[92vh] bg-[#FBF8F4] rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300 overscroll-contain border-t border-[#EFE5D8]">
+      <div className="relative w-full max-w-md max-h-[92vh] bg-[#FAF4E8] rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300 overscroll-contain border-t-2 border-x-2 border-[#2B1D12]">
         {/* Drag handle */}
-        <div className="w-12 h-1 bg-[#D4C3B2] rounded-full mx-auto mt-2.5 mb-1" />
+        <div className="w-12 h-1.5 bg-[#2B1D12] rounded-full mx-auto mt-2.5 mb-1" />
 
         {/* Header Lembar Produk */}
-        <div className="sticky top-0 z-10 bg-[#FBF8F4]/95 backdrop-blur px-5 py-3 border-b border-[#EFE5D8] flex items-center justify-between touch-none">
+        <div className="sticky top-0 z-10 bg-[#FAF4E8] px-5 py-3 border-b-2 border-[#2B1D12] flex items-center justify-between touch-none">
           <div className="pr-4">
-            <h3 className="font-display font-bold text-base text-[#26150B] line-clamp-1">
+            <h3 className="font-display font-black text-base text-[#2B1D12] line-clamp-1">
               {product.name}
             </h3>
-            <span className="text-[11px] text-[#A66908] font-bold">
+            <span className="text-[11px] text-[#C67D0A] font-extrabold uppercase tracking-wide">
               Kustomisasi Menu
             </span>
           </div>
@@ -272,7 +272,7 @@ export function ProductBottomSheet({
           <button
             onClick={onClose}
             type="button"
-            className="min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-[#8C7667] hover:text-[#26150B] hover:bg-[#F2EAE0] transition active:scale-95"
+            className="min-h-[44px] min-w-[44px] rounded-full flex items-center justify-center text-[#2B1D12] bg-white border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
             aria-label="Tutup lembar detail produk"
           >
             <svg
@@ -282,7 +282,7 @@ export function ProductBottomSheet({
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M6 18L18 6M6 6l12 12" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
@@ -290,8 +290,8 @@ export function ProductBottomSheet({
         {/* Scrollable Content Body */}
         <div className="flex-1 overflow-y-auto p-4 space-y-5 overscroll-contain">
           {/* Ringkasan Produk */}
-          <div className="flex gap-3 pb-3 border-b border-[#F2EAE0]">
-            <div className="relative w-18 h-18 bg-[#F4EDE3] rounded-2xl overflow-hidden shrink-0 border border-[#EAE0D3]">
+          <div className="flex gap-3 pb-3 border-b-2 border-[#2B1D12]">
+            <div className="relative w-18 h-18 bg-white rounded-2xl overflow-hidden shrink-0 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
               {product.image && (
                 <Image
                   src={product.image}
@@ -303,17 +303,17 @@ export function ProductBottomSheet({
               )}
             </div>
             <div>
-              <p className="text-xs text-[#6A584D] line-clamp-2">
+              <p className="text-xs text-[#2B1D12] font-medium line-clamp-2">
                 {product.description || 'Pilih varian suhu, ukuran, dan topping favoritmu.'}
               </p>
               <div className="flex items-baseline gap-2 mt-1.5">
                 <span className="font-display text-base font-black text-[#DC2626]">
                   {formatRupiah(pricing.promoPricePerItem)}
                 </span>
-                <span className="text-xs text-[#9C897B] line-through">
+                <span className="text-xs text-[#8C7667] line-through">
                   {formatRupiah(pricing.originalPricePerItem)}
                 </span>
-                <span className="text-[9px] font-extrabold text-[#DC2626] bg-[#FEF2F2] border border-[#FECACA] px-1 py-0.2 rounded">
+                <span className="text-[10px] font-black text-[#DC2626] bg-[#FFEBEB] border-2 border-[#DC2626] px-1.5 py-0.2 rounded-md">
                   -50%
                 </span>
               </div>
@@ -323,22 +323,22 @@ export function ProductBottomSheet({
           {/* Loading Varian */}
           {isLoading && (
             <div className="space-y-4 py-4">
-              <div className="h-4 bg-[#EFE5D8] rounded w-1/3 animate-pulse" />
+              <div className="h-4 bg-[#EFE5D8] rounded w-1/3 animate-pulse border-2 border-[#D4C3B2]" />
               <div className="flex gap-2">
-                <div className="h-10 bg-[#F7F1E8] rounded-xl w-24 animate-pulse" />
-                <div className="h-10 bg-[#F7F1E8] rounded-xl w-24 animate-pulse" />
+                <div className="h-10 bg-[#FFFDF9] rounded-xl w-24 animate-pulse border-2 border-[#D4C3B2]" />
+                <div className="h-10 bg-[#FFFDF9] rounded-xl w-24 animate-pulse border-2 border-[#D4C3B2]" />
               </div>
-              <div className="h-4 bg-[#EFE5D8] rounded w-1/4 animate-pulse" />
+              <div className="h-4 bg-[#EFE5D8] rounded w-1/4 animate-pulse border-2 border-[#D4C3B2]" />
               <div className="flex gap-2">
-                <div className="h-10 bg-[#F7F1E8] rounded-xl w-28 animate-pulse" />
-                <div className="h-10 bg-[#F7F1E8] rounded-xl w-28 animate-pulse" />
+                <div className="h-10 bg-[#FFFDF9] rounded-xl w-28 animate-pulse border-2 border-[#D4C3B2]" />
+                <div className="h-10 bg-[#FFFDF9] rounded-xl w-28 animate-pulse border-2 border-[#D4C3B2]" />
               </div>
             </div>
           )}
 
           {/* Error Varian */}
           {errorMessage && (
-            <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-700 text-xs">
+            <div className="p-4 bg-rose-50 border-2 border-[#DC2626] rounded-2xl text-rose-900 text-xs font-bold shadow-[2px_2px_0px_#2B1D12]">
               {errorMessage}
             </div>
           )}
@@ -349,10 +349,12 @@ export function ProductBottomSheet({
             return (
               <div key={dim.code} className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="font-display text-xs font-bold text-[#26150B] uppercase tracking-wide">
+                  <span className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide">
                     {dim.name}
                   </span>
-                  <span className="text-[10px] text-[#8C7667] font-medium">Pilih 1</span>
+                  <span className="text-[10px] text-[#2B1D12] font-bold bg-[#FFF0C2] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
+                    Pilih 1
+                  </span>
                 </div>
 
                 <div className={`grid ${gridClass} gap-2`}>
@@ -372,17 +374,17 @@ export function ProductBottomSheet({
                         type="button"
                         disabled={!isAvailable}
                         onClick={() => handleSelectDimensionValue(dim.code, val.id)}
-                        className={`min-h-[46px] p-2 rounded-xl text-xs font-medium border text-center flex flex-col items-center justify-center transition ${
+                        className={`min-h-[46px] p-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
                           isSelected
-                            ? 'border-[#26150B] bg-[#26150B] text-[#FBBF24] font-display font-bold shadow-xs'
+                            ? 'border-[#2B1D12] bg-[#2B1D12] text-[#FAF4E8] font-display shadow-[2px_2px_0px_#C67D0A]'
                             : isAvailable
-                            ? 'border-[#E0D4C5] bg-white hover:border-[#D9A74A] text-[#3D2313] active:scale-98'
-                            : 'border-[#EFE5D8] bg-[#F4EDE3] text-[#BFAFA0] cursor-not-allowed line-through'
+                            ? 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
+                            : 'border-[#D4C3B2] bg-[#EFE5D8] text-[#8C7667] cursor-not-allowed line-through'
                         }`}
                       >
                         <span className="line-clamp-2 leading-tight">{val.name}</span>
                         {addition > 0 && (
-                          <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FBBF24]' : 'text-[#8C7667]'}`}>
+                          <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#C67D0A]'}`}>
                             +{formatRupiah(addition)}
                           </span>
                         )}
@@ -400,10 +402,12 @@ export function ProductBottomSheet({
             return (
               <div key={note.name} className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="font-display text-xs font-bold text-[#26150B] uppercase tracking-wide">
+                  <span className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide">
                     {note.name}
                   </span>
-                  <span className="text-[10px] text-[#8C7667] font-medium">Pilih 1</span>
+                  <span className="text-[10px] text-[#2B1D12] font-bold bg-[#DDF0FF] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
+                    Pilih 1
+                  </span>
                 </div>
 
                 <div className={`grid ${gridClass} gap-2`}>
@@ -419,10 +423,10 @@ export function ProductBottomSheet({
                             [note.name]: optText,
                           }))
                         }
-                        className={`min-h-[46px] p-2 rounded-xl text-xs font-medium border text-center flex flex-col items-center justify-center transition ${
+                        className={`min-h-[46px] p-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
                           isSelected
-                            ? 'border-[#26150B] bg-[#26150B] text-[#FBBF24] font-display font-bold shadow-xs'
-                            : 'border-[#E0D4C5] bg-white text-[#3D2313] hover:border-[#D9A74A] active:scale-98'
+                            ? 'border-[#2B1D12] bg-[#2B1D12] text-[#FAF4E8] font-display shadow-[2px_2px_0px_#C67D0A]'
+                            : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
                         }`}
                       >
                         <span className="line-clamp-2 leading-tight">{optText}</span>
@@ -436,13 +440,13 @@ export function ProductBottomSheet({
 
           {/* 3. Opsi Whipped Cream (Tepat di bawah Ice Level, khusus Frappe, Pilih 1 Radio, Gratis) */}
           {!isLoading && whippedCreamAddons.length > 0 && (
-            <div className="space-y-2 pt-2 border-t border-[#F2EAE0]">
+            <div className="space-y-2 pt-2 border-t-2 border-[#2B1D12]">
               <div className="flex justify-between items-center">
-                <span className="font-display text-xs font-bold text-[#26150B] uppercase tracking-wide flex items-center gap-1">
+                <span className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide flex items-center gap-1">
                   <span>Whipped Cream</span>
-                  <span className="text-rose-500 text-sm">*</span>
+                  <span className="text-[#DC2626] text-sm">*</span>
                 </span>
-                <span className="text-[10px] text-[#A66908] font-bold bg-[#FEF3C7] px-2 py-0.5 rounded-full border border-[#FDE68A]">
+                <span className="text-[10px] text-[#2B1D12] font-black bg-[#FFF0C2] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
                   Wajib Pilih 1 • Gratis
                 </span>
               </div>
@@ -456,16 +460,16 @@ export function ProductBottomSheet({
                       type="button"
                       disabled={addon.isSoldOut}
                       onClick={() => setSelectedWhippedCream(addon)}
-                      className={`min-h-[46px] p-2 rounded-xl text-xs font-medium border text-center flex flex-col items-center justify-center transition ${
+                      className={`min-h-[46px] p-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
                         isSelected
-                          ? 'border-[#26150B] bg-[#26150B] text-[#FBBF24] font-display font-bold shadow-xs'
+                          ? 'border-[#2B1D12] bg-[#2B1D12] text-[#FAF4E8] font-display shadow-[2px_2px_0px_#C67D0A]'
                           : addon.isSoldOut
-                          ? 'border-[#EFE5D8] bg-[#F4EDE3] text-[#BFAFA0] cursor-not-allowed line-through'
-                          : 'border-[#E0D4C5] bg-white hover:border-[#D9A74A] text-[#3D2313] active:scale-98'
+                          ? 'border-[#D4C3B2] bg-[#EFE5D8] text-[#8C7667] cursor-not-allowed line-through'
+                          : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
                       }`}
                     >
                       <span className="line-clamp-2 leading-tight">{addon.name}</span>
-                      <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FBBF24]' : 'text-[#8C7667]'}`}>
+                      <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#15803D]'}`}>
                         Gratis
                       </span>
                     </button>
@@ -477,12 +481,12 @@ export function ProductBottomSheet({
 
           {/* 4. Opsi Syrup (Checkbox, Opsional, +Rp6.000 per pilihan) */}
           {!isLoading && syrupAddons.length > 0 && (
-            <div className="space-y-2 pt-2 border-t border-[#F2EAE0]">
+            <div className="space-y-2 pt-2 border-t-2 border-[#2B1D12]">
               <div className="flex justify-between items-center">
-                <span className="font-display text-xs font-bold text-[#26150B] uppercase tracking-wide">
+                <span className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide">
                   Syrup
                 </span>
-                <span className="text-[10px] text-[#8C7667] font-medium">
+                <span className="text-[10px] text-[#2B1D12] font-bold bg-[#FFE7D6] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
                   Opsional • +{formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.syrup)}
                 </span>
               </div>
@@ -496,20 +500,20 @@ export function ProductBottomSheet({
                       type="button"
                       disabled={addon.isSoldOut}
                       onClick={() => handleToggleSyrup(addon)}
-                      className={`min-h-[46px] p-2.5 rounded-xl border flex items-center justify-between text-xs transition text-left ${
+                      className={`min-h-[46px] p-2.5 rounded-xl border-2 flex items-center justify-between text-xs transition text-left ${
                         isChecked
-                          ? 'border-[#D9A74A] bg-[#FEF9EE] font-semibold text-[#26150B] shadow-2xs'
+                          ? 'border-[#2B1D12] bg-[#FFF0C2] font-black text-[#2B1D12] shadow-[2px_2px_0px_#C67D0A]'
                           : addon.isSoldOut
-                          ? 'border-[#EFE5D8] bg-[#F4EDE3] text-[#BFAFA0] cursor-not-allowed'
-                          : 'border-[#E0D4C5] bg-white text-[#3D2313] hover:border-[#D9A74A] active:scale-98'
+                          ? 'border-[#D4C3B2] bg-[#EFE5D8] text-[#8C7667] cursor-not-allowed'
+                          : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
                       }`}
                     >
                       <div className="flex items-center gap-2 min-w-0 pr-1">
                         <div
-                          className={`w-4 h-4 rounded border shrink-0 flex items-center justify-center ${
+                          className={`w-4 h-4 rounded border-2 shrink-0 flex items-center justify-center ${
                             isChecked
-                              ? 'bg-[#26150B] border-[#26150B] text-[#FBBF24]'
-                              : 'border-[#D4C3B2] bg-white'
+                              ? 'bg-[#2B1D12] border-[#2B1D12] text-[#FAF4E8]'
+                              : 'border-[#2B1D12] bg-white'
                           }`}
                         >
                           {isChecked && (
@@ -518,9 +522,9 @@ export function ProductBottomSheet({
                             </svg>
                           )}
                         </div>
-                        <span className="line-clamp-2 leading-tight text-[11px]">{addon.name}</span>
+                        <span className="line-clamp-2 leading-tight text-[11px] font-bold">{addon.name}</span>
                       </div>
-                      <span className="text-[10px] text-[#735F52] shrink-0 font-medium">
+                      <span className="text-[10px] text-[#2B1D12] shrink-0 font-extrabold">
                         +{formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.syrup)}
                       </span>
                     </button>
@@ -532,12 +536,12 @@ export function ProductBottomSheet({
 
           {/* 5. Opsi Topping (Checkbox, Opsional, +Rp6.000 per pilihan) */}
           {!isLoading && toppingAddons.length > 0 && (
-            <div className="space-y-2 pt-2 border-t border-[#F2EAE0]">
+            <div className="space-y-2 pt-2 border-t-2 border-[#2B1D12]">
               <div className="flex justify-between items-center">
-                <span className="font-display text-xs font-bold text-[#26150B] uppercase tracking-wide">
+                <span className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide">
                   Topping
                 </span>
-                <span className="text-[10px] text-[#8C7667] font-medium">
+                <span className="text-[10px] text-[#2B1D12] font-bold bg-[#D9F3EA] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
                   Opsional • +{formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.topping)}
                 </span>
               </div>
@@ -551,20 +555,20 @@ export function ProductBottomSheet({
                       type="button"
                       disabled={addon.isSoldOut}
                       onClick={() => handleToggleTopping(addon)}
-                      className={`min-h-[46px] p-2.5 rounded-xl border flex items-center justify-between text-xs transition text-left ${
+                      className={`min-h-[46px] p-2.5 rounded-xl border-2 flex items-center justify-between text-xs transition text-left ${
                         isChecked
-                          ? 'border-[#D9A74A] bg-[#FEF9EE] font-semibold text-[#26150B] shadow-2xs'
+                          ? 'border-[#2B1D12] bg-[#D9F3EA] font-black text-[#2B1D12] shadow-[2px_2px_0px_#C67D0A]'
                           : addon.isSoldOut
-                          ? 'border-[#EFE5D8] bg-[#F4EDE3] text-[#BFAFA0] cursor-not-allowed'
-                          : 'border-[#E0D4C5] bg-white text-[#3D2313] hover:border-[#D9A74A] active:scale-98'
+                          ? 'border-[#D4C3B2] bg-[#EFE5D8] text-[#8C7667] cursor-not-allowed'
+                          : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
                       }`}
                     >
                       <div className="flex items-center gap-2 min-w-0 pr-1">
                         <div
-                          className={`w-4 h-4 rounded border shrink-0 flex items-center justify-center ${
+                          className={`w-4 h-4 rounded border-2 shrink-0 flex items-center justify-center ${
                             isChecked
-                              ? 'bg-[#26150B] border-[#26150B] text-[#FBBF24]'
-                              : 'border-[#D4C3B2] bg-white'
+                              ? 'bg-[#2B1D12] border-[#2B1D12] text-[#FAF4E8]'
+                              : 'border-[#2B1D12] bg-white'
                           }`}
                         >
                           {isChecked && (
@@ -573,9 +577,9 @@ export function ProductBottomSheet({
                             </svg>
                           )}
                         </div>
-                        <span className="line-clamp-2 leading-tight text-[11px]">{addon.name}</span>
+                        <span className="line-clamp-2 leading-tight text-[11px] font-bold">{addon.name}</span>
                       </div>
-                      <span className="text-[10px] text-[#735F52] shrink-0 font-medium">
+                      <span className="text-[10px] text-[#2B1D12] shrink-0 font-extrabold">
                         +{formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.topping)}
                       </span>
                     </button>
@@ -586,8 +590,8 @@ export function ProductBottomSheet({
           )}
 
           {/* 6. Kolom Catatan Pelanggan */}
-          <div className="space-y-1.5 pt-2 border-t border-[#F2EAE0]">
-            <label htmlFor="customer-notes" className="font-display text-xs font-bold text-[#26150B] uppercase tracking-wide block">
+          <div className="space-y-1.5 pt-2 border-t-2 border-[#2B1D12]">
+            <label htmlFor="customer-notes" className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide block">
               Catatan Pesanan
             </label>
             <input
@@ -597,30 +601,30 @@ export function ProductBottomSheet({
               value={customerNotes}
               onChange={(e) => setCustomerNotes(filterOrderNotesInput(e.target.value))}
               placeholder="Contoh: Jangan terlalu manis, es batu dipisah jika bisa"
-              className="w-full min-h-[44px] px-3.5 py-2 bg-white border border-[#E0D4C5] rounded-xl text-xs text-[#26150B] placeholder-[#9C897B] focus:border-[#C67D0A] focus:ring-1 focus:ring-[#C67D0A] outline-hidden transition"
+              className="w-full min-h-[44px] px-3.5 py-2 bg-white border-2 border-[#2B1D12] rounded-xl text-xs text-[#2B1D12] font-semibold placeholder-[#8C7667] focus:border-[#C67D0A] shadow-[2px_2px_0px_#2B1D12] outline-hidden transition"
             />
           </div>
         </div>
 
         {/* Sticky Footer: Total Estimasi, Stepper di KIRI, dan Tombol Tambah ke Keranjang */}
-        <div className="sticky bottom-0 bg-[#FBF8F4] border-t border-[#EFE5D8] p-3.5 space-y-2.5 shadow-lg overscroll-contain touch-none">
+        <div className="sticky bottom-0 bg-[#FAF4E8] border-t-2 border-[#2B1D12] p-3.5 space-y-2.5 shadow-lg overscroll-contain touch-none">
           <div className="flex items-baseline justify-between">
             <div>
-              <span className="text-[10px] text-[#8C7667] block font-medium">
+              <span className="text-[10px] text-[#6A584D] block font-bold">
                 Total Estimasi ({quantity} item)
               </span>
               <div className="flex items-baseline gap-2">
                 <span className="font-display text-base font-black text-[#DC2626]">
                   {formatRupiah(pricing.subtotal)}
                 </span>
-                <span className="text-xs text-[#9C897B] line-through">
+                <span className="text-xs text-[#8C7667] line-through">
                   {formatRupiah(pricing.originalTotal)}
                 </span>
               </div>
             </div>
 
             <div className="text-right">
-              <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+              <span className="text-[10px] font-black text-[#15803D] bg-[#D9F3EA] px-2 py-0.5 rounded-md border-2 border-[#15803D]">
                 Hemat {formatRupiah(pricing.savingsTotal)}
               </span>
             </div>
@@ -628,39 +632,39 @@ export function ProductBottomSheet({
 
           {/* Peringatan jika Whipped Cream belum dipilih */}
           {isWhippedCreamMissing && !isOutletClosed && (
-            <div className="p-2 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-[11px] text-center font-medium">
-              ⚠️ Silakan pilih 1 opsi Whipped Cream sebelum menambahkan ke keranjang
+            <div className="p-2 bg-rose-50 border-2 border-[#DC2626] rounded-xl text-rose-900 text-[11px] text-center font-bold">
+              Silakan pilih 1 opsi Whipped Cream sebelum menambahkan ke keranjang
             </div>
           )}
 
           {/* Peringatan jika outlet sedang tutup */}
           {isOutletClosed && (
-            <div className="p-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-950 text-[11px] text-center font-medium">
-              ⚠️ Outlet ini sedang tutup - menu ini hanya untuk dilihat (tidak dapat dipesan)
+            <div className="p-2 bg-[#FFF0C2] border-2 border-[#2B1D12] rounded-xl text-[#2B1D12] text-[11px] text-center font-bold">
+              Outlet ini sedang tutup - menu ini hanya untuk dilihat (tidak dapat dipesan)
             </div>
           )}
 
           {/* Baris Tombol & Stepper di sebelah KIRI */}
           <div className="flex items-center gap-2">
             {/* Stepper Jumlah di Sebelah KIRI Tombol */}
-            <div className="flex items-center shrink-0 bg-[#F2EAE0] p-0.5 rounded-xl border border-[#E3D6C5] h-[46px]">
+            <div className="flex items-center shrink-0 bg-white p-0.5 rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] h-[46px]">
               <button
                 type="button"
                 disabled={quantity <= 1 || isOutletClosed}
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="w-9 h-full bg-white rounded-lg flex items-center justify-center text-[#26150B] font-bold disabled:opacity-30 hover:bg-[#FAF7F2] active:scale-95 shadow-2xs text-sm"
+                className="w-9 h-full bg-[#FAF4E8] rounded-lg flex items-center justify-center text-[#2B1D12] font-black disabled:opacity-30 hover:bg-[#FFF8E7] active:scale-95 text-sm"
                 aria-label="Kurangi jumlah"
               >
                 -
               </button>
-              <span className="w-6 text-center font-display font-bold text-xs text-[#26150B]">
+              <span className="w-6 text-center font-display font-black text-xs text-[#2B1D12]">
                 {quantity}
               </span>
               <button
                 type="button"
                 disabled={isOutletClosed}
                 onClick={() => setQuantity((q) => q + 1)}
-                className="w-9 h-full bg-white rounded-lg flex items-center justify-center text-[#26150B] font-bold disabled:opacity-30 hover:bg-[#FAF7F2] active:scale-95 shadow-2xs text-sm"
+                className="w-9 h-full bg-[#FAF4E8] rounded-lg flex items-center justify-center text-[#2B1D12] font-black disabled:opacity-30 hover:bg-[#FFF8E7] active:scale-95 text-sm"
                 aria-label="Tambah jumlah"
               >
                 +
@@ -672,10 +676,10 @@ export function ProductBottomSheet({
               type="button"
               disabled={isAddToCartDisabled}
               onClick={handleAddToCart}
-              className={`flex-1 min-h-[46px] px-3 py-2 font-display font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition shadow-md ${
+              className={`flex-1 min-h-[46px] px-3 py-2 font-display font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition border-2 border-[#2B1D12] ${
                 isOutletClosed
                   ? 'bg-[#E5DACB] text-[#8C7667] cursor-not-allowed opacity-80'
-                  : 'bg-[#26150B] hover:bg-[#3D2313] active:scale-98 text-[#FBBF24] disabled:opacity-40 disabled:cursor-not-allowed'
+                  : 'bg-[#2B1D12] text-[#FAF4E8] shadow-[3px_3px_0px_#C67D0A] hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none disabled:opacity-40 disabled:cursor-not-allowed'
               }`}
             >
               {isOutletClosed ? (
@@ -688,7 +692,7 @@ export function ProductBottomSheet({
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    strokeWidth={2.2}
+                    strokeWidth={2.5}
                   >
                     <path
                       strokeLinecap="round"
