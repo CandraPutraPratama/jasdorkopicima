@@ -4,7 +4,7 @@ import { normalizeStore } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { verifyStoreScope, getOutletByCode } from '@/lib/outlet-service';
-import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { checkRateLimitKV, getClientIp } from '@/lib/rate-limit-kv.ts';
 import type { Outlet } from '@/types/domain';
 
 export async function GET(
@@ -12,7 +12,7 @@ export async function GET(
   segmentData: { params: Promise<{ code: string }> }
 ) {
   const clientIp = getClientIp(request.headers);
-  const rateLimit = checkRateLimit(`outlet:${clientIp}`, {
+  const rateLimit = await checkRateLimitKV(`outlet:${clientIp}`, {
     maxRequests: 60,
     windowSeconds: 60,
   });

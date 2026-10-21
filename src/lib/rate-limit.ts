@@ -45,12 +45,15 @@ export function getClientIp(headers: Headers): string {
 
 /**
  * Memeriksa apakah request dari IP tertentu masih dalam batas rate limit.
+ *
+ * `now` opsional disediakan agar pemanggil (dan unit test) dapat menguji
+ * pergeseran window secara deterministik tanpa bergantung jam dinding.
  */
 export function checkRateLimit(
   key: string,
-  options: RateLimitOptions = { maxRequests: 60, windowSeconds: 60 }
+  options: RateLimitOptions = { maxRequests: 60, windowSeconds: 60 },
+  now: number = Date.now()
 ): RateLimitResult {
-  const now = Date.now();
   const windowMs = options.windowSeconds * 1000;
 
   // Bersihkan key kadaluwarsa sesekali jika ukuran Map membesar
@@ -64,7 +67,7 @@ export function checkRateLimit(
 
   const record = rateLimitStore.get(key);
 
-  if (!record || now > record.resetAt) {
+  if (!record || now >= record.resetAt) {
     // Window baru
     const newRecord: RateLimitRecord = {
       count: 1,

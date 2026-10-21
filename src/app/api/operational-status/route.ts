@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getEffectiveJasdorOperationalStatus, resolveOperationalStatusWithSimulation } from '@/lib/operational';
 import { getOperationalOverride } from '@/lib/site-settings';
-import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { checkRateLimitKV, getClientIp } from '@/lib/rate-limit-kv.ts';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   const clientIp = getClientIp(request.headers);
-  const rateLimit = checkRateLimit(`operational:${clientIp}`, {
+  const rateLimit = await checkRateLimitKV(`operational:${clientIp}`, {
     maxRequests: 120,
     windowSeconds: 60,
   });

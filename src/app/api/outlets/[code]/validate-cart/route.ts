@@ -5,7 +5,7 @@ import { isOutletClosed } from '@/lib/orderability';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { verifyStoreScope } from '@/lib/outlet-service';
-import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { checkRateLimitKV, getClientIp } from '@/lib/rate-limit-kv.ts';
 
 interface ValidateCartItemInput {
   bundleCode: string;
@@ -21,7 +21,7 @@ export async function POST(
   const clientIp = getClientIp(request.headers);
 
   // 1. Pembatasan laju (Rate limit: maksimal 20 request per menit per IP)
-  const rateLimit = checkRateLimit(`validate-cart:${clientIp}`, {
+  const rateLimit = await checkRateLimitKV(`validate-cart:${clientIp}`, {
     maxRequests: 20,
     windowSeconds: 60,
   });

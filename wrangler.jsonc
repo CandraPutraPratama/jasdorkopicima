@@ -1,25 +1,41 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "jasdorkopicima",
-  "main": ".open-next/worker.js",
-  "compatibility_date": "2024-12-30",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
-  "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
-  },
-  "vars": {
-    "IMAGE_SOURCE": "r2",
-    "NEXT_PUBLIC_CF_ANALYTICS_TOKEN": "e2df28ebcd454d6ca4f467570d8e7f60",
-    "NEXT_PUBLIC_OPERATIONAL_GATE_ENABLED": "true",
-    "NEXT_PUBLIC_BUNDLING_ONLY_MODE": "false"
-  },
-  "routes": [
-    {
-      "pattern": "jasdor.cimagroup.my.id",
-      "custom_domain": true
-    }
-  ]
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "jasdorkopicima",
+	"main": ".open-next/worker.js",
+	"compatibility_date": "2024-12-30",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+	// Rate limit terdistribusi lintas isolate Workers.
+	// Buat namespace dengan: wrangler kv namespace create RATE_LIMIT_KV
+	// lalu ganti placeholder id di bawah dengan id yang dihasilkan.
+	"kv_namespaces": [
+		{
+			"binding": "RATE_LIMIT_KV",
+			"id": "e9d64c71b5e7444891426c693bde7473",
+			"remote": true
+		}
+	],
+	"vars": {
+		"IMAGE_SOURCE": "r2",
+		"NEXT_PUBLIC_CF_ANALYTICS_TOKEN": "e2df28ebcd454d6ca4f467570d8e7f60",
+		"NEXT_PUBLIC_OPERATIONAL_GATE_ENABLED": "true",
+		"NEXT_PUBLIC_BUNDLING_ONLY_MODE": "false"
+	},
+	"observability": {
+		"logs": {
+			"enabled": true,
+			"invocation_logs": true
+		}
+	},
+	"routes": [
+		{
+			"pattern": "jasdor.cimagroup.my.id",
+			"custom_domain": true
+		}
+	]
 }

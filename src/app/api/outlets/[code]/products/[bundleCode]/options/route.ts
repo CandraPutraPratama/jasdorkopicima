@@ -4,7 +4,7 @@ import { normalizeProductOptions } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { verifyStoreScope } from '@/lib/outlet-service';
-import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { checkRateLimitKV, getClientIp } from '@/lib/rate-limit-kv.ts';
 import { checkAndLogMarginSafety } from '@/lib/margin-guard';
 import type { ProductOptionDetails } from '@/types/domain';
 
@@ -13,7 +13,7 @@ export async function GET(
   segmentData: { params: Promise<{ code: string; bundleCode: string }> }
 ) {
   const clientIp = getClientIp(request.headers);
-  const rateLimit = checkRateLimit(`options:${clientIp}`, {
+  const rateLimit = await checkRateLimitKV(`options:${clientIp}`, {
     maxRequests: 60,
     windowSeconds: 60,
   });
