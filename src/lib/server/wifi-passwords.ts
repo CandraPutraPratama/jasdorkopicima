@@ -1,8 +1,8 @@
 /**
- * Data dan Konfigurasi WiFi Outlet Kopi Kenangan
+ * Data dan Konfigurasi WiFi Outlet Kopi Kenangan (SERVER-ONLY)
  *
- * CARA UPDATE:
- * Untuk menambah/mengganti password, cukup edit teks di tanggal yang diinginkan di file ini, lalu deploy ulang.
+ * File ini hanya boleh dieksekusi di lingkungan server (Next.js server / API route).
+ * DILARANG di-import oleh komponen client mana pun untuk mencegah kebocoran daftar password 30 hari ke client bundle.
  */
 
 export const KOPI_KENANGAN_WIFI_CONFIG = {
@@ -33,7 +33,7 @@ export const KOPI_KENANGAN_WIFI_PASSWORDS: Record<number, string> = {
   20: 'NgopiSambilKerja!20',
   21: 'KenanganManis#21',
   22: 'KopiTemanCurhat@22',
-  23: '',
+  23: 'BahagiaItuSederhana23',
   24: 'NgopiPenuhCinta=24',
   25: 'KopiRasaCinta!25',
   26: 'SemangatPejuang#26',
@@ -41,20 +41,18 @@ export const KOPI_KENANGAN_WIFI_PASSWORDS: Record<number, string> = {
   28: 'PagiPenuhSyukur28',
   29: 'KenanganTakTerlupa=29',
   30: 'KopiSelaluSetia!30',
+  31: 'KopiFavoritmu#31',
 };
 
-export interface KopiKenanganWifiToday {
+export interface WifiTodayResponse {
   ssid: string;
   username: string;
-  day: number;
+  password: string | null;
   dateLabel: string;
-  passwordHeaderLabel: string;
-  password: string;
-  hasPassword: boolean;
 }
 
 /**
- * Mengambil komponen tanggal (hari dan bulan pendek) dalam zona waktu Asia/Jakarta (WIB).
+ * Mengambil komponen tanggal (hari dan label tanggal) dalam zona waktu Asia/Jakarta (WIB).
  */
 export function getWibDateInfo(date: Date = new Date()): { day: number; dateLabel: string } {
   try {
@@ -89,28 +87,38 @@ export function getWibDateInfo(date: Date = new Date()): { day: number; dateLabe
 }
 
 /**
- * Mendapatkan informasi WiFi Kopi Kenangan sesuai tanggal hari ini di zona Asia/Jakarta.
+ * Mendapatkan informasi WiFi Kopi Kenangan khusus hari ini di zona Asia/Jakarta.
  * Aturan:
- * 1. Tanggal 31 -> pakai password tanggal 1.
- * 2. Jika password kosong (misal tanggal 23) -> fallback "tanya ke barista" (hasPassword: false).
+ * 1. Tanggal 31 memakai password tanggal 31 bila entrinya ada dan terisi;
+ *    bila entri 31 tidak ada/kosong, fallback ke password tanggal 1 (perilaku lama).
+ * 2. Password kosong -> null.
  */
-export function getKopiKenanganWifiToday(date: Date = new Date()): KopiKenanganWifiToday {
+export function getWifiTodayServer(
+  date: Date = new Date(),
+  passwords: Record<number, string> = KOPI_KENANGAN_WIFI_PASSWORDS
+): WifiTodayResponse {
   const { day, dateLabel } = getWibDateInfo(date);
 
-  // Tanggal 31 menggunakan password tanggal 1
-  const effectiveDay = day === 31 ? 1 : day;
-  const rawPassword = KOPI_KENANGAN_WIFI_PASSWORDS[effectiveDay];
+  let rawPassword: string | undefined;
 
-  const hasPassword = Boolean(rawPassword && rawPassword.trim().length > 0);
-  const password = hasPassword ? (rawPassword as string) : 'tanya ke barista';
+  if (day === 31) {
+    const entry31 = passwords[31];
+    if (entry31 && entry31.trim().length > 0) {
+      rawPassword = entry31;
+    } else {
+      rawPassword = passwords[1];
+    }
+  } else {
+    rawPassword = passwords[day];
+  }
+
+  const trimmed = rawPassword ? rawPassword.trim() : '';
+  const password = trimmed.length > 0 ? trimmed : null;
 
   return {
     ssid: KOPI_KENANGAN_WIFI_CONFIG.ssid,
     username: KOPI_KENANGAN_WIFI_CONFIG.username,
-    day,
-    dateLabel,
-    passwordHeaderLabel: `Password hari ini (${dateLabel})`,
     password,
-    hasPassword,
+    dateLabel,
   };
 }
