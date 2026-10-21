@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { searchOutlets, getFeaturedOutlets, getTotalOutletsCount } from '@/lib/outlet-service';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
-import { checkRateLimitKV, getClientIp } from '@/lib/rate-limit-kv.ts';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
 import { cleanSearchQuery } from '@/lib/sanitizer';
 import type { Outlet } from '@/types/domain';
 
 export async function GET(request: NextRequest) {
   const clientIp = getClientIp(request.headers);
-  const rateLimit = await checkRateLimitKV(`search:${clientIp}`, {
+  const rateLimit = checkRateLimit(`search:${clientIp}`, {
     maxRequests: 60,
     windowSeconds: 60,
   });

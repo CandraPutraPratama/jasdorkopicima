@@ -4,7 +4,7 @@ import { normalizeMenu } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { verifyStoreScope } from '@/lib/outlet-service';
-import { checkRateLimitKV, getClientIp } from '@/lib/rate-limit-kv.ts';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
 import type { MenuGroup } from '@/types/domain';
 
 export async function GET(
@@ -12,7 +12,7 @@ export async function GET(
   segmentData: { params: Promise<{ code: string }> }
 ) {
   const clientIp = getClientIp(request.headers);
-  const rateLimit = await checkRateLimitKV(`menu:${clientIp}`, {
+  const rateLimit = checkRateLimit(`menu:${clientIp}`, {
     maxRequests: 60,
     windowSeconds: 60,
   });

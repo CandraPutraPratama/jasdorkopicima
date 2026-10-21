@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server.js';
 import { getOrderById, OrderNotFoundError, verifyOrderAccessToken } from '../../../../lib/order-service.ts';
-import { checkRateLimitKV, getClientIp } from '../../../../lib/rate-limit-kv.ts';
+import { checkRateLimit, getClientIp } from '../../../../lib/rate-limit.ts';
 import type { OrderRecord } from '../../../../types/order.ts';
 
 /**
@@ -30,7 +30,7 @@ export async function GET(
   segmentData: { params: Promise<{ id: string }> }
 ) {
   const clientIp = getClientIp(request.headers);
-  const rateLimit = await checkRateLimitKV(`order-get:${clientIp}`, {
+  const rateLimit = checkRateLimit(`order-get:${clientIp}`, {
     maxRequests: 60,
     windowSeconds: 60,
   });
