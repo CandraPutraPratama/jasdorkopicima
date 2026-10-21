@@ -1,50 +1,52 @@
 import type { NextRequest } from 'next/server';
 import { getEnvVar } from './env.ts';
 import { ADMIN_CONFIG } from './site-config.ts';
+import { validateAdminSession } from './admin-session.ts';
 
 export function getExpectedAdminPassword(): string {
   return getEnvVar('ADMIN_PASSWORD') || '';
 }
 
 /**
- * Memeriksa apakah request memiliki sesi admin yang valid
- * melalui cookie atau header x-admin-password / Authorization.
+ * Membaca token sesi admin dari cookie permintaan.
+ * Mendukung NextRequest.cookies maupun header `cookie` standar.
  */
-export function verifyAdminAuth(request: Request | NextRequest): boolean {
-  const expectedPassword = getExpectedAdminPassword();
-  if (!expectedPassword) {
-    return false;
+export function readAdminSessionToken(request: Request | NextRequest): string | null {
+  const fromNextCookies = (request as { cookies?: { get?: (name: string) => { value?: string } } })
+    .cookies?.get?.(ADMIN_CONFIG.cookieName)?.value;
+  if (typeof fromNextCookies === 'string' && fromNextCookies.length > 0) {
+    return fromNextCookies;
   }
 
-  // 1. Cek Header x-admin-password
-  const headerPassword = request.headers.get('x-admin-password');
-  if (headerPassword && headerPassword === expectedPassword) {
-    return true;
+  const rawCookie = request.headers.get('cookie') || '';
+  const match = rawCookie.match(
+    new RegExp(`(?:^|; )${ADMIN_CONFIG.cookieName}=([^;]*)`)
+  );
+  if (!match) {
+    return null;
   }
 
-  // 2. Cek Header Authorization: Bearer <password>
-  const authHeader = request.headers.get('authorization');
-  if (authHeader?.startsWith('Bearer ')) {
-    const bearer = authHeader.slice(7).trim();
-    if (bearer === expectedPassword) {
-      return true;
-    }
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
   }
+}
 
-  // 3. Cek Cookie session (mendukung NextRequest.cookies maupun standard Request.headers)
-  let cookieValue = (request as any).cookies?.get?.(ADMIN_CONFIG.cookieName)?.value;
-  if (!cookieValue) {
-    const rawCookie = request.headers.get('cookie') || '';
-    const match = rawCookie.match(new RegExp(`(?:^|; )${ADMIN_CONFIG.cookieName}=([^;]*)`));
-    cookieValue = match ? decodeURIComponent(match[1]) : undefined;
-  }
-
-  if (cookieValue) {
-    // Cookie menyimpan token sesi yang valid jika cocok dengan password
-    if (cookieValue === expectedPassword) {
-      return true;
-    }
-  }
-
-  return false;
+/**
+ * Memeriksa apakah request memiliki SESI admin yang valid.
+ *
+ * Token sesi bersifat stateless dan ditandatangani HMAC, sehingga validasinya
+ * konsisten di semua isolate Workers tanpa perlu berbagi state.
+ *
+ * Password admin sendiri tidak pernah disimpan di cookie, dan header lama
+ * (`x-admin-password` / `Authorization: Bearer <password>`) sengaja tidak lagi
+ * diterima karena keduanya memaksa kredensial jangka panjang ikut terkirim
+ * di setiap permintaan.
+ */
+export async function verifyAdminAuth(
+  request: Request | NextRequest
+): Promise<boolean> {
+  const token = readAdminSessionToken(request);
+  return validateAdminSession(token);
 }

@@ -7,7 +7,7 @@ export async function POST(
   request: NextRequest,
   segmentData: { params: Promise<{ id: string }> }
 ) {
-  if (!verifyAdminAuth(request)) {
+  if (!(await verifyAdminAuth(request))) {
     return NextResponse.json({ error: 'Akses ditolak: otorisasi admin diperlukan' }, { status: 401 });
   }
 

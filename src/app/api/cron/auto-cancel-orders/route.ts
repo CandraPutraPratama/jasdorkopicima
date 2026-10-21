@@ -19,8 +19,8 @@ function timingSafeCompare(provided: string, expected: string): boolean {
   return crypto.timingSafeEqual(providedBuf, expectedBuf);
 }
 
-function isAuthorized(request: NextRequest): boolean {
-  if (verifyAdminAuth(request)) {
+async function isAuthorized(request: NextRequest): Promise<boolean> {
+  if (await verifyAdminAuth(request)) {
     return true;
   }
 
@@ -49,7 +49,7 @@ function isAuthorized(request: NextRequest): boolean {
 }
 
 async function handleAutoCancel(request: NextRequest) {
-  if (!isAuthorized(request)) {
+  if (!(await isAuthorized(request))) {
     return NextResponse.json(
       { error: 'Unauthorized: Akses ditolak. Token otorisasi tidak valid.' },
       { status: 401 }

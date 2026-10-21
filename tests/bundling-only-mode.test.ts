@@ -183,9 +183,12 @@ test('API GET /api/site-settings: mengembalikan { bundling_only_mode } dengan Ca
 test('API Admin /api/admin/site-settings: proteksi auth dan toggle nilai', async () => {
   const { setSupabaseServerClientInstance } = await import('../src/lib/supabase-server.ts');
   const { GET, POST } = await import('../src/app/api/admin/site-settings/route.ts');
+  const { createAdminSession } = await import('../src/lib/admin-session.ts');
+  const { ADMIN_CONFIG } = await import('../src/lib/site-config.ts');
 
   const originalPass = process.env.ADMIN_PASSWORD;
   process.env.ADMIN_PASSWORD = 'secret-admin-pass';
+  const adminSessionToken = (await createAdminSession()).token;
 
   let mockStoredValue = 'true';
   setSupabaseServerClientInstance({
@@ -217,7 +220,7 @@ test('API Admin /api/admin/site-settings: proteksi auth dan toggle nilai', async
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-admin-password': 'secret-admin-pass',
+        cookie: `${ADMIN_CONFIG.cookieName}=${adminSessionToken}`,
       },
       body: JSON.stringify({ bundling_only_mode: false }),
     });
@@ -230,7 +233,7 @@ test('API Admin /api/admin/site-settings: proteksi auth dan toggle nilai', async
 
     // 3. GET admin dengan auth valid
     const getReq = new Request('http://localhost:3000/api/admin/site-settings', {
-      headers: { 'x-admin-password': 'secret-admin-pass' },
+      headers: { cookie: `${ADMIN_CONFIG.cookieName}=${adminSessionToken}` },
     });
     const getRes = await GET(getReq as any);
     assert.equal(getRes.status, 200);
@@ -242,7 +245,7 @@ test('API Admin /api/admin/site-settings: proteksi auth dan toggle nilai', async
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-admin-password': 'secret-admin-pass',
+        cookie: `${ADMIN_CONFIG.cookieName}=${adminSessionToken}`,
       },
       body: JSON.stringify({ bundling_only_mode: true }),
     });
