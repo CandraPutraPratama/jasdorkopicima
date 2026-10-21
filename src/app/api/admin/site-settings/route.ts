@@ -1,4 +1,5 @@
 import { verifyAdminAuth } from '../../../../lib/admin-auth.ts';
+import { adminJson } from '../../../../lib/admin-response.ts';
 import {
   getMinOrder50kMode,
   setMinOrder50kMode,
@@ -12,8 +13,8 @@ import {
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  if (!verifyAdminAuth(request)) {
-    return Response.json(
+  if (!(await verifyAdminAuth(request))) {
+    return adminJson(
       { error: 'Akses ditolak: otorisasi admin diperlukan' },
       { status: 401 }
     );
@@ -25,7 +26,7 @@ export async function GET(request: Request) {
       getOperationalOverride(),
     ]);
 
-    return Response.json(
+    return adminJson(
       {
         success: true,
         settings: {
@@ -42,13 +43,13 @@ export async function GET(request: Request) {
     );
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Gagal memuat pengaturan';
-    return Response.json({ error: message }, { status: 500 });
+    return adminJson({ error: message }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
-  if (!verifyAdminAuth(request)) {
-    return Response.json(
+  if (!(await verifyAdminAuth(request))) {
+    return adminJson(
       { error: 'Akses ditolak: otorisasi admin diperlukan' },
       { status: 401 }
     );
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return Response.json({ error: 'Format JSON tidak valid' }, { status: 400 });
+    return adminJson({ error: 'Format JSON tidak valid' }, { status: 400 });
   }
 
   try {
@@ -83,7 +84,7 @@ export async function POST(request: Request) {
         }
       }
     } else if (overrideUpdated === null) {
-      return Response.json(
+      return adminJson(
         { error: 'Parameter operational_override, min_order_50k_mode / bundling_only_mode, atau key/value wajib disertakan' },
         { status: 400 }
       );
@@ -94,7 +95,7 @@ export async function POST(request: Request) {
       overrideUpdated !== null ? Promise.resolve(overrideUpdated) : getOperationalOverride(),
     ]);
 
-    return Response.json({
+    return adminJson({
       success: true,
       message: 'Pengaturan situs berhasil diperbarui',
       settings: {
@@ -106,10 +107,10 @@ export async function POST(request: Request) {
   } catch (err: unknown) {
     console.error('[AdminSiteSettings] Gagal menyimpan pengaturan:', err);
     if (err instanceof SiteSettingsError) {
-      return Response.json({ error: err.message }, { status: 500 });
+      return adminJson({ error: err.message }, { status: 500 });
     }
     const message = err instanceof Error ? err.message : 'Terjadi kesalahan server';
-    return Response.json({ error: message }, { status: 500 });
+    return adminJson({ error: message }, { status: 500 });
   }
 }
 

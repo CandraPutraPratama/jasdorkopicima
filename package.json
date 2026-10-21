@@ -9,8 +9,8 @@
     "lint": "eslint",
     "test": "node --experimental-strip-types --test tests/**/*.test.ts",
     "test:api": "node scripts/test-kk-api.mjs",
-    "build:worker": "opennextjs-cloudflare build",
-    "deploy": "opennextjs-cloudflare build && wrangler deploy",
+    "build:worker": "opennextjs-cloudflare build && node scripts/copy-static-info-assets.mjs && node --experimental-strip-types scripts/write-assets-headers.ts",
+    "deploy": "npm run build:worker && wrangler deploy",
     "postinstall": "patch-package"
   },
   "dependencies": {
