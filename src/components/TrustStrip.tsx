@@ -71,6 +71,7 @@ export function TrustStrip({ className = '' }: TrustStripProps) {
         {/* Segmen 3: Link Testimoni */}
         <Link
           href="/testimoni"
+          prefetch={false}
           className="px-1 flex flex-col items-center justify-center group hover:bg-[#FFF8E7] rounded-xl transition-colors py-0.5"
         >
           <div className="flex items-center justify-center gap-0.5 text-[#C67D0A] text-xs sm:text-sm leading-tight">

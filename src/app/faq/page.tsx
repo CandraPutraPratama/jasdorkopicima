@@ -10,6 +10,8 @@ import {
   getAdminWhatsAppUrl,
 } from '@/lib/site-config';
 
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'FAQ - Pertanyaan Umum Layanan Jasa Order',
   description:

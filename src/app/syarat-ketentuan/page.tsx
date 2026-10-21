@@ -9,6 +9,8 @@ import {
   getAdminWhatsAppUrl,
 } from '@/lib/site-config';
 
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Syarat & Ketentuan - Aturan Layanan Jasa Order',
   description:

@@ -9,6 +9,8 @@ import {
   getAdminWhatsAppUrl,
 } from '@/lib/site-config';
 
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Kontak - Hubungi Customer Service Jasdor',
   description:

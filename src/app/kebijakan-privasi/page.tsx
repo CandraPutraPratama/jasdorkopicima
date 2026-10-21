@@ -7,6 +7,8 @@ import {
   getAdminWhatsAppUrl,
 } from '@/lib/site-config';
 
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Kebijakan Privasi - Perlindungan Data Pengguna',
   description:

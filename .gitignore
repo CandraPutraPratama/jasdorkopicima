@@ -57,3 +57,6 @@ scripts/*.json
 *.zip
 .opencode/
 supabase/.temp/
+
+# log dev lokal
+.dev-server.log

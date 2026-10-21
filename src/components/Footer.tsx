@@ -46,6 +46,7 @@ export function Footer() {
               <span key={link.href} className="inline-flex items-center gap-2.5">
                 <Link
                   href={link.href}
+                  prefetch={false}
                   className="hover:text-[#C67D0A] underline-offset-4 hover:underline transition"
                 >
                   {link.label}
