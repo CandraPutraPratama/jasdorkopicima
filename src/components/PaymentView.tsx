@@ -12,9 +12,11 @@ import { saveMyOrder } from '@/lib/my-orders';
 
 interface PaymentViewProps {
   initialOrder: OrderRecord;
+  /** Token akses pesanan untuk mengotorisasi polling status & konfirmasi bayar. */
+  accessToken?: string | null;
 }
 
-export function PaymentView({ initialOrder }: PaymentViewProps) {
+export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
   const [order, setOrder] = useState<OrderRecord>(initialOrder);
   const [status, setStatus] = useState<OrderStatus>(() => {
     const isPast = new Date(initialOrder.expires_at).getTime() <= Date.now();
@@ -35,6 +37,7 @@ export function PaymentView({ initialOrder }: PaymentViewProps) {
   const [isCaraBayarOpen, setIsCaraBayarOpen] = useState(false);
   const [, startTransition] = useTransition();
   const breakdown = getOrderBreakdown(order.items, order.fee);
+  const tokenQuery = accessToken ? `?t=${encodeURIComponent(accessToken)}` : '';
 
   // Fetch / cek status terbaru pesanan dari server
   const checkLatestStatus = useCallback(async (isManual = false) => {
@@ -42,9 +45,12 @@ export function PaymentView({ initialOrder }: PaymentViewProps) {
       setIsRefreshingStatus(true);
     }
     try {
-      const res = await fetch(`/api/orders/${encodeURIComponent(order.id)}`, {
-        cache: 'no-store',
-      });
+      const res = await fetch(
+        `/api/orders/${encodeURIComponent(order.id)}${tokenQuery}`,
+        {
+          cache: 'no-store',
+        }
+      );
       if (res.ok) {
         const data = await res.json();
         if (data.success && data.order) {
@@ -61,7 +67,7 @@ export function PaymentView({ initialOrder }: PaymentViewProps) {
         setIsRefreshingStatus(false);
       }
     }
-  }, [order.id]);
+  }, [order.id, tokenQuery]);
 
   // Polling otomatis setiap 20 detik jika status BELUM final
   useEffect(() => {
@@ -80,9 +86,9 @@ export function PaymentView({ initialOrder }: PaymentViewProps) {
   // Simpan ke Pesanan Saya di perangkat ini
   useEffect(() => {
     if (order?.id) {
-      saveMyOrder(order.id, order.created_at);
+      saveMyOrder(order.id, order.created_at, undefined, accessToken ?? undefined);
     }
-  }, [order?.id, order?.created_at]);
+  }, [order?.id, order?.created_at, accessToken]);
 
   // Hitung sisa waktu kedaluwarsa secara live
   useEffect(() => {
@@ -133,9 +139,12 @@ export function PaymentView({ initialOrder }: PaymentViewProps) {
     setConfirmError(null);
 
     try {
-      const res = await fetch(`/api/orders/${encodeURIComponent(order.id)}/confirm-payment`, {
-        method: 'POST',
-      });
+      const res = await fetch(
+        `/api/orders/${encodeURIComponent(order.id)}/confirm-payment${tokenQuery}`,
+        {
+          method: 'POST',
+        }
+      );
       const data = await res.json();
 
       if (!res.ok || !data.success) {

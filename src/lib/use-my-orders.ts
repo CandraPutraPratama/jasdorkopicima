@@ -51,9 +51,16 @@ export function useMyOrders(): UseMyOrdersResult {
 
       const results = await Promise.allSettled(
         targetEntries.map(async (entry) => {
-          const res = await fetch(`/api/orders/${encodeURIComponent(entry.orderId)}`, {
-            cache: 'no-store',
-          });
+          // Kirim token akses agar server bisa memverifikasi kepemilikan pesanan
+          const tokenQuery = entry.accessToken
+            ? `?t=${encodeURIComponent(entry.accessToken)}`
+            : '';
+          const res = await fetch(
+            `/api/orders/${encodeURIComponent(entry.orderId)}${tokenQuery}`,
+            {
+              cache: 'no-store',
+            }
+          );
           if (!res.ok) return null;
           const data = await res.json();
           return data?.success && data?.order ? (data.order as OrderRecord) : null;

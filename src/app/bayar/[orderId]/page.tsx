@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getOrderById, OrderNotFoundError } from '@/lib/order-service';
+import { getOrderById, OrderNotFoundError, verifyOrderAccessToken } from '@/lib/order-service';
 import { PaymentView } from '@/components/PaymentView';
 import { SITE_CONFIG } from '@/lib/site-config';
 
 interface PageProps {
   params: Promise<{ orderId: string }>;
+  searchParams: Promise<{ t?: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -21,8 +22,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function BayarPage({ params }: PageProps) {
+export default async function BayarPage({ params, searchParams }: PageProps) {
   const { orderId } = await params;
+  const { t: accessToken } = await searchParams;
 
   if (!orderId) {
     notFound();
@@ -55,5 +57,14 @@ export default async function BayarPage({ params }: PageProps) {
     );
   }
 
-  return <PaymentView initialOrder={order} />;
+  // Tanpa token akses yang cocok, pesanan tidak dianggap ada (anti-enumerasi).
+  if (!verifyOrderAccessToken(order, accessToken)) {
+    notFound();
+  }
+
+  const { access_token: orderAccessToken, ...publicOrder } = order;
+
+  return (
+    <PaymentView initialOrder={publicOrder} accessToken={orderAccessToken ?? accessToken ?? null} />
+  );
 }

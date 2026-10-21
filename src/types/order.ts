@@ -50,4 +50,9 @@ export interface OrderRecord {
   needs_refund?: boolean;
   created_at: string;
   expires_at: string;
+  /**
+   * Token akses rahasia per pesanan (32 hex). Dipakai untuk mengotorisasi
+   * pembacaan pesanan dan konfirmasi pembayaran tanpa menebak ID publik.
+   */
+  access_token?: string;
 }

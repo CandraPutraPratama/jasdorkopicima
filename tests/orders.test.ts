@@ -26,12 +26,19 @@ describe('Order Service - QRIS On-Site Flow', () => {
       assert.match(id, /^CG-[A-Z0-9]{6}$/);
     });
 
+    it('excludes ambiguous characters so customers can dictate the ID safely', () => {
+      const ambiguous = /[IO01]/;
+      for (let i = 0; i < 100; i++) {
+        assert.equal(ambiguous.test(generateOrderId()), false);
+      }
+    });
+
     it('generates unique IDs across multiple calls', () => {
       const ids = new Set<string>();
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < 500; i++) {
         ids.add(generateOrderId());
       }
-      assert.equal(ids.size, 50);
+      assert.equal(ids.size, 500);
     });
   });
 
@@ -176,6 +183,7 @@ describe('Order Service - QRIS On-Site Flow', () => {
       });
 
       assert.match(order.id, /^CG-[A-Z0-9]{6}$/);
+      assert.match(order.access_token ?? '', /^[0-9a-f]{32}$/);
       assert.equal(order.status, 'menunggu_pembayaran');
       assert.equal(order.brand_slug, 'kopi-kenangan');
       assert.equal(order.outlet_code, 'KK-LIPPO');

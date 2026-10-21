@@ -18,7 +18,7 @@ import {
 } from '@/lib/sanitizer';
 import { useScrollLock } from '@/hooks/useScrollLock';
 import { isOutletClosed as checkIsOutletClosed } from '@/lib/orderability';
-import { saveMyOrder } from '@/lib/my-orders';
+import { saveMyOrder, buildOrderPaymentUrl } from '@/lib/my-orders';
 import { useMinOrder50kMode } from '@/hooks/useBundlingOnlyMode';
 
 interface CartDrawerProps {
@@ -303,13 +303,15 @@ export function CartDrawer({
 
       // 2. Berhasil membuat pesanan: simpan ke Pesanan Saya di perangkat ini
       if (orderData.orderId) {
-        saveMyOrder(orderData.orderId);
+        saveMyOrder(orderData.orderId, undefined, undefined, orderData.accessToken);
       }
 
       // Kosongkan keranjang, tutup drawer, dan arahkan ke halaman bayar
       onClearCart();
       onClose();
-      router.push(orderData.redirectUrl || `/bayar/${orderData.orderId}`);
+      const paymentUrl =
+        orderData.redirectUrl || buildOrderPaymentUrl(orderData.orderId, orderData.accessToken);
+      router.push(paymentUrl);
     } catch (err: any) {
       setErrorMessage(err.message || 'Terjadi kesalahan saat memproses pesanan.');
     } finally {

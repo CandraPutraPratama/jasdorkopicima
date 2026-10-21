@@ -7,7 +7,12 @@ import {
   type OrderItemInput,
 } from './pricing.ts';
 import { getStartOfTodayWIB } from './order-stats.ts';
+import { cacheService, cacheKeys } from './cache.ts';
+import { kkApiClient } from './kk-client.ts';
+import { normalizeMenu, normalizeProductOptions } from './adapter.ts';
+import { BUSINESS_CONFIG } from '../config/business.ts';
 import type { CartItem } from './cart-reducer.ts';
+import type { Product, MenuGroup, ProductOptionDetails } from '../types/domain.ts';
 import type { OrderRecord, OrderStatus, OrderItemSnapshot } from '../types/order.ts';
 
 // ── TYPED ERRORS (Sesuai panduan error-handling skill) ──
@@ -53,16 +58,66 @@ export class OrderStateError extends OrderError {
 /**
  * Menghasilkan Order ID acak dengan prefix CG- dan 6 karakter alfanumerik kapital unik.
  * Contoh: "CG-A8F29K"
+ *
+ * Entropi diambil dari Web Crypto (`crypto.getRandomValues`) agar ID tidak dapat
+ * diprediksi. Karakter ambigu (I, O, 0, 1) dihilangkan supaya mudah dibacakan
+ * saat pelanggan menyebutkannya ke admin.
  */
 export function generateOrderId(): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const bytes = new Uint8Array(6);
+  crypto.getRandomValues(bytes);
+
   let randomPart = '';
-  // Ambil byte acak yang aman
-  for (let i = 0; i < 6; i++) {
-    const randomIndex = Math.floor(Math.random() * chars.length);
-    randomPart += chars[randomIndex];
+  for (let i = 0; i < bytes.length; i++) {
+    randomPart += chars[bytes[i] % chars.length];
   }
   return `CG-${randomPart}`;
+}
+
+/**
+ * Menghasilkan token akses rahasia per pesanan (32 karakter hex).
+ * Token ini menjadi "kunci" untuk membaca dan mengonfirmasi pesanan,
+ * sehingga ID publik saja tidak cukup untuk mengakses data pelanggan.
+ */
+export function generateOrderAccessToken(): string {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Membandingkan token akses pesanan secara constant-time untuk menghindari
+ * timing attack. Pesanan lama tanpa token selalu ditolak.
+ */
+export function verifyOrderAccessToken(
+  order: Pick<OrderRecord, 'access_token'> | null | undefined,
+  providedToken: string | null | undefined
+): boolean {
+  const expected = order?.access_token;
+  if (typeof expected !== 'string' || expected.length === 0) {
+    return false;
+  }
+  if (typeof providedToken !== 'string' || providedToken.length === 0) {
+    return false;
+  }
+  return timingSafeEqualHex(expected, providedToken);
+}
+
+/**
+ * Perbandingan string constant-time berbasis byte (aman di Workers & Node).
+ * Panjang berbeda tetap dibandingkan agar waktu eksekusi tidak membocorkan panjang.
+ */
+function timingSafeEqualHex(expected: string, provided: string): boolean {
+  const expectedBytes = new TextEncoder().encode(expected);
+  const providedBytes = new TextEncoder().encode(provided);
+  const maxLength = Math.max(expectedBytes.length, providedBytes.length);
+  let diff = expectedBytes.length ^ providedBytes.length;
+
+  for (let i = 0; i < maxLength; i++) {
+    diff |= (expectedBytes[i] ?? 0) ^ (providedBytes[i] ?? 0);
+  }
+  return diff === 0;
 }
 
 /**
@@ -112,6 +167,279 @@ export function validateRegularOrderSubtotal(params: {
   }
   return { isValid: true };
 }
+
+/**
+ * Mengambil menu outlet resmi dari cache atau KK API.
+ * Mendukung pola stale-if-error untuk ketahanan jaringan.
+ */
+export async function getServerOutletMenu(outletCode: string): Promise<MenuGroup[]> {
+  const cacheKey = cacheKeys.menu(outletCode);
+
+  // 1. Cek cache segar
+  const cached = await cacheService.get<{ menuGroups: MenuGroup[] }>(cacheKey);
+  if (cached && Array.isArray(cached.menuGroups) && cached.menuGroups.length > 0) {
+    return cached.menuGroups;
+  }
+
+  // 2. Ambil dari KK API
+  try {
+    const rawMenu = await kkApiClient.queryProductMenu(outletCode);
+    const menuGroups = normalizeMenu(rawMenu);
+    if (!menuGroups || menuGroups.length === 0) {
+      throw new Error('Menu outlet kosong atau tidak tersedia');
+    }
+    await cacheService.set(cacheKey, { menuGroups }, BUSINESS_CONFIG.cache.menuTtlSeconds);
+    return menuGroups;
+  } catch (error: any) {
+    console.error(`[OrderService] Gagal memuat menu fresh outlet [${outletCode}]:`, error.message);
+
+    // Stale-if-error: kembalikan cache stale jika ada
+    const staleData = await cacheService.getStale<{ menuGroups: MenuGroup[] }>(cacheKey);
+    if (staleData && Array.isArray(staleData.menuGroups) && staleData.menuGroups.length > 0) {
+      console.warn(`[OrderService] Menggunakan STALE data menu untuk outlet [${outletCode}].`);
+      return staleData.menuGroups;
+    }
+
+    throw new OrderError(
+      'Gagal memuat data menu outlet. Silakan coba beberapa saat lagi.',
+      'MENU_LOAD_ERROR',
+      503
+    );
+  }
+}
+
+/**
+ * Mengambil opsi varian, SKU, dan addon produk resmi dari cache atau KK API.
+ * Mendukung pola stale-if-error untuk ketahanan jaringan.
+ */
+export async function getServerProductOptions(
+  storeId: number,
+  outletCode: string,
+  bundleCode: string
+): Promise<ProductOptionDetails> {
+  const cacheKey = cacheKeys.productOptions(outletCode, bundleCode);
+
+  // 1. Cek cache segar
+  const cached = await cacheService.get<{ options: ProductOptionDetails }>(cacheKey);
+  if (cached && cached.options) {
+    return cached.options;
+  }
+
+  // 2. Ambil dari KK API
+  try {
+    const rawOptions = await kkApiClient.getProductOptions(storeId, outletCode, bundleCode);
+    const options = normalizeProductOptions(rawOptions);
+    await cacheService.set(cacheKey, { options }, BUSINESS_CONFIG.cache.optionsTtlSeconds);
+    return options;
+  } catch (error: any) {
+    console.error(
+      `[OrderService] Gagal memuat options [${outletCode}/${bundleCode}]:`,
+      error.message
+    );
+
+    // Stale-if-error
+    const staleData = await cacheService.getStale<{ options: ProductOptionDetails }>(cacheKey);
+    if (staleData && staleData.options) {
+      console.warn(`[OrderService] Menggunakan STALE options untuk [${outletCode}/${bundleCode}].`);
+      return staleData.options;
+    }
+
+    throw new OrderError(
+      'Gagal memuat data menu outlet. Silakan coba beberapa saat lagi.',
+      'OPTIONS_LOAD_ERROR',
+      503
+    );
+  }
+}
+
+export interface ServerRecalculationResult {
+  items: CartItem[];
+  pricing: OrderPricingResult;
+  unavailableItems: Array<{ name: string; reason: string }>;
+}
+
+/**
+ * Merekalkulasi seluruh harga item pesanan (reguler & bundling) secara otoritatif di server.
+ * Mengabaikan basePrice, skuPrice, variantAddition, dan toppingTotal dari client.
+ */
+export async function recalculateOrderItemsWithServerPrices(params: {
+  outletCode: string;
+  storeId: number;
+  items: CartItem[];
+  allProducts: Product[];
+  tierDiff: number;
+}): Promise<ServerRecalculationResult> {
+  const { outletCode, storeId, items, allProducts, tierDiff } = params;
+  const unavailableItems: Array<{ name: string; reason: string }> = [];
+
+  const {
+    validateBundleSelection,
+    calculateBundlePricing,
+    normalizeProductName,
+    BUNDLE_PACKAGES,
+    isBundleAvailableAtOutlet,
+  } = await import('./bundling.ts');
+
+  // Clone items secara mendalam agar mutasi harga aman dan terisolasi
+  const recomputedItems: CartItem[] = items.map((it) => ({
+    ...it,
+    addons: it.addons ? it.addons.map((a) => ({ ...a })) : [],
+    bundleDetails: it.bundleDetails ? it.bundleDetails.map((d) => ({ ...d })) : undefined,
+  }));
+
+  for (const item of recomputedItems) {
+    if (item.isBundle) {
+      const bundleType = item.bundleType as any;
+      if (!bundleType || !BUNDLE_PACKAGES[bundleType as keyof typeof BUNDLE_PACKAGES]) {
+        throw new OrderValidationError(`Tipe paket bundling tidak valid: ${item.bundleType}`);
+      }
+
+      if (!isBundleAvailableAtOutlet(bundleType, allProducts)) {
+        throw new OrderValidationError(
+          `Paket ${BUNDLE_PACKAGES[bundleType as keyof typeof BUNDLE_PACKAGES].name} tidak tersedia di outlet ini karena pilihan menu tidak mencukupi`
+        );
+      }
+
+      const details = item.bundleDetails || [];
+
+      // Cek stok & sinkronkan live base price untuk tiap item di bundle
+      for (const detail of details) {
+        // Hapus/abaikan seluruh harga kiriman client di detail
+        detail.liveBasePrice = undefined;
+        detail.normalPrice = undefined;
+        detail.promoPrice = undefined;
+
+        const normDetail = normalizeProductName(detail.name);
+        const freshProd = allProducts.find(
+          (p) => normalizeProductName(p.name) === normDetail
+        );
+
+        if (!freshProd) {
+          unavailableItems.push({
+            name: `${detail.name} (isi ${item.name})`,
+            reason: 'Menu tidak tersedia di outlet ini',
+          });
+        } else if (freshProd.isSoldOut) {
+          unavailableItems.push({
+            name: `${freshProd.name} (isi ${item.name})`,
+            reason: 'Stok sedang habis di outlet ini',
+          });
+        } else if (freshProd.basePrice && freshProd.basePrice > 0) {
+          detail.liveBasePrice = freshProd.basePrice;
+        }
+      }
+
+      // Validasi pemilihan slot paket bundling dengan tierDiff outlet
+      const validation = validateBundleSelection(bundleType, details as any, tierDiff);
+      if (!validation.isValid) {
+        throw new OrderValidationError(validation.error || 'Konfigurasi paket bundling tidak valid');
+      }
+
+      // Hitung ulang harga murni server dengan tierDiff outlet
+      const bundlePricing = calculateBundlePricing(bundleType, details as any, tierDiff);
+      item.bundleNormalPrice = bundlePricing.normalPrice;
+      item.basePrice = bundlePricing.normalPrice;
+      item.bundleFee = bundlePricing.bundleFee;
+
+      // Sinkronkan breakdown harga tier per item detail
+      for (let i = 0; i < details.length; i++) {
+        const breakdown = bundlePricing.itemBreakdown[i];
+        if (breakdown) {
+          details[i].normalPrice = breakdown.normalPrice;
+          details[i].promoPrice = breakdown.promoPrice;
+        }
+      }
+      continue;
+    }
+
+    // Item Reguler:
+    // 1. Cari produk di menu outlet server
+    const freshProd = allProducts.find((p) => p.bundleCode === item.bundleCode);
+    if (!freshProd) {
+      unavailableItems.push({
+        name: item.name || 'Produk',
+        reason: 'Menu sudah tidak tersedia di outlet ini',
+      });
+      continue;
+    }
+    if (freshProd.isSoldOut) {
+      unavailableItems.push({
+        name: freshProd.name || item.name,
+        reason: 'Stok sedang habis di outlet ini',
+      });
+      continue;
+    }
+
+    // 2. Ambil basePrice dari menu outlet server
+    const basePrice = freshProd.basePrice;
+
+    // 3. Ambil options produk dari server (cache/KK API)
+    const options = await getServerProductOptions(storeId, outletCode, item.bundleCode);
+
+    // 4. Resolusi SKU
+    let skuPrice = basePrice;
+    let variantAddition = 0;
+
+    if (options.skus && options.skus.length > 0) {
+      if (!item.sku) {
+        throw new OrderValidationError('Varian atau ukuran menu tidak valid atau tidak tersedia di outlet ini');
+      }
+      const matchedSku = options.skus.find((s) => s.sku === item.sku);
+      if (!matchedSku) {
+        throw new OrderValidationError('Varian atau ukuran menu tidak valid atau tidak tersedia di outlet ini');
+      }
+      skuPrice = matchedSku.price;
+      variantAddition = Math.max(0, matchedSku.price - basePrice);
+    }
+
+    // 5. Resolusi Toppings / Addons
+    let toppingTotal = 0;
+    if (item.addons && item.addons.length > 0) {
+      const verifiedAddons: any[] = [];
+      for (const clientAddon of item.addons) {
+        const matchedAddon = options.addons.find(
+          (a) =>
+            (clientAddon.sku ? a.sku === clientAddon.sku : false) ||
+            a.name.trim().toLowerCase() === (clientAddon.name || '').trim().toLowerCase()
+        );
+
+        if (!matchedAddon) {
+          throw new OrderValidationError(`Topping "${clientAddon.name || clientAddon.sku}" tidak tersedia di outlet ini`);
+        }
+        if (matchedAddon.isSoldOut) {
+          throw new OrderValidationError(`Topping "${matchedAddon.name}" sedang habis di outlet ini`);
+        }
+
+        verifiedAddons.push({
+          sku: matchedAddon.sku,
+          name: matchedAddon.name,
+          price: matchedAddon.price,
+          categoryName: matchedAddon.categoryName,
+        });
+        toppingTotal += matchedAddon.price;
+      }
+      item.addons = verifiedAddons;
+    } else {
+      item.addons = [];
+      toppingTotal = 0;
+    }
+
+    // 6. Timpa seluruh nilai harga item dengan data otoritatif server
+    item.basePrice = basePrice;
+    item.skuPrice = skuPrice;
+    item.variantAddition = variantAddition;
+    item.toppingTotal = toppingTotal;
+  }
+
+  const pricing = calculateServerOrderPricing(recomputedItems);
+
+  return {
+    items: recomputedItems,
+    pricing,
+    unavailableItems,
+  };
+}
+
 
 /**
  * Memeriksa apakah pesanan telah kedaluwarsa.
@@ -226,6 +554,7 @@ export function createOrderRecord(params: CreateOrderParams): OrderRecord {
     pickup_time: (pickupTime || '').replace(/[\r\n]/g, '').trim() || undefined,
     created_at: now.toISOString(),
     expires_at: expiresAt.toISOString(),
+    access_token: generateOrderAccessToken(),
   };
 }
 
@@ -241,6 +570,20 @@ export async function saveOrderToDb(order: OrderRecord): Promise<OrderRecord> {
     .single();
 
   if (error) {
+    // Deteksi migrasi yang belum dijalankan (kolom access_token belum ada).
+    // Fail loudly dengan pesan yang bisa ditindaklanjuti, bukan 500 misterius.
+    if (error.code === '42703' || error.message?.includes('access_token')) {
+      console.error(
+        '[OrderService] Kolom orders.access_token belum ada. Jalankan supabase/migrations/007_add_order_access_token.sql'
+      );
+      throw new OrderError(
+        'Konfigurasi database belum lengkap: migrasi token akses pesanan belum diterapkan.',
+        'DB_SCHEMA_OUTDATED',
+        500,
+        error
+      );
+    }
+
     console.error('[OrderService] Gagal menyimpan pesanan ke Supabase:', error.message);
     throw new OrderError(
       `Gagal membuat pesanan di database: ${error.message}`,

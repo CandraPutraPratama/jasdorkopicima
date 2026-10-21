@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useMyOrders } from '@/lib/use-my-orders';
 import { formatRupiah } from '@/lib/currency';
+import { buildOrderPaymentUrl, getMyOrderAccessToken } from '@/lib/my-orders';
 
 export function ActiveOrderBanner() {
   const { activePendingPaymentOrder } = useMyOrders();
@@ -12,6 +13,10 @@ export function ActiveOrderBanner() {
   }
 
   const orderTotalFormatted = formatRupiah(activePendingPaymentOrder.total);
+  const paymentUrl = buildOrderPaymentUrl(
+    activePendingPaymentOrder.id,
+    getMyOrderAccessToken(activePendingPaymentOrder.id)
+  );
 
   return (
     <div
@@ -27,7 +32,7 @@ export function ActiveOrderBanner() {
       </div>
 
       <Link
-        href={`/bayar/${encodeURIComponent(activePendingPaymentOrder.id)}`}
+        href={paymentUrl}
         className="shrink-0 inline-flex items-center gap-1 px-3 py-1 bg-[#D97706] hover:bg-[#B45309] text-white text-[11px] font-bold rounded-xl transition shadow-2xs active:scale-95 whitespace-nowrap"
       >
         <span>Lanjutkan Bayar</span>

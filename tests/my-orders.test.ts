@@ -9,6 +9,8 @@ import {
   isActiveOrderStatus,
   classifyOrders,
   formatCountdownTimer,
+  getMyOrderAccessToken,
+  buildOrderPaymentUrl,
   type MyOrderEntry,
 } from '../src/lib/my-orders.ts';
 import type { OrderRecord } from '../src/types/order.ts';
@@ -105,6 +107,48 @@ describe('My Orders Helper & Classification (TDD)', () => {
       saveMyOrder('CG-ORD1', '2026-10-16T10:00:00Z', mockStorage);
       clearMyOrders(mockStorage);
       assert.deepEqual(getMyOrderEntries(mockStorage), []);
+    });
+
+    it('stores the access token alongside the order id', () => {
+      const token = 'a'.repeat(32);
+      saveMyOrder('CG-TOK001', '2026-10-16T10:00:00Z', mockStorage, token);
+
+      const entries = getMyOrderEntries(mockStorage);
+      assert.equal(entries[0].orderId, 'CG-TOK001');
+      assert.equal(entries[0].accessToken, token);
+      assert.equal(getMyOrderAccessToken('CG-TOK001', mockStorage), token);
+    });
+
+    it('preserves the previously stored token when re-saving without one', () => {
+      const token = 'b'.repeat(32);
+      saveMyOrder('CG-TOK002', '2026-10-16T10:00:00Z', mockStorage, token);
+      saveMyOrder('CG-TOK002', '2026-10-16T11:00:00Z', mockStorage);
+
+      const entries = getMyOrderEntries(mockStorage);
+      assert.equal(entries.length, 1);
+      assert.equal(entries[0].createdAt, '2026-10-16T11:00:00Z');
+      assert.equal(entries[0].accessToken, token);
+    });
+
+    it('returns null when no token is stored for an order', () => {
+      saveMyOrder('CG-NOTOK', '2026-10-16T10:00:00Z', mockStorage);
+      assert.equal(getMyOrderAccessToken('CG-NOTOK', mockStorage), null);
+      assert.equal(getMyOrderAccessToken('CG-MISSING', mockStorage), null);
+    });
+  });
+
+  describe('buildOrderPaymentUrl', () => {
+    it('appends the access token as query param t', () => {
+      assert.equal(
+        buildOrderPaymentUrl('CG-ABC234', 'f'.repeat(32)),
+        `/bayar/CG-ABC234?t=${'f'.repeat(32)}`
+      );
+    });
+
+    it('returns the bare payment path when no token is available', () => {
+      assert.equal(buildOrderPaymentUrl('CG-ABC234'), '/bayar/CG-ABC234');
+      assert.equal(buildOrderPaymentUrl('CG-ABC234', null), '/bayar/CG-ABC234');
+      assert.equal(buildOrderPaymentUrl('CG-ABC234', '   '), '/bayar/CG-ABC234');
     });
   });
 

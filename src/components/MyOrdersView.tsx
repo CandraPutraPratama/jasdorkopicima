@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useMyOrders } from '@/lib/use-my-orders';
 import { formatRupiah } from '@/lib/currency';
-import { formatCountdownTimer } from '@/lib/my-orders';
+import { formatCountdownTimer, buildOrderPaymentUrl, getMyOrderAccessToken } from '@/lib/my-orders';
 
 function ActiveOrderCountdown({ expiresAt }: { expiresAt: string }) {
   const [secondsLeft, setSecondsLeft] = useState<number>(() => {
@@ -254,7 +254,7 @@ export function MyOrdersView() {
 
                   {/* Tombol Lanjutkan ke Pembayaran */}
                   <Link
-                    href={`/bayar/${encodeURIComponent(order.id)}`}
+                    href={buildOrderPaymentUrl(order.id, getMyOrderAccessToken(order.id))}
                     className="w-full min-h-[42px] px-4 py-2.5 bg-[#2B1D12] text-[#FAF4E8] font-display font-black text-xs rounded-xl border-2 border-[#2B1D12] shadow-[3px_3px_0px_#C67D0A] transition hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-2"
                   >
                     <span>
@@ -346,7 +346,7 @@ export function MyOrdersView() {
                     </span>
 
                     <Link
-                      href={`/bayar/${encodeURIComponent(order.id)}`}
+                      href={buildOrderPaymentUrl(order.id, getMyOrderAccessToken(order.id))}
                       className="text-[11px] font-black text-[#C67D0A] hover:underline underline-offset-2"
                     >
                       Lihat Rincian

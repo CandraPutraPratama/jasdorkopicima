@@ -6,6 +6,8 @@ export const MAX_MY_ORDERS = 50;
 export interface MyOrderEntry {
   orderId: string;
   createdAt: string;
+  /** Token akses rahasia pesanan; wajib untuk membuka ulang halaman pembayaran. */
+  accessToken?: string;
 }
 
 export interface StorageLike {
@@ -65,7 +67,8 @@ export function getMyOrderEntries(customStorage?: StorageLike): MyOrderEntry[] {
 export function saveMyOrder(
   orderId: string,
   createdAt?: string,
-  customStorage?: StorageLike
+  customStorage?: StorageLike,
+  accessToken?: string
 ): MyOrderEntry[] {
   if (!orderId || typeof orderId !== 'string') return [];
 
@@ -76,9 +79,13 @@ export function saveMyOrder(
   const current = getMyOrderEntries(customStorage);
 
   const existingWithoutCurrent = current.filter((it) => it.orderId !== trimmedId);
+  const previousEntry = current.find((it) => it.orderId === trimmedId);
+  const resolvedToken = accessToken?.trim() || previousEntry?.accessToken;
+
   const newEntry: MyOrderEntry = {
     orderId: trimmedId,
     createdAt: createdAt || new Date().toISOString(),
+    ...(resolvedToken ? { accessToken: resolvedToken } : {}),
   };
 
   const updated = [newEntry, ...existingWithoutCurrent].slice(0, MAX_MY_ORDERS);
@@ -93,6 +100,31 @@ export function saveMyOrder(
 
   dispatchStorageUpdate(updated);
   return updated;
+}
+
+/**
+ * Mengambil token akses tersimpan untuk satu pesanan, atau null jika tidak ada.
+ */
+export function getMyOrderAccessToken(
+  orderId: string,
+  customStorage?: StorageLike
+): string | null {
+  const trimmedId = orderId?.trim();
+  if (!trimmedId) return null;
+
+  const entry = getMyOrderEntries(customStorage).find((it) => it.orderId === trimmedId);
+  return entry?.accessToken ?? null;
+}
+
+/**
+ * Membentuk URL halaman pembayaran lengkap dengan token akses.
+ * Jika token tidak tersedia, URL tetap dibentuk agar halaman bisa
+ * menampilkan pesan "pesanan tidak ditemukan" yang seragam.
+ */
+export function buildOrderPaymentUrl(orderId: string, accessToken?: string | null): string {
+  const base = `/bayar/${encodeURIComponent(orderId)}`;
+  const token = accessToken?.trim();
+  return token ? `${base}?t=${encodeURIComponent(token)}` : base;
 }
 
 /**
