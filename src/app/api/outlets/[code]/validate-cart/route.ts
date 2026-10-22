@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server.js';
 import { kkApiClient } from '@/lib/kk-client';
 import { normalizeMenu, normalizeStore } from '@/lib/adapter';
 import { isOutletClosed } from '@/lib/orderability';
@@ -6,6 +6,7 @@ import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { verifyStoreScope } from '@/lib/outlet-service';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
+import { applyCachePolicy, CACHE_POLICY } from '../../../../../lib/cache-headers.ts';
 
 interface ValidateCartItemInput {
   bundleCode: string;
@@ -14,7 +15,7 @@ interface ValidateCartItemInput {
   quantity?: number;
 }
 
-export async function POST(
+async function handlePost(
   request: NextRequest,
   segmentData: { params: Promise<{ code: string }> }
 ) {
@@ -271,4 +272,9 @@ export async function POST(
       unavailableItems: [],
     });
   }
+}
+
+export async function POST(...args: Parameters<typeof handlePost>) {
+  const response = await handlePost(...args);
+  return applyCachePolicy(response, CACHE_POLICY.noStore);
 }

@@ -1,12 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server.js';
 import { searchOutlets, getFeaturedOutlets, getTotalOutletsCount } from '@/lib/outlet-service';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
 import { cleanSearchQuery } from '@/lib/sanitizer';
 import type { Outlet } from '@/types/domain';
+import { applyCachePolicy, CACHE_POLICY } from '../../../lib/cache-headers.ts';
 
-export async function GET(request: NextRequest) {
+async function handleGet(request: NextRequest) {
   const clientIp = getClientIp(request.headers);
   const rateLimit = checkRateLimit(`search:${clientIp}`, {
     maxRequests: 60,
@@ -114,4 +115,9 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+export async function GET(...args: Parameters<typeof handleGet>) {
+  const response = await handleGet(...args);
+  return applyCachePolicy(response, CACHE_POLICY.search);
 }

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server.js';
 import { kkApiClient } from '@/lib/kk-client';
 import { normalizeMenu } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
@@ -6,8 +6,9 @@ import { BUSINESS_CONFIG } from '@/config/business';
 import { verifyStoreScope } from '@/lib/outlet-service';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
 import type { MenuGroup } from '@/types/domain';
+import { applyCachePolicy, CACHE_POLICY } from '../../../../../lib/cache-headers.ts';
 
-export async function GET(
+async function handleGet(
   request: NextRequest,
   segmentData: { params: Promise<{ code: string }> }
 ) {
@@ -107,4 +108,9 @@ export async function GET(
       { status: 500 }
     );
   }
+}
+
+export async function GET(...args: Parameters<typeof handleGet>) {
+  const response = await handleGet(...args);
+  return applyCachePolicy(response, CACHE_POLICY.menu);
 }
