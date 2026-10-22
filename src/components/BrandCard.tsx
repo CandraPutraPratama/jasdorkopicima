@@ -60,14 +60,48 @@ export function BrandCard({ brand, outletCount }: BrandCardProps) {
     );
   };
 
-  const cardContent = (
-    <div
-      className={`rounded-2xl overflow-hidden flex flex-col transition relative bg-[#FFFDF9] border-2 border-[#2B1D12] ${
-        isClickable
-          ? 'shadow-[4px_4px_0px_#2B1D12] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_#2B1D12] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer'
-          : 'shadow-[3px_3px_0px_#2B1D12] cursor-default select-none'
-      }`}
-    >
+  const cardContent = isClickable ? (
+    <div className="rounded-2xl overflow-hidden flex flex-row items-center transition relative bg-[#FFFDF9] border-2 border-[#2B1D12] shadow-[4px_4px_0px_#2B1D12] group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:shadow-[5px_5px_0px_#2B1D12] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer">
+      {/* Visual Logo Brand (Kiri) */}
+      <div className="w-24 sm:w-28 h-24 sm:h-28 relative flex items-center justify-center overflow-hidden border-r-2 border-[#2B1D12] bg-[#FAF4E8] shrink-0">
+        {renderLogo()}
+      </div>
+
+      {/* Konten Kartu Kanan */}
+      <div className="p-3 sm:p-3.5 flex-1 flex flex-col justify-between min-w-0">
+        <div>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <h3 className="font-display font-black text-sm sm:text-base text-[#2B1D12] leading-tight">
+              {brand.name}
+            </h3>
+            {brand.promoBadge && (
+              <span className="text-[10px] font-black text-[#DC2626] bg-[#FEF2F2] border border-[#DC2626] px-1.5 py-0.5 rounded-lg uppercase tracking-wide">
+                {brand.promoBadge}
+              </span>
+            )}
+          </div>
+          <p className="text-[11px] text-[#7A6658] font-bold mt-1">
+            {typeof outletCount === 'number' && outletCount > 0
+              ? `${outletCount.toLocaleString('id-ID')} outlet tersedia`
+              : brand.outletCountLabel || 'Tersedia di seluruh Indonesia'}
+          </p>
+        </div>
+
+        <div className="mt-2 flex items-center justify-between">
+          <span className="text-[10px] font-extrabold text-[#15803D] bg-[#D9F3EA] px-2 py-0.5 rounded-md border border-[#15803D]">
+            Order Disini
+          </span>
+          <span className="text-xs font-black text-[#2B1D12] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+            Pilih Outlet
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div className="rounded-2xl overflow-hidden flex flex-col transition relative bg-[#FFFDF9] border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] cursor-default select-none h-full">
       {/* Visual Logo Brand (Kotak Atas) - Semua brand tampil cerah/nyala dengan border solid */}
       <div className="h-24 sm:h-28 relative flex items-center justify-center overflow-hidden border-b-2 border-[#2B1D12] bg-[#FFFDF9]">
         {renderLogo()}
@@ -82,30 +116,9 @@ export function BrandCard({ brand, outletCount }: BrandCardProps) {
         </div>
 
         <div className="flex items-center justify-between gap-1 mt-2.5 pt-2 border-t-2 border-[#2B1D12]/10">
-          {isClickable ? (
-            <>
-              {/* Badge Promo Merah Punch untuk brand aktif (Kopi Kenangan) */}
-              {brand.promoBadge ? (
-                <span className="text-[10px] font-black text-[#DC2626] bg-[#FEF2F2] border border-[#DC2626] px-1.5 py-0.5 rounded-lg uppercase tracking-wide">
-                  {brand.promoBadge}
-                </span>
-              ) : null}
-              {typeof outletCount === 'number' && outletCount > 0 ? (
-                <span className="text-[10px] font-bold text-[#2B1D12]">
-                  {outletCount.toLocaleString('id-ID')} outlet
-                </span>
-              ) : brand.outletCountLabel ? (
-                <span className="text-[10px] font-bold text-[#2B1D12]">
-                  {brand.outletCountLabel}
-                </span>
-              ) : null}
-            </>
-          ) : (
-            /* Badge Segera Hadir untuk Fore Coffee & Tomoro Coffee (tanpa jumlah outlet) */
-            <span className="text-[9px] font-extrabold text-[#2B1D12] bg-[#FFE7D6] border border-[#2B1D12] px-2 py-0.5 rounded-lg shadow-[1px_1px_0px_#2B1D12]">
-              Segera Hadir
-            </span>
-          )}
+          <span className="text-[9px] font-extrabold text-[#2B1D12] bg-[#FFE7D6] border border-[#2B1D12] px-2 py-0.5 rounded-lg shadow-[1px_1px_0px_#2B1D12]">
+            Segera Hadir
+          </span>
         </div>
       </div>
     </div>
@@ -113,11 +126,11 @@ export function BrandCard({ brand, outletCount }: BrandCardProps) {
 
   if (isClickable) {
     return (
-      <Link href={`/${brand.slug}`} className="block focus-visible:outline-hidden">
+      <Link href={`/${brand.slug}`} className="col-span-2 block focus-visible:outline-hidden group">
         {cardContent}
       </Link>
     );
   }
 
-  return <div className="block cursor-default select-none">{cardContent}</div>;
+  return <div className="col-span-1 block cursor-default select-none">{cardContent}</div>;
 }

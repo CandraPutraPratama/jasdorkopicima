@@ -20,6 +20,16 @@ export function ClosedScreen({
   message,
   onRefresh,
 }: ClosedScreenProps) {
+  const displaySubtitle = (() => {
+    if (!message || message.includes('Jadwal buka:')) {
+      return `Kami sedang istirahat hari ini${dayName ? ` (${dayName})` : ''}. Pemesanan jasa order buka kembali sesuai jadwal berikut:`;
+    }
+    if (message.includes('Jam operasional:')) {
+      return 'Layanan jasa order sedang istirahat di luar jam operasional. Buka kembali sesuai jadwal berikut:';
+    }
+    return message;
+  })();
+
   return (
     <div className="flex-1 w-full flex flex-col items-center justify-center px-4 py-6 sm:py-8 bg-[#FAF4E8] text-[#2B1D12]">
       {/* Brand Header */}
@@ -66,7 +76,7 @@ export function ClosedScreen({
           Jasdor Sedang Tutup
         </h2>
         <p className="text-xs text-[#6A584D] leading-relaxed mb-4">
-          {message || 'Kami sedang beristirahat. Pemesanan jasa order hanya dapat diproses pada jam operasional.'}
+          {displaySubtitle}
         </p>
 
         {/* Operating Hours Box */}

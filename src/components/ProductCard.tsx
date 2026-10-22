@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import type { Product } from '@/types/domain';
 import { calculateItemPricing } from '@/lib/pricing';
@@ -21,6 +22,8 @@ export function ProductCard({
   onToggleFavorite,
   isOutletClosed = false,
 }: ProductCardProps) {
+  const [imageFailed, setImageFailed] = useState(false);
+
   const pricing = calculateItemPricing({
     name: product.name,
     basePrice: product.basePrice,
@@ -46,31 +49,37 @@ export function ProductCard({
     >
       {/* Gambar Produk */}
       <div className="relative w-22 h-22 bg-[#FAF4E8] rounded-xl overflow-hidden shrink-0 border-2 border-[#2B1D12]">
-        {product.image ? (
+        {product.image && !imageFailed ? (
           <Image
             src={product.image}
             alt={product.name}
             fill
             sizes="88px"
             loading="lazy"
+            onError={() => setImageFailed(true)}
             className={`object-cover ${isSoldOut ? 'grayscale' : ''}`}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-[#7A6658]">
+          <div className="w-full h-full flex flex-col items-center justify-center bg-[#F5EBD7] text-[#2B1D12]">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8"
-              fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor"
+              fill="none"
+              stroke="#2B1D12"
+              strokeWidth={1.8}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-7 h-7 text-[#2B1D12]"
+              aria-hidden="true"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
+              <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+              <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+              <line x1="6" y1="2" x2="6" y2="4" />
+              <line x1="10" y1="2" x2="10" y2="4" />
+              <line x1="14" y1="2" x2="14" y2="4" />
             </svg>
+            <span className="text-[8px] font-black uppercase tracking-wider text-[#8C7667] mt-1">
+              Jasdor
+            </span>
           </div>
         )}
 

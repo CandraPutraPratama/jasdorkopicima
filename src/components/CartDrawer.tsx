@@ -682,9 +682,9 @@ export function CartDrawer({
                   </div>
                 )}
 
-                <div className="flex justify-between text-[#8C7667] line-through text-[10px]">
+                <div className="flex justify-between text-[#8C7667] text-[10px]">
                   <span>Total Harga Normal</span>
-                  <span>{formatRupiah(pricing.totalSavings + pricing.subtotal)}</span>
+                  <span className="line-through">{formatRupiah(pricing.totalSavings + pricing.subtotal)}</span>
                 </div>
 
                 <div className="pt-2 border-t-2 border-[#2B1D12] flex justify-between items-baseline font-bold text-sm">

@@ -32,6 +32,7 @@ export function ProductBottomSheet({
   // Kunci scroll halaman belakang selama sheet detail produk terbuka
   useScrollLock(true);
 
+  const [imageFailed, setImageFailed] = useState<boolean>(false);
   const [options, setOptions] = useState<ProductOptionDetails | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -291,15 +292,38 @@ export function ProductBottomSheet({
         <div className="flex-1 overflow-y-auto p-4 space-y-5 overscroll-contain">
           {/* Ringkasan Produk */}
           <div className="flex gap-3 pb-3 border-b-2 border-[#2B1D12]">
-            <div className="relative w-18 h-18 bg-white rounded-2xl overflow-hidden shrink-0 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
-              {product.image && (
+            <div className="relative w-18 h-18 bg-[#FAF4E8] rounded-2xl overflow-hidden shrink-0 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
+              {product.image && !imageFailed ? (
                 <Image
                   src={product.image}
                   alt={product.name}
                   fill
                   sizes="72px"
+                  onError={() => setImageFailed(true)}
                   className="object-cover"
                 />
+              ) : (
+                <div className="w-full h-full flex flex-col items-center justify-center bg-[#F5EBD7] text-[#2B1D12]">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#2B1D12"
+                    strokeWidth={1.8}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-6 h-6 text-[#2B1D12]"
+                    aria-hidden="true"
+                  >
+                    <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
+                    <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
+                    <line x1="6" y1="2" x2="6" y2="4" />
+                    <line x1="10" y1="2" x2="10" y2="4" />
+                    <line x1="14" y1="2" x2="14" y2="4" />
+                  </svg>
+                  <span className="text-[7px] font-black uppercase tracking-wider text-[#8C7667] mt-0.5">
+                    Jasdor
+                  </span>
+                </div>
               )}
             </div>
             <div>
