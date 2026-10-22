@@ -125,10 +125,16 @@ describe('Kopi Kenangan Server WiFi Passwords Logic', () => {
     assert.strictEqual(wifiInfo.password.length, 21);
   });
 
-  it('GET /api/wifi-today returns 200 with no-store header and only today data', async () => {
+  it('GET /api/wifi-today returns 200 with edge cache header and only today data', async () => {
     const res = await GET();
     assert.strictEqual(res.status, 200);
-    assert.strictEqual(res.headers.get('Cache-Control'), 'no-store');
+    // Sejak Nomor 1, respons sukses di-cache 60 detik di edge agar request
+    // berulang tidak menghabiskan invocation Worker. Respons error tetap
+    // no-store (dijaga tests/wifi-today-cache-control.test.ts).
+    assert.strictEqual(
+      res.headers.get('Cache-Control'),
+      'public, s-maxage=60, stale-while-revalidate=60'
+    );
 
     const json = await res.json();
     const keys = Object.keys(json).sort();

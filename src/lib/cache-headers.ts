@@ -24,6 +24,13 @@ export const CACHE_POLICY = {
   search: 'public, s-maxage=90, stale-while-revalidate=300',
   outlet: 'public, s-maxage=90, stale-while-revalidate=300',
   options: 'public, s-maxage=3600, stale-while-revalidate=3600',
+  /**
+   * Password WiFi berganti setiap 00:00 WIB. s-maxage sengaja pendek (60 detik)
+   * agar staleness maksimum di momen pergantian hari sekitar 2 menit, sementara
+   * request berulang tetap diserap edge. Jangan diperpanjang tanpa persetujuan
+   * pemilik.
+   */
+  wifiToday: 'public, s-maxage=60, stale-while-revalidate=60',
   noStore: 'no-store',
 } as const;
 
