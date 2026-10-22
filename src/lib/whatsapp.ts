@@ -253,46 +253,11 @@ const EM_DASH = '\u2014';
 
 /**
  * Membentuk pesan konfirmasi WhatsApp pasca bayar QRIS on-site.
- * - Untuk pesanan bundling: Mengikuti format resmi paket bundling dengan rincian per-item, harga diskon 50%, dan total hemat.
- * - Untuk pesanan non-bundling: Tetap mempertahankan format standar lama.
+ * SEMUA pesanan (reguler, bundling, maupun campuran) memakai satu format lengkap resmi.
  */
 export function buildOrderWhatsAppConfirmationMessage(
   order: OrderWhatsAppConfirmationInput
 ): string {
-  const isBundleOrder = order.items.some(
-    (it) =>
-      it.isBundle ||
-      Boolean(it.bundleDetails && it.bundleDetails.length > 0) ||
-      it.name.toLowerCase().includes('bundling')
-  );
-
-  // 1. Pesan WA non-bundling: JANGAN DIUBAH (Invarian)
-  if (!isBundleOrder) {
-    const outletLabel = order.outlet_name?.trim() || order.outlet_code;
-    const lines: string[] = [
-      `Halo admin, saya sudah bayar pesanan #${order.id}`,
-      `Outlet: ${outletLabel}`,
-    ];
-
-    for (const it of order.items) {
-      const optParts: string[] = [];
-      if (it.variantOptions && it.variantOptions.length > 0) {
-        optParts.push(...it.variantOptions.filter(Boolean));
-      }
-      if (it.addons && it.addons.length > 0) {
-        optParts.push(...it.addons.map((a) => a.name).filter(Boolean));
-      }
-      const optText = optParts.length > 0 ? ` (${optParts.join(', ')})` : '';
-      lines.push(`- ${it.quantity}x ${it.name}${optText} - ${formatRupiah(it.subtotal)}`);
-    }
-
-    lines.push(`Total: ${formatRupiah(order.total)}`);
-    lines.push(`Nama: ${order.customer_name}`);
-
-    return lines.join('\n');
-  }
-
-  // 2. Format Pesan WA Bundling Resmi
   const outletLabel = order.outlet_name?.trim() || order.outlet_code;
   const brandDisplay =
     order.brand_slug &&

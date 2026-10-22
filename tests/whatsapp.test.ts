@@ -268,12 +268,24 @@ test('buildOrderWhatsAppConfirmationMessage formats pre-filled message correctly
   const message = buildOrderWhatsAppConfirmationMessage(order);
 
   const expected = [
-    'Halo admin, saya sudah bayar pesanan #CG-AB12CD',
+    'Halo Kak, saya sudah bayar pesanan #CG-AB12CD',
+    '',
+    'Brand: Kopi Kenangan',
+    'Nama: Budi Santoso',
     'Outlet: Lippo Mall Puri',
+    'Pickup: Sekarang (estimasi siap ~jam segera)',
+    '',
+    'Pesanan:',
     '- 1x Kopi Kenangan Mantan (Iced, Large (+Rp5.000), Less Sugar, Topping: Boba (+Rp6.000)) - Rp18.000',
     '- 2x Oatmeal Raisin Soft Baked Cookie - Rp20.000',
+    '',
+    'Sub Total Normal (3 item): Rp38.000',
+    'Biaya Jasa Normal: Rp6.000',
     'Total: Rp38.000',
-    'Nama: Budi Santoso',
+    '',
+    'Kamu hemat Rp78.000 dari harga normal!',
+    '',
+    'Mohon konfirmasi pesanan saya. Terima kasih!',
   ].join('\n');
 
   assert.equal(message, expected);
@@ -299,10 +311,14 @@ test('buildOrderWhatsAppConfirmationMessage fallbacks to outlet_code if outlet_n
   };
 
   const message = buildOrderWhatsAppConfirmationMessage(order);
+  assert.ok(message.includes('Halo Kak, saya sudah bayar pesanan #CG-999999'));
+  assert.ok(!message.includes('Halo admin'));
   assert.ok(message.includes('Outlet: GI-JAKARTA'));
   assert.ok(message.includes('- 1x Americano (Hot) - Rp15.000'));
+  assert.ok(message.includes('Sub Total Normal (1 item): Rp15.000'));
   assert.ok(message.includes('Total: Rp15.000'));
   assert.ok(message.includes('Nama: Siti Aminah'));
+  assert.ok(message.includes('Kamu hemat'));
 });
 
 test('buildOrderWhatsAppConfirmationMessage formats Bundling 3 Reguler exactly as required', async () => {

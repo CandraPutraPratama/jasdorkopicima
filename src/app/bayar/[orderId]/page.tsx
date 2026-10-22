@@ -1,9 +1,11 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { cookies } from 'next/headers';
 import type { Metadata } from 'next';
 import { getOrderById, OrderNotFoundError, verifyOrderAccessToken } from '@/lib/order-service';
 import { PaymentView } from '@/components/PaymentView';
-import { SITE_CONFIG } from '@/lib/site-config';
+import { SITE_CONFIG, ADMIN_CONFIG } from '@/lib/site-config';
+import { validateAdminSession } from '@/lib/admin-session';
 
 interface PageProps {
   params: Promise<{ orderId: string }>;
@@ -57,14 +59,25 @@ export default async function BayarPage({ params, searchParams }: PageProps) {
     );
   }
 
-  // Tanpa token akses yang cocok, pesanan tidak dianggap ada (anti-enumerasi).
-  if (!verifyOrderAccessToken(order, accessToken)) {
+  // Dua jalur akses yang sah:
+  // 1. Token akses pesanan yang valid milik pelanggan
+  // 2. Sesi admin yang valid (cookie token HMAC dari sistem login admin)
+  const isTokenValid = verifyOrderAccessToken(order, accessToken);
+
+  let isAdmin = false;
+  if (!isTokenValid) {
+    const cookieStore = await cookies();
+    const adminToken = cookieStore.get(ADMIN_CONFIG.cookieName)?.value ?? null;
+    isAdmin = await validateAdminSession(adminToken);
+  }
+
+  if (!isTokenValid && !isAdmin) {
     notFound();
   }
 
   const { access_token: orderAccessToken, ...publicOrder } = order;
 
   return (
-    <PaymentView initialOrder={publicOrder} accessToken={orderAccessToken ?? accessToken ?? null} />
+    <PaymentView initialOrder={publicOrder} accessToken={isTokenValid ? (orderAccessToken ?? accessToken ?? null) : null} />
   );
 }

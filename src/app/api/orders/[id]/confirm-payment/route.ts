@@ -7,14 +7,16 @@ import {
   OrderStateError,
 } from '../../../../../lib/order-service.ts';
 import { checkRateLimitKV, getClientIp } from '../../../../../lib/rate-limit-kv.ts';
+import { verifyAdminAuth } from '../../../../../lib/admin-auth.ts';
 import type { OrderRecord } from '../../../../../types/order.ts';
 
 /**
- * Pesanan hanya boleh dikonfirmasi oleh pemiliknya. Token akses dikirim
- * sebagai query param `t` dan TIDAK pernah dikembalikan di response body.
+ * Pesanan hanya boleh dikonfirmasi oleh pemiliknya atau admin dengan sesi aktif.
+ * Token akses dikirim sebagai query param `t` dan TIDAK pernah dikembalikan di response body.
  */
 function toPublicOrder(order: OrderRecord): Omit<OrderRecord, 'access_token'> {
   const { access_token: _accessToken, ...publicOrder } = order;
+  void _accessToken;
   return publicOrder;
 }
 
@@ -58,7 +60,10 @@ export async function POST(
   try {
     // Verifikasi kepemilikan sebelum status apa pun diubah.
     const existingOrder = await getOrderById(id);
-    if (!verifyOrderAccessToken(existingOrder, providedToken)) {
+    const isTokenValid = verifyOrderAccessToken(existingOrder, providedToken);
+    const isAdmin = !isTokenValid && (await verifyAdminAuth(request));
+
+    if (!isTokenValid && !isAdmin) {
       return NextResponse.json({ error: 'Pesanan tidak ditemukan' }, { status: 404 });
     }
 

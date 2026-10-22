@@ -203,7 +203,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
       </header>
 
       {/* Main Container */}
-      <main className={`max-w-md mx-auto px-4 pt-3 space-y-3 ${status === 'menunggu_konfirmasi' ? 'pb-72' : 'pb-32'}`}>
+      <main className={`max-w-md mx-auto px-4 pt-3 space-y-3 ${status === 'menunggu_konfirmasi' ? 'pb-72' : status === 'menunggu_pembayaran' ? 'pb-32' : 'pb-8'}`}>
         {/* Status Banner */}
         {status === 'menunggu_pembayaran' && (
           <div className="bg-[#FFF0C2] border-2 border-[#2B1D12] rounded-2xl p-3.5 flex items-center justify-between text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12]">
@@ -311,8 +311,8 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
           </div>
         )}
 
-        {/* Section Pembayaran QRIS (Hanya tampil jika belum kedaluwarsa/batal) */}
-        {status !== 'kedaluwarsa' && status !== 'dibatalkan' && (
+        {/* Section Pembayaran QRIS (HANYA tampil pada status menunggu_pembayaran) */}
+        {status === 'menunggu_pembayaran' && (
           <section className="bg-[#FFFDF9] rounded-3xl p-4 sm:p-5 border-2 border-[#2B1D12] shadow-[4px_4px_0px_#2B1D12] space-y-3">
             {/* Box Nominal Total yang Menonjol */}
             <div className="bg-[#FFF8E7] rounded-2xl p-3 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] text-center space-y-0.5">
@@ -500,17 +500,16 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
             </div>
           </div>
 
-          <div className="bg-[#FAF4E8] rounded-xl p-3 text-[11px] text-[#2B1D12] space-y-0.5 border-2 border-[#2B1D12]">
+          <div className="bg-[#FAF4E8] rounded-xl p-3 text-[11px] text-[#2B1D12] space-y-1 border-2 border-[#2B1D12]">
+            <p><span className="font-black text-[#2B1D12]">Outlet:</span> {order.outlet_name || order.outlet_code}</p>
             <p><span className="font-black text-[#2B1D12]">Pemesan:</span> {order.customer_name} ({order.customer_wa})</p>
-            {order.pickup_time && (
-              <p><span className="font-black text-[#2B1D12]">Jadwal Pick up:</span> {order.pickup_time}</p>
-            )}
+            <p><span className="font-black text-[#2B1D12]">Jadwal Pick up:</span> {order.pickup_time || 'Sekarang'}</p>
           </div>
         </section>
       </main>
 
-      {/* Sticky Bottom CTA Bar (Selalu terlihat di 1 layar tanpa scroll) */}
-      {(status === 'menunggu_pembayaran' || status === 'menunggu_konfirmasi' || status === 'diproses') && (
+      {/* Sticky Bottom CTA Bar (Hanya tampil pada status menunggu_pembayaran dan menunggu_konfirmasi) */}
+      {(status === 'menunggu_pembayaran' || status === 'menunggu_konfirmasi') && (
         <div className="fixed bottom-0 inset-x-0 z-40 bg-[#FAF4E8] border-t-2 border-[#2B1D12] px-4 py-2.5 sm:py-3 shadow-lg">
           <div className="max-w-md mx-auto space-y-1.5">
             {confirmError && (
@@ -549,7 +548,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
             {status === 'menunggu_konfirmasi' && (
               <div className="space-y-2">
-                {/* Box Info Wajib Kirim Bukti Pembayaran (Prominent Tahilalats Token) */}
+                {/* Box Info Wajib Kirim Bukti Pembayaran */}
                 <div className="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-2xl p-3 sm:p-3.5 shadow-[3px_3px_0px_#2B1D12] space-y-2 animate-in fade-in">
                   <div className="flex items-center gap-1.5 text-xs font-black text-[#DC2626] uppercase tracking-wide">
                     <span className="text-sm">⚠️</span>
@@ -566,23 +565,6 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                   </p>
                 </div>
 
-                <a
-                  href={waConfirmUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full min-h-[46px] px-4 py-2.5 bg-[#15803D] hover:bg-[#166534] text-white font-display font-black text-xs rounded-xl flex items-center justify-center gap-2 transition border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-center cursor-pointer"
-                >
-                  <WhatsAppIcon className="h-4.5 w-4.5 text-white shrink-0" />
-                  <span>Konfirmasi via WhatsApp (Wajib)</span>
-                </a>
-                <p className="text-[10px] text-center text-[#2B1D12] leading-tight font-bold">
-                  Wajib dikirim agar pesananmu diproses. Pesanan tanpa konfirmasi WhatsApp tidak akan diproses admin.
-                </p>
-              </div>
-            )}
-
-            {status === 'diproses' && (
-              <div className="space-y-1.5">
                 <a
                   href={waConfirmUrl}
                   target="_blank"

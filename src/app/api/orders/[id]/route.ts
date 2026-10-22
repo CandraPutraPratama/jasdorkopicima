@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server.js';
 import { getOrderById, OrderNotFoundError, verifyOrderAccessToken } from '../../../../lib/order-service.ts';
 import { checkRateLimit, getClientIp } from '../../../../lib/rate-limit.ts';
+import { verifyAdminAuth } from '../../../../lib/admin-auth.ts';
 import type { OrderRecord } from '../../../../types/order.ts';
 
 /**
- * Pesanan hanya boleh dibaca oleh pemiliknya. Token akses dikirim sebagai
- * query param `t` dan TIDAK pernah dikembalikan di dalam response body.
+ * Pesanan hanya boleh dibaca oleh pemiliknya (via query param `t`) atau admin
+ * dengan sesi aktif. Token akses TIDAK pernah dikembalikan di response body.
  */
 function toPublicOrder(order: OrderRecord): Omit<OrderRecord, 'access_token'> {
   const { access_token: _accessToken, ...publicOrder } = order;
+  void _accessToken;
   return publicOrder;
 }
 
@@ -52,9 +54,14 @@ export async function GET(
   try {
     const order = await getOrderById(id);
 
-    // Jawaban seragam 404 agar penyerang tidak bisa membedakan
-    // "ID tidak ada" dari "token salah" (anti-enumerasi).
-    if (!verifyOrderAccessToken(order, providedToken)) {
+    // Dua jalur akses yang sah:
+    // 1. Token akses pesanan yang valid
+    // 2. Sesi admin yang valid (cookie token HMAC)
+    // Jawaban seragam 404 jika keduanya tidak terpenuhi (anti-enumerasi).
+    const isTokenValid = verifyOrderAccessToken(order, providedToken);
+    const isAdmin = !isTokenValid && (await verifyAdminAuth(request));
+
+    if (!isTokenValid && !isAdmin) {
       return NextResponse.json({ error: 'Pesanan tidak ditemukan' }, { status: 404 });
     }
 
