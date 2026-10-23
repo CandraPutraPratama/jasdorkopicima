@@ -13,6 +13,7 @@ interface ProductCardProps {
   isFavorite?: boolean;
   onToggleFavorite?: (product: Product) => void;
   isOutletClosed?: boolean;
+  brandSlug?: string;
 }
 
 export function ProductCard({
@@ -21,6 +22,7 @@ export function ProductCard({
   isFavorite = false,
   onToggleFavorite,
   isOutletClosed = false,
+  brandSlug,
 }: ProductCardProps) {
   const [imageFailed, setImageFailed] = useState(false);
 
@@ -31,7 +33,11 @@ export function ProductCard({
     quantity: 1,
   });
 
-  const feeDescription = `+${formatRupiah(BUSINESS_CONFIG.pricing.feeMultiItem)}/item`;
+  // Fee jasa per item mengikuti brand: TOMORO Rp1.500/item (samakan pricing.ts),
+  // brand lain memakai konfigurasi fee standar.
+  const feePerItem =
+    brandSlug === 'tomoro' ? 1500 : BUSINESS_CONFIG.pricing.feeMultiItem;
+  const feeDescription = `+${formatRupiah(feePerItem)}/item`;
   const isSoldOut = Boolean(product.isSoldOut);
 
   return (

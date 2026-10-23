@@ -209,7 +209,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Validasi katalog otoritatif 41 menu final dan rekalkulasi harga server (K1 toleransi Rp0)
+      // Validasi katalog otoritatif 40 menu final dan rekalkulasi harga server (K1 toleransi Rp0)
       const serverItems: CartItem[] = [];
       for (const it of items) {
         if (it.isBundle) {

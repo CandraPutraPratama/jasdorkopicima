@@ -2,7 +2,7 @@
  * Data Menu Otoritatif TOMORO Coffee (Jasdor)
  *
  * KRITERIA MUTLAK:
- * - HANYA 41 menu final yang diizinkan (docs/tomoro-menu-promo-b1g1-final.json).
+ * - HANYA 40 menu final yang diizinkan (docs/tomoro-menu-promo-b1g1-final.json).
  * - Ke-36 menu lain di cache (semua FOOD, 1L, bundle, Master S.O.E, Triple Pistachio, Healing, Frappe)
  *   TIDAK dijual di Jasdor dan server wajib menolaknya.
  * - Flat menu dengan override tier bandara (Palembang: tomoro-plb03b-m, tomoro-plb03d-m; Dhoho: tomoro-ked01a-m).
@@ -604,20 +604,6 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "hargaNasional": 20000,
     "hargaPalembang": 35000,
     "hargaDhoho": 22000
-  },
-  {
-    "id": "I111",
-    "productCode": "1900003",
-    "name": "Pristine",
-    "category": "NON COFFEE",
-    "image": "https://gambar.cimagroup.my.id/tomoro/pristine.webp",
-    "description": "Air Mineral 400ml",
-    "isSoldOut": false,
-    "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 10000,
-    "hargaPalembang": 13000,
-    "hargaDhoho": 13000
   }
 ];
 
@@ -640,7 +626,7 @@ TOMORO_FINAL_PRODUCTS.forEach((p) => {
 });
 
 /**
- * Memeriksa apakah suatu menu termasuk dalam 41 menu final yang diizinkan untuk brand TOMORO Coffee.
+ * Memeriksa apakah suatu menu termasuk dalam 40 menu final yang diizinkan untuk brand TOMORO Coffee.
  */
 export function isTomoroItemEligible(idOrNameOrCode: string): boolean {
   if (!idOrNameOrCode) return false;
@@ -656,7 +642,7 @@ export function isTomoroItemEligible(idOrNameOrCode: string): boolean {
 
 /**
  * Mengambil harga normal (pre-promo) menu Tomoro untuk outlet tertentu (memperhitungkan tier bandara).
- * Mengembalikan null jika menu tidak termasuk dalam 41 menu final yang diizinkan.
+ * Mengembalikan null jika menu tidak termasuk dalam 40 menu final yang diizinkan.
  */
 export function getTomoroProductNormalPrice(
   idOrNameOrCode: string,
@@ -676,7 +662,7 @@ export function getTomoroProductNormalPrice(
 
 /**
  * Menghasilkan menuGroups resmi Tomoro Coffee untuk outlet tertentu.
- * Mengelompokkan 41 menu final ke dalam 7 kategori resmi dengan harga tier outlet tersebut.
+ * Mengelompokkan 40 menu final ke dalam 7 kategori resmi dengan harga tier outlet tersebut.
  */
 export function getTomoroMenuForOutlet(outletCode?: string | null): MenuGroup[] {
   const tier = getTomoroAirportTier(outletCode);

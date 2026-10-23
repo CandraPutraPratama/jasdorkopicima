@@ -39,7 +39,7 @@ async function handleGet(
 
   const cacheKey = cacheKeys.menu(code);
 
-  // Penanganan khusus brand TOMORO Coffee (flat 41 menu, dengan tier harga bandara per outlet)
+  // Penanganan khusus brand TOMORO Coffee (flat 40 menu, dengan tier harga bandara per outlet)
   if (code.toLowerCase().startsWith('tomoro-')) {
     const cached = await cacheService.get<{ menuGroups: MenuGroup[] }>(cacheKey);
     if (cached && cached.menuGroups && cached.menuGroups.length > 0) {

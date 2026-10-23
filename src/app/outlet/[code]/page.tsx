@@ -498,7 +498,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="text-base">🎉</span>
                       <h2 className="font-display font-black text-sm sm:text-base text-[#2B1D12] tracking-tight">
-                        B1G1 \u2014 Pilih 2 Menu (Small)
+                        B1G1 - Pilih 2 Menu (Small)
                       </h2>
                       <span className="text-[10px] font-black uppercase tracking-wider bg-[#E11D48] text-white px-2 py-0.5 rounded-md border border-[#2B1D12]">
                         Spesial
@@ -617,6 +617,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                           <ProductCard
                             key={`${group.code}-${product.bundleCode || product.id}`}
                             product={product}
+                            brandSlug={isTomoro ? 'tomoro' : undefined}
                             isFavorite={isFavorite(product.id)}
                             onToggleFavorite={() => toggleFavorite(product.id)}
                             onSelectProduct={(p) => {

@@ -38,8 +38,8 @@ test('Tomoro Coffee - Brand Config and Provider', async () => {
   assert.equal(count, 678, 'Total outlet tomoro harus 678');
 });
 
-test('Tomoro Coffee - Catalog strictly 41 final items & forbidden items rejected', () => {
-  assert.equal(TOMORO_FINAL_PRODUCTS.length, 41, 'Katalog harus tepat 41 menu');
+test('Tomoro Coffee - Catalog strictly 40 final items & forbidden items rejected', () => {
+  assert.equal(TOMORO_FINAL_PRODUCTS.length, 40, 'Katalog harus tepat 40 menu');
 
   // Validasi beberapa item legal
   assert.ok(isTomoroItemEligible('TOMORO Aren Latte'));
@@ -47,8 +47,9 @@ test('Tomoro Coffee - Catalog strictly 41 final items & forbidden items rejected
   assert.ok(isTomoroItemEligible('Matcha Latte'));
   assert.ok(isTomoroItemEligible('Breve Latte'));
 
-  // Validasi item terlarang / di luar 41 menu (Egg Tart, Butter Croissant, 1L Matcha Latte, dsb)
+  // Validasi item terlarang / di luar katalog (Egg Tart, Butter Croissant, 1L Matcha Latte, dsb)
   assert.equal(isTomoroItemEligible('Egg Tart'), false, 'Egg Tart terlarang');
+  assert.equal(isTomoroItemEligible('Pristine'), false, 'Pristine sudah dihapus dari katalog');
   assert.equal(isTomoroItemEligible('Butter Croissant'), false, 'Butter Croissant terlarang (semua FOOD ditolak)');
   assert.equal(isTomoroItemEligible('1L Matcha Latte'), false, '1L Matcha Latte terlarang');
   assert.equal(isTomoroItemEligible('1L TOMORO Aren Latte'), false, '1L Aren Latte terlarang');
