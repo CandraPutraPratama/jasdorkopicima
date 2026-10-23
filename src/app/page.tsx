@@ -29,7 +29,9 @@ export default function PortalPage() {
     let isCancelled = false;
 
     async function loadOutletCounts() {
-      const activeBrands = getAllBrands().filter((b) => b.slug === 'kopi-kenangan');
+      const activeBrands = getAllBrands().filter(
+        (b) => b.status === 'active' || b.slug === 'kopi-kenangan' || b.slug === 'tomoro'
+      );
       const counts: Record<string, number> = {};
 
       await Promise.all(
@@ -129,7 +131,7 @@ export default function PortalPage() {
               Pilih Brand Kopi
             </h2>
             <span className="text-[11px] text-[#2B1D12] font-extrabold bg-[#FFE7D6] border border-[#2B1D12] px-2 py-0.5 rounded-lg shadow-[1px_1px_0px_#2B1D12]">
-              1 Brand Aktif
+              {brands.filter((b) => b.status === 'active').length} Brand Aktif
             </span>
           </div>
 

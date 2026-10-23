@@ -19,16 +19,15 @@ test('getBrandConfig returns full config for kopi-kenangan', () => {
   assert.ok(brand?.accentColor);
 });
 
-test('getBrandConfig returns coming_soon status for tomoro', () => {
+test('getBrandConfig returns full config for tomoro', () => {
   const brand = getBrandConfig('tomoro');
   assert.ok(brand !== null, 'brand tomoro harus terdaftar');
   assert.equal(brand?.slug, 'tomoro');
-  assert.equal(brand?.name, 'Tomoro Coffee');
-  assert.equal(brand?.status, 'coming_soon');
-  assert.equal(brand?.promoBadge, 'Segera Hadir');
-  assert.equal(brand?.logo, '/brand-logos/tomoro-coffee-logo.webp');
-  // Aturan koreksi user: jangan tampilkan teks "0 outlet" untuk brand segera hadir
-  assert.equal(brand?.outletCountLabel, undefined);
+  assert.equal(brand?.name, 'TOMORO Coffee');
+  assert.equal(brand?.status, 'active');
+  assert.equal(brand?.promoBadge, 'DISKON 50% + B1G1');
+  assert.equal(brand?.logo, '/brand-logos/tomoro.png');
+  assert.equal(brand?.outletCountLabel, undefined, 'Tidak ada angka outlet di-hardcode di BrandConfig');
 });
 
 test('getBrandConfig returns null for unknown brand slug', () => {
@@ -71,9 +70,10 @@ test('isReservedSlug blocks protected system routes', () => {
   assert.equal(isReservedSlug('tomoro'), false);
 });
 
-test('resolveBrandSlugFromOutletCode resolves to fore for fore-* outlets and kopi-kenangan by default', () => {
+test('resolveBrandSlugFromOutletCode resolves to fore for fore-*, tomoro for tomoro-*, and kopi-kenangan by default', () => {
   assert.equal(resolveBrandSlugFromOutletCode('fore-t3inb'), 'fore');
   assert.equal(resolveBrandSlugFromOutletCode('fore-ahnas'), 'fore');
+  assert.equal(resolveBrandSlugFromOutletCode('tomoro-plb03b-m'), 'tomoro');
   assert.equal(resolveBrandSlugFromOutletCode('LIPPO-PURI'), 'kopi-kenangan');
   assert.equal(resolveBrandSlugFromOutletCode('KALCIT'), 'kopi-kenangan');
 });

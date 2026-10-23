@@ -44,6 +44,21 @@ async function handleGet(
       return NextResponse.json(cached);
     }
 
+    // Penanganan khusus brand TOMORO Coffee
+    if (code.toLowerCase().startsWith('tomoro-')) {
+      const tomoroOutlet = await getOutletByCode(code);
+      if (!tomoroOutlet) {
+        return NextResponse.json(
+          { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
+          { status: 404 }
+        );
+      }
+
+      const responsePayload = { outlet: tomoroOutlet };
+      await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.storeOpenStatusTtlSeconds);
+      return NextResponse.json(responsePayload);
+    }
+
     // Penanganan khusus brand Fore Coffee
     if (code.toLowerCase().startsWith('fore-')) {
       const foreOutlet = await getOutletByCode(code);

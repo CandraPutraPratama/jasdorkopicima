@@ -39,6 +39,20 @@ async function handleGet(
 
   const cacheKey = cacheKeys.menu(code);
 
+  // Penanganan khusus brand TOMORO Coffee (flat 41 menu, dengan tier harga bandara per outlet)
+  if (code.toLowerCase().startsWith('tomoro-')) {
+    const cached = await cacheService.get<{ menuGroups: MenuGroup[] }>(cacheKey);
+    if (cached && cached.menuGroups && cached.menuGroups.length > 0) {
+      return NextResponse.json(cached);
+    }
+
+    const { getTomoroMenuForOutlet } = await import('@/lib/tomoro-menu-data');
+    const menuGroups = getTomoroMenuForOutlet(code);
+    const responsePayload = { menuGroups };
+    await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.menuTtlSeconds);
+    return NextResponse.json(responsePayload);
+  }
+
   // Penanganan khusus brand Fore Coffee (flat menu, seeded di generic_cache dengan fallback statis)
   if (code.toLowerCase().startsWith('fore-')) {
     const cached = await cacheService.get<{ menuGroups: MenuGroup[] }>(cacheKey);

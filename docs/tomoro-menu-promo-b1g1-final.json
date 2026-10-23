@@ -1,0 +1,424 @@
+{
+ "brand": "tomoro",
+ "decidedAt": "2026-10-23",
+ "count": 41,
+ "rules": {
+  "discount50": "applies to these menus outside B1G1 packages",
+  "b1g1": "package of exactly 2 eligible menus, size Small, normal prices (no 50% stacking), pay highest-priced item, cheaper item free",
+  "feePerItem": 1500,
+  "feePerB1g1Package": 3000
+ },
+ "menus": [
+  {
+   "id": "I016",
+   "productCode": "1350005",
+   "name": "Matcha Latte",
+   "category": "MATCHA SERIES",
+   "basePrice": 27000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I132",
+   "productCode": "1350026",
+   "name": "Matcha Oat Latte",
+   "category": "MATCHA SERIES",
+   "basePrice": 28000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I01432",
+   "productCode": "1100321",
+   "name": "Sea Salt Cloud Matcha Latte",
+   "category": "MATCHA SERIES",
+   "basePrice": 30000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I01505",
+   "productCode": "1100326",
+   "name": "Matcha Jasmine Milk Tea",
+   "category": "MATCHA SERIES",
+   "basePrice": 28000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I01413",
+   "productCode": "1100317",
+   "name": "Strawberry Matcha Latte",
+   "category": "MATCHA SERIES",
+   "basePrice": 36000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I221",
+   "productCode": "1100069",
+   "name": "TOMORO Aren Latte",
+   "category": "TOMORO SIGNATURE",
+   "basePrice": 21000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I675",
+   "productCode": "1100151",
+   "name": "Sea Salt Cloud Caramel Macchiato",
+   "category": "TOMORO SIGNATURE",
+   "basePrice": 30000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I130",
+   "productCode": "1100057",
+   "name": "TOMORO Oat Latte",
+   "category": "TOMORO SIGNATURE",
+   "basePrice": 25000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I749",
+   "productCode": "1350073",
+   "name": "Cheese Cloud Chocolate",
+   "category": "TOMORO SIGNATURE",
+   "basePrice": 30000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I003",
+   "productCode": "1100041",
+   "name": "Caffe Latte",
+   "category": "CLASSIC COFFEE",
+   "basePrice": 25000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I002",
+   "productCode": "1100031",
+   "name": "Caffe Americano",
+   "category": "CLASSIC COFFEE",
+   "basePrice": 18000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I686",
+   "productCode": "1100153",
+   "name": "Kopi Susu Aren",
+   "category": "CLASSIC COFFEE",
+   "basePrice": 19000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I005",
+   "productCode": "1100011",
+   "name": "Caffe Mocha",
+   "category": "CLASSIC COFFEE",
+   "basePrice": 26000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I004",
+   "productCode": "1100037",
+   "name": "Cappuccino",
+   "category": "CLASSIC COFFEE",
+   "basePrice": 25000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I010",
+   "productCode": "1100049",
+   "name": "Breve Latte",
+   "category": "CLASSIC COFFEE",
+   "basePrice": 32000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I011",
+   "productCode": "1100009",
+   "name": "Caramel Macchiato",
+   "category": "FLAVORED LATTE",
+   "basePrice": 27000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I710",
+   "productCode": "1100161",
+   "name": "Caramel Cheese Latte",
+   "category": "FLAVORED LATTE",
+   "basePrice": 30000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I642",
+   "productCode": "1100118",
+   "name": "Spanish Aren Latte",
+   "category": "FLAVORED LATTE",
+   "basePrice": 26000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I219",
+   "productCode": "1100065",
+   "name": "Coconut Aren Latte",
+   "category": "FLAVORED LATTE",
+   "basePrice": 25000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I748",
+   "productCode": "1100187",
+   "name": "Cheese Cloud Latte",
+   "category": "FLAVORED LATTE",
+   "basePrice": 30000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I641",
+   "productCode": "1100117",
+   "name": "Spanish Latte",
+   "category": "FLAVORED LATTE",
+   "basePrice": 25000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I218",
+   "productCode": "1100061",
+   "name": "TOMORO Coconut Latte",
+   "category": "FLAVORED LATTE",
+   "basePrice": 23000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I065",
+   "productCode": "1100053",
+   "name": "Manuka Oat Latte",
+   "category": "FLAVORED LATTE",
+   "basePrice": 30000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I643",
+   "productCode": "1100137",
+   "name": "Spanish Latte (Limited Edition Cup)",
+   "category": "FLAVORED LATTE",
+   "basePrice": 25000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I644",
+   "productCode": "1100138",
+   "name": "Spanish Aren Latte (Limited Edition Cup)",
+   "category": "FLAVORED LATTE",
+   "basePrice": 26000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I00581",
+   "productCode": "1100269",
+   "name": "Dino-mite Mango Frappe ",
+   "category": "CHEESE X NAILOONG SERIES",
+   "basePrice": 28000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I00580",
+   "productCode": "1100267",
+   "name": "Dino-mite Cloud Tea",
+   "category": "CHEESE X NAILOONG SERIES",
+   "basePrice": 26000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I01151",
+   "productCode": "1100292",
+   "name": "Strawberry Americano",
+   "category": "REFRESHING SERIES",
+   "basePrice": 23000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I333",
+   "productCode": "1350038",
+   "name": "Strawberry Jasmine Tea",
+   "category": "REFRESHING SERIES",
+   "basePrice": 23000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I726",
+   "productCode": "1100169",
+   "name": "Peach Americano",
+   "category": "REFRESHING SERIES",
+   "basePrice": 23000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I728",
+   "productCode": "1350065",
+   "name": "Peach Jasmine Tea",
+   "category": "REFRESHING SERIES",
+   "basePrice": 23000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I298",
+   "productCode": "1100075",
+   "name": "Lemonade Americano",
+   "category": "REFRESHING SERIES",
+   "basePrice": 22000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I119",
+   "productCode": "1350021",
+   "name": "Pink Pop Lemonade",
+   "category": "REFRESHING SERIES",
+   "basePrice": 15000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I120",
+   "productCode": "1350020",
+   "name": "Pink Pop Lemon Tea",
+   "category": "REFRESHING SERIES",
+   "basePrice": 19000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I297",
+   "productCode": "1100073",
+   "name": "Grapefruit Americano",
+   "category": "REFRESHING SERIES",
+   "basePrice": 22000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I601",
+   "productCode": "1350050",
+   "name": "Sea Salt Cloud Chocolate",
+   "category": "NON COFFEE",
+   "basePrice": 30000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I066",
+   "productCode": "1350009",
+   "name": "Hojicha Oat Latte",
+   "category": "NON COFFEE",
+   "basePrice": 30000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I015",
+   "productCode": "1350001",
+   "name": "Chocolate",
+   "category": "NON COFFEE",
+   "basePrice": 25000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I131",
+   "productCode": "1350022",
+   "name": "Choco Oat Latte",
+   "category": "NON COFFEE",
+   "basePrice": 28000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I00745",
+   "productCode": "1100281",
+   "name": "Peach Oolong Milk Tea",
+   "category": "NON COFFEE",
+   "basePrice": 20000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  },
+  {
+   "id": "I111",
+   "productCode": "1900003",
+   "name": "Pristine",
+   "category": "NON COFFEE",
+   "basePrice": 10000,
+   "b1g1Size": "Small",
+   "b1g1Eligible": true,
+   "promo50Eligible": true
+  }
+ ],
+ "catalogDecision": "Only these 41 menus are sold on Jasdor Tomoro. The other 36 menus from the original 77-menu cache are NOT sold at all (confirmed by user 2026-10-23)."
+}

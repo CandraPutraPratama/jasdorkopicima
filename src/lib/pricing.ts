@@ -22,6 +22,7 @@ export interface OrderItemInput {
   bundleType?: string;
   bundleFee?: number;
   bundleNormalPrice?: number;
+  brandSlug?: string;
 }
 
 export interface ItemPricingResult {
@@ -79,6 +80,23 @@ export function calculateItemPricing(
 
   // Penanganan khusus paket bundling
   if (item.isBundle) {
+    if (item.bundleType === 'tomoro-b1g1') {
+      const promoPricePerItem = Math.max(0, Math.round(item.basePrice));
+      const originalPricePerItem = Math.max(
+        promoPricePerItem,
+        Math.round(item.bundleNormalPrice || promoPricePerItem)
+      );
+      const savingsPerItem = originalPricePerItem - promoPricePerItem;
+
+      return {
+        originalPricePerItem,
+        promoPricePerItem,
+        savingsPerItem,
+        subtotalItem: promoPricePerItem * quantity,
+        totalSavingsItem: savingsPerItem * quantity,
+      };
+    }
+
     const originalPricePerItem = Math.max(
       0,
       Math.round(item.bundleNormalPrice || item.basePrice)
@@ -133,8 +151,15 @@ export function calculateItemPricing(
  */
 export function calculateOrderPricing(
   items: OrderItemInput[],
-  config: PricingConfig = BUSINESS_CONFIG.pricing
+  config: PricingConfig = BUSINESS_CONFIG.pricing,
+  brandSlugOrOutletCode?: string
 ): OrderPricingResult {
+  const isTomoro =
+    brandSlugOrOutletCode === 'tomoro' ||
+    (typeof brandSlugOrOutletCode === 'string' &&
+      brandSlugOrOutletCode.toLowerCase().startsWith('tomoro-')) ||
+    items.some((it) => it.brandSlug === 'tomoro' || it.bundleType === 'tomoro-b1g1');
+
   let totalQuantity = 0;
   let subtotal = 0;
   let totalSavings = 0;
@@ -154,7 +179,9 @@ export function calculateOrderPricing(
     totalSavings += pricing.totalSavingsItem;
 
     if (item.isBundle) {
-      bundleFeeTotal += (item.bundleFee || 0) * qty;
+      const itemBundleFee =
+        typeof item.bundleFee === 'number' ? item.bundleFee : isTomoro ? 3000 : 0;
+      bundleFeeTotal += itemBundleFee * qty;
       bundleQuantity += qty;
       bundleSubtotal += pricing.subtotalItem;
     } else {
@@ -171,7 +198,9 @@ export function calculateOrderPricing(
 
   let regularFee = 0;
   if (regularQuantity > 0) {
-    if (bundleFeeTotal > 0 || regularQuantity > 1) {
+    if (isTomoro) {
+      regularFee = 1500 * regularQuantity;
+    } else if (bundleFeeTotal > 0 || regularQuantity > 1) {
       regularFee = config.feeMultiItem * regularQuantity;
     } else {
       regularFee = config.feeSingleItem;
@@ -214,14 +243,28 @@ export interface OrderBreakdownSummary {
 export function getOrderBreakdown(
   items: Array<{
     isBundle?: boolean;
+    bundleType?: string;
+    brandSlug?: string;
     quantity: number;
     subtotal?: number;
     bundleFee?: number;
     name?: string;
   }>,
   fallbackFee?: number,
-  config: PricingConfig = BUSINESS_CONFIG.pricing
+  config: PricingConfig = BUSINESS_CONFIG.pricing,
+  brandSlugOrOutletCode?: string
 ): OrderBreakdownSummary {
+  const isTomoro =
+    brandSlugOrOutletCode === 'tomoro' ||
+    (typeof brandSlugOrOutletCode === 'string' &&
+      brandSlugOrOutletCode.toLowerCase().startsWith('tomoro-')) ||
+    items.some(
+      (it) =>
+        it.brandSlug === 'tomoro' ||
+        it.bundleType === 'tomoro-b1g1' ||
+        it.name?.toLowerCase().includes('tomoro')
+    );
+
   let bundleQuantity = 0;
   let bundleSubtotal = 0;
   let bundleFee = 0;
@@ -230,13 +273,25 @@ export function getOrderBreakdown(
 
   for (const item of items) {
     const qty = Math.max(1, Math.round(item.quantity || 1));
-    const sub = typeof item.subtotal === 'number' ? item.subtotal : 0;
-    const isBundle = Boolean(item.isBundle || item.name?.toLowerCase().includes('bundling'));
+    const isBundle = Boolean(
+      item.isBundle ||
+        item.bundleType === 'tomoro-b1g1' ||
+        item.name?.toLowerCase().includes('bundling') ||
+        item.name?.toLowerCase().includes('b1g1')
+    );
+    const sub =
+      typeof item.subtotal === 'number'
+        ? item.subtotal
+        : typeof (item as any).basePrice === 'number'
+          ? (isBundle ? (item as any).basePrice * qty : Math.round((item as any).basePrice * 0.5) * qty)
+          : 0;
 
     if (isBundle) {
       bundleQuantity += qty;
       bundleSubtotal += sub;
-      bundleFee += (item.bundleFee || 0) * qty;
+      const feePerPkg =
+        typeof item.bundleFee === 'number' ? item.bundleFee : isTomoro ? 3000 : 0;
+      bundleFee += feePerPkg * qty;
     } else {
       regularQuantity += qty;
       regularSubtotal += sub;
@@ -245,7 +300,9 @@ export function getOrderBreakdown(
 
   let regularFee = 0;
   if (regularQuantity > 0) {
-    if (bundleQuantity > 0 || regularQuantity > 1) {
+    if (isTomoro) {
+      regularFee = 1500 * regularQuantity;
+    } else if (bundleQuantity > 0 || regularQuantity > 1) {
       regularFee = config.feeMultiItem * regularQuantity;
     } else {
       regularFee = config.feeSingleItem;
@@ -258,7 +315,12 @@ export function getOrderBreakdown(
     } else if (regularQuantity === 0) {
       bundleFee = fallbackFee;
     } else {
-      bundleFee = Math.max(0, fallbackFee - regularFee);
+      if (isTomoro) {
+        bundleFee = 3000 * bundleQuantity;
+        regularFee = Math.max(0, fallbackFee - bundleFee);
+      } else {
+        bundleFee = Math.max(0, fallbackFee - regularFee);
+      }
     }
   }
 

@@ -60,6 +60,22 @@ async function handleSync(request: NextRequest) {
 
   try {
     const brandParam = request.nextUrl.searchParams.get('brand');
+    if (brandParam === 'tomoro') {
+      console.log('[Sync Outlets] Memulai sinkronisasi status seluruh outlet TOMORO Coffee ke Supabase...');
+      const { syncTomoroOutletsStatusToDb } = await import('@/lib/server/tomoro-sync');
+      const tomoroResult = await syncTomoroOutletsStatusToDb();
+      return NextResponse.json({
+        success: true,
+        brand: 'tomoro',
+        message: 'Sinkronisasi status outlet TOMORO Coffee berhasil.',
+        syncedCount: tomoroResult.syncedCount,
+        openCount: tomoroResult.openCount,
+        closedCount: tomoroResult.closedCount,
+        durationMs: tomoroResult.durationMs,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     if (brandParam === 'fore') {
       console.log('[Sync Outlets] Memulai sinkronisasi seluruh outlet Fore ke Supabase...');
       const { syncForeOutletsToDb } = await import('@/lib/fore-client');

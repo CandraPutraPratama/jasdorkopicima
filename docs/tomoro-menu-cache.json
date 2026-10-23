@@ -1,0 +1,1006 @@
+{
+ "menuGroups": [
+  {
+   "code": "M00030-3",
+   "name": "MASTER S.O.E SERIES",
+   "products": [
+    {
+     "id": "I00275",
+     "name": "Master S.O.E - Caffe Americano",
+     "image": "https://gambar.cimagroup.my.id/tomoro/master-s-o-e-caffe-americano.webp",
+     "isCombo": false,
+     "basePrice": 30000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan sempurna antara kesegaran citrus yang cerah dan aroma floral khas melati, dilengkapi tekstur yang lembut serta manis karamel yang bertahan lama, menghadirkan pengalaman kopi yang elegan dan menyenangkan.",
+     "productCode": "1100233",
+     "originalPrice": 30000
+    },
+    {
+     "id": "I00276",
+     "name": "Master S.O.E - Caffe Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/master-s-o-e-caffe-latte.webp",
+     "isCombo": false,
+     "basePrice": 32000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Latte yang lembut dan seimbang dengan karakter buttery dan nutty cookie yang manis, diakhiri tekstur creamy yang halus. Tersedia dengan TOMORO Master Milk, Oat Milk, atau Coconut Milk.",
+     "productCode": "1100235",
+     "originalPrice": 32000
+    },
+    {
+     "id": "I00277",
+     "name": "Master S.O.E - Breve Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/master-s-o-e-breve-latte.webp",
+     "isCombo": false,
+     "basePrice": 35000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Latte kaya rasa dengan profil yang seimbang, diracik menggunakan Single Origin Espresso hasil kurasi kami. Menghadirkan manis yang lebih menonjol, tekstur creamy yang lembut, serta akhir rasa yang halus, menampilkan aroma dan karakter unik dari espresso pilihan.",
+     "productCode": "1100237",
+     "originalPrice": 35000
+    }
+   ]
+  },
+  {
+   "code": "M00087",
+   "name": "MONTHLY PROMO",
+   "products": [
+    {
+     "id": "I01410",
+     "name": "Daily Duo Bundle",
+     "image": "https://gambar.cimagroup.my.id/tomoro/daily-duo-bundle.webp",
+     "isCombo": true,
+     "basePrice": 36000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "",
+     "productCode": "1601231",
+     "originalPrice": 36000
+    }
+   ]
+  },
+  {
+   "code": "M00144",
+   "name": "TRIPLE PISTACHIO SERIES",
+   "products": [
+    {
+     "id": "I01532",
+     "name": "Triple Dubai Pistachio Chocolate",
+     "image": "https://gambar.cimagroup.my.id/tomoro/triple-dubai-pistachio-chocolate.webp",
+     "isCombo": false,
+     "basePrice": 36000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Dessert kekinian dalam satu gelas dengan perpaduan pistachio premium yang creamy-nutty dan cokelat premium lokal Indonesia. Dilengkapi pistachio foam yang lembut serta pistachio kunafa crunch yang renyah untuk sensasi rasa dan tekstur yang memanjakan.",
+     "productCode": "1100330",
+     "originalPrice": 36000
+    },
+    {
+     "id": "I01533",
+     "name": "Triple Pistachio Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/triple-pistachio-latte.webp",
+     "isCombo": false,
+     "basePrice": 33000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Pistachio Latte favorit kini semakin istimewa. Perpaduan espresso yang bold dengan pistachio creamy dan nutty, dilengkapi pistachio foam yang lembut serta pistachio kunafa crunch yang renyah untuk pengalaman Triple Pistachio yang lebih nikmat di setiap tegukan.",
+     "productCode": "1100332",
+     "originalPrice": 33000
+    },
+    {
+     "id": "I01534",
+     "name": "Triple Pistachio Matcha",
+     "image": "https://gambar.cimagroup.my.id/tomoro/triple-pistachio-matcha.webp",
+     "isCombo": false,
+     "basePrice": 36000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan matcha first harvest dari Golden Belt dan pistachio yang creamy-nutty, dilengkapi pistachio foam yang lembut serta pistachio kunafa yang renyah untuk sensasi rasa dan tekstur yang istimewa di setiap tegukan.",
+     "productCode": "1100334",
+     "originalPrice": 36000
+    }
+   ]
+  },
+  {
+   "code": "M00138",
+   "name": "MATCHA SERIES",
+   "products": [
+    {
+     "id": "I016",
+     "name": "Matcha Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/matcha-latte.webp",
+     "isCombo": false,
+     "basePrice": 27000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Kombinasi premium matcha yang wangi dan susu segar.",
+     "productCode": "1350005",
+     "originalPrice": 27000
+    },
+    {
+     "id": "I132",
+     "name": "Matcha Oat Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/matcha-oat-latte.webp",
+     "isCombo": false,
+     "basePrice": 28000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Susu oat yang luar biasa enak dengan cita rasa matcha yang khas, lahirlah matcha oat latte nya TOMORO.",
+     "productCode": "1350026",
+     "originalPrice": 28000
+    },
+    {
+     "id": "I01432",
+     "name": "Sea Salt Cloud Matcha Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/sea-salt-cloud-matcha-latte.webp",
+     "isCombo": false,
+     "basePrice": 30000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan Matcha dan Susu dengan tambahan sea salt cloud foam diatasnya",
+     "productCode": "1100321",
+     "originalPrice": 30000
+    },
+    {
+     "id": "I01505",
+     "name": "Matcha Jasmine Milk Tea",
+     "image": "https://gambar.cimagroup.my.id/tomoro/matcha-jasmine-milk-tea.webp",
+     "isCombo": false,
+     "basePrice": 28000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "[CHARACTER CUP AKAN DIBERIKAN SELAMA PERSEDIAAN MASIH ADA] Perpaduan antara matcha aromatik dan teh melati yang lembut, dipadukan dengan susu creamy untuk menciptakan harmoni yang halus dan menyegarkan. Floral, segar, dan menenangkan di setiap tegukan.",
+     "productCode": "1100326",
+     "originalPrice": 28000
+    },
+    {
+     "id": "I00393",
+     "name": "1L Matcha Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/1l-matcha-latte.webp",
+     "isCombo": false,
+     "basePrice": 110000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "",
+     "productCode": "1100245",
+     "originalPrice": 110000
+    },
+    {
+     "id": "I01413",
+     "name": "Strawberry Matcha Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/strawberry-matcha-latte.webp",
+     "isCombo": false,
+     "basePrice": 36000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Harmoni tiga bahan pilihan, stroberi segar, matcha premium, dan susu lembut, hadir dalam satu minuman berlapis yang menyegarkan, lembut, dan menyenangkan, cocok untuk suasana apapun.",
+     "productCode": "1100317",
+     "originalPrice": 36000
+    }
+   ]
+  },
+  {
+   "code": "M00024-3",
+   "name": "TOMORO SIGNATURE",
+   "products": [
+    {
+     "id": "I221",
+     "name": "TOMORO Aren Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/tomoro-aren-latte.webp",
+     "isCombo": false,
+     "basePrice": 21000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Kopi susu favorit kita hanya menggunakan 100% kopi arabika, gula aren lokal dan susu segar. Sudah pasti favorit semua orang.",
+     "productCode": "1100069",
+     "originalPrice": 21000
+    },
+    {
+     "id": "I675",
+     "name": "Sea Salt Cloud Caramel Macchiato",
+     "image": "https://gambar.cimagroup.my.id/tomoro/sea-salt-cloud-caramel-macchiato.webp",
+     "isCombo": false,
+     "basePrice": 30000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan espresso, susu dan sirup caramel dengan tambahan vanilla cloud foam diatasnya",
+     "productCode": "1100151",
+     "originalPrice": 30000
+    },
+    {
+     "id": "I130",
+     "name": "TOMORO Oat Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/tomoro-oat-latte.webp",
+     "isCombo": false,
+     "basePrice": 25000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Minuman nge-hits kita, kini hadir dengan 'susu' oat yang sehat. Dijamin langsung jatuh cinta pada tegukan pertama. Percaya dehh!",
+     "productCode": "1100057",
+     "originalPrice": 25000
+    },
+    {
+     "id": "I749",
+     "name": "Cheese Cloud Chocolate",
+     "image": "https://gambar.cimagroup.my.id/tomoro/cheese-cloud-chocolate.webp",
+     "isCombo": false,
+     "basePrice": 30000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan antara TOMORO premium coklat, susu yang creamy, dan cheese cloud foam yang manis gurih dan lembut",
+     "productCode": "1350073",
+     "originalPrice": 30000
+    },
+    {
+     "id": "I567",
+     "name": "1L TOMORO Aren Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/1l-tomoro-aren-latte.webp",
+     "isCombo": false,
+     "basePrice": 99000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "",
+     "productCode": "1100111",
+     "originalPrice": 99000
+    }
+   ]
+  },
+  {
+   "code": "M00026-3",
+   "name": "CLASSIC COFFEE",
+   "products": [
+    {
+     "id": "I003",
+     "name": "Caffe Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/caffe-latte.webp",
+     "isCombo": false,
+     "basePrice": 25000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "\"Latte\" di Italia berarti susu. Campuran antara kopi dan susu yang seimbang dengan busa susu yang tipis dan lembut di atasnya.",
+     "productCode": "1100041",
+     "originalPrice": 25000
+    },
+    {
+     "id": "I002",
+     "name": "Caffe Americano",
+     "image": "https://gambar.cimagroup.my.id/tomoro/caffe-americano.webp",
+     "isCombo": false,
+     "basePrice": 18000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Rasa espresso yang kaya di tuangkan ke air panas, mempertahankan crema kopi sempurna di cangkir dengan cita rasa cokelat hazelnut dan gula merah.",
+     "productCode": "1100031",
+     "originalPrice": 18000
+    },
+    {
+     "id": "I686",
+     "name": "Kopi Susu Aren",
+     "image": "https://gambar.cimagroup.my.id/tomoro/kopi-susu-aren.webp",
+     "isCombo": false,
+     "basePrice": 19000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "",
+     "productCode": "1100153",
+     "originalPrice": 19000
+    },
+    {
+     "id": "I005",
+     "name": "Caffe Mocha",
+     "image": "https://gambar.cimagroup.my.id/tomoro/caffe-mocha.webp",
+     "isCombo": false,
+     "basePrice": 26000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Espresso dan cokelat ganache yang di kombinasi dengan susu hangat yang lembut.",
+     "productCode": "1100011",
+     "originalPrice": 26000
+    },
+    {
+     "id": "I004",
+     "name": "Cappuccino",
+     "image": "https://gambar.cimagroup.my.id/tomoro/cappuccino.webp",
+     "isCombo": false,
+     "basePrice": 25000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Cappuccino membutuhkan keterampilan dari barista terbaik, perpaduan espresso yang sempurna dengan susu dan busa susu yang lebih tebal.",
+     "productCode": "1100037",
+     "originalPrice": 25000
+    },
+    {
+     "id": "I010",
+     "name": "Breve Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/breve-latte.webp",
+     "isCombo": false,
+     "basePrice": 32000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Kami menggunakan half&half untuk membuat minuman kopi susu yang lembut dan lebih kental.",
+     "productCode": "1100049",
+     "originalPrice": 32000
+    },
+    {
+     "id": "I00269",
+     "name": "1L Kopi Susu Aren",
+     "image": "https://gambar.cimagroup.my.id/tomoro/1l-kopi-susu-aren.webp",
+     "isCombo": false,
+     "basePrice": 85000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "",
+     "productCode": "1100232",
+     "originalPrice": 85000
+    }
+   ]
+  },
+  {
+   "code": "M00027-3",
+   "name": "FLAVORED LATTE",
+   "products": [
+    {
+     "id": "I011",
+     "name": "Caramel Macchiato",
+     "image": "https://gambar.cimagroup.my.id/tomoro/caramel-macchiato.webp",
+     "isCombo": false,
+     "basePrice": 27000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Espresso yang kaya dicampurkan dengan sirup karamel sebelum ditambahkan ke dalam susu yang lembut.",
+     "productCode": "1100009",
+     "originalPrice": 27000
+    },
+    {
+     "id": "I710",
+     "name": "Caramel Cheese Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/caramel-cheese-latte.webp",
+     "isCombo": false,
+     "basePrice": 30000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "[CHARACTER CUP NAILOONG AKAN DIBERIKAN SELAMA PERSEDIAAN MASIH ADA] Perpaduan antara TOMORO Blend Espresso, sirup caramel dan cheese milk yang creamy dan gurih",
+     "productCode": "1100161",
+     "originalPrice": 30000
+    },
+    {
+     "id": "I642",
+     "name": "Spanish Aren Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/spanish-aren-latte.webp",
+     "isCombo": false,
+     "basePrice": 26000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan antara TOMORO Blend espresso, susu yang creamy dengan rasa manis dan sirup gula aren pada setiap tegukan",
+     "productCode": "1100118",
+     "originalPrice": 26000
+    },
+    {
+     "id": "I219",
+     "name": "Coconut Aren Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/coconut-aren-latte.webp",
+     "isCombo": false,
+     "basePrice": 25000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "#SeruputBuatHealing A perfect blend of 100% Real Coconut Milk, Aren Syrup and Espresso from TOMORO Blend, create a sweet and creamy drinks.",
+     "productCode": "1100065",
+     "originalPrice": 25000
+    },
+    {
+     "id": "I748",
+     "name": "Cheese Cloud Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/cheese-cloud-latte.webp",
+     "isCombo": false,
+     "basePrice": 30000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "[CHARACTER CUP NAILOONG AKAN DIBERIKAN SELAMA PERSEDIAAN MASIH ADA] Perpaduan antara TOMORO Blend Espresso, susu yang creamy, dan cheese cloud foam yang manis gurih dan lembut",
+     "productCode": "1100187",
+     "originalPrice": 30000
+    },
+    {
+     "id": "I641",
+     "name": "Spanish Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/spanish-latte.webp",
+     "isCombo": false,
+     "basePrice": 25000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan antara TOMORO Blend espresso dan susu yang creamy dengan rasa manis pada setiap tegukan",
+     "productCode": "1100117",
+     "originalPrice": 25000
+    },
+    {
+     "id": "I218",
+     "name": "TOMORO Coconut Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/tomoro-coconut-latte.webp",
+     "isCombo": false,
+     "basePrice": 23000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "#SeruputBuatHealing Coconut Latte Asli & Pertama di INDONESIA. Perpaduan 100% susu kelapa asli dan espresso dari TOMORO Blend menjadikan minuman ini lebih creamy & smooth.",
+     "productCode": "1100061",
+     "originalPrice": 23000
+    },
+    {
+     "id": "I065",
+     "name": "Manuka Oat Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/manuka-oat-latte.webp",
+     "isCombo": false,
+     "basePrice": 30000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan madu manuka dengan susu oat yang sehat, menjadikan minuman ini cocok buat kalian yang sedang menjalankan hidup sehat",
+     "productCode": "1100053",
+     "originalPrice": 30000
+    },
+    {
+     "id": "I643",
+     "name": "Spanish Latte (Limited Edition Cup)",
+     "image": "https://gambar.cimagroup.my.id/tomoro/spanish-latte-limited-edition-cup.webp",
+     "isCombo": false,
+     "basePrice": 25000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan antara TOMORO Blend espresso dan susu yang creamy dengan rasa manis pada setiap tegukan",
+     "productCode": "1100137",
+     "originalPrice": 25000
+    },
+    {
+     "id": "I644",
+     "name": "Spanish Aren Latte (Limited Edition Cup)",
+     "image": "https://gambar.cimagroup.my.id/tomoro/spanish-aren-latte-limited-edition-cup.webp",
+     "isCombo": false,
+     "basePrice": 26000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan antara TOMORO Blend espresso, susu yang creamy dengan rasa manis dan sirup gula aren pada setiap tegukan",
+     "productCode": "1100138",
+     "originalPrice": 26000
+    }
+   ]
+  },
+  {
+   "code": "M00122",
+   "name": "HEALING SERIES",
+   "products": [
+    {
+     "id": "I01376",
+     "name": "Single Healing Cup",
+     "image": "https://gambar.cimagroup.my.id/tomoro/single-healing-cup.webp",
+     "isCombo": true,
+     "basePrice": 31000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "",
+     "productCode": "1601213",
+     "originalPrice": 31000
+    },
+    {
+     "id": "I01383",
+     "name": "Frieren Pastry Bundle",
+     "image": "https://gambar.cimagroup.my.id/tomoro/frieren-pastry-bundle.webp",
+     "isCombo": true,
+     "basePrice": 53000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "",
+     "productCode": "1601220",
+     "originalPrice": 53000
+    }
+   ]
+  },
+  {
+   "code": "M00057",
+   "name": "CHEESE X NAILOONG SERIES",
+   "products": [
+    {
+     "id": "I00581",
+     "name": "Dino-mite Mango Frappe ",
+     "image": "https://gambar.cimagroup.my.id/tomoro/dino-mite-mango-frappe.webp",
+     "isCombo": false,
+     "basePrice": 28000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "[CHARACTER CUP NAILOONG AKAN DIBERIKAN SELAMA PERSEDIAAN MASIH ADA] Perpaduan menyegarkan dan creamy dari mangga dan keju yang creamy menghadirkan pengalaman rasa manis dan gurih yang unik dan berkesan.",
+     "productCode": "1100269",
+     "originalPrice": 28000
+    },
+    {
+     "id": "I00580",
+     "name": "Dino-mite Cloud Tea",
+     "image": "https://gambar.cimagroup.my.id/tomoro/dino-mite-cloud-tea.webp",
+     "isCombo": false,
+     "basePrice": 26000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "[CHARACTER CUP NAILOONG AKAN DIBERIKAN SELAMA PERSEDIAAN MASIH ADA] Teh rasa buah mangga segar yang dipadukan dengan topping cheese cloud yang lembut, gurih dan creamy. Perpaduan lezat ini menggabungkan manisnya mangga khas buah tropis dengan cheese cloud yang lembut dan gurih, menghasilkan keseimbangan rasa yang sempurna.",
+     "productCode": "1100267",
+     "originalPrice": 26000
+    }
+   ]
+  },
+  {
+   "code": "M00031-3",
+   "name": "REFRESHING SERIES",
+   "products": [
+    {
+     "id": "I01151",
+     "name": "Strawberry Americano",
+     "image": "https://gambar.cimagroup.my.id/tomoro/strawberry-americano.webp",
+     "isCombo": false,
+     "basePrice": 23000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan antara espresso dari TOMORO Blend dan Strawberry Purée asli, menghasilkan rasa manis yang menyegarkan.",
+     "productCode": "1100292",
+     "originalPrice": 23000
+    },
+    {
+     "id": "I333",
+     "name": "Strawberry Jasmine Tea",
+     "image": "https://gambar.cimagroup.my.id/tomoro/strawberry-jasmine-tea.webp",
+     "isCombo": false,
+     "basePrice": 23000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan sempurna dari rasa manis dari Strawberry Purée Asli dan wangi dari Jasmine Green Tea, menghasilkan rasa yang menyegarkan.",
+     "productCode": "1350038",
+     "originalPrice": 23000
+    },
+    {
+     "id": "I726",
+     "name": "Peach Americano",
+     "image": "https://gambar.cimagroup.my.id/tomoro/peach-americano.webp",
+     "isCombo": false,
+     "basePrice": 23000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan antara espresso dari TOMORO Blend dan Peach Purée asli, menghasilkan rasa manis yang menyegarkan.",
+     "productCode": "1100169",
+     "originalPrice": 23000
+    },
+    {
+     "id": "I728",
+     "name": "Peach Jasmine Tea",
+     "image": "https://gambar.cimagroup.my.id/tomoro/peach-jasmine-tea.webp",
+     "isCombo": false,
+     "basePrice": 23000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan sempurna dari rasa manis dari Peach Purée Asli dan wangi dari Jasmine Green Tea, menghasilkan rasa yang menyegarkan.",
+     "productCode": "1350065",
+     "originalPrice": 23000
+    },
+    {
+     "id": "I298",
+     "name": "Lemonade Americano",
+     "image": "https://gambar.cimagroup.my.id/tomoro/lemonade-americano.webp",
+     "isCombo": false,
+     "basePrice": 22000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Ekstrak lemon dicampur dengan Cafe Americano, memberikan sensasi rasa yang sangat berbeda. Sangat menyegarkan dan cocok untuk pelepas dahaga",
+     "productCode": "1100075",
+     "originalPrice": 22000
+    },
+    {
+     "id": "I119",
+     "name": "Pink Pop Lemonade",
+     "image": "https://gambar.cimagroup.my.id/tomoro/pink-pop-lemonade.webp",
+     "isCombo": false,
+     "basePrice": 15000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan rasa lemon yang segar ditambahkan rasa manis, and it's pink!",
+     "productCode": "1350021",
+     "originalPrice": 15000
+    },
+    {
+     "id": "I120",
+     "name": "Pink Pop Lemon Tea",
+     "image": "https://gambar.cimagroup.my.id/tomoro/pink-pop-lemon-tea.webp",
+     "isCombo": false,
+     "basePrice": 19000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan antara rasa asam manis dari lemon dan juga teh melati",
+     "productCode": "1350020",
+     "originalPrice": 19000
+    },
+    {
+     "id": "I297",
+     "name": "Grapefruit Americano",
+     "image": "https://gambar.cimagroup.my.id/tomoro/grapefruit-americano.webp",
+     "isCombo": false,
+     "basePrice": 22000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan wangi grapefruit yang khas dengan aroma TOMORO Cafe Americano, menciptakan kombinasi yang sempurna dan pilihan yang tepat untuk musim panas",
+     "productCode": "1100073",
+     "originalPrice": 22000
+    }
+   ]
+  },
+  {
+   "code": "M00029-3",
+   "name": "NON COFFEE",
+   "products": [
+    {
+     "id": "I601",
+     "name": "Sea Salt Cloud Chocolate",
+     "image": "https://gambar.cimagroup.my.id/tomoro/sea-salt-cloud-chocolate.webp",
+     "isCombo": false,
+     "basePrice": 30000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan coklat premium dan susu dengan sea salt cloud foam diatasnya",
+     "productCode": "1350050",
+     "originalPrice": 30000
+    },
+    {
+     "id": "I066",
+     "name": "Hojicha Oat Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/hojicha-oat-latte.webp",
+     "isCombo": false,
+     "basePrice": 30000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan rasa manis dengan teknik pemanggangan dari hojicha menghasilkan wangi yang khas, berbalut dengan tekstur creamy dari susu oat yang sehat. Cocok buat kalian yang menyukai rasa manis",
+     "productCode": "1350009",
+     "originalPrice": 30000
+    },
+    {
+     "id": "I015",
+     "name": "Chocolate",
+     "image": "https://gambar.cimagroup.my.id/tomoro/chocolate.webp",
+     "isCombo": false,
+     "basePrice": 25000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Kombinasi cokelat premium dan susu segar, menghasilkan rasa yang kaya dan lembut.",
+     "productCode": "1350001",
+     "originalPrice": 25000
+    },
+    {
+     "id": "I131",
+     "name": "Choco Oat Latte",
+     "image": "https://gambar.cimagroup.my.id/tomoro/choco-oat-latte.webp",
+     "isCombo": false,
+     "basePrice": 28000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Coklat dan susu oat, sudah pasti tidak akan salah buat kamu. Pilihan yang tepat sekali untuk keseharianmu!",
+     "productCode": "1350022",
+     "originalPrice": 28000
+    },
+    {
+     "id": "I00745",
+     "name": "Peach Oolong Milk Tea",
+     "image": "https://gambar.cimagroup.my.id/tomoro/peach-oolong-milk-tea.webp",
+     "isCombo": false,
+     "basePrice": 20000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "",
+     "productCode": "1100281",
+     "originalPrice": 20000
+    },
+    {
+     "id": "I111",
+     "name": "Pristine",
+     "image": "https://gambar.cimagroup.my.id/tomoro/pristine.webp",
+     "isCombo": false,
+     "basePrice": 10000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Air Mineral 400ml",
+     "productCode": "1900003",
+     "originalPrice": 10000
+    },
+    {
+     "id": "I569",
+     "name": "1L Chocolate",
+     "image": "https://gambar.cimagroup.my.id/tomoro/1l-chocolate.webp",
+     "isCombo": false,
+     "basePrice": 99000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "",
+     "productCode": "1100114",
+     "originalPrice": 99000
+    }
+   ]
+  },
+  {
+   "code": "M00038-3",
+   "name": "FOOD",
+   "products": [
+    {
+     "id": "I01780",
+     "name": "2 Egg Tart",
+     "image": "https://gambar.cimagroup.my.id/tomoro/2-egg-tart.webp",
+     "isCombo": true,
+     "basePrice": 50000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "",
+     "productCode": "1601243",
+     "originalPrice": 50000
+    },
+    {
+     "id": "I01721",
+     "name": "Egg Tart",
+     "image": "https://gambar.cimagroup.my.id/tomoro/egg-tart.webp",
+     "isCombo": false,
+     "basePrice": 25000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Egg tart dengan cangkang pastry yang renyah dan berlapis, dipadukan dengan isian custard telur yang lembut dan creamy",
+     "productCode": "1500061",
+     "originalPrice": 25000
+    },
+    {
+     "id": "I394",
+     "name": "Butter Croissant",
+     "image": "https://gambar.cimagroup.my.id/tomoro/butter-croissant.webp",
+     "isCombo": false,
+     "basePrice": 16000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Butter croissant klasik dengan lapisan yang renyah dan aroma butter asli yang khas didalamnya.",
+     "productCode": "1500016",
+     "originalPrice": 16000
+    },
+    {
+     "id": "I395",
+     "name": "Choco Danish",
+     "image": "https://gambar.cimagroup.my.id/tomoro/choco-danish.webp",
+     "isCombo": false,
+     "basePrice": 18000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Terinspirasi dari hidangan Perancis, pastry coklat memiliki kombinasi yang lembut dan sempurna antara susu cokelat dan lapisan pastry.",
+     "productCode": "1500017",
+     "originalPrice": 18000
+    },
+    {
+     "id": "I396",
+     "name": "Cinnamon Roll",
+     "image": "https://gambar.cimagroup.my.id/tomoro/cinnamon-roll.webp",
+     "isCombo": false,
+     "basePrice": 20000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Hidangan pastry dengan isi kayu manis dan dan kismis.",
+     "productCode": "1500018",
+     "originalPrice": 20000
+    },
+    {
+     "id": "I00129",
+     "name": "Cheese Danish",
+     "image": "https://gambar.cimagroup.my.id/tomoro/cheese-danish.webp",
+     "isCombo": false,
+     "basePrice": 18000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perfect blend of flaky pastry and creamy cheese in every bite",
+     "productCode": "1500041",
+     "originalPrice": 18000
+    },
+    {
+     "id": "I00626",
+     "name": "Blueberry & Cheese Sourdough",
+     "image": "https://gambar.cimagroup.my.id/tomoro/blueberry-cheese-sourdough.webp",
+     "isCombo": false,
+     "basePrice": 22000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Sourdough lembut dengan isian blueberry manis dan krim keju, perpaduan rasa asam, manis, dan gurih yang seimbang",
+     "productCode": "1500048",
+     "originalPrice": 22000
+    },
+    {
+     "id": "I01181",
+     "name": "Cheese Pizza Baguette",
+     "image": "https://gambar.cimagroup.my.id/tomoro/cheese-pizza-baguette.webp",
+     "isCombo": false,
+     "basePrice": 22000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Baguette renyah dengan saus tomat yang kaya rasa dan keju leleh melimpah untuk camilan keju yang nikmat.",
+     "productCode": "1500056",
+     "originalPrice": 22000
+    },
+    {
+     "id": "I01180",
+     "name": "Beef Pizza Baguette",
+     "image": "https://gambar.cimagroup.my.id/tomoro/beef-pizza-baguette.webp",
+     "isCombo": false,
+     "basePrice": 24000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Baguette renyah dengan topping daging sapi cincang gurih, saus tomat yang kaya rasa, dan keju leleh untuk camilan sederhana yang mengenyangkan.",
+     "productCode": "1500055",
+     "originalPrice": 24000
+    },
+    {
+     "id": "I401",
+     "name": "Cheesy Beef Panini",
+     "image": "https://gambar.cimagroup.my.id/tomoro/cheesy-beef-panini.webp",
+     "isCombo": false,
+     "basePrice": 28000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Tekstur renyah panini, lelehan keju yang menggiurkan dikombinasikan dengan daging sapi.",
+     "productCode": "1500023",
+     "originalPrice": 28000
+    },
+    {
+     "id": "I402",
+     "name": "Beef Omelette Sandwich",
+     "image": "https://gambar.cimagroup.my.id/tomoro/beef-omelette-sandwich.webp",
+     "isCombo": false,
+     "basePrice": 28000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan antara roti yang lembut dengan isian daging sapi dan telur omelet",
+     "productCode": "1500024",
+     "originalPrice": 28000
+    },
+    {
+     "id": "I403",
+     "name": "Smoked Chicken Onion Sandwich",
+     "image": "https://gambar.cimagroup.my.id/tomoro/smoked-chicken-onion-sandwich.webp",
+     "isCombo": false,
+     "basePrice": 28000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan antara roti yang lembut dengan isian smoked chicken, keju dan juga caramelized onion",
+     "productCode": "1500025",
+     "originalPrice": 28000
+    },
+    {
+     "id": "F005",
+     "name": "Banana Muffin",
+     "image": "https://gambar.cimagroup.my.id/tomoro/banana-muffin.webp",
+     "isCombo": false,
+     "basePrice": 22000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "A moist, tender muffin bursting with the natural sweetness of ripe bananas. With a golden-brown top and soft interior, it’s a comforting, wholesome treat",
+     "productCode": "1500038",
+     "originalPrice": 22000
+    },
+    {
+     "id": "F004",
+     "name": "Choco Muffin",
+     "image": "https://gambar.cimagroup.my.id/tomoro/choco-muffin.webp",
+     "isCombo": false,
+     "basePrice": 22000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "A rich, fudgy muffin with a deep chocolate flavor. Moist and decadent, it's the perfect indulgence for any chocolate lover.",
+     "productCode": "1500037",
+     "originalPrice": 22000
+    },
+    {
+     "id": "I01335",
+     "name": "Matcha Raspberry Bagel",
+     "image": "https://gambar.cimagroup.my.id/tomoro/matcha-raspberry-bagel.webp",
+     "isCombo": false,
+     "basePrice": 24000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Bagel matcha yang lembut dan kenyal, dengan isian raspberry cream cheese yang manis dan asam, serta topping crumble matcha yang renyah untuk keseimbangan rasa yang sempurna.",
+     "productCode": "1100306",
+     "originalPrice": 24000
+    },
+    {
+     "id": "I01336",
+     "name": "Matcha Eclair",
+     "image": "https://gambar.cimagroup.my.id/tomoro/matcha-eclair.webp",
+     "isCombo": false,
+     "basePrice": 22000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Éclair lembut dengan isian krim matcha yang creamy, dilapisi glaze matcha yang halus, dan ditaburi crumble matcha renyah untuk rasa matcha yang kaya di setiap gigitan.",
+     "productCode": "1100307",
+     "originalPrice": 22000
+    },
+    {
+     "id": "I00625",
+     "name": "Cheese Bagel",
+     "image": "https://gambar.cimagroup.my.id/tomoro/cheese-bagel.webp",
+     "isCombo": false,
+     "basePrice": 22000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Bagel keju dengan isian krim keju lembut, perpaduan gurih dan creamy yang pas di setiap gigitan",
+     "productCode": "1500047",
+     "originalPrice": 22000
+    },
+    {
+     "id": "I00400",
+     "name": "Chicken Curry Puff",
+     "image": "https://gambar.cimagroup.my.id/tomoro/chicken-curry-puff.webp",
+     "isCombo": false,
+     "basePrice": 24000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "A crisp, golden pastry filled with tender chicken and aromatic curry spices, perfect for a tasty snack anytime.",
+     "productCode": "1500044",
+     "originalPrice": 24000
+    },
+    {
+     "id": "I00401",
+     "name": "Chicken Black Pepper Puff",
+     "image": "https://gambar.cimagroup.my.id/tomoro/chicken-black-pepper-puff.webp",
+     "isCombo": false,
+     "basePrice": 24000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "A flaky puff packed with juicy chicken and bold black pepper seasoning, great for a flavorful bite on the go",
+     "productCode": "1500045",
+     "originalPrice": 24000
+    }
+   ]
+  },
+  {
+   "code": "M00035-3",
+   "name": "FRAPPE",
+   "products": [
+    {
+     "id": "I334",
+     "name": "Strawberry Jasmine Smoothie",
+     "image": "https://gambar.cimagroup.my.id/tomoro/strawberry-jasmine-smoothie.webp",
+     "isCombo": false,
+     "basePrice": 23000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan Jasmine Green Tea yang di blend dengan Strawberry Purée Asli, menghasikan minuman yang menyegarkan. Whipped Cream pada gambar tidak termasuk.",
+     "productCode": "1200034",
+     "originalPrice": 23000
+    },
+    {
+     "id": "I019",
+     "name": "Matcha Frappe",
+     "image": "https://gambar.cimagroup.my.id/tomoro/matcha-frappe.webp",
+     "isCombo": false,
+     "basePrice": 27000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Matcha premium yang dicampur dengan susu segar & es. Whipped Cream pada gambar tidak termasuk.",
+     "productCode": "1200013",
+     "originalPrice": 27000
+    },
+    {
+     "id": "I727",
+     "name": "Peach Coconut Frappe",
+     "image": "https://gambar.cimagroup.my.id/tomoro/peach-coconut-frappe.webp",
+     "isCombo": false,
+     "basePrice": 23000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Perpaduan Susu Kelapa Asli yang di blend dengan es, ditambahkan rasa manis dari Peach Purée Asli, menghasilkan rasa yang menyegarkan.",
+     "productCode": "1350063",
+     "originalPrice": 23000
+    },
+    {
+     "id": "I020",
+     "name": "Chocolate Frappe",
+     "image": "https://gambar.cimagroup.my.id/tomoro/chocolate-frappe.webp",
+     "isCombo": false,
+     "basePrice": 25000,
+     "isSoldOut": false,
+     "bundleCode": "",
+     "description": "Cokelat premium yang di blend dengan susu & es. Whipped Cream pada gambar tidak termasuk.",
+     "productCode": "1200005",
+     "originalPrice": 25000
+    }
+   ]
+  }
+ ]
+}

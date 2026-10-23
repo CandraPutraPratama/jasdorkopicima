@@ -1,0 +1,5 @@
+# Outlet bandara Tomoro (tier harga bandara)
+# TERVERIFIKASI via cingops menu API 2026-10-17:
+tomoro-plb03b-m  # Bandara SMB II Palembang Gate 3 (tier palembang)
+tomoro-plb03d-m  # Landside Bandara Palembang (tier palembang, harga identik)
+tomoro-ked01a-m  # Bandara Dhoho Kediri (tier dhoho, 1-5rb lebih murah)

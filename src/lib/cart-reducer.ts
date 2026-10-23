@@ -15,6 +15,7 @@ export interface CartItem {
   variantDescription?: string;
   addons?: Addon[];
   notes?: string;
+  brandSlug?: string;
   // Properti khusus paket bundling
   isBundle?: boolean;
   bundleType?: string;

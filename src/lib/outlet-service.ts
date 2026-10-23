@@ -7,6 +7,35 @@ import { cleanSearchQuery, escapePostgrestFilterTerm } from './sanitizer.ts';
 import { resolveForeTimezone } from './fore-menu-data.ts';
 import { isOutletOpenBySchedule } from './orderability.ts';
 import type { Outlet } from '../types/domain.ts';
+import tomoroTimezoneMap from './tomoro-timezone-data.ts';
+
+export function resolveTomoroTimezone(code: string): string {
+  const norm = (code || '').trim().toLowerCase();
+  return (tomoroTimezoneMap as Record<string, string>)[norm] || 'Asia/Jakarta';
+}
+
+export function evaluateTomoroOutletStatus(row: {
+  is_active?: boolean | null;
+  updated_at?: string | null;
+}): { isOpen: boolean; canOrder: boolean; orderReason?: string } {
+  const updatedAt = row.updated_at ? new Date(row.updated_at).getTime() : 0;
+  // Basi lebih dari 30 menit atau belum pernah tersinkronisasi
+  const isStale = !updatedAt || Date.now() - updatedAt > 30 * 60 * 1000;
+  if (isStale) {
+    return {
+      isOpen: false,
+      canOrder: false,
+      orderReason: 'Status outlet belum terverifikasi \u2014 cek langsung ke outlet',
+    };
+  }
+
+  const isOpen = Boolean(row.is_active);
+  return {
+    isOpen,
+    canOrder: isOpen,
+    orderReason: isOpen ? undefined : 'Outlet sedang tutup',
+  };
+}
 
 export interface SearchOutletsResult {
   items: Outlet[];
@@ -35,8 +64,65 @@ export async function searchOutlets(
   }
 
   const isFore = brand === 'fore' || brand === 'Fore Coffee';
+  const isTomoro = brand === 'tomoro' || brand === 'TOMORO Coffee' || brand === 'TOMORO';
 
-  // 1. Jika brand Fore Coffee, langsung cari dari Supabase (Fore tidak menggunakan KK API)
+  // 1a. Jika brand TOMORO Coffee, langsung cari dari Supabase
+  if (isTomoro) {
+    try {
+      const safeTerm = escapePostgrestFilterTerm(trimmed);
+      if (!safeTerm) {
+        return { items: [], total: 0, source: 'database' };
+      }
+
+      const supabase = getSupabaseServerClient();
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      const { data, count, error } = await supabase
+        .from('outlets')
+        .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand, updated_at', {
+          count: 'exact',
+        })
+        .eq('is_in_scope', true)
+        .eq('brand', 'TOMORO Coffee')
+        .or(`name.ilike.%${safeTerm}%,address.ilike.%${safeTerm}%,code.ilike.%${safeTerm}%`)
+        .order('name', { ascending: true })
+        .range(from, to);
+
+      if (!error && data) {
+        const items: Outlet[] = data.map((row) => {
+          const timezone = resolveTomoroTimezone(row.code);
+          const statusObj = evaluateTomoroOutletStatus(row);
+          return {
+            id: Number(row.id),
+            code: row.code,
+            name: row.name,
+            address: row.address,
+            isOpen: statusObj.isOpen,
+            openTime: '',
+            closeTime: '',
+            timeZone: timezone === 'Asia/Jayapura' ? 9 : timezone === 'Asia/Makassar' ? 8 : 7,
+            timezone,
+            brand: 'TOMORO Coffee',
+            canOrder: statusObj.canOrder,
+            orderReason: statusObj.orderReason,
+          };
+        });
+
+        return {
+          items,
+          total: count ?? items.length,
+          source: 'database',
+        };
+      }
+    } catch (err: any) {
+      console.warn(`[OutletService] Tomoro Supabase search error: ${err.message}`);
+    }
+
+    return { items: [], total: 0, source: 'database' };
+  }
+
+  // 1b. Jika brand Fore Coffee, langsung cari dari Supabase (Fore tidak menggunakan KK API)
   if (isFore) {
     try {
       const safeTerm = escapePostgrestFilterTerm(trimmed);
@@ -188,6 +274,58 @@ export async function getFeaturedOutlets(
   brand?: string
 ): Promise<SearchOutletsResult> {
   const isFore = brand === 'fore' || brand === 'Fore Coffee';
+  const isTomoro = brand === 'tomoro' || brand === 'TOMORO Coffee' || brand === 'TOMORO';
+
+  if (isTomoro) {
+    try {
+      const supabase = getSupabaseServerClient();
+      const { data, error } = await supabase
+        .from('outlets')
+        .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand, updated_at')
+        .eq('is_in_scope', true)
+        .eq('brand', 'TOMORO Coffee')
+        .limit(Math.max(limit, 20));
+
+      if (!error && data) {
+        const items: Outlet[] = data.map((row) => {
+          const timezone = resolveTomoroTimezone(row.code);
+          const statusObj = evaluateTomoroOutletStatus(row);
+          return {
+            id: Number(row.id),
+            code: row.code,
+            name: row.name,
+            address: row.address,
+            isOpen: statusObj.isOpen,
+            openTime: '',
+            closeTime: '',
+            timeZone: timezone === 'Asia/Jayapura' ? 9 : timezone === 'Asia/Makassar' ? 8 : 7,
+            timezone,
+            brand: 'TOMORO Coffee',
+            canOrder: statusObj.canOrder,
+            orderReason: statusObj.orderReason,
+          };
+        });
+
+        // Prioritaskan outlet yang sedang buka
+        const sorted = [...items].sort((a, b) => {
+          if (a.canOrder && !b.canOrder) return -1;
+          if (!a.canOrder && b.canOrder) return 1;
+          return 0;
+        });
+
+        const sliced = sorted.slice(0, limit);
+        return {
+          items: sliced,
+          total: sorted.length,
+          source: 'database',
+        };
+      }
+    } catch (err: any) {
+      console.warn(`[OutletService] Tomoro getFeaturedOutlets error: ${err.message}`);
+    }
+
+    return { items: [], total: 0, source: 'database' };
+  }
 
   if (isFore) {
     try {
@@ -276,6 +414,7 @@ export async function getFeaturedOutlets(
       .eq('is_active', true)
       .eq('is_in_scope', true)
       .neq('brand', 'Fore Coffee')
+      .neq('brand', 'TOMORO Coffee')
       .limit(limit);
 
     if (!error && data) {
@@ -316,18 +455,20 @@ export async function getFeaturedOutlets(
  */
 export async function getTotalOutletsCount(brand?: string): Promise<number> {
   const isFore = brand === 'fore' || brand === 'Fore Coffee';
+  const isTomoro = brand === 'tomoro' || brand === 'TOMORO Coffee' || brand === 'TOMORO';
   try {
     const supabase = getSupabaseServerClient();
     let query = supabase
       .from('outlets')
       .select('*', { count: 'exact', head: true })
-      .eq('is_active', true)
       .eq('is_in_scope', true);
 
     if (isFore) {
-      query = query.eq('brand', 'Fore Coffee');
+      query = query.eq('is_active', true).eq('brand', 'Fore Coffee');
+    } else if (isTomoro) {
+      query = query.eq('brand', 'TOMORO Coffee');
     } else {
-      query = query.neq('brand', 'Fore Coffee');
+      query = query.eq('is_active', true).neq('brand', 'Fore Coffee').neq('brand', 'TOMORO Coffee');
     }
 
     const { count, error } = await query;
@@ -339,6 +480,7 @@ export async function getTotalOutletsCount(brand?: string): Promise<number> {
     console.warn(`[OutletService] Supabase getTotalOutletsCount error: ${err?.message}`);
   }
 
+  if (isTomoro) return 678;
   return isFore ? 394 : 1340;
 }
 
@@ -351,24 +493,45 @@ export function escapeSqlWildcards(str: string): string {
 }
 
 /**
- * Mengambil satu outlet berdasarkan kodenya (mendukung Fore Coffee & Kopi Kenangan).
+ * Mengambil satu outlet berdasarkan kodenya (mendukung Fore Coffee, TOMORO Coffee & Kopi Kenangan).
  */
 export async function getOutletByCode(code: string): Promise<Outlet | null> {
   const trimmedCode = (code || '').trim();
   if (!trimmedCode) return null;
 
   const isFore = trimmedCode.toLowerCase().startsWith('fore-');
+  const isTomoro = trimmedCode.toLowerCase().startsWith('tomoro-');
 
   try {
     const supabase = getSupabaseServerClient();
     const sanitizedCode = escapeSqlWildcards(trimmedCode);
     const { data, error } = await supabase
       .from('outlets')
-      .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand')
+      .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand, updated_at')
       .ilike('code', sanitizedCode)
       .maybeSingle();
 
     if (!error && data) {
+      const isTomoroRow = isTomoro || data.brand === 'TOMORO Coffee';
+      if (isTomoroRow) {
+        const timezone = resolveTomoroTimezone(data.code);
+        const statusObj = evaluateTomoroOutletStatus(data);
+        return {
+          id: Number(data.id),
+          code: data.code,
+          name: data.name,
+          address: data.address,
+          isOpen: statusObj.isOpen,
+          openTime: '',
+          closeTime: '',
+          timeZone: timezone === 'Asia/Jayapura' ? 9 : timezone === 'Asia/Makassar' ? 8 : 7,
+          timezone,
+          brand: 'TOMORO Coffee',
+          canOrder: statusObj.canOrder,
+          orderReason: statusObj.orderReason,
+        };
+      }
+
       const rowBrand = data.brand || (isFore ? 'Fore Coffee' : 'Kopi Kenangan');
       const timezone = resolveForeTimezone(data.code);
       const isOpen = isOutletOpenBySchedule(data.open_time, data.close_time, new Date(), timezone);
@@ -391,7 +554,7 @@ export async function getOutletByCode(code: string): Promise<Outlet | null> {
     console.warn(`[OutletService] getOutletByCode DB error for [${trimmedCode}]:`, err.message);
   }
 
-  if (isFore) {
+  if (isFore || isTomoro) {
     return null;
   }
 

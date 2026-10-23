@@ -124,7 +124,11 @@ function timingSafeEqualHex(expected: string, provided: string): boolean {
  * Menghitung rincian harga order secara murni di server menggunakan kalkulasi pricing resmi.
  * Menghindari manipulasi harga dari sisi client.
  */
-export function calculateServerOrderPricing(items: CartItem[]): OrderPricingResult {
+export function calculateServerOrderPricing(items: CartItem[], brandSlug?: string): OrderPricingResult {
+  const isTomoro =
+    brandSlug === 'tomoro' ||
+    items.some((it) => it.brandSlug === 'tomoro' || it.bundleType === 'tomoro-b1g1');
+
   const pricingInputs: OrderItemInput[] = items.map((it) => ({
     name: it.name,
     basePrice: it.basePrice,
@@ -136,9 +140,10 @@ export function calculateServerOrderPricing(items: CartItem[]): OrderPricingResu
     bundleType: it.bundleType,
     bundleFee: it.bundleFee,
     bundleNormalPrice: it.bundleNormalPrice,
+    brandSlug: it.brandSlug || (isTomoro ? 'tomoro' : undefined),
   }));
 
-  return calculateOrderPricing(pricingInputs);
+  return calculateOrderPricing(pricingInputs, undefined, brandSlug);
 }
 
 /**
@@ -487,7 +492,7 @@ export function createOrderRecord(params: CreateOrderParams): OrderRecord {
     throw new OrderValidationError('Keranjang belanja tidak boleh kosong');
   }
 
-  const pricing = calculateServerOrderPricing(items);
+  const pricing = calculateServerOrderPricing(items, brandSlug);
   const now = new Date();
   const expiresAt = new Date(
     now.getTime() + QRIS_CONFIG.expiryDurationMinutes * 60 * 1000

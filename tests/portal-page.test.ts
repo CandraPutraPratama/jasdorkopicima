@@ -32,9 +32,8 @@ test('portal page component and BrandCard exist and enforce Variant C specificat
   // Testimoni palsu tidak boleh ada di portal
   assert.ok(!portalCode.includes('Dimas R.'), 'Portal tidak boleh memuat testimoni teks palsu');
 
-  // 3. Verifikasi revisi kartu brand portal
-  // Badge jumlah brand aktif harus 1 Brand Aktif
-  assert.ok(portalCode.includes('1 Brand Aktif'), 'Portal harus menampilkan badge 1 Brand Aktif');
+  // Badge jumlah brand aktif
+  assert.ok(portalCode.includes('Brand Aktif'), 'Portal harus menampilkan badge Brand Aktif');
 
   // Kartu Tomoro & Fore tidak lagi dimmed/dashed/grayscale
   assert.ok(!cardCode.includes('border-dashed'), 'BrandCard tidak boleh menggunakan border-dashed');

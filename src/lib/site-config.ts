@@ -253,24 +253,22 @@ export const BRANDS: Record<string, BrandConfig> = {
   tomoro: {
     id: 'tomoro',
     slug: 'tomoro',
-    name: 'Tomoro Coffee',
-    shortName: 'Tomoro',
-    tagline: 'Tomoro Coffee Pilihanmu, Segera Hadir',
-    promoBadge: 'Segera Hadir',
+    name: 'TOMORO Coffee',
+    shortName: 'TOMORO',
+    tagline: 'Tomoro Coffee Pilihanmu',
+    promoBadge: 'DISKON 50% + B1G1',
     description:
-      'Layanan jasa order Tomoro Coffee dengan promo hemat segera hadir untuk area Jabodetabek. Nikmati kemudahan pesan tanpa antre.',
+      'Layanan jasa order TOMORO Coffee dengan promo hemat diskon 50% dan paket B1G1. Pesan praktis, checkout via WhatsApp!',
     accentColor: '#E11D48',
     themeColor: '#BE123C',
-    bannerGradient: 'from-[#4B5563] to-[#1F2937]',
-    status: 'coming_soon',
-    logo: '/brand-logos/tomoro-coffee-logo.webp',
-    // Catatan koreksi pengguna: Hapus teks "0 outlet" pada brand Segera Hadir
-    outletCountLabel: undefined,
+    bannerGradient: 'from-[#E11D48] to-[#9F1239]',
+    status: 'active',
+    logo: '/brand-logos/tomoro.png',
     adminWhatsApp: NOMOR_WHATSAPP_ADMIN,
     operatingHoursText: JADWAL_OPERASIONAL_LENGKAP,
     feeConfig: {
-      singleItemFee: BUSINESS_CONFIG.pricing.feeSingleItem,
-      multiItemFee: BUSINESS_CONFIG.pricing.feeMultiItem,
+      singleItemFee: 1500,
+      multiItemFee: 1500,
     },
   },
 };
@@ -286,10 +284,14 @@ export function getAllBrands(): BrandConfig[] {
 
 /**
  * Memetakan kode outlet ke brandSlug yang sesuai.
+ * Outlet dengan prefix 'tomoro-' memetakan ke 'tomoro'.
  * Outlet dengan prefix 'fore-' memetakan ke 'fore'.
  * Outlet Kopi Kenangan memetakan ke 'kopi-kenangan'.
  */
 export function resolveBrandSlugFromOutletCode(outletCode: string): string {
+  if (outletCode && outletCode.trim().toLowerCase().startsWith('tomoro-')) {
+    return 'tomoro';
+  }
   if (outletCode && outletCode.trim().toLowerCase().startsWith('fore-')) {
     return 'fore';
   }

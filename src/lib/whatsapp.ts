@@ -127,7 +127,11 @@ export function buildWhatsAppMessage(input: BuildWhatsAppMessageInput): string {
 
   const brandDisplay =
     input.brandName ||
-    (outletName.toLowerCase().includes('fore') ? 'Fore Coffee' : 'Kopi Kenangan');
+    (outletName.toLowerCase().includes('tomoro')
+      ? 'TOMORO Coffee'
+      : outletName.toLowerCase().includes('fore')
+        ? 'Fore Coffee'
+        : 'Kopi Kenangan');
 
   const lines: string[] = [];
   lines.push('Halo Kak, saya ingin memesan:');
@@ -148,7 +152,10 @@ export function buildWhatsAppMessage(input: BuildWhatsAppMessageInput): string {
       lines.push(`- ${item.quantity}x ${item.name}`);
       for (const d of item.bundleDetails) {
         const dOpt = d.variantDescription ? ` (${d.variantDescription})` : '';
-        const dPrice = formatRupiah(d.promoPrice || Math.round((d.normalPrice || 0) * 0.5));
+        const isFreeB1G1 = d.promoPrice === 0 || (item.bundleType === 'tomoro-b1g1' && d.promoPrice === 0);
+        const dPrice = isFreeB1G1
+          ? 'GRATIS (B1G1)'
+          : formatRupiah(d.promoPrice || Math.round((d.normalPrice || 0) * 0.5));
         lines.push(`  • ${d.name}${dOpt} ${EM_DASH} ${dPrice}`);
         if (d.notes?.trim()) {
           lines.push(`    Catatan: ${cleanNotes(d.notes)}`);
@@ -260,12 +267,14 @@ export function buildOrderWhatsAppConfirmationMessage(
 ): string {
   const outletLabel = order.outlet_name?.trim() || order.outlet_code;
   const brandDisplay =
-    order.brand_slug &&
-    !order.brand_slug.toLowerCase().includes('kopi') &&
-    !order.brand_slug.toLowerCase().includes('kenangan') &&
-    order.brand_slug.toLowerCase().includes('fore')
-      ? 'Fore Coffee'
-      : 'Kopi Kenangan';
+    order.brand_slug?.toLowerCase() === 'tomoro' || order.outlet_code.toLowerCase().startsWith('tomoro-')
+      ? 'TOMORO Coffee'
+      : order.brand_slug &&
+        !order.brand_slug.toLowerCase().includes('kopi') &&
+        !order.brand_slug.toLowerCase().includes('kenangan') &&
+        order.brand_slug.toLowerCase().includes('fore')
+        ? 'Fore Coffee'
+        : 'Kopi Kenangan';
 
   let pickupLine = 'Pickup: Sekarang (estimasi siap ~jam segera)';
   if (order.pickup_time && order.pickup_time !== 'now') {
@@ -307,20 +316,24 @@ export function buildOrderWhatsAppConfirmationMessage(
   for (const it of order.items) {
     const isThisBundle =
       it.isBundle ||
+      it.bundleType === 'tomoro-b1g1' ||
       Boolean(it.bundleDetails && it.bundleDetails.length > 0) ||
-      it.name.toLowerCase().includes('bundling');
+      it.name.toLowerCase().includes('bundling') ||
+      it.name.toLowerCase().includes('b1g1');
 
     if (isThisBundle) {
       lines.push(`- ${it.quantity}x ${it.name}`);
 
       if (it.bundleDetails && it.bundleDetails.length > 0) {
         for (const d of it.bundleDetails) {
+          const isFreeB1G1 = d.promoPrice === 0 || (it.bundleType === 'tomoro-b1g1' && d.promoPrice === 0);
           const normalP = d.normalPrice || (d.promoPrice ? d.promoPrice * 2 : 0);
-          const promoP = d.promoPrice || Math.round(normalP * 0.5);
+          const promoP = isFreeB1G1 ? 0 : (d.promoPrice || Math.round(normalP * 0.5));
           totalNormalPrice += normalP * it.quantity;
 
           const optText = d.variantDescription ? ` (${d.variantDescription})` : '';
-          lines.push(`  • ${d.name}${optText} ${EM_DASH} ${formatRupiah(promoP)}`);
+          const promoPriceDisplay = isFreeB1G1 ? 'GRATIS (B1G1)' : formatRupiah(promoP);
+          lines.push(`  • ${d.name}${optText} ${EM_DASH} ${promoPriceDisplay}`);
           if (d.notes?.trim()) {
             lines.push(`    Catatan: ${cleanNotes(d.notes)}`);
           }

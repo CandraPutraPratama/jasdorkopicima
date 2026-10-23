@@ -10,9 +10,8 @@ interface BrandCardProps {
 }
 
 export function BrandCard({ brand, outletCount }: BrandCardProps) {
-  // Hanya Kopi Kenangan yang aktif untuk pemesanan langsung di portal saat ini.
-  // Fore Coffee dan Tomoro Coffee berstatus Segera Hadir dan tidak bisa diklik di portal.
-  const isClickable = brand.slug === 'kopi-kenangan';
+  // Brand aktif: Kopi Kenangan dan TOMORO Coffee.
+  const isClickable = brand.slug === 'kopi-kenangan' || brand.slug === 'tomoro';
   const [imgError, setImgError] = useState(false);
 
   // Inisial emblem/logo ringkas jika tidak ada gambar logo

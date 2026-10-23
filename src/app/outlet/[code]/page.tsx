@@ -27,6 +27,7 @@ import { useBundlingOnlyMode } from '@/hooks/useBundlingOnlyMode';
 import { getRecommendedProducts } from '@/lib/recommendations';
 import { BundlePackageCard } from '@/components/BundlePackageCard';
 import { BundlePickerBottomSheet } from '@/components/BundlePickerBottomSheet';
+import { TomoroB1G1Modal } from '@/components/TomoroB1G1Modal';
 import type { Outlet, MenuGroup, Product } from '@/types/domain';
 
 interface OutletMenuPageProps {
@@ -45,6 +46,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   const cart = useCart();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState<boolean>(false);
+  const [isB1G1ModalOpen, setIsB1G1ModalOpen] = useState<boolean>(false);
 
   const [outlet, setOutlet] = useState<Outlet | null>(null);
   const [menuGroups, setMenuGroups] = useState<MenuGroup[]>([]);
@@ -71,8 +73,10 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     return list;
   }, [menuGroups, isFavorite]);
 
-  // Deteksi brand Kopi Kenangan
-  const isKopiKenangan = brandSlug === 'kopi-kenangan' || !outletCode.toLowerCase().startsWith('fore-');
+  // Deteksi brand
+  const isTomoro = brandSlug === 'tomoro' || outletCode.toLowerCase().startsWith('tomoro-');
+  const isFore = brandSlug === 'fore' || outletCode.toLowerCase().startsWith('fore-');
+  const isKopiKenangan = !isTomoro && !isFore;
 
   // Menu rekomendasi kurasi (ditampilkan saat favorit masih kosong)
   const recommendedProducts = useMemo(() => {
@@ -486,6 +490,36 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
               </div>
             )}
 
+            {/* Banner Paket B1G1 Tomoro Coffee */}
+            {isTomoro && (
+              <div className="p-4 bg-gradient-to-r from-[#FFF1F2] to-[#FFE4E6] border-2 border-[#2B1D12] rounded-3xl shadow-[4px_4px_0px_#2B1D12] space-y-2">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-base">🎉</span>
+                      <h2 className="font-display font-black text-sm sm:text-base text-[#2B1D12] tracking-tight">
+                        B1G1 \u2014 Pilih 2 Menu (Small)
+                      </h2>
+                      <span className="text-[10px] font-black uppercase tracking-wider bg-[#E11D48] text-white px-2 py-0.5 rounded-md border border-[#2B1D12]">
+                        Spesial
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#881337] font-bold mt-1 leading-snug">
+                      Bayar 1 yang tertinggi, 1 GRATIS + fee Rp3.000
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={isOutletClosed}
+                    onClick={() => setIsB1G1ModalOpen(true)}
+                    className="px-3.5 py-2 bg-[#E11D48] hover:bg-[#BE123C] disabled:bg-[#FDA4AF] disabled:cursor-not-allowed text-white font-display font-black text-xs rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition shrink-0"
+                  >
+                    Pilih Menu
+                  </button>
+                </div>
+              </div>
+            )}
+
             {displayedGroups.length === 0 ? (
               <div className="p-8 bg-white rounded-3xl border border-[#EFE5D8] text-center">
                 <p className="text-xs text-[#6A584D]">
@@ -585,7 +619,31 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                             product={product}
                             isFavorite={isFavorite(product.id)}
                             onToggleFavorite={() => toggleFavorite(product.id)}
-                            onSelectProduct={(p) => setSelectedProduct(p)}
+                            onSelectProduct={(p) => {
+                              if (isTomoro) {
+                                if (isOutletClosed || !outlet) return;
+                                cart.addItem(
+                                  {
+                                    bundleCode:
+                                      p.bundleCode ||
+                                      `tomoro-${p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+                                    name: p.name,
+                                    image: p.image,
+                                    basePrice: p.basePrice,
+                                    variantAddition: 0,
+                                    toppingTotal: 0,
+                                    quantity: 1,
+                                    variantDescription: 'Small',
+                                    brandSlug: 'tomoro',
+                                  },
+                                  outlet.code,
+                                  outlet.name
+                                );
+                                setIsCartDrawerOpen(true);
+                                return;
+                              }
+                              setSelectedProduct(p);
+                            }}
                             isOutletClosed={isOutletClosed}
                           />
                         ))}
@@ -606,6 +664,19 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           liveProducts={allOutletProducts}
           tierDiff={tierDiff}
           onClose={() => setSelectedBundleConfig(null)}
+          onAddToCart={(bundleItem) => {
+            cart.addItem(bundleItem, outlet.code, outlet.name);
+            setIsCartDrawerOpen(true);
+          }}
+        />
+      )}
+
+      {/* Modal Pemilihan Isi Paket B1G1 TOMORO */}
+      {isTomoro && isB1G1ModalOpen && outlet && (
+        <TomoroB1G1Modal
+          isOpen={isB1G1ModalOpen}
+          onClose={() => setIsB1G1ModalOpen(false)}
+          products={allOutletProducts}
           onAddToCart={(bundleItem) => {
             cart.addItem(bundleItem, outlet.code, outlet.name);
             setIsCartDrawerOpen(true);

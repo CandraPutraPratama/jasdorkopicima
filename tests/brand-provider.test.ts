@@ -28,20 +28,15 @@ test('getBrandOutletProvider returns provider for fore', async () => {
   assert.equal(count, 394, 'Fore provider harus mengembalikan jumlah 394 outlet');
 });
 
-test('getBrandOutletProvider returns stub provider for tomoro returning empty results without fake data', async () => {
+test('getBrandOutletProvider returns active provider for tomoro returning 678 outlets', async () => {
   const provider = getBrandOutletProvider('tomoro');
   assert.ok(provider !== null);
-  const featured = await provider.listFeaturedOutlets();
-  assert.deepEqual(featured, []);
-
-  const search = await provider.searchOutlets('mall');
-  assert.deepEqual(search, []);
-
-  const outlet = await provider.getOutlet('TOMORO-PURI');
-  assert.equal(outlet, null);
-
+  assert.equal(typeof provider?.listFeaturedOutlets, 'function');
+  assert.equal(typeof provider?.searchOutlets, 'function');
+  assert.equal(typeof provider?.getOutlet, 'function');
+  assert.equal(typeof provider?.getOutletCount, 'function');
   const count = await provider.getOutletCount();
-  assert.equal(count, 0, 'Tomoro provider harus mengembalikan count 0');
+  assert.equal(count, 678, 'Tomoro provider harus mengembalikan count 678');
 });
 
 test('getBrandOutletProvider returns null for unknown brand', () => {

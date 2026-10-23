@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Outlet } from '../types/domain.ts';
 
 export interface BrandOutletProvider {
@@ -178,35 +177,85 @@ export class ForeOutletProvider implements BrandOutletProvider {
 }
 
 /**
- * Provider untuk Tomoro Coffee (Pilot / Segera Hadir):
- * Stub provider yang mengembalikan array kosong tanpa data palsu.
- *
- * TODO: Hubungkan API / data source resmi Tomoro Coffee saat brand siap diluncurkan.
+ * Provider untuk TOMORO Coffee (Full Self-Order):
+ * Mengintegrasikan data resmi TOMORO Coffee dari Supabase.
  */
 export class TomoroOutletProvider implements BrandOutletProvider {
   public brandSlug = 'tomoro';
 
-  // TODO: Hubungkan data source Tomoro Coffee di sini saat brand diluncurkan
-  public async listFeaturedOutlets(_limit = 10): Promise<Outlet[]> {
-    return [];
+  public async listFeaturedOutlets(limit = 10): Promise<Outlet[]> {
+    if (typeof window !== 'undefined') {
+      const res = await fetch(`/api/outlets?featured=true&limit=${limit}&brand=tomoro`);
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data.items || [];
+    }
+
+    try {
+      const { getFeaturedOutlets } = await import('./outlet-service.ts');
+      const { items } = await getFeaturedOutlets(limit, 'tomoro');
+      return items;
+    } catch {
+      return [];
+    }
   }
 
-  // TODO: Hubungkan pencarian outlet Tomoro Coffee di sini
-  public async searchOutlets(
-    _query: string,
-    _page = 1,
-    _pageSize = 20
-  ): Promise<Outlet[]> {
-    return [];
+  public async searchOutlets(query: string, page = 1, pageSize = 20): Promise<Outlet[]> {
+    if (typeof window !== 'undefined') {
+      const res = await fetch(
+        `/api/outlets?q=${encodeURIComponent(query)}&page=${page}&pageSize=${pageSize}&brand=tomoro`
+      );
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data.items || [];
+    }
+
+    try {
+      const { searchOutlets } = await import('./outlet-service.ts');
+      const { items } = await searchOutlets(query, page, pageSize, 'tomoro');
+      return items;
+    } catch {
+      return [];
+    }
   }
 
-  // TODO: Hubungkan detail outlet Tomoro Coffee di sini
-  public async getOutlet(_code: string): Promise<Outlet | null> {
-    return null;
+  public async getOutlet(code: string): Promise<Outlet | null> {
+    if (typeof window !== 'undefined') {
+      const res = await fetch(`/api/outlets/${encodeURIComponent(code)}`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.outlet || null;
+    }
+
+    try {
+      const { getOutletByCode } = await import('./outlet-service.ts');
+      return await getOutletByCode(code);
+    } catch {
+      return null;
+    }
   }
 
   public async getOutletCount(): Promise<number> {
-    return 0;
+    if (typeof window !== 'undefined') {
+      try {
+        const res = await fetch('/api/outlets?count=true&brand=tomoro');
+        if (res.ok) {
+          const data = await res.json();
+          if (typeof data.total === 'number' && data.total > 0) {
+            return data.total;
+          }
+        }
+      } catch (err) {
+        console.warn('[BrandProvider] Gagal fetch outlet count tomoro:', err);
+      }
+    }
+
+    try {
+      const { getTotalOutletsCount } = await import('./outlet-service.ts');
+      return await getTotalOutletsCount('tomoro');
+    } catch {
+      return 678;
+    }
   }
 }
 

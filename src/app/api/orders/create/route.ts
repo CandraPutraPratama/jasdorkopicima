@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server.js';
 import { kkApiClient } from '../../../../lib/kk-client.ts';
 import { normalizeStore } from '../../../../lib/adapter.ts';
 import { isOutletClosed } from '../../../../lib/orderability.ts';
-import { verifyStoreScope } from '../../../../lib/outlet-service.ts';
+import { verifyStoreScope, getOutletByCode } from '../../../../lib/outlet-service.ts';
+import { getTomoroProductNormalPrice, isTomoroItemEligible } from '../../../../lib/tomoro-menu-data.ts';
 import { checkRateLimitKV, getClientIp } from '../../../../lib/rate-limit-kv.ts';
 import { validateCustomerName, validateCustomerPhone } from '../../../../lib/sanitizer.ts';
 import { getEffectiveJasdorOperationalStatus } from '../../../../lib/operational.ts';
@@ -177,6 +178,201 @@ export async function POST(request: NextRequest) {
       },
       { status: 400 }
     );
+  }
+
+  // 5b. Jalur TOMORO Coffee (Full Self-Order)
+  if (
+    serverBrandSlug === 'tomoro' ||
+    outletCode.toLowerCase().startsWith('tomoro-') ||
+    body.brandSlug === 'tomoro'
+  ) {
+    try {
+      const tomoroOutlet = await getOutletByCode(outletCode);
+      if (!tomoroOutlet) {
+        return NextResponse.json(
+          { error: 'Outlet tidak ditemukan atau di luar jangkauan layanan' },
+          { status: 404 }
+        );
+      }
+
+      if (!tomoroOutlet.isOpen || !tomoroOutlet.canOrder) {
+        const reason =
+          tomoroOutlet.orderReason ||
+          'Status outlet belum terverifikasi \u2014 cek langsung ke outlet';
+        return NextResponse.json(
+          {
+            error: `Outlet ${tomoroOutlet.name || outletCode} sedang tutup (${reason}). Pemesanan tidak dapat diproses.`,
+            isOutletClosed: true,
+            reason,
+          },
+          { status: 400 }
+        );
+      }
+
+      // Validasi katalog otoritatif 41 menu final dan rekalkulasi harga server (K1 toleransi Rp0)
+      const serverItems: CartItem[] = [];
+      for (const it of items) {
+        if (it.isBundle) {
+          if (it.bundleType !== 'tomoro-b1g1') {
+            return NextResponse.json(
+              { error: 'Harga menu berubah, silakan refresh keranjangmu.' },
+              { status: 400 }
+            );
+          }
+          if (!it.bundleDetails || it.bundleDetails.length !== 2) {
+            return NextResponse.json(
+              { error: 'Paket B1G1 harus berisi tepat 2 menu' },
+              { status: 400 }
+            );
+          }
+          const d1 = it.bundleDetails[0];
+          const d2 = it.bundleDetails[1];
+          if (!isTomoroItemEligible(d1.name) || !isTomoroItemEligible(d2.name)) {
+            return NextResponse.json(
+              { error: 'Harga menu berubah, silakan refresh keranjangmu.' },
+              { status: 400 }
+            );
+          }
+          const p1 = getTomoroProductNormalPrice(d1.name, outletCode);
+          const p2 = getTomoroProductNormalPrice(d2.name, outletCode);
+          if (p1 === null || p2 === null || p1 <= 0 || p2 <= 0) {
+            return NextResponse.json(
+              { error: 'Harga menu berubah, silakan refresh keranjangmu.' },
+              { status: 400 }
+            );
+          }
+
+          const highestPrice = Math.max(p1, p2);
+          serverItems.push({
+            id: it.id || `b1g1-${Date.now()}-${Math.random()}`,
+            bundleCode: 'tomoro-b1g1',
+            name: it.name || 'Paket B1G1 TOMORO (Small)',
+            basePrice: highestPrice,
+            variantAddition: 0,
+            toppingTotal: 0,
+            quantity: it.quantity,
+            isBundle: true,
+            bundleType: 'tomoro-b1g1',
+            bundleFee: 3000,
+            bundleNormalPrice: p1 + p2,
+            bundleDetails: [
+              {
+                name: d1.name,
+                category: 'drink',
+                variantDescription: 'Small',
+                normalPrice: p1,
+                promoPrice: p1 >= p2 ? p1 : 0,
+                notes: d1.notes || '',
+              },
+              {
+                name: d2.name,
+                category: 'drink',
+                variantDescription: 'Small',
+                normalPrice: p2,
+                promoPrice: p1 >= p2 ? 0 : p2,
+                notes: d2.notes || '',
+              },
+            ],
+            notes: it.notes || '',
+          });
+        } else {
+          if (!isTomoroItemEligible(it.name)) {
+            return NextResponse.json(
+              { error: 'Harga menu berubah, silakan refresh keranjangmu.' },
+              { status: 400 }
+            );
+          }
+          const normalPrice = getTomoroProductNormalPrice(it.name, outletCode);
+          if (normalPrice === null || normalPrice <= 0) {
+            return NextResponse.json(
+              { error: 'Harga menu berubah, silakan refresh keranjangmu.' },
+              { status: 400 }
+            );
+          }
+          serverItems.push({
+            id: it.id || `tomoro-item-${Date.now()}-${Math.random()}`,
+            bundleCode:
+              it.bundleCode ||
+              `tomoro-${it.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+            name: it.name,
+            basePrice: normalPrice,
+            skuPrice: normalPrice,
+            variantAddition: 0,
+            toppingTotal: 0,
+            quantity: it.quantity,
+            variantDescription: 'Small',
+            notes: it.notes || '',
+          });
+        }
+      }
+
+      const serverPricing = calculateServerOrderPricing(serverItems, 'tomoro');
+      const rawClientPricing = calculateServerOrderPricing(items, 'tomoro');
+      const clientSentTotal =
+        typeof body.total === 'number'
+          ? Math.round(body.total)
+          : typeof (body as any).clientTotal === 'number'
+            ? Math.round((body as any).clientTotal)
+            : rawClientPricing.total;
+
+      if (
+        clientSentTotal !== serverPricing.total ||
+        rawClientPricing.total !== serverPricing.total
+      ) {
+        return NextResponse.json(
+          { error: 'Harga menu berubah, silakan refresh keranjangmu.' },
+          { status: 400 }
+        );
+      }
+
+      const pickupVal = validateAndSanitizePickupTime({
+        pickupTime,
+        outletOpen: undefined,
+        outletClose: undefined,
+      });
+      if (!pickupVal.isValid) {
+        return NextResponse.json(
+          { error: pickupVal.errorMessage || 'Waktu pengambilan tidak valid' },
+          { status: 400 }
+        );
+      }
+
+      const orderRecord = createOrderRecord({
+        brandSlug: 'tomoro',
+        outletCode,
+        outletName: tomoroOutlet.name || outletCode,
+        customerName: nameVal.sanitized,
+        customerWa: phoneVal.sanitized,
+        items: serverItems,
+        pickupTime: pickupVal.sanitized,
+        notes,
+      });
+
+      const savedOrder = await saveOrderToDb(orderRecord);
+      const accessToken =
+        savedOrder.access_token ?? orderRecord.access_token ?? '';
+      const redirectUrl = accessToken
+        ? `/bayar/${savedOrder.id}?t=${encodeURIComponent(accessToken)}`
+        : `/bayar/${savedOrder.id}`;
+
+      const { access_token: _accessToken, ...publicOrder } = savedOrder;
+
+      return NextResponse.json({
+        success: true,
+        orderId: savedOrder.id,
+        accessToken,
+        redirectUrl,
+        order: publicOrder,
+      });
+    } catch (tomoroErr: any) {
+      console.error('[CreateOrder] Kesalahan saat memproses pesanan TOMORO:', tomoroErr);
+      return NextResponse.json(
+        {
+          error: 'Terjadi kendala sistem saat membuat pesanan. Silakan coba beberapa saat lagi.',
+        },
+        { status: 500 }
+      );
+    }
   }
 
   // 6. Validasi ruang lingkup dan status buka/tutup outlet Kopi Kenangan (Single Source of Truth)
