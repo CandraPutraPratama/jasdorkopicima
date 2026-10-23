@@ -281,7 +281,15 @@ export function buildOrderWhatsAppConfirmationMessage(
         : 'Kopi Kenangan';
 
   let pickupLine = 'Pickup: Sekarang (estimasi siap ~jam segera)';
-  if (order.pickup_time && order.pickup_time !== 'now') {
+  // Nilai pickup_time mode "sekarang" dari checkout tersimpan sebagai
+  // 'Sekarang (~10 menit)' - itu BUKAN jadwal, perlakukan sebagai pickup now
+  // agar estimasi dinamis antrean terpakai (bukan "Dijadwalkan jam Sekarang...").
+  const isScheduledPickup = Boolean(
+    order.pickup_time &&
+      order.pickup_time !== 'now' &&
+      !order.pickup_time.trim().toLowerCase().startsWith('sekarang')
+  );
+  if (isScheduledPickup && order.pickup_time) {
     if (order.pickup_time.startsWith('Dijadwalkan') || order.pickup_time.startsWith('Terjadwal')) {
       pickupLine = `Pickup: ${order.pickup_time.replace('Terjadwal', 'Dijadwalkan')}`;
     } else {

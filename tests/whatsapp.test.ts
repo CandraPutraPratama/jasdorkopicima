@@ -497,3 +497,36 @@ test('buildOrderWhatsAppConfirmationMessage memakai estimasi dinamis antrean dan
   );
 });
 
+test('buildOrderWhatsAppConfirmationMessage memperlakukan pickup_time "Sekarang (~10 menit)" sebagai pickup now', async () => {
+  const { buildOrderWhatsAppConfirmationMessage } = await import('../src/lib/whatsapp.ts');
+
+  const order = {
+    id: 'CG-Q002',
+    brand_slug: 'kopi-kenangan',
+    customer_name: 'TEST ANTREAN',
+    outlet_name: 'Kalibata City',
+    outlet_code: 'KALCIT',
+    // Nilai persis yang dikirim CartDrawer untuk mode pickup sekarang
+    pickup_time: 'Sekarang (~10 menit)',
+    created_at: '2026-10-17T07:00:00Z', // 14:00 WIB -> +4m dinamis = 14:04
+    subtotal: 32500,
+    fee: 6000,
+    total: 38500,
+    queueAhead: 0,
+    queueEstimateMinutes: 4,
+    items: [
+      {
+        name: 'OG Aren Speculoos Latte',
+        quantity: 1,
+        subtotal: 10500,
+      },
+    ],
+  };
+
+  const message = buildOrderWhatsAppConfirmationMessage(order);
+
+  assert.ok(message.includes('Pickup: Sekarang (estimasi siap ~jam 14:04)'));
+  assert.ok(!message.includes('Dijadwalkan jam Sekarang'));
+  assert.ok(message.includes('Antrean: 0 order di depan kamu.'));
+});
+
