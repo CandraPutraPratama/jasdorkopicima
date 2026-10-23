@@ -14,7 +14,10 @@ import {
 } from '../src/lib/pricing.ts';
 import { getBrandConfig, resolveBrandSlugFromOutletCode } from '../src/lib/site-config.ts';
 import { getBrandOutletProvider } from '../src/lib/brand-provider.ts';
-import { evaluateTomoroOutletStatus } from '../src/lib/server/tomoro-sync.ts';
+import {
+  evaluateTomoroOutletStatus,
+  buildTomoroStatusUpsertRows,
+} from '../src/lib/server/tomoro-sync.ts';
 import { buildWhatsAppMessage, buildOrderWhatsAppConfirmationMessage } from '../src/lib/whatsapp.ts';
 
 test('Tomoro Coffee - Brand Config and Provider', async () => {
@@ -255,6 +258,42 @@ test('Tomoro Coffee - Status outlet snapshot & stale > 30m detection', () => {
   assert.equal(staleStatus.isOpen, false);
   assert.equal(staleStatus.canOrder, false);
   assert.ok(staleStatus.orderReason?.includes('Status outlet belum terverifikasi'));
+});
+
+test('Tomoro Coffee - buildTomoroStatusUpsertRows hanya memuat outlet DB yang dikenal penyedia', () => {
+  const nowIso = '2026-10-24T01:00:00.000Z';
+  const dbRows = [
+    { code: 'tomoro-jsd-025', name: 'Kota Kasablanka', is_active: false, brand: 'TOMORO Coffee', updated_at: '2026-01-01T00:00:00.000Z' },
+    { code: 'tomoro-plb03b-m', name: 'Palembang Indah Mall', is_active: true, brand: 'TOMORO Coffee', updated_at: '2026-01-01T00:00:00.000Z' },
+    { code: 'tomoro-xxx-999', name: 'Outlet Hanya Di DB', is_active: true, brand: 'TOMORO Coffee', updated_at: '2026-01-01T00:00:00.000Z' },
+  ];
+  const statusMap = new Map<string, boolean>([
+    ['tomoro-jsd-025', true],
+    ['tomoro-plb03b-m', false],
+    ['tomoro-bru-001', true],
+  ]);
+
+  const { rows, openCount, closedCount } = buildTomoroStatusUpsertRows(
+    dbRows,
+    statusMap,
+    nowIso
+  );
+
+  // Outlet hanya-di-DB dilewati; outlet hanya-di-penyedia tidak ditambahkan
+  assert.equal(rows.length, 2);
+  assert.equal(openCount, 1);
+  assert.equal(closedCount, 1);
+
+  const jsd = rows.find((r) => r.code === 'tomoro-jsd-025');
+  assert.equal(jsd?.is_active, true);
+  assert.equal(jsd?.updated_at, nowIso);
+  // Kolom lain dari baris DB dipertahankan
+  assert.equal(jsd?.name, 'Kota Kasablanka');
+  assert.equal(jsd?.brand, 'TOMORO Coffee');
+
+  const plb = rows.find((r) => r.code === 'tomoro-plb03b-m');
+  assert.equal(plb?.is_active, false);
+  assert.equal(plb?.updated_at, nowIso);
 });
 
 test('Tomoro Coffee - WhatsApp message formatting', () => {

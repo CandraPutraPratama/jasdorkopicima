@@ -45,6 +45,41 @@ async function defaultFetcher(pageIndex: number, pageSize: number): Promise<any>
   }
 }
 
+export interface TomoroStatusUpsertBuild {
+  rows: Array<Record<string, any>>;
+  openCount: number;
+  closedCount: number;
+}
+
+/**
+ * Membangun baris upsert status outlet dari baris DB yang sudah ada + peta status penyedia.
+ * Hanya outlet yang terdaftar di DB DAN ditemukan di peta status yang disertakan,
+ * sehingga sync tidak pernah menambah/menghapus outlet. Seluruh kolom baris DB
+ * dipertahankan apa adanya; hanya is_active dan updated_at yang diganti.
+ */
+export function buildTomoroStatusUpsertRows(
+  dbRows: Array<Record<string, any>>,
+  statusMap: Map<string, boolean>,
+  nowIso: string
+): TomoroStatusUpsertBuild {
+  const rows: Array<Record<string, any>> = [];
+  let openCount = 0;
+  let closedCount = 0;
+
+  for (const row of dbRows) {
+    const code = (row.code || '').trim().toLowerCase();
+    if (!statusMap.has(code)) continue;
+
+    const isOpen = statusMap.get(code)!;
+    if (isOpen) openCount++;
+    else closedCount++;
+
+    rows.push({ ...row, is_active: isOpen, updated_at: nowIso });
+  }
+
+  return { rows, openCount, closedCount };
+}
+
 /**
  * Sinkronisasi status buka/tutup (isOpen) untuk seluruh outlet TOMORO Coffee ke Supabase.
  * Menuliskan status ke kolom `is_active` dan timestamp ke `updated_at`.
@@ -111,58 +146,40 @@ export async function syncTomoroOutletsStatusToDb(): Promise<TomoroSyncResult> {
   const supabase = getSupabaseServerClient();
   const nowIso = new Date().toISOString();
 
-  // Ambil daftar outlet TOMORO yang terdaftar di database untuk menghindari auto-tambah/hapus
+  // Ambil baris lengkap outlet TOMORO yang terdaftar di database untuk menghindari auto-tambah/hapus.
+  // Baris lengkap diperlukan agar bulk upsert (onConflict code) tidak mengosongkan kolom lain.
   const { data: dbOutlets, error: fetchErr } = await supabase
     .from('outlets')
-    .select('code')
+    .select('code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand, updated_at')
     .eq('brand', 'TOMORO Coffee');
 
   if (fetchErr || !dbOutlets) {
     throw new Error(`Gagal membaca outlet dari DB: ${fetchErr?.message}`);
   }
 
-  let openCount = 0;
-  let closedCount = 0;
-  const updates: Array<{ code: string; is_active: boolean; updated_at: string }> = [];
+  const { rows, openCount, closedCount } = buildTomoroStatusUpsertRows(
+    dbOutlets,
+    storeStatusMap,
+    nowIso
+  );
 
-  for (const row of dbOutlets) {
-    const code = row.code.trim().toLowerCase();
-    if (storeStatusMap.has(code)) {
-      const isOpen = storeStatusMap.get(code)!;
-      if (isOpen) openCount++;
-      else closedCount++;
+  // Tulis snapshot secara bulk upsert (maks 200 baris per panggilan, pola yang sama
+  // dengan sync Kopi Kenangan) agar jumlah subrequest Worker tetap kecil.
+  // Kegagalan upsert dilempar sebagai error agar kegagalan sync terlihat, bukan diam.
+  const chunkSize = 200;
+  for (let i = 0; i < rows.length; i += chunkSize) {
+    const chunk = rows.slice(i, i + chunkSize);
+    const { error: upsertErr } = await supabase
+      .from('outlets')
+      .upsert(chunk, { onConflict: 'code' });
 
-      updates.push({
-        code,
-        is_active: isOpen,
-        updated_at: nowIso,
-      });
-    }
-  }
-
-  // Tuliskan snapshot ke Supabase dalam batch
-  const batchSize = 50;
-  let syncedCount = 0;
-
-  for (let i = 0; i < updates.length; i += batchSize) {
-    const chunk = updates.slice(i, i + batchSize);
-    for (const item of chunk) {
-      const { error: updateErr } = await supabase
-        .from('outlets')
-        .update({
-          is_active: item.is_active,
-          updated_at: item.updated_at,
-        })
-        .eq('code', item.code);
-
-      if (!updateErr) {
-        syncedCount++;
-      }
+    if (upsertErr) {
+      throw new Error(`Gagal upsert status outlet TOMORO: ${upsertErr.message}`);
     }
   }
 
   return {
-    syncedCount,
+    syncedCount: rows.length,
     openCount,
     closedCount,
     durationMs: Date.now() - startTime,
