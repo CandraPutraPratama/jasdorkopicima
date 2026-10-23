@@ -1,0 +1,36 @@
+name: Sync Status Outlet TOMORO
+
+on:
+  schedule:
+    # Setiap 15 menit selama jam operasional Jasdor (08.00-23.20 WIB = 01.00-16.20 UTC).
+    # Hari operasional: Minggu (0), Selasa (2), Jumat (5), Sabtu (6).
+    # Tanpa jadwal ini, status outlet TOMORO di database tidak pernah diperbarui
+    # dan semua outlet TOMORO tampil "belum terverifikasi" (tidak bisa di-order).
+    - cron: '*/15 1-16 * * 0,2,5,6'
+  workflow_dispatch: # Bisa dijalankan manual dari tab Actions
+
+jobs:
+  sync-tomoro:
+    name: Sync Status TOMORO ke Supabase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Endpoint Sync Status TOMORO
+        run: |
+          echo "Memanggil endpoint sinkronisasi status TOMORO..."
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" -X POST \
+            -H "Authorization: Bearer ${{ secrets.SYNC_SECRET }}" \
+            -H "Content-Type: application/json" \
+            "https://jasdor.cimagroup.my.id/api/cron/sync-outlets?brand=tomoro")
+
+          BODY=$(echo "$RESPONSE" | sed -e '$d')
+          STATUS=$(echo "$RESPONSE" | tail -n 1 | cut -d':' -f2)
+
+          echo "Response Status: $STATUS"
+          echo "Response Body: $BODY"
+
+          if [ "$STATUS" -ne 200 ]; then
+            echo "Sinkronisasi status TOMORO gagal dengan status $STATUS"
+            exit 1
+          fi
+
+          echo "Sinkronisasi status TOMORO berhasil!"
