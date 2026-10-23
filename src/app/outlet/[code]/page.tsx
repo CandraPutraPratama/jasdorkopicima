@@ -7,6 +7,7 @@ import { ClosedScreen } from '@/components/ClosedScreen';
 import { Header } from '@/components/Header';
 import { MenuCategoryNav } from '@/components/MenuCategoryNav';
 import { ProductCard } from '@/components/ProductCard';
+import { QueueInfoBar } from '@/components/QueueInfoBar';
 import { ProductBottomSheet } from '@/components/ProductBottomSheet';
 import { ProductCardSkeleton, CategoryTabSkeleton } from '@/components/Skeleton';
 import { useCart } from '@/hooks/useCart';
@@ -477,6 +478,9 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
 
           {/* Daftar Produk per Kategori */}
           <div className="p-4 space-y-6 pb-28">
+            {/* Info antrean pemrosesan */}
+            <QueueInfoBar />
+
             {/* Banner Mode Minimal Pembelian 50k */}
             {isKopiKenangan && isBundlingOnly && (
               <div

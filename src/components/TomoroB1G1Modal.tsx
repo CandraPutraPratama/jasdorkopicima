@@ -21,8 +21,6 @@ export function TomoroB1G1Modal({
 }: TomoroB1G1ModalProps) {
   const [slot1, setSlot1] = useState<Product | null>(null);
   const [slot2, setSlot2] = useState<Product | null>(null);
-  const [notes1, setNotes1] = useState('');
-  const [notes2, setNotes2] = useState('');
   const [activeSlot, setActiveSlot] = useState<1 | 2>(1);
   const [search, setSearch] = useState('');
 
@@ -44,7 +42,6 @@ export function TomoroB1G1Modal({
   const normalTotal = p1Price + p2Price;
   const fee = 3000;
   const isComplete = slot1 !== null && slot2 !== null;
-  const activeNotes = activeSlot === 1 ? notes1 : notes2;
 
   const handleSelectProduct = (product: Product) => {
     if (activeSlot === 1) {
@@ -54,14 +51,6 @@ export function TomoroB1G1Modal({
       }
     } else {
       setSlot2(product);
-    }
-  };
-
-  const handleActiveNotesChange = (value: string) => {
-    if (activeSlot === 1) {
-      setNotes1(value);
-    } else {
-      setNotes2(value);
     }
   };
 
@@ -86,7 +75,6 @@ export function TomoroB1G1Modal({
           variantDescription: 'Small',
           normalPrice: p1Price,
           promoPrice: p1Price >= p2Price ? p1Price : 0,
-          notes: notes1.trim() || undefined,
         },
         {
           name: slot2.name,
@@ -94,7 +82,6 @@ export function TomoroB1G1Modal({
           variantDescription: 'Small',
           normalPrice: p2Price,
           promoPrice: p1Price >= p2Price ? 0 : p2Price,
-          notes: notes2.trim() || undefined,
         },
       ],
       brandSlug: 'tomoro',
@@ -102,8 +89,6 @@ export function TomoroB1G1Modal({
 
     setSlot1(null);
     setSlot2(null);
-    setNotes1('');
-    setNotes2('');
     setActiveSlot(1);
     onClose();
   };
@@ -258,31 +243,6 @@ export function TomoroB1G1Modal({
               )}
             </div>
 
-            {/* Catatan Item (Opsional) */}
-            <div className="pt-3 border-t-2 border-[#2B1D12]/15 space-y-1.5">
-              <label
-                htmlFor={`b1g1-notes-${activeSlot}`}
-                className="text-[11px] font-bold text-[#7A6658] flex items-center justify-between"
-              >
-                <span>Catatan Menu {activeSlot}</span>
-                <span className="text-[10px] text-[#A39282]">(Opsional, maks 50 karakter)</span>
-              </label>
-              <input
-                id={`b1g1-notes-${activeSlot}`}
-                type="text"
-                maxLength={50}
-                enterKeyHint="done"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.currentTarget.blur();
-                  }
-                }}
-                value={activeNotes}
-                onChange={(e) => handleActiveNotesChange(e.target.value)}
-                placeholder="Contoh: Less sugar, pisah es, dll"
-                className="w-full px-3 py-2 bg-white border-2 border-[#2B1D12]/30 focus:border-[#2B1D12] rounded-xl text-xs font-semibold text-[#2B1D12] placeholder-[#A39282] outline-none transition shadow-[1px_1px_0px_#2B1D12]"
-              />
-            </div>
           </div>
         </div>
 

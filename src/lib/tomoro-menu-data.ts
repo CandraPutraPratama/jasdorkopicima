@@ -2,13 +2,12 @@
  * Data Menu Otoritatif TOMORO Coffee (Jasdor)
  *
  * KRITERIA MUTLAK:
- * - HANYA 40 menu final yang diizinkan (docs/tomoro-menu-promo-b1g1-final.json).
+ * - HANYA 39 menu final yang diizinkan (docs/tomoro-menu-promo-b1g1-final.json).
  * - Ke-36 menu lain di cache (semua FOOD, 1L, bundle, Master S.O.E, Triple Pistachio, Healing, Frappe)
  *   TIDAK dijual di Jasdor dan server wajib menolaknya.
  * - Flat menu dengan override tier bandara (Palembang: tomoro-plb03b-m, tomoro-plb03d-m; Dhoho: tomoro-ked01a-m).
  * - Deskripsi dari cache apa adanya (Kopi Susu Aren & Peach Oolong Milk Tea kosong).
- * - Fallback gambar artisanal otomatis untuk Spanish Latte (Limited Edition Cup).
- */
+  */
 
 import type { MenuGroup, Product } from '../types/domain.ts';
 
@@ -368,20 +367,6 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "hargaDhoho": 38000
   },
   {
-    "id": "I643",
-    "productCode": "1100137",
-    "name": "Spanish Latte (Limited Edition Cup)",
-    "category": "FLAVORED LATTE",
-    "image": "https://gambar.cimagroup.my.id/tomoro/spanish-latte-limited-edition-cup.webp",
-    "description": "Perpaduan antara TOMORO Blend espresso dan susu yang creamy dengan rasa manis pada setiap tegukan",
-    "isSoldOut": false,
-    "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 25000,
-    "hargaPalembang": 36000,
-    "hargaDhoho": 32000
-  },
-  {
     "id": "I644",
     "productCode": "1100138",
     "name": "Spanish Aren Latte (Limited Edition Cup)",
@@ -626,7 +611,7 @@ TOMORO_FINAL_PRODUCTS.forEach((p) => {
 });
 
 /**
- * Memeriksa apakah suatu menu termasuk dalam 40 menu final yang diizinkan untuk brand TOMORO Coffee.
+ * Memeriksa apakah suatu menu termasuk dalam 39 menu final yang diizinkan untuk brand TOMORO Coffee.
  */
 export function isTomoroItemEligible(idOrNameOrCode: string): boolean {
   if (!idOrNameOrCode) return false;
@@ -642,7 +627,7 @@ export function isTomoroItemEligible(idOrNameOrCode: string): boolean {
 
 /**
  * Mengambil harga normal (pre-promo) menu Tomoro untuk outlet tertentu (memperhitungkan tier bandara).
- * Mengembalikan null jika menu tidak termasuk dalam 40 menu final yang diizinkan.
+ * Mengembalikan null jika menu tidak termasuk dalam 39 menu final yang diizinkan.
  */
 export function getTomoroProductNormalPrice(
   idOrNameOrCode: string,
@@ -662,7 +647,7 @@ export function getTomoroProductNormalPrice(
 
 /**
  * Menghasilkan menuGroups resmi Tomoro Coffee untuk outlet tertentu.
- * Mengelompokkan 40 menu final ke dalam 7 kategori resmi dengan harga tier outlet tersebut.
+ * Mengelompokkan 39 menu final ke dalam 7 kategori resmi dengan harga tier outlet tersebut.
  */
 export function getTomoroMenuForOutlet(outletCode?: string | null): MenuGroup[] {
   const tier = getTomoroAirportTier(outletCode);

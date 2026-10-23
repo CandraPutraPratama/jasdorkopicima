@@ -450,5 +450,50 @@ test('buildOrderWhatsAppConfirmationMessage formats Bundling 2 Large with pickup
   assert.ok(message.includes('Total: Rp29.500'));
   // Hemat = 52.000 - 29.500 = 22.500
   assert.ok(message.includes('Kamu hemat Rp22.500 dari harga normal!'));
+  // Tanpa data antrean: tidak ada blok antrean (perilaku lama dipertahankan)
+  assert.ok(!message.includes('Antrean:'));
+});
+
+test('buildOrderWhatsAppConfirmationMessage memakai estimasi dinamis antrean dan info FIFO', async () => {
+  const { buildOrderWhatsAppConfirmationMessage } = await import('../src/lib/whatsapp.ts');
+
+  const order = {
+    id: 'CG-Q001',
+    brand_slug: 'tomoro',
+    customer_name: 'Bima',
+    outlet_name: 'TOMORO - Kota Kasablanka',
+    outlet_code: 'tomoro-jsd-025',
+    pickup_time: 'now',
+    created_at: '2026-10-17T07:00:00Z', // 14:00 WIB -> +12m dinamis = 14:12
+    subtotal: 12000,
+    fee: 1500,
+    total: 13500,
+    queueAhead: 3,
+    queueEstimateMinutes: 12,
+    items: [
+      {
+        name: 'TOMORO Aren Latte',
+        quantity: 1,
+        subtotal: 12000,
+      },
+    ],
+  };
+
+  const message = buildOrderWhatsAppConfirmationMessage(order);
+
+  // Estimasi dinamis 12 menit menggantikan tetap 15 menit
+  assert.ok(message.includes('Pickup: Sekarang (estimasi siap ~jam 14:12)'));
+  assert.ok(!message.includes('14:15'));
+  // Blok info antrean FIFO + anti-spam tampil
+  assert.ok(
+    message.includes(
+      'Antrean: 3 order di depan kamu. Pesanan diproses satu per satu sesuai urutan masuk (FIFO).'
+    )
+  );
+  assert.ok(
+    message.includes(
+      'Mohon jangan spam chat/telepon ya Kak, chat yang naik ke atas justru diproses lebih akhir.'
+    )
+  );
 });
 

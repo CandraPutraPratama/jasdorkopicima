@@ -20,6 +20,8 @@ import { useScrollLock } from '@/hooks/useScrollLock';
 import { isOutletClosed as checkIsOutletClosed } from '@/lib/orderability';
 import { saveMyOrder, buildOrderPaymentUrl } from '@/lib/my-orders';
 import { useMinOrder50kMode } from '@/hooks/useBundlingOnlyMode';
+import { useQueueStatus, fetchQueueStatus } from '@/hooks/useQueueStatus';
+import { QUEUE_POPUP_THRESHOLD_MINUTES, type QueueStatus } from '@/lib/queue';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -122,6 +124,11 @@ export function CartDrawer({
   // Submit state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Info antrean + gerbang pop-up konfirmasi bila estimasi tunggu panjang
+  const { queue } = useQueueStatus(isOpen);
+  const [queueGate, setQueueGate] = useState<QueueStatus | null>(null);
+  const queueConfirmedRef = useRef<boolean>(false);
 
   // UX & Validation Attention states (Sprint 2 Item 1)
   const [nameHighlight, setNameHighlight] = useState(false);
@@ -267,6 +274,16 @@ export function CartDrawer({
       return;
     }
 
+    // Gerbang antrean: estimasi tunggu di atas ambang wajib dikonfirmasi
+    // pelanggan lebih dulu (pop-up), kecuali ia sudah menekan "Tetap Order".
+    if (!queueConfirmedRef.current) {
+      const freshQueue = await fetchQueueStatus();
+      if (freshQueue && freshQueue.estimateMinutes > QUEUE_POPUP_THRESHOLD_MINUTES) {
+        setQueueGate(freshQueue);
+        return;
+      }
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -316,7 +333,15 @@ export function CartDrawer({
       setErrorMessage(err.message || 'Terjadi kesalahan saat memproses pesanan.');
     } finally {
       setIsSubmitting(false);
+      queueConfirmedRef.current = false;
     }
+  };
+
+  // Pelanggan menyetujui waktu tunggu di pop-up antrean: lanjutkan checkout.
+  const handleQueueConfirm = () => {
+    queueConfirmedRef.current = true;
+    setQueueGate(null);
+    void handleProceedToPayment();
   };
 
   return (
@@ -783,6 +808,17 @@ export function CartDrawer({
                 </div>
               )}
 
+              {/* Info antrean pemrosesan saat ini */}
+              {queue && (
+                <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-xl bg-[#FFFDF9] border-2 border-[#2B1D12]/15 text-[11px] font-bold text-[#4A3628] leading-snug">
+                  <span className="shrink-0 text-xs">⏳</span>
+                  <span>
+                    Antrean: {queue.activeOrders} order ({queue.totalItems} item) sedang
+                    diproses. Estimasi order baru ±{queue.estimateMinutes} menit.
+                  </span>
+                </div>
+              )}
+
               {/* 4. Tombol Lanjut ke Pembayaran QRIS / Tombol Outlet Tutup / Tombol Min Order Blocked */}
               {isOutletClosed ? (
                 <button
@@ -829,6 +865,49 @@ export function CartDrawer({
           </div>
         )}
       </div>
+
+      {/* Pop-up konfirmasi antrean panjang */}
+      {queueGate && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-[#26150B]/70 overscroll-contain animate-in fade-in duration-200">
+          <div className="w-full max-w-sm bg-[#FAF4E8] rounded-3xl border-2 border-[#2B1D12] shadow-[5px_5px_0px_#2B1D12] p-5 space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">⏳</span>
+              <h3 className="font-display font-black text-base text-[#2B1D12]">
+                Antrean Lagi Ramai
+              </h3>
+            </div>
+            <p className="text-xs font-bold text-[#4A3628] leading-relaxed">
+              Saat ini ada {queueGate.activeOrders} order ({queueGate.totalItems} item)
+              di antrean. Order diproses satu per satu sesuai urutan masuk, jadi
+              estimasi pesananmu siap sekitar{' '}
+              <span className="text-[#DC2626] font-black">
+                ±{queueGate.estimateMinutes} menit
+              </span>{' '}
+              lagi.
+            </p>
+            <p className="text-[11px] font-bold text-[#7A6658] leading-relaxed">
+              Tetap order sekarang? Antreanmu tercatat begitu pesanan dibuat dan
+              pembayaran dikonfirmasi.
+            </p>
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setQueueGate(null)}
+                className="py-2.5 px-3 bg-white hover:bg-[#FFE7D6] text-[#2B1D12] font-display font-black text-xs rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition cursor-pointer"
+              >
+                Nanti Dulu
+              </button>
+              <button
+                type="button"
+                onClick={handleQueueConfirm}
+                className="py-2.5 px-3 bg-[#15803D] hover:bg-[#166534] text-white font-display font-black text-xs rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition cursor-pointer"
+              >
+                Tetap Order
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

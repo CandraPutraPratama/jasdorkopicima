@@ -9,6 +9,8 @@ import { QRIS_CONFIG, SITE_CONFIG } from '@/lib/site-config';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { buildOrderWhatsAppConfirmationMessage } from '@/lib/whatsapp';
 import { saveMyOrder } from '@/lib/my-orders';
+import { fetchQueueStatus } from '@/hooks/useQueueStatus';
+import { estimateQueueMinutes, type QueueStatus } from '@/lib/queue';
 
 interface PaymentViewProps {
   initialOrder: OrderRecord;
@@ -35,15 +37,35 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
   const [isRefreshingStatus, setIsRefreshingStatus] = useState(false);
   const [confirmError, setConfirmError] = useState<string | null>(null);
   const [isCaraBayarOpen, setIsCaraBayarOpen] = useState(false);
+  const [queueStatus, setQueueStatus] = useState<QueueStatus | null>(null);
   const [, startTransition] = useTransition();
   const breakdown = getOrderBreakdown(order.items, order.fee);
   const tokenQuery = accessToken ? `?t=${encodeURIComponent(accessToken)}` : '';
+
+  // Muat status antrean untuk estimasi dinamis di pesan konfirmasi WhatsApp
+  useEffect(() => {
+    let cancelled = false;
+    fetchQueueStatus().then((data) => {
+      if (!cancelled && data) {
+        setQueueStatus(data);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Fetch / cek status terbaru pesanan dari server
   const checkLatestStatus = useCallback(async (isManual = false) => {
     if (isManual) {
       setIsRefreshingStatus(true);
     }
+    // Segarkan juga status antrean bersamaan dengan polling status pesanan
+    fetchQueueStatus().then((data) => {
+      if (data) {
+        setQueueStatus(data);
+      }
+    });
     try {
       const res = await fetch(
         `/api/orders/${encodeURIComponent(order.id)}${tokenQuery}`,
@@ -162,8 +184,21 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
     }
   };
 
-  // Pesan pre-filled WhatsApp
-  const waConfirmText = buildOrderWhatsAppConfirmationMessage(order);
+  // Pesan pre-filled WhatsApp (dengan estimasi antrean dinamis bila tersedia).
+  // Order ini sendiri dikeluarkan dari hitungan "di depan" bila sudah masuk antrean.
+  const selfInQueue = status === 'menunggu_konfirmasi' || status === 'diproses';
+  const queueAhead = queueStatus
+    ? Math.max(queueStatus.activeOrders - (selfInQueue ? 1 : 0), 0)
+    : undefined;
+  const waConfirmText = buildOrderWhatsAppConfirmationMessage(
+    queueStatus && queueAhead !== undefined
+      ? {
+          ...order,
+          queueAhead,
+          queueEstimateMinutes: estimateQueueMinutes(queueAhead),
+        }
+      : order
+  );
   const waConfirmUrl = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(waConfirmText)}`;
 
   return (

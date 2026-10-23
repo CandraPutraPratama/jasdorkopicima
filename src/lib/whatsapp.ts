@@ -254,6 +254,10 @@ export interface OrderWhatsAppConfirmationInput {
   pickup_time?: string | null;
   created_at?: string;
   items: OrderWhatsAppConfirmationItem[];
+  /** Jumlah order di depan pelanggan ini di antrean (dari /api/queue-status). */
+  queueAhead?: number;
+  /** Estimasi menit hingga pesanan siap, dinamis dari antrean (pengganti tetap 15 menit). */
+  queueEstimateMinutes?: number;
 }
 
 const EM_DASH = '\u2014';
@@ -286,7 +290,9 @@ export function buildOrderWhatsAppConfirmationMessage(
   } else if (order.created_at) {
     try {
       const createdDate = new Date(order.created_at);
-      const estTime = new Date(createdDate.getTime() + 15 * 60 * 1000);
+      // Estimasi dinamis dari antrean; fallback tetap 15 menit bila data antrean tidak ada.
+      const estimateMinutes = order.queueEstimateMinutes ?? 15;
+      const estTime = new Date(createdDate.getTime() + estimateMinutes * 60 * 1000);
       const estFormatted = estTime
         .toLocaleTimeString('id-ID', {
           timeZone: 'Asia/Jakarta',
@@ -384,6 +390,18 @@ export function buildOrderWhatsAppConfirmationMessage(
   const totalSavings = Math.max(0, totalNormalPrice - order.total);
   lines.push('');
   lines.push(`Kamu hemat ${formatRupiah(totalSavings)} dari harga normal!`);
+
+  // Info antrean hanya bila data antrean tersedia (tidak mengarang angka).
+  if (typeof order.queueAhead === 'number') {
+    lines.push('');
+    lines.push(
+      `Antrean: ${order.queueAhead} order di depan kamu. Pesanan diproses satu per satu sesuai urutan masuk (FIFO).`
+    );
+    lines.push(
+      'Mohon jangan spam chat/telepon ya Kak, chat yang naik ke atas justru diproses lebih akhir.'
+    );
+  }
+
   lines.push('');
   lines.push('Mohon konfirmasi pesanan saya. Terima kasih!');
 
