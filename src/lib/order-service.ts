@@ -3,6 +3,8 @@ import { QRIS_CONFIG } from './site-config.ts';
 import {
   calculateOrderPricing,
   calculateItemPricing,
+  calculateFlatVariantAddition,
+  calculateFlatAddonTotal,
   type OrderPricingResult,
   type OrderItemInput,
 } from './pricing.ts';
@@ -394,7 +396,19 @@ export async function recalculateOrderItemsWithServerPrices(params: {
         throw new OrderValidationError('Varian atau ukuran menu tidak valid atau tidak tersedia di outlet ini');
       }
       skuPrice = matchedSku.price;
-      variantAddition = Math.max(0, matchedSku.price - basePrice);
+      // Tambahan varian untuk harga promo memakai aturan FLAT per nama opsi
+      // terpilih (Large +5.000, Juwara Beans +3.000, Oatside +3.000), sama
+      // seperti etalase (calculateBottomSheetPricing). Selisih harga SKU asli
+      // KK (skuPrice - basePrice) hanya membentuk harga coret, bukan tambahan
+      // promo; memakainya di sini membuat checkout berkustomisasi selalu
+      // ditolak (contoh nyata: Large Caramel Latte selisih asli 8.000 vs flat
+      // 5.000). Nama opsi didekode dari deskripsi SKU resmi server, bukan dari
+      // kiriman client.
+      const selectedOptionNames = (matchedSku.description || '')
+        .split(',')
+        .map((name) => name.trim())
+        .filter(Boolean);
+      variantAddition = calculateFlatVariantAddition(selectedOptionNames);
     }
 
     // 5. Resolusi Toppings / Addons
@@ -421,9 +435,12 @@ export async function recalculateOrderItemsWithServerPrices(params: {
           price: matchedAddon.price,
           categoryName: matchedAddon.categoryName,
         });
-        toppingTotal += matchedAddon.price;
       }
       item.addons = verifiedAddons;
+      // Total topping untuk harga promo juga FLAT per grup addon (syrup dan
+      // topping +6.000, whipped cream gratis), sama seperti etalase, bukan
+      // harga asli KK per addon.
+      toppingTotal = calculateFlatAddonTotal(verifiedAddons);
     } else {
       item.addons = [];
       toppingTotal = 0;

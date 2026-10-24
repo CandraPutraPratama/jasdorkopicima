@@ -111,8 +111,8 @@ describe('Server-Side Price Recalculation (K1 Security Audit)', () => {
             is_soldout: false,
           },
           option_product_map: {
-            '1-1:': { name: 'Regular', product_code: 'SKU-MANTAN-REG', price: 19000 },
-            '1-2:': { name: 'Large', product_code: 'SKU-MANTAN-LRG', price: 24000 },
+            '1-1:': { name: 'Regular', product_code: 'SKU-MANTAN-REG', price: 19000, display_description: 'Ice, Regular, Kenangan Blend, Milk, Normal Sugar' },
+            '1-2:': { name: 'Large', product_code: 'SKU-MANTAN-LRG', price: 24000, display_description: 'Ice, Large, Kenangan Blend, Milk, Normal Sugar' },
           },
           product_addon_wording: [
             {
@@ -305,12 +305,92 @@ describe('Server-Side Price Recalculation (K1 Security Audit)', () => {
       // Nilai otoritatif server HARUS menimpa nilai client
       assert.strictEqual(recomputedItem.basePrice, 19000, 'basePrice wajib diambil dari menu server (19.000)');
       assert.strictEqual(recomputedItem.skuPrice, 24000, 'skuPrice wajib diambil dari options server (24.000)');
-      assert.strictEqual(recomputedItem.variantAddition, 5000, 'variantAddition wajib 5.000 (24.000 - 19.000)');
+      assert.strictEqual(recomputedItem.variantAddition, 5000, 'variantAddition wajib 5.000 (flat Large, bukan selisih SKU)');
       assert.strictEqual(recomputedItem.toppingTotal, 6000, 'toppingTotal wajib 6.000 dari server');
       assert.strictEqual(recomputedItem.addons![0].price, 6000, 'harga addon boba wajib 6.000');
 
       // Total pricing server: 9.500 (50% dari 19k) + 5.000 + 6.000 = 20.500 + 4.000 fee = 24.500
       assert.strictEqual(result.pricing.total, 24500);
+    });
+
+    it('regresi checkout kustom: selisih SKU asli Large (8.000) tidak boleh mengalahkan flat Large (5.000)', async () => {
+      // Kasus nyata Graha Pena Surabaya, 24 Okt 2026: Caramel Latte base 26.000,
+      // SKU Large asli KK 34.000 (selisih 8.000), Espresso Shot 6.000.
+      // Etalase menghitung promo 13.000 + flat Large 5.000 + 6.000 = 24.000.
+      // Rekalkulasi lama memakai selisih asli (8.000) -> total server 27.000 ->
+      // checkout pelanggan ditolak "Harga menu berubah".
+      kkApiClient.getProductOptions = async (_outletId: number, _storeCode: string, bundleCode: string) => {
+        if (bundleCode === 'KK-CARAMEL') {
+          return {
+            base_product: {
+              id: 9,
+              bundle_code: 'KK-CARAMEL',
+              name: 'Caramel Latte',
+              price: 26000,
+              orig_price: 26000,
+              is_soldout: false,
+            },
+            option_product_map: {
+              '1-1:': { name: 'Caramel Latte', product_code: 'SKU-CARAMEL-REG', price: 26000, display_description: 'Ice, Regular, Kenangan Blend, Milk, Normal Sugar' },
+              '1-2:': { name: 'Caramel Latte', product_code: 'SKU-CARAMEL-LRG', price: 34000, display_description: 'Ice, Large, Kenangan Blend, Milk, Normal Sugar' },
+            },
+            product_addon_wording: [
+              {
+                dimension_text: 'Topping',
+                dimension_value_wordings: [
+                  { addon_sku: 'ADDON-SHOT', value_text: 'Espresso Shot Kenangan Blend', addon_price: 6000, is_sold_out: false },
+                ],
+              },
+            ],
+          } as any;
+        }
+        throw new Error(`Options not found for ${bundleCode}`);
+      };
+
+      const caramelProduct: Product = {
+        id: 9,
+        bundleCode: 'KK-CARAMEL',
+        productCode: 'PROD-CARAMEL',
+        name: 'Caramel Latte',
+        description: 'Caramel + Latte',
+        image: 'https://cdn.example.com/caramel.jpg',
+        basePrice: 26000,
+        originalPrice: 26000,
+        isSoldOut: false,
+        isCombo: false,
+      };
+
+      // Item persis seperti yang dikirim etalase (variantAddition FLAT 5.000)
+      const clientItems: CartItem[] = [
+        {
+          id: 'item-caramel',
+          bundleCode: 'KK-CARAMEL',
+          sku: 'SKU-CARAMEL-LRG',
+          name: 'Caramel Latte',
+          basePrice: 26000,
+          skuPrice: 34000,
+          variantAddition: 5000,
+          toppingTotal: 6000,
+          quantity: 1,
+          addons: [{ sku: 'ADDON-SHOT', name: 'Espresso Shot Kenangan Blend', price: 6000 } as any],
+        },
+      ];
+
+      const result = await recalculateOrderItemsWithServerPrices({
+        outletCode: 'KK-TEST-01',
+        storeId: 101,
+        items: clientItems.map((it) => ({ ...it })),
+        allProducts: [caramelProduct],
+        tierDiff: 0,
+      });
+
+      assert.strictEqual(result.unavailableItems.length, 0);
+      assert.strictEqual(result.items[0].variantAddition, 5000, 'variantAddition server wajib flat Large 5.000');
+      assert.strictEqual(result.items[0].toppingTotal, 6000, 'toppingTotal server wajib flat 6.000');
+      // Promo per item 24.000 + fee item tunggal 4.000 = 28.000, dan HARUS sama
+      // persis dengan total hitungan dari item kiriman client (perbandingan route).
+      assert.strictEqual(result.pricing.total, 28000);
+      assert.strictEqual(calculateServerOrderPricing(clientItems).total, result.pricing.total);
     });
 
     it('menolak topping yang sedang sold out di outlet', async () => {
