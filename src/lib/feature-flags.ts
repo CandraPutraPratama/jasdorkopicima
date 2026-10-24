@@ -30,8 +30,14 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
+// Gerbang NYALA secara default (fail-closed): hanya nilai eksplisit 'false'
+// yang mematikan. Alasan: variabel NEXT_PUBLIC_* ditempel ke bundle saat
+// build, jadi lupa menyetelnya di CI membuat gerbang mati diam-diam di
+// production (insiden 2026-10-24: Paksa Tutup tersimpan di server tapi
+// etalase tetap tampil buka). Nilai di wrangler.jsonc tidak berlaku untuk
+// flag ini karena inlining terjadi saat build, bukan saat runtime Worker.
 export const OPERATIONAL_GATE_ENABLED =
-  process.env.NEXT_PUBLIC_OPERATIONAL_GATE_ENABLED === 'true';
+  process.env.NEXT_PUBLIC_OPERATIONAL_GATE_ENABLED !== 'false';
 
 /**
  * MIN_ORDER_50K_MODE (Sebelumnya: BUNDLING_ONLY_MODE)
