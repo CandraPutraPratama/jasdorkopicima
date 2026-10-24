@@ -597,6 +597,9 @@ export function CartDrawer({
                         : 'border-[#2B1D12] focus:border-[#C67D0A] shadow-[2px_2px_0px_#2B1D12]'
                     }`}
                   />
+                  <p className="text-[11px] leading-relaxed text-[#7A6658] font-medium">
+                    Isi dengan nomor WhatsApp aktif yang bisa dihubungi, admin akan menghubungimu lewat nomor ini untuk konfirmasi pesanan.
+                  </p>
                 </div>
 
                 {/* Pilihan Waktu Pick Up */}

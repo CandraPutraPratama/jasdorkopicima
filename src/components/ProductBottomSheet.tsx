@@ -148,6 +148,25 @@ export function ProductBottomSheet({
     return names;
   }, [options, selectedDimensions]);
 
+  // Aturan Hot vs Es: minuman panas tidak punya urusan es, jadi grup notes
+  // Ice Level disembunyikan total saat Temperature = Hot (dan nilainya tidak
+  // ikut ke deskripsi varian). Dimensi Temperature dikenali dari namanya atau
+  // dari adanya nilai "Hot" di opsinya.
+  const temperatureDim = useMemo(() => {
+    if (!options?.dimensions) return undefined;
+    return options.dimensions.find(
+      (d) => /temperature/i.test(d.name) || d.values.some((v) => v.name === 'Hot')
+    );
+  }, [options?.dimensions]);
+
+  const isHotSelected = useMemo(() => {
+    if (!temperatureDim) return false;
+    const selectedId = selectedDimensions[temperatureDim.code];
+    return temperatureDim.values.find((v) => v.id === selectedId)?.name === 'Hot';
+  }, [temperatureDim, selectedDimensions]);
+
+  const isIceNoteGroup = (name: string) => /ice/i.test(name);
+
   // SKU varian yang cocok dengan kombinasi terpilih (hanya untuk validasi stok)
   const matchedSku: VariantSku | null = options?.optionMap
     ? findMatchingSku(options.optionMap, selectedDimensions)
@@ -184,6 +203,31 @@ export function ProductBottomSheet({
       ...prev,
       [dimCode]: valId,
     }));
+
+    // Ganti Temperature: Hot = bersihkan pilihan Ice Level (tidak relevan);
+    // kembali ke Ice = kembalikan default Ice Level bila kosong.
+    if (temperatureDim && dimCode === temperatureDim.code) {
+      const newValName = temperatureDim.values.find((v) => v.id === valId)?.name;
+      if (newValName === 'Hot') {
+        setSelectedNotes((prev) => {
+          const next = { ...prev };
+          for (const key of Object.keys(next)) {
+            if (isIceNoteGroup(key)) delete next[key];
+          }
+          return next;
+        });
+      } else {
+        setSelectedNotes((prev) => {
+          const next = { ...prev };
+          for (const noteGroup of options.notes || []) {
+            if (isIceNoteGroup(noteGroup.name) && !next[noteGroup.name] && noteGroup.options.length > 0) {
+              next[noteGroup.name] = noteGroup.options[0];
+            }
+          }
+          return next;
+        });
+      }
+    }
   };
 
   const handleToggleSyrup = (addon: Addon) => {
@@ -214,9 +258,11 @@ export function ProductBottomSheet({
     // Kumpulkan ringkasan varian
     const variantParts: string[] = [...selectedOptionNames];
 
-    // Tambahkan notes (misal: Ice Level)
+    // Tambahkan notes (misal: Ice Level), kecuali Ice Level saat Hot
+    // (pengaman lapis kedua bila ada nilai es nyangkut dari default awal)
     if (selectedNotes) {
-      for (const [, valText] of Object.entries(selectedNotes)) {
+      for (const [groupName, valText] of Object.entries(selectedNotes)) {
+        if (isHotSelected && isIceNoteGroup(groupName)) continue;
         if (valText && !variantParts.includes(valText)) {
           variantParts.push(valText);
         }
@@ -420,8 +466,9 @@ export function ProductBottomSheet({
             );
           })}
 
-          {/* 2. Opsi Notes (Ice Level) */}
+          {/* 2. Opsi Notes (Ice Level) - disembunyikan total saat Hot */}
           {!isLoading && options?.notes && options.notes.map((note) => {
+            if (isHotSelected && isIceNoteGroup(note.name)) return null;
             const gridClass = getGridColsClass(note.options.length);
             return (
               <div key={note.name} className="space-y-2">
