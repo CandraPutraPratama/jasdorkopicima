@@ -3,6 +3,7 @@ export type OrderStatus =
   | 'menunggu_konfirmasi'
   | 'antrian'
   | 'diproses'
+  | 'selesai'
   | 'dibatalkan'
   | 'kedaluwarsa';
 

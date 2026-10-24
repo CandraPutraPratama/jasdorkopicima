@@ -399,6 +399,45 @@ describe('Order Service - QRIS On-Site Flow', () => {
       assert.equal(newDbStatus, 'antrian');
     });
 
+    it('updateOrderStatusByAdmin dapat menandai pesanan diproses menjadi selesai', async () => {
+      const mockOrder: OrderRecord = {
+        id: 'CG-ADM03',
+        brand_slug: 'kopi-kenangan',
+        outlet_code: 'OUT-1',
+        customer_name: 'Bima',
+        customer_wa: '628111999888',
+        items: [],
+        subtotal: 10000,
+        fee: 4000,
+        total: 14000,
+        status: 'diproses',
+        created_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 3600000).toISOString(),
+      };
+
+      let newDbStatus: string | null = null;
+
+      setSupabaseServerClientInstance({
+        from: () => ({
+          select: () => ({
+            eq: () => ({
+              maybeSingle: async () => ({ data: mockOrder, error: null }),
+            }),
+          }),
+          update: (fields: any) => ({
+            eq: () => {
+              newDbStatus = fields.status;
+              return Promise.resolve({ error: null });
+            },
+          }),
+        }),
+      } as any);
+
+      const done = await updateOrderStatusByAdmin('CG-ADM03', 'selesai');
+      assert.equal(done.status, 'selesai');
+      assert.equal(newDbStatus, 'selesai');
+    });
+
     it('listOrdersForAdmin prioritizes menunggu_konfirmasi at the top', async () => {
       const ordersInDb: OrderRecord[] = [
         {

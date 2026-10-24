@@ -93,7 +93,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
   // Polling otomatis setiap 20 detik jika status BELUM final
   useEffect(() => {
-    const isFinal = status === 'diproses' || status === 'dibatalkan' || status === 'kedaluwarsa';
+    const isFinal = status === 'diproses' || status === 'selesai' || status === 'dibatalkan' || status === 'kedaluwarsa';
     if (isFinal) {
       return;
     }
@@ -324,6 +324,20 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
               <p className="font-black text-[#15803D]">Pembayaran Terverifikasi & Pesanan Diproses</p>
               <p className="text-[11px] text-[#2B1D12] mt-0.5 leading-relaxed font-medium">
                 Admin telah mengonfirmasi pembayaranmu. Pesanan sedang diproses di outlet.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {status === 'selesai' && (
+          <div className="bg-emerald-600 border-2 border-[#2B1D12] rounded-2xl p-3.5 flex items-start gap-2.5 text-xs text-white shadow-[3px_3px_0px_#2B1D12] animate-in fade-in">
+            <svg className="w-5 h-5 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <p className="font-black text-white">Pesanan Selesai</p>
+              <p className="text-[11px] text-emerald-50 mt-0.5 leading-relaxed font-medium">
+                Pesananmu sudah selesai diproses. Terima kasih sudah order lewat Jasdor, sampai jumpa di order berikutnya!
               </p>
             </div>
           </div>

@@ -299,6 +299,7 @@ export function MyOrdersView() {
           <div className="space-y-2.5">
             {historyOrders.map((order) => {
               const isProcessed = order.status === 'diproses';
+              const isCompleted = order.status === 'selesai';
               const isCancelled = order.status === 'dibatalkan';
               const isExpired = order.status === 'kedaluwarsa';
 
@@ -316,6 +317,11 @@ export function MyOrdersView() {
                     {isProcessed && (
                       <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-[#D9F3EA] text-[#15803D] border-2 border-[#15803D]">
                         Diproses
+                      </span>
+                    )}
+                    {isCompleted && (
+                      <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-emerald-600 text-white border-2 border-emerald-700">
+                        Selesai
                       </span>
                     )}
                     {isCancelled && (

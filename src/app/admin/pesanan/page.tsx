@@ -244,7 +244,9 @@ export default function AdminPesananPage() {
           : `Konfirmasi pembayaran untuk order #${orderId}? Status akan berubah menjadi 'diproses'.`
         : newStatus === 'antrian'
           ? `Masukkan order #${orderId} ke antrian? Pembayaran dianggap terkonfirmasi dan pesanan menunggu giliran diproses.`
-          : `Yakin ingin membatalkan order #${orderId}?`;
+          : newStatus === 'selesai'
+            ? `Tandai order #${orderId} selesai? Pesanan dianggap sudah jadi dan keluar dari hitungan antrean.`
+            : `Yakin ingin membatalkan order #${orderId}?`;
 
     if (!window.confirm(confirmMessage)) return;
 
@@ -612,6 +614,10 @@ export default function AdminPesananPage() {
               label: `Diproses (${orders.filter((o) => o.status === 'diproses').length})`,
             },
             {
+              id: 'selesai',
+              label: `Selesai (${orders.filter((o) => o.status === 'selesai').length})`,
+            },
+            {
               id: 'kedaluwarsa',
               label: `Kedaluwarsa (${orders.filter((o) => o.status === 'kedaluwarsa').length})`,
             },
@@ -727,6 +733,11 @@ export default function AdminPesananPage() {
                       {order.status === 'diproses' && (
                         <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                           Diproses
+                        </span>
+                      )}
+                      {order.status === 'selesai' && (
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-600 text-white border border-emerald-700">
+                          Selesai
                         </span>
                       )}
                       {order.status === 'kedaluwarsa' && (
@@ -874,6 +885,27 @@ export default function AdminPesananPage() {
                         className="px-3.5 py-2 bg-white border border-rose-300 text-rose-700 hover:bg-rose-50 text-xs font-semibold rounded-xl transition disabled:opacity-50"
                       >
                         Batalkan
+                      </button>
+                    )}
+
+                    {/* Tombol Selesai hanya muncul untuk pesanan yang sedang Diproses */}
+                    {order.status === 'diproses' && (
+                      <button
+                        type="button"
+                        disabled={isUpdating}
+                        onClick={() => handleUpdateStatus(order.id, 'selesai')}
+                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs transition disabled:opacity-50 flex items-center gap-1.5"
+                      >
+                        {isUpdating ? (
+                          'Memproses...'
+                        ) : (
+                          <>
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Selesai</span>
+                          </>
+                        )}
                       </button>
                     )}
 

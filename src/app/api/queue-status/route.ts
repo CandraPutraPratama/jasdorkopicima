@@ -8,8 +8,9 @@ export const dynamic = 'force-dynamic';
  * Status antrean pemrosesan order untuk ditampilkan ke pelanggan.
  * Hanya mengembalikan angka agregat (jumlah order aktif, total item,
  * estimasi) - tidak ada data pelanggan apa pun.
- * Order yang dihitung: status menunggu_konfirmasi + diproses, dibuat hari
- * ini (WIB). Order kedaluwarsa/dibatalkan dan order kemarin tidak dihitung.
+ * Order yang dihitung: HANYA status diproses (yang benar-benar sedang
+ * dibuat admin), dibuat hari ini (WIB). Order yang sudah ditandai selesai,
+ * kedaluwarsa/dibatalkan, dan order kemarin tidak dihitung.
  */
 export async function GET() {
   try {
