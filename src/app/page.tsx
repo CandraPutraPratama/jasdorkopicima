@@ -70,6 +70,7 @@ export default function PortalPage() {
         dayName={status?.dayName}
         message={status?.message}
         onRefresh={refetch}
+        variant={status?.overrideType === 'force_closed' ? 'istirahat' : 'tutup'}
       />
     );
   }

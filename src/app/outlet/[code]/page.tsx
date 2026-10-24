@@ -287,6 +287,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
         dayName={jasdorStatus?.dayName}
         message={jasdorStatus?.message}
         onRefresh={refetch}
+        variant={jasdorStatus?.overrideType === 'force_closed' ? 'istirahat' : 'tutup'}
       />
     );
   }
