@@ -67,50 +67,55 @@ export function BundlePickerBottomSheet({
     return map;
   }, [liveProducts]);
 
-  // Inisialisasi slot sesuai konfigurasi paket
+  // Alur isi 1 per 1 (urut): slot mulai KOSONG, bukan terisi default.
+  // Slot yang sudah terisi bisa diklik lagi untuk diubah; slot kosong hanya
+  // bisa dibuka kalau semua slot sebelumnya sudah terisi (slot kosong pertama
+  // yang belum terisi). Slot selebihnya terkunci (abu-abu, tidak bisa diklik).
   const initialSlots: SlotState[] = useMemo(() => {
-    // Helper untuk memilih item default yang benar-benar ada dan tidak sold out di outlet
-    const pickAvailableItem = (category: 'drink' | 'food', preferredName: string): string => {
-      const prefInfo = livePriceMap.get(normalizeProductName(preferredName));
-      if (prefInfo && !prefInfo.isSoldOut) {
-        return preferredName;
-      }
-      const sourceList = category === 'food'
-        ? ELIGIBLE_FOODS
-        : config.id === 'bundle-2-large'
-          ? LARGE_ELIGIBLE_DRINKS
-          : REGULAR_ELIGIBLE_DRINKS;
-      const found = sourceList.find((it) => {
-        const info = livePriceMap.get(normalizeProductName(it.name));
-        return Boolean(info && !info.isSoldOut);
-      });
-      return found ? found.name : preferredName;
-    };
     if (config.id === 'bundle-3-reguler') {
       return [
-        { category: 'drink', productName: pickAvailableItem('drink', 'Americano'), sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
-        { category: 'drink', productName: pickAvailableItem('drink', 'Kopi Kenangan Mantan'), sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
-        { category: 'drink', productName: pickAvailableItem('drink', 'Lemon Black Tea'), sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
+        { category: 'drink', productName: '', sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
+        { category: 'drink', productName: '', sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
+        { category: 'drink', productName: '', sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
       ];
     }
     if (config.id === 'bundle-2-large') {
-      const defaultLarge = pickAvailableItem('drink', 'Kopi Kenangan Mantan');
       return [
-        { category: 'drink', productName: defaultLarge, sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
-        { category: 'drink', productName: defaultLarge, sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
+        { category: 'drink', productName: '', sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
+        { category: 'drink', productName: '', sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
       ];
     }
     // bundle-2-drink-2-food
     return [
-      { category: 'drink', productName: pickAvailableItem('drink', 'Kopi Kenangan Mantan'), sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
-      { category: 'drink', productName: pickAvailableItem('drink', 'Americano'), sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
-      { category: 'food', productName: pickAvailableItem('food', 'Roti Coklat Klasik'), sugar: '', ice: '', notes: '' },
-      { category: 'food', productName: pickAvailableItem('food', 'Roti Susu Manis'), sugar: '', ice: '', notes: '' },
+      { category: 'drink', productName: '', sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
+      { category: 'drink', productName: '', sugar: 'Normal Sugar', ice: 'Normal Ice', notes: '' },
+      { category: 'food', productName: '', sugar: '', ice: '', notes: '' },
+      { category: 'food', productName: '', sugar: '', ice: '', notes: '' },
     ];
-  }, [config.id, livePriceMap]);
+  }, [config.id]);
 
   const [slots, setSlots] = useState<SlotState[]>(initialSlots);
   const [activeSlotIndex, setActiveSlotIndex] = useState<number>(0);
+
+  // Status alur urut: indeks slot kosong pertama (-1 kalau semua sudah terisi)
+  const firstUnfilledIndex = slots.findIndex((s) => !s.productName);
+  const isComplete = firstUnfilledIndex === -1;
+  const isSlotLocked = (idx: number) => {
+    if (slots[idx]?.productName) return false;
+    return firstUnfilledIndex !== -1 && idx !== firstUnfilledIndex;
+  };
+  // Nomor urut dalam kategorinya (Minuman ke-1/2, Makanan ke-1/2) supaya
+  // label tombol, tab, dan editor konsisten satu sama lain.
+  const slotOrdinal = (idx: number) =>
+    slots.slice(0, idx + 1).filter((s) => s.category === slots[idx].category).length;
+  const slotKindLabel = (idx: number) => (slots[idx].category === 'food' ? 'Makanan' : 'Minuman');
+
+  // Tombol langkah berikutnya: pindah ke slot kosong pertama (daftar menunya)
+  const handleGoToNextSlot = () => {
+    if (firstUnfilledIndex === -1) return;
+    setActiveSlotIndex(firstUnfilledIndex);
+    scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Daftar item eligible untuk slot aktif
   const eligibleItems = useMemo(() => {
@@ -209,7 +214,7 @@ export function BundlePickerBottomSheet({
     bundleCalculation.normalPrice < 50000 || bundleCalculation.normalPrice > 60000;
 
   const handleConfirmAddToCart = () => {
-    if (isOutOfRange) return;
+    if (!isComplete || isOutOfRange) return;
     const bundleDetails = slots.map((s, idx) => {
       const breakdown = bundleCalculation.itemBreakdown[idx];
       const optParts: string[] = [];
@@ -296,7 +301,7 @@ export function BundlePickerBottomSheet({
           {/* Instruksi Slot */}
           <div className="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-2xl p-3.5 shadow-[2px_2px_0px_#2B1D12]">
             <p className="text-xs font-bold text-[#4A3628] leading-relaxed">
-              {`Pilih isi ${slots.length} item di bawah. Tiap item bebas kamu tentukan tingkat kemanisan & esnya. Ukuran otomatis ${config.fixedSize}.`}
+              {`Pilih ${slots.length} item satu per satu, urut mulai dari Pilihan 1. Tiap item bebas kamu tentukan tingkat kemanisan & esnya. Ukuran otomatis ${config.fixedSize}.`}
             </p>
           </div>
 
@@ -304,16 +309,20 @@ export function BundlePickerBottomSheet({
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
             {slots.map((slot, idx) => {
               const isActive = idx === activeSlotIndex;
-              const slotLabel = slot.category === 'food' ? `Makanan (Pilihan ${idx + 1})` : `Minuman (Pilihan ${idx + 1})`;
+              const locked = isSlotLocked(idx);
+              const slotLabel = `${slotKindLabel(idx)} (Pilihan ${slotOrdinal(idx)})`;
               return (
                 <button
                   key={idx}
                   type="button"
+                  disabled={locked}
                   onClick={() => setActiveSlotIndex(idx)}
-                  className={`p-3 rounded-xl border-2 text-left transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-[#2B1D12] text-[#FAF4E8] border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A]'
-                      : 'bg-[#FFFDF9] text-[#2B1D12] border-[#2B1D12] hover:bg-[#FFE7D6] shadow-[2px_2px_0px_#2B1D12]'
+                  className={`p-3 rounded-xl border-2 text-left transition-all ${
+                    locked
+                      ? 'bg-[#E5DCD0] text-[#8C7667] border-[#2B1D12]/40 shadow-none cursor-not-allowed'
+                      : isActive
+                        ? 'bg-[#2B1D12] text-[#FAF4E8] border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A] cursor-pointer'
+                        : 'bg-[#FFFDF9] text-[#2B1D12] border-[#2B1D12] hover:bg-[#FFE7D6] shadow-[2px_2px_0px_#2B1D12] cursor-pointer'
                   }`}
                 >
                   <div className="text-[10px] font-black uppercase tracking-wider opacity-90 truncate">
@@ -332,7 +341,7 @@ export function BundlePickerBottomSheet({
             <div className="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-2xl p-4 sm:p-5 shadow-[3px_3px_0px_#2B1D12] space-y-4">
               <div className="flex items-center justify-between pb-2 border-b-2 border-[#2B1D12]/10">
                 <span className="font-display font-black text-xs uppercase tracking-wider text-[#C67D0A]">
-                  {`PILIH ${slots[activeSlotIndex].category === 'food' ? 'MAKANAN' : 'MINUMAN'} (PILIHAN ${activeSlotIndex + 1})`}
+                  {`PILIH ${slotKindLabel(activeSlotIndex).toUpperCase()} (PILIHAN ${slotOrdinal(activeSlotIndex)})`}
                 </span>
                 <span className="text-[10px] font-bold text-[#7A6658]">
                   {preparedItems.length} Pilihan Menu
@@ -387,9 +396,7 @@ export function BundlePickerBottomSheet({
               >
                 <div className="flex items-center gap-1.5">
                   <span className="text-xs font-black text-[#2B1D12]">
-                    {slots[activeSlotIndex].category === 'food'
-                      ? `Kustomisasi Makanan ${activeSlotIndex + 1}`
-                      : `Kustomisasi Minuman ${activeSlotIndex + 1}`}
+                    {`Kustomisasi ${slotKindLabel(activeSlotIndex)} ${slotOrdinal(activeSlotIndex)}`}
                   </span>
                   <span className="text-[11px] font-bold text-[#7A6658]">(Opsional)</span>
                 </div>
@@ -473,34 +480,40 @@ export function BundlePickerBottomSheet({
 
         {/* Running Total & Footer Action (Box rincian isi paket ganda telah dihapus) */}
         <div className="p-4 sm:p-5 border-t-2 border-[#2B1D12] bg-[#FFFDF9] space-y-3 shrink-0">
-          <div className="space-y-1.5 text-xs">
-            <div className="flex items-center justify-between text-[#7A6658] font-bold">
-              <span>Total Harga Normal</span>
-              <span className="line-through">{formatRupiah(bundleCalculation.normalPrice)}</span>
+          {!isComplete ? (
+            <div className="py-3 text-center">
+              <span className="text-sm font-black text-[#7A6658]">Menghitung harga...</span>
             </div>
-            <div className="flex items-center justify-between text-[#DC2626] font-bold">
-              <span>Diskon 50%</span>
-              <span>-{formatRupiah(bundleCalculation.promoSubtotal)}</span>
-            </div>
-            <div className="flex items-center justify-between text-[#4A3628] font-bold">
-              <span>Biaya Jasa Paket</span>
-              <span>+{formatRupiah(bundleCalculation.bundleFee)}</span>
-            </div>
-            <div className="pt-2 border-t-2 border-[#2B1D12]/15 flex items-center justify-between">
-              <div>
-                <span className="text-[10px] font-bold text-[#7A6658] block">Total Bayar</span>
-                <span className="font-display font-black text-lg text-[#2B1D12]">
-                  {formatRupiah(bundleCalculation.total)}
+          ) : (
+            <div className="space-y-1.5 text-xs">
+              <div className="flex items-center justify-between text-[#7A6658] font-bold">
+                <span>Total Harga Normal</span>
+                <span className="line-through">{formatRupiah(bundleCalculation.normalPrice)}</span>
+              </div>
+              <div className="flex items-center justify-between text-[#DC2626] font-bold">
+                <span>Diskon 50%</span>
+                <span>-{formatRupiah(bundleCalculation.promoSubtotal)}</span>
+              </div>
+              <div className="flex items-center justify-between text-[#4A3628] font-bold">
+                <span>Biaya Jasa Paket</span>
+                <span>+{formatRupiah(bundleCalculation.bundleFee)}</span>
+              </div>
+              <div className="pt-2 border-t-2 border-[#2B1D12]/15 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-bold text-[#7A6658] block">Total Bayar</span>
+                  <span className="font-display font-black text-lg text-[#2B1D12]">
+                    {formatRupiah(bundleCalculation.total)}
+                  </span>
+                </div>
+                <span className="text-[10px] font-black text-white bg-[#15803D] px-2.5 py-1 rounded-full border border-[#2B1D12]">
+                  {`Kamu Hemat ${formatRupiah(bundleCalculation.totalSavings)}!`}
                 </span>
               </div>
-              <span className="text-[10px] font-black text-white bg-[#15803D] px-2.5 py-1 rounded-full border border-[#2B1D12]">
-                {`Kamu Hemat ${formatRupiah(bundleCalculation.totalSavings)}!`}
-              </span>
             </div>
-          </div>
+          )}
 
           {/* Pesan Validasi Rentang 50rb-60rb FIX untuk Semua Paket Bundling */}
-          {isOutOfRange && (
+          {isComplete && isOutOfRange && (
             <div className="p-2.5 bg-[#FEF2F2] border-2 border-[#DC2626] rounded-xl text-center shadow-[1px_1px_0px_#DC2626]">
               <p className="text-xs font-black text-[#DC2626]">
                 {`Total ${formatRupiah(bundleCalculation.normalPrice)} - pilih kombinasi 50rb-60rb`}
@@ -508,20 +521,30 @@ export function BundlePickerBottomSheet({
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={handleConfirmAddToCart}
-            disabled={isOutOfRange}
-            className={`w-full py-3.5 font-display font-black text-sm rounded-xl border-2 border-[#2B1D12] transition flex items-center justify-center gap-2 ${
-              isOutOfRange
-                ? 'bg-[#E5DCD0] text-[#8C7667] border-[#2B1D12]/40 cursor-not-allowed shadow-none'
-                : 'bg-[#15803D] hover:bg-[#166534] text-white shadow-[3px_3px_0px_#2B1D12] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer'
-            }`}
-          >
-            <span>Tambah Paket ke Keranjang</span>
-            <span>•</span>
-            <span>{formatRupiah(bundleCalculation.total)}</span>
-          </button>
+          {!isComplete ? (
+            <button
+              type="button"
+              onClick={handleGoToNextSlot}
+              className="w-full py-3.5 font-display font-black text-sm rounded-xl border-2 border-[#2B1D12] transition flex items-center justify-center gap-2 bg-[#2B1D12] hover:bg-[#4A3628] text-[#FAF4E8] shadow-[3px_3px_0px_#C67D0A] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer"
+            >
+              <span>{`Pilih ${slotKindLabel(firstUnfilledIndex)} ke ${slotOrdinal(firstUnfilledIndex)}`}</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleConfirmAddToCart}
+              disabled={isOutOfRange}
+              className={`w-full py-3.5 font-display font-black text-sm rounded-xl border-2 border-[#2B1D12] transition flex items-center justify-center gap-2 ${
+                isOutOfRange
+                  ? 'bg-[#E5DCD0] text-[#8C7667] border-[#2B1D12]/40 cursor-not-allowed shadow-none'
+                  : 'bg-[#15803D] hover:bg-[#166534] text-white shadow-[3px_3px_0px_#2B1D12] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer'
+              }`}
+            >
+              <span>Tambah Paket ke Keranjang</span>
+              <span>•</span>
+              <span>{formatRupiah(bundleCalculation.total)}</span>
+            </button>
+          )}
         </div>
       </div>
     </div>
