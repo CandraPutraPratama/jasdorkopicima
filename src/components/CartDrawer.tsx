@@ -417,15 +417,15 @@ export function CartDrawer({
                   return (
                     <div
                       key={item.id}
-                      className="p-3 bg-[#FFFDF9] rounded-2xl border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] flex gap-3 items-start"
+                      className="p-2.5 bg-[#FFFDF9] rounded-2xl border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] flex gap-2.5 items-start"
                     >
                       {item.image && (
-                        <div className="relative w-14 h-14 bg-white rounded-xl overflow-hidden shrink-0 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
+                        <div className="relative w-12 h-12 bg-white rounded-xl overflow-hidden shrink-0 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
                           <Image
                             src={item.image}
                             alt={item.name}
                             fill
-                            sizes="56px"
+                            sizes="48px"
                             className="object-cover"
                           />
                         </div>
@@ -535,9 +535,10 @@ export function CartDrawer({
           />
         </div>
 
-        {/* ZONA C: Zona Bawah SELALU MENEMPEL (STICKY/PINNED) */}
+        {/* ZONA C: form + ringkasan bisa di-scroll, tombol bayar SELALU NEMPEL di bawah */}
         {items.length > 0 && (
-          <div className="shrink-0 bg-[#FAF4E8] border-t-2 border-[#2B1D12] shadow-xl z-20 flex flex-col max-h-[65vh] overflow-y-auto overscroll-contain">
+          <div className="shrink-0 bg-[#FAF4E8] border-t-2 border-[#2B1D12] shadow-xl z-20 flex flex-col min-h-0 max-h-[65vh]">
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
             <div className="p-3.5 space-y-2.5">
               {/* 1. Informasi Pick Up (Ringkas) */}
               <div className="bg-[#FFFDF9] rounded-2xl p-3 border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-2.5">
@@ -825,6 +826,10 @@ export function CartDrawer({
                 </div>
               )}
 
+            </div>
+            </div>
+            {/* Footer tombol bayar: selalu nempel di bawah drawer, tidak ikut scroll */}
+            <div className="shrink-0 border-t-2 border-[#2B1D12] bg-[#FAF4E8] p-3.5">
               {/* 4. Tombol Lanjut ke Pembayaran QRIS / Tombol Outlet Tutup / Tombol Min Order Blocked */}
               {isOutletClosed ? (
                 <button
