@@ -22,6 +22,7 @@ import { saveMyOrder, buildOrderPaymentUrl } from '@/lib/my-orders';
 import { useMinOrder50kMode } from '@/hooks/useBundlingOnlyMode';
 import { useQueueStatus, fetchQueueStatus } from '@/hooks/useQueueStatus';
 import { QUEUE_POPUP_THRESHOLD_MINUTES, type QueueStatus } from '@/lib/queue';
+import { resolveBrandSlugFromOutletCode } from '@/lib/site-config';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -292,7 +293,9 @@ export function CartDrawer({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          brandSlug: 'kopi-kenangan',
+          // Wajib mengikuti brand outlet yang dipilih - nilai statis di sini
+          // membuat checkout brand lain (Tomoro/Fore) selalu ditolak server.
+          brandSlug: resolveBrandSlugFromOutletCode(effectiveOutletCode ?? ''),
           outletCode: effectiveOutletCode,
           outletName: effectiveOutletName,
           customerName: trimmedName,
