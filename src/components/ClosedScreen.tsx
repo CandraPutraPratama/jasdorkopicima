@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { KopiKenanganWifiBox } from '@/components/KopiKenanganWifiBox';
-import { ClosedMascot } from '@/components/ClosedMascot';
 
 interface ClosedScreenProps {
   currentWibTime?: string;
@@ -11,9 +10,6 @@ interface ClosedScreenProps {
   dayName?: string;
   message?: string;
   onRefresh?: () => void;
-  // Varian animasi maskot. Bila tidak diisi, ditebak dari pesan: tutup
-  // sementara oleh admin = istirahat, sisanya = tutup.
-  variant?: 'tutup' | 'istirahat';
 }
 
 export function ClosedScreen({
@@ -23,10 +19,7 @@ export function ClosedScreen({
   dayName,
   message,
   onRefresh,
-  variant,
 }: ClosedScreenProps) {
-  const mascotVariant: 'tutup' | 'istirahat' =
-    variant ?? (message?.includes('sementara oleh admin') ? 'istirahat' : 'tutup');
   const displaySubtitle = (() => {
     if (!message || message.includes('Jadwal buka:')) {
       return `Kami sedang istirahat hari ini${dayName ? ` (${dayName})` : ''}. Pemesanan jasa order buka kembali sesuai jadwal berikut:`;
@@ -61,8 +54,23 @@ export function ClosedScreen({
 
       {/* Main Status Message Card */}
       <div className="w-full max-w-sm bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-3xl p-5 sm:p-6 text-center shadow-[4px_4px_0px_#2B1D12]">
-        {/* Panggung animasi maskot */}
-        <ClosedMascot variant={mascotVariant} />
+        {/* Status Icon Badge */}
+        <div className="w-12 h-12 mx-auto mb-3.5 rounded-2xl bg-[#FFF0C2] border-2 border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A] flex items-center justify-center text-[#2B1D12]">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
 
         <h2 className="font-display text-xl sm:text-2xl font-black text-[#2B1D12] tracking-tight mb-1.5">
           Jasdor Sedang Tutup
