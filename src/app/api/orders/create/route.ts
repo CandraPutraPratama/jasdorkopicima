@@ -20,7 +20,10 @@ import {
 } from '../../../../lib/order-service.ts';
 import { getMinOrder50kMode, getOperationalOverride } from '../../../../lib/site-settings.ts';
 import { validateAndSanitizePickupTime } from '../../../../lib/schedule-slots.ts';
-import { resolveBrandSlugFromOutletCode } from '../../../../lib/site-config.ts';
+import {
+  resolveBrandSlugFromOutletCode,
+  getBrandConfig,
+} from '../../../../lib/site-config.ts';
 import type { CartItem } from '../../../../lib/cart-reducer.ts';
 
 export async function POST(request: NextRequest) {
@@ -175,6 +178,17 @@ export async function POST(request: NextRequest) {
       {
         error:
           'Layanan pemesanan untuk Fore Coffee saat ini belum dibuka. Silakan pilih outlet Kopi Kenangan.',
+      },
+      { status: 400 }
+    );
+  }
+
+  // 5a. Brand TOMORO ditutup sementara (status coming_soon): tolak order.
+  if (serverBrandSlug === 'tomoro' && getBrandConfig('tomoro')?.status !== 'active') {
+    return NextResponse.json(
+      {
+        error:
+          'Layanan pemesanan untuk TOMORO Coffee saat ini sedang ditutup. Silakan pilih outlet Kopi Kenangan.',
       },
       { status: 400 }
     );

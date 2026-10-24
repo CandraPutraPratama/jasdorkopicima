@@ -10,8 +10,9 @@ interface BrandCardProps {
 }
 
 export function BrandCard({ brand, outletCount }: BrandCardProps) {
-  // Brand aktif: Kopi Kenangan dan TOMORO Coffee.
-  const isClickable = brand.slug === 'kopi-kenangan' || brand.slug === 'tomoro';
+  // Brand yang bisa diklik hanya Kopi Kenangan. TOMORO ditutup sementara
+  // (2026-10-24) dan Fore belum dibuka: keduanya tampil sebagai Segera Hadir.
+  const isClickable = brand.slug === 'kopi-kenangan';
   const [imgError, setImgError] = useState(false);
 
   // Inisial emblem/logo ringkas jika tidak ada gambar logo

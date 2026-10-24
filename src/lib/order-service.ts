@@ -683,7 +683,7 @@ export async function updateOrderStatusByAdmin(
   newStatus: OrderStatus,
   cancellationReason?: string
 ): Promise<OrderRecord> {
-  const allowedStatuses: OrderStatus[] = ['diproses', 'dibatalkan'];
+  const allowedStatuses: OrderStatus[] = ['antrian', 'diproses', 'dibatalkan'];
   if (!allowedStatuses.includes(newStatus)) {
     throw new OrderValidationError(`Status tidak valid untuk aksi admin: ${newStatus}`);
   }
@@ -810,10 +810,11 @@ export async function listOrdersForAdmin(limit: number = 50): Promise<OrderRecor
   // kedaluwarsa / dibatalkan: 4
   const priorityWeight: Record<OrderStatus, number> = {
     menunggu_konfirmasi: 1,
-    menunggu_pembayaran: 2,
-    diproses: 3,
-    kedaluwarsa: 4,
-    dibatalkan: 5,
+    antrian: 2,
+    menunggu_pembayaran: 3,
+    diproses: 4,
+    kedaluwarsa: 5,
+    dibatalkan: 6,
   };
 
   evaluatedOrders.sort((a, b) => {

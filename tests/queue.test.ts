@@ -3,10 +3,15 @@ import assert from 'node:assert/strict';
 import {
   QUEUE_MINUTES_PER_ORDER,
   QUEUE_POPUP_THRESHOLD_MINUTES,
+  QUEUE_ACTIVE_STATUSES,
   estimateQueueMinutes,
   countOrderPhysicalItems,
   computeQueueStats,
 } from '../src/lib/queue.ts';
+
+test('Queue - status yang dihitung hanya diproses (aturan pemilik 2026-10-24)', () => {
+  assert.deepEqual([...QUEUE_ACTIVE_STATUSES], ['diproses']);
+});
 
 test('Queue - konstanta sesuai patokan admin (4 menit per order, pop-up > 10 menit)', () => {
   assert.equal(QUEUE_MINUTES_PER_ORDER, 4);

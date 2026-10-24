@@ -262,8 +262,10 @@ export const BRANDS: Record<string, BrandConfig> = {
     accentColor: '#E11D48',
     themeColor: '#BE123C',
     bannerGradient: 'from-[#E11D48] to-[#9F1239]',
-    status: 'active',
-    logo: '/brand-logos/tomoro.png',
+    // Ditutup sementara atas keputusan pemilik (2026-10-24): portal tampil
+    // "Segera Hadir", halaman brand = layar coming soon, order ditolak server.
+    status: 'coming_soon',
+    logo: '/brand-logos/tomoro-logo-baru.svg',
     adminWhatsApp: NOMOR_WHATSAPP_ADMIN,
     operatingHoursText: JADWAL_OPERASIONAL_LENGKAP,
     feeConfig: {

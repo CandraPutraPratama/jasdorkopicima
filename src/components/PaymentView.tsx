@@ -185,8 +185,10 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
   };
 
   // Pesan pre-filled WhatsApp (dengan estimasi antrean dinamis bila tersedia).
-  // Order ini sendiri dikeluarkan dari hitungan "di depan" bila sudah masuk antrean.
-  const selfInQueue = status === 'menunggu_konfirmasi' || status === 'diproses';
+  // Info antrean hanya menghitung order 'diproses' (aturan pemilik), jadi
+  // order ini sendiri hanya dikeluarkan dari hitungan "di depan" bila ia
+  // sudah berstatus 'diproses'.
+  const selfInQueue = status === 'diproses';
   const queueAhead = queueStatus
     ? Math.max(queueStatus.activeOrders - (selfInQueue ? 1 : 0), 0)
     : undefined;
@@ -296,6 +298,20 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
               </svg>
               <span>{isRefreshingStatus ? 'Memeriksa...' : 'Refresh Status'}</span>
             </button>
+          </div>
+        )}
+
+        {status === 'antrian' && (
+          <div className="bg-[#E0E7FF] border-2 border-[#2B1D12] rounded-2xl p-3.5 flex items-start gap-2.5 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] animate-in fade-in">
+            <svg className="w-5 h-5 text-[#4338CA] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <p className="font-black text-[#4338CA]">Pesanan Masuk Antrian</p>
+              <p className="text-[11px] text-[#2B1D12] mt-0.5 leading-relaxed font-medium">
+                Pembayaranmu sudah dikonfirmasi admin. Pesananmu sedang mengantri dan akan diproses sesuai urutan masuk.
+              </p>
+            </div>
           </div>
         )}
 

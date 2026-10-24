@@ -12,8 +12,13 @@ export const QUEUE_MINUTES_PER_ORDER = 4;
 /** Estimasi di atas ambang ini wajib pop-up konfirmasi sebelum checkout. */
 export const QUEUE_POPUP_THRESHOLD_MINUTES = 10;
 
-/** Status order yang dihitung masih berada di antrean pemrosesan admin. */
-export const QUEUE_ACTIVE_STATUSES = ['menunggu_konfirmasi', 'diproses'] as const;
+/**
+ * Status order yang dihitung sebagai antrean di info pelanggan.
+ * Aturan pemilik (2026-10-24): HANYA order yang sudah diklik "Proses" oleh
+ * admin (status 'diproses') yang dihitung. Order 'menunggu_konfirmasi' dan
+ * 'antrian' belum dikerjakan admin, jadi tidak masuk info antrean.
+ */
+export const QUEUE_ACTIVE_STATUSES = ['diproses'] as const;
 
 export interface QueueStatus {
   /** Jumlah order aktif di antrean saat ini. */

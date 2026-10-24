@@ -178,6 +178,7 @@ export function MyOrdersView() {
             {activeOrders.map((order) => {
               const isPendingPayment = order.status === 'menunggu_pembayaran';
               const isWaitingConfirm = order.status === 'menunggu_konfirmasi';
+              const isInQueue = order.status === 'antrian';
 
               return (
                 <div
@@ -234,6 +235,12 @@ export function MyOrdersView() {
                       {isWaitingConfirm && (
                         <span className="px-2.5 py-0.5 text-[10px] font-black rounded-full bg-[#DDF0FF] text-[#2B1D12] border-2 border-[#2B1D12]">
                           Menunggu Konfirmasi Admin
+                        </span>
+                      )}
+
+                      {isInQueue && (
+                        <span className="px-2.5 py-0.5 text-[10px] font-black rounded-full bg-[#E0E7FF] text-[#2B1D12] border-2 border-[#2B1D12]">
+                          Dalam Antrian
                         </span>
                       )}
                     </div>

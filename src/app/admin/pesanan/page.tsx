@@ -19,6 +19,9 @@ export default function AdminPesananPage() {
   const [orderError, setOrderError] = useState<string | null>(null);
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  // Pilihan massal untuk memasukkan pesanan Perlu Dicek ke Antrian
+  const [selectedQueueIds, setSelectedQueueIds] = useState<string[]>([]);
+  const [isBulkQueueing, setIsBulkQueueing] = useState(false);
 
   // Pengaturan Situs: Mode Khusus Bundling
   const [isBundlingOnly, setIsBundlingOnly] = useState<boolean>(false);
@@ -233,10 +236,15 @@ export default function AdminPesananPage() {
 
   // Handle Status Update (Konfirmasi Bayar / Batalkan)
   const handleUpdateStatus = async (orderId: string, newStatus: OrderStatus) => {
+    const currentOrder = orders.find((o) => o.id === orderId);
     const confirmMessage =
       newStatus === 'diproses'
-        ? `Konfirmasi pembayaran untuk order #${orderId}? Status akan berubah menjadi 'diproses'.`
-        : `Yakin ingin membatalkan order #${orderId}?`;
+        ? currentOrder?.status === 'antrian'
+          ? `Mulai proses order #${orderId}? Status akan berubah menjadi 'diproses'.`
+          : `Konfirmasi pembayaran untuk order #${orderId}? Status akan berubah menjadi 'diproses'.`
+        : newStatus === 'antrian'
+          ? `Masukkan order #${orderId} ke antrian? Pembayaran dianggap terkonfirmasi dan pesanan menunggu giliran diproses.`
+          : `Yakin ingin membatalkan order #${orderId}?`;
 
     if (!window.confirm(confirmMessage)) return;
 
@@ -260,6 +268,62 @@ export default function AdminPesananPage() {
       alert(err.message || 'Gagal memperbarui status');
     } finally {
       setUpdatingOrderId(null);
+    }
+  };
+
+  // --- Antrian massal: pilih banyak pesanan Perlu Dicek, konfirmasi sekali ---
+  const toggleQueueSelection = (orderId: string) => {
+    setSelectedQueueIds((prev) =>
+      prev.includes(orderId) ? prev.filter((id) => id !== orderId) : [...prev, orderId]
+    );
+  };
+
+  const waitingConfirmOrders = orders.filter((o) => o.status === 'menunggu_konfirmasi');
+  const allWaitingSelected =
+    waitingConfirmOrders.length > 0 &&
+    waitingConfirmOrders.every((o) => selectedQueueIds.includes(o.id));
+
+  const selectAllWaitingConfirm = () => {
+    setSelectedQueueIds(waitingConfirmOrders.map((o) => o.id));
+  };
+
+  const handleBulkQueue = async () => {
+    const ids = selectedQueueIds.filter(
+      (id) => orders.find((o) => o.id === id)?.status === 'menunggu_konfirmasi'
+    );
+    if (ids.length === 0) return;
+    if (
+      !window.confirm(
+        `Masukkan ${ids.length} pesanan ke antrian? Pembayaran dianggap terkonfirmasi dan pesanan menunggu giliran diproses.`
+      )
+    ) {
+      return;
+    }
+
+    setIsBulkQueueing(true);
+    const failed: string[] = [];
+    for (const id of ids) {
+      try {
+        const res = await fetch(`/api/admin/orders/${encodeURIComponent(id)}/status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'antrian' }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || 'Gagal mengubah status');
+        }
+        setOrders((prev) =>
+          prev.map((o) => (o.id === id ? { ...o, status: 'antrian' as OrderStatus } : o))
+        );
+      } catch {
+        failed.push(id);
+      }
+    }
+    setIsBulkQueueing(false);
+    setSelectedQueueIds(failed);
+    if (failed.length > 0) {
+      alert(`${failed.length} pesanan gagal dimasukkan ke antrian: ${failed.join(', ')}`);
     }
   };
 
@@ -536,6 +600,10 @@ export default function AdminPesananPage() {
               badge: true,
             },
             {
+              id: 'antrian',
+              label: `Antrian (${orders.filter((o) => o.status === 'antrian').length})`,
+            },
+            {
               id: 'menunggu_pembayaran',
               label: `Belum Bayar (${orders.filter((o) => o.status === 'menunggu_pembayaran').length})`,
             },
@@ -606,6 +674,15 @@ export default function AdminPesananPage() {
                   <div className="flex items-start justify-between gap-2 border-b border-[#F2EAE0] pb-3">
                     <div>
                       <div className="flex items-center gap-2">
+                        {order.status === 'menunggu_konfirmasi' && (
+                          <input
+                            type="checkbox"
+                            aria-label={`Pilih order ${order.id} untuk antrian`}
+                            checked={selectedQueueIds.includes(order.id)}
+                            onChange={() => toggleQueueSelection(order.id)}
+                            className="w-[18px] h-[18px] shrink-0 cursor-pointer accent-[#4338CA]"
+                          />
+                        )}
                         <span className="font-mono font-bold text-sm text-[#26150B]">
                           #{order.id}
                         </span>
@@ -640,6 +717,11 @@ export default function AdminPesananPage() {
                       {order.status === 'menunggu_pembayaran' && (
                         <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-800 border border-blue-200">
                           Menunggu Bayar
+                        </span>
+                      )}
+                      {order.status === 'antrian' && (
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200">
+                          Antrian
                         </span>
                       )}
                       {order.status === 'diproses' && (
@@ -774,6 +856,16 @@ export default function AdminPesananPage() {
 
                   {/* Action Buttons */}
                   <div className="flex items-center justify-end gap-2 pt-1">
+                    {order.status === 'menunggu_konfirmasi' && (
+                      <button
+                        type="button"
+                        disabled={isUpdating}
+                        onClick={() => handleUpdateStatus(order.id, 'antrian')}
+                        className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition disabled:opacity-50"
+                      >
+                        {isUpdating ? 'Memproses...' : 'Antri'}
+                      </button>
+                    )}
                     {order.status !== 'diproses' && order.status !== 'dibatalkan' && (
                       <button
                         type="button"
@@ -785,7 +877,8 @@ export default function AdminPesananPage() {
                       </button>
                     )}
 
-                    {order.status !== 'diproses' && (
+                    {/* Tombol Proses hanya muncul untuk pesanan yang sudah masuk Antrian */}
+                    {order.status === 'antrian' && (
                       <button
                         type="button"
                         disabled={isUpdating}
@@ -799,7 +892,7 @@ export default function AdminPesananPage() {
                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                             </svg>
-                            <span>Konfirmasi Bayar</span>
+                            <span>Mulai Proses</span>
                           </>
                         )}
                       </button>
@@ -808,6 +901,47 @@ export default function AdminPesananPage() {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Bar Aksi Antrian Massal */}
+        {(selectedQueueIds.length > 0 ||
+          (filterStatus === 'menunggu_konfirmasi' && waitingConfirmOrders.length > 0)) && (
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-xl bg-[#26150B] text-white rounded-2xl shadow-[4px_4px_0px_rgba(38,21,11,0.35)] border-2 border-[#26150B] px-4 py-3 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold mr-1">
+              {selectedQueueIds.length} pesanan dipilih
+            </span>
+            {!allWaitingSelected && waitingConfirmOrders.length > 0 && (
+              <button
+                type="button"
+                onClick={selectAllWaitingConfirm}
+                className="px-3 py-1.5 bg-white/10 hover:bg-white/20 border border-white/30 text-white text-[11px] font-semibold rounded-lg transition"
+              >
+                Pilih Semua Perlu Dicek ({waitingConfirmOrders.length})
+              </button>
+            )}
+            <div className="flex items-center gap-2 ml-auto">
+              {selectedQueueIds.length > 0 && (
+                <button
+                  type="button"
+                  disabled={isBulkQueueing}
+                  onClick={() => setSelectedQueueIds([])}
+                  className="px-3 py-1.5 bg-transparent hover:bg-white/10 text-white/80 text-[11px] font-semibold rounded-lg transition disabled:opacity-50"
+                >
+                  Batal
+                </button>
+              )}
+              <button
+                type="button"
+                disabled={isBulkQueueing || selectedQueueIds.length === 0}
+                onClick={handleBulkQueue}
+                className="px-4 py-2 bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-black rounded-xl transition disabled:opacity-40"
+              >
+                {isBulkQueueing
+                  ? 'Memasukkan...'
+                  : `Masukkan ke Antrian (${selectedQueueIds.length})`}
+              </button>
+            </div>
           </div>
         )}
       </main>

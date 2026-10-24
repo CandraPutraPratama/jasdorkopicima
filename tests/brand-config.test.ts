@@ -24,9 +24,10 @@ test('getBrandConfig returns full config for tomoro', () => {
   assert.ok(brand !== null, 'brand tomoro harus terdaftar');
   assert.equal(brand?.slug, 'tomoro');
   assert.equal(brand?.name, 'TOMORO Coffee');
-  assert.equal(brand?.status, 'active');
+  // Tomoro ditutup sementara (keputusan pemilik 2026-10-24)
+  assert.equal(brand?.status, 'coming_soon');
   assert.equal(brand?.promoBadge, 'DISKON 50% + B1G1');
-  assert.equal(brand?.logo, '/brand-logos/tomoro.png');
+  assert.equal(brand?.logo, '/brand-logos/tomoro-logo-baru.svg');
   assert.equal(brand?.outletCountLabel, undefined, 'Tidak ada angka outlet di-hardcode di BrandConfig');
 });
 

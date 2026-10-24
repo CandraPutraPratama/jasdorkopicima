@@ -172,7 +172,7 @@ export function clearMyOrders(customStorage?: StorageLike): void {
  * Memeriksa apakah status pesanan tergolong pesanan aktif (belum selesai & belum kedaluwarsa).
  */
 export function isActiveOrderStatus(status: OrderStatus, expiresAt?: string): boolean {
-  if (status === 'menunggu_konfirmasi') {
+  if (status === 'menunggu_konfirmasi' || status === 'antrian') {
     return true;
   }
 

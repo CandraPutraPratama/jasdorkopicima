@@ -1,6 +1,7 @@
 export type OrderStatus =
   | 'menunggu_pembayaran'
   | 'menunggu_konfirmasi'
+  | 'antrian'
   | 'diproses'
   | 'dibatalkan'
   | 'kedaluwarsa';
