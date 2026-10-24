@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import type { BrandConfig } from '@/lib/site-config';
+import { isBrandOrderable } from '@/lib/site-config';
 
 interface BrandCardProps {
   brand: BrandConfig;
@@ -10,9 +11,9 @@ interface BrandCardProps {
 }
 
 export function BrandCard({ brand, outletCount }: BrandCardProps) {
-  // Brand yang bisa diklik hanya Kopi Kenangan. TOMORO ditutup sementara
-  // (2026-10-24) dan Fore belum dibuka: keduanya tampil sebagai Segera Hadir.
-  const isClickable = brand.slug === 'kopi-kenangan';
+  // Aturan brand yang bisa diklik/diorder terpusat di isBrandOrderable
+  // (site-config), sumber yang sama dengan badge hitungan portal.
+  const isClickable = isBrandOrderable(brand);
   const [imgError, setImgError] = useState(false);
 
   // Inisial emblem/logo ringkas jika tidak ada gambar logo

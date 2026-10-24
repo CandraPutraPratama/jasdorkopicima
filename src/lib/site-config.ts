@@ -285,6 +285,17 @@ export function getAllBrands(): BrandConfig[] {
 }
 
 /**
+ * Brand yang saat ini benar-benar bisa diorder pelanggan.
+ * Satu-satunya sumber kebenaran untuk kartu brand portal dan badge hitungan
+ * "Brand Aktif": hanya Kopi Kenangan yang buka order. TOMORO ditutup
+ * sementara atas keputusan pemilik (2026-10-24) dan Fore belum dibuka untuk
+ * order, jadi keduanya tampil "Segera Hadir" dan tidak ikut terhitung.
+ */
+export function isBrandOrderable(brand: BrandConfig): boolean {
+  return brand.status === 'active' && brand.slug === 'kopi-kenangan';
+}
+
+/**
  * Memetakan kode outlet ke brandSlug yang sesuai.
  * Outlet dengan prefix 'tomoro-' memetakan ke 'tomoro'.
  * Outlet dengan prefix 'fore-' memetakan ke 'fore'.

@@ -9,6 +9,7 @@ import { getBrandOutletProvider } from '@/lib/brand-provider';
 import {
   getAllBrands,
   getAdminWhatsAppUrl,
+  isBrandOrderable,
   JADWAL_OPERASIONAL_LENGKAP,
   TEKS_INFO_PEMBAYARAN_CHECKOUT,
 } from '@/lib/site-config';
@@ -131,7 +132,7 @@ export default function PortalPage() {
               Pilih Brand Kopi
             </h2>
             <span className="text-[11px] text-[#2B1D12] font-extrabold bg-[#FFE7D6] border border-[#2B1D12] px-2 py-0.5 rounded-lg shadow-[1px_1px_0px_#2B1D12]">
-              {brands.filter((b) => b.status === 'active').length} Brand Aktif
+              {brands.filter(isBrandOrderable).length} Brand Aktif
             </span>
           </div>
 

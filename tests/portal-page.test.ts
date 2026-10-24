@@ -43,6 +43,6 @@ test('portal page component and BrandCard exist and enforce Variant C specificat
   // Kartu Tomoro memiliki placeholder teks/logo yang rapi dengan warna normal
   assert.ok(cardCode.includes('#E11D48') || cardCode.includes('TOMORO'), 'BrandCard harus memuat placeholder Tomoro yang rapi');
 
-  // Hanya Kopi Kenangan yang bisa diklik
-  assert.ok(cardCode.includes("brand.slug === 'kopi-kenangan'"), 'Hanya Kopi Kenangan yang aktif diklik di portal');
+  // Hanya Kopi Kenangan yang bisa diklik (aturan terpusat di isBrandOrderable)
+  assert.ok(cardCode.includes('isBrandOrderable(brand)'), 'Hanya Kopi Kenangan yang aktif diklik di portal');
 });

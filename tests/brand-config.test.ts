@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   getBrandConfig,
   getAllBrands,
+  isBrandOrderable,
   isReservedSlug,
   resolveBrandSlugFromOutletCode,
 } from '../src/lib/site-config.ts';
@@ -57,6 +58,17 @@ test('getAllBrands returns registered brands list including fore', () => {
   assert.ok(slugs.includes('kopi-kenangan'));
   assert.ok(slugs.includes('fore'));
   assert.ok(slugs.includes('tomoro'));
+});
+
+test('isBrandOrderable: hanya Kopi Kenangan yang bisa diorder saat ini', () => {
+  const kenangan = getBrandConfig('kopi-kenangan');
+  const fore = getBrandConfig('fore');
+  const tomoro = getBrandConfig('tomoro');
+  assert.ok(kenangan && fore && tomoro);
+  assert.equal(isBrandOrderable(kenangan), true);
+  assert.equal(isBrandOrderable(fore), false, 'Fore belum dibuka untuk order');
+  assert.equal(isBrandOrderable(tomoro), false, 'TOMORO sedang ditutup');
+  assert.equal(getAllBrands().filter(isBrandOrderable).length, 1, 'Badge portal harus menghitung 1 brand aktif');
 });
 
 test('isReservedSlug blocks protected system routes', () => {
