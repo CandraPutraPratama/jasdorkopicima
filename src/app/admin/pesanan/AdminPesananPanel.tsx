@@ -1,12 +1,27 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import type { OrderRecord, OrderStatus } from '@/types/order';
 import { formatRupiah } from '@/lib/currency';
 import { getOrderBreakdown } from '@/lib/pricing';
 import type { OperationalOverride } from '@/lib/site-settings';
 import type { OperationalStatusResult } from '@/lib/operational';
+
+// Pesanan yang relevan untuk tampilan default panel: yang sudah melewati klaim
+// pembayaran (sudah klik "Saya Sudah Bayar"), ditambah pesanan terminal yang
+// masih butuh refund. Pesanan yang masih menunggu_pembayaran dan pesanan
+// kedaluwarsa/dibatalkan tanpa flag refund disembunyikan dari tampilan default
+// supaya tidak membingungkan (tetap bisa dilihat lewat tab masing-masing).
+function isPaidRelevantOrder(o: OrderRecord): boolean {
+  return (
+    o.status === 'menunggu_konfirmasi' ||
+    o.status === 'antrian' ||
+    o.status === 'diproses' ||
+    o.status === 'selesai' ||
+    ((o.status === 'dibatalkan' || o.status === 'kedaluwarsa') && Boolean(o.needs_refund))
+  );
+}
 
 export default function AdminPesananPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -15,6 +30,12 @@ export default function AdminPesananPanel() {
   const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
 
   const [orders, setOrders] = useState<OrderRecord[]>([]);
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<Date | null>(null);
+  const [newOrderNotice, setNewOrderNotice] = useState<string | null>(null);
+  const ordersRef = useRef<OrderRecord[]>([]);
+  useEffect(() => {
+    ordersRef.current = orders;
+  }, [orders]);
   const [isLoadingOrders, setIsLoadingOrders] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
@@ -97,6 +118,52 @@ export default function AdminPesananPanel() {
     fetchOrders();
     fetchSettings();
   }, [fetchOrders, fetchSettings]);
+
+  // Auto-refresh live: daftar pesanan diperbarui tiap 15 detik selama panel
+  // dibuka dan tab terlihat, supaya pesanan yang baru klik "Saya Sudah Bayar"
+  // langsung muncul tanpa menekan Segarkan. Polling ini sengaja tidak
+  // memakai spinner (tidak mengganggu admin yang sedang bekerja) dan
+  // dilewati saat tab tersembunyi, saat status sedang diubah, atau saat
+  // aksi massal berjalan. Pilihan massal yang ordernya sudah tidak lagi
+  // berstatus menunggu_konfirmasi ikut dibersihkan.
+  useEffect(() => {
+    if (isAuthenticated !== true) return;
+    const tick = async () => {
+      if (document.hidden || updatingOrderId !== null || isBulkQueueing) return;
+      try {
+        const res = await fetch('/api/admin/orders');
+        if (res.status === 401) {
+          setIsAuthenticated(false);
+          return;
+        }
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.success) return;
+        const fresh: OrderRecord[] = data.orders || [];
+        const prevIds = new Set(ordersRef.current.map((o) => o.id));
+        const arrived = fresh.filter((o) => !prevIds.has(o.id) && isPaidRelevantOrder(o));
+        setOrders(fresh);
+        setSelectedQueueIds((prev) =>
+          prev.filter((id) => fresh.some((o) => o.id === id && o.status === 'menunggu_konfirmasi'))
+        );
+        setLastUpdatedAt(new Date());
+        if (arrived.length > 0) {
+          setNewOrderNotice(`${arrived.length} pesanan baru masuk`);
+        }
+      } catch {
+        // Abaikan galat sesaat; tick berikutnya mencoba lagi.
+      }
+    };
+    const timer = setInterval(tick, 15000);
+    return () => clearInterval(timer);
+  }, [isAuthenticated, updatingOrderId, isBulkQueueing]);
+
+  // Banner pesanan baru hilang sendiri setelah 20 detik.
+  useEffect(() => {
+    if (!newOrderNotice) return;
+    const timer = setTimeout(() => setNewOrderNotice(null), 20000);
+    return () => clearTimeout(timer);
+  }, [newOrderNotice]);
 
   // Handle Toggle Min Order 50k Mode
   const handleToggleBundlingOnly = async () => {
@@ -329,19 +396,6 @@ export default function AdminPesananPanel() {
     }
   };
 
-  // Tampilan default panel hanya menampilkan pesanan yang sudah melewati
-  // klaim pembayaran (sudah klik "Saya Sudah Bayar"): pesanan yang masih
-  // menunggu_pembayaran dan pesanan kedaluwarsa/dibatalkan tanpa flag refund
-  // tidak dimasukkan supaya tidak membingungkan. Pesanan belum bayar tetap
-  // bisa dilihat lewat tab "Belum Bayar", dan pesanan terminal lewat tabnya
-  // masing-masing.
-  const isPaidRelevantOrder = (o: OrderRecord) =>
-    o.status === 'menunggu_konfirmasi' ||
-    o.status === 'antrian' ||
-    o.status === 'diproses' ||
-    o.status === 'selesai' ||
-    ((o.status === 'dibatalkan' || o.status === 'kedaluwarsa') && Boolean(o.needs_refund));
-
   // Filter orders
   const filteredOrders = orders.filter((o) => {
     if (filterStatus === 'all') return isPaidRelevantOrder(o);
@@ -426,6 +480,18 @@ export default function AdminPesananPanel() {
           </div>
 
           <div className="flex items-center gap-2">
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
+              </span>
+              Live
+              {lastUpdatedAt && (
+                <span className="font-normal text-[#7A6455]">
+                  · {lastUpdatedAt.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              )}
+            </span>
             <button
               type="button"
               onClick={() => {
@@ -662,6 +728,19 @@ export default function AdminPesananPanel() {
           <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs">
             {orderError}
           </div>
+        )}
+
+        {newOrderNotice && (
+          <button
+            type="button"
+            onClick={() => {
+              setNewOrderNotice(null);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="w-full p-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition cursor-pointer"
+          >
+            🔔 {newOrderNotice} - ketuk untuk melihat
+          </button>
         )}
 
         {/* Order Cards List */}
