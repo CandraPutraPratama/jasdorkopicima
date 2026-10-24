@@ -152,18 +152,17 @@ export function ProductBottomSheet({
   // Ice Level disembunyikan total saat Temperature = Hot (dan nilainya tidak
   // ikut ke deskripsi varian). Dimensi Temperature dikenali dari namanya atau
   // dari adanya nilai "Hot" di opsinya.
-  const temperatureDim = useMemo(() => {
-    if (!options?.dimensions) return undefined;
-    return options.dimensions.find(
-      (d) => /temperature/i.test(d.name) || d.values.some((v) => v.name === 'Hot')
-    );
-  }, [options?.dimensions]);
-
-  const isHotSelected = useMemo(() => {
-    if (!temperatureDim) return false;
-    const selectedId = selectedDimensions[temperatureDim.code];
-    return temperatureDim.values.find((v) => v.id === selectedId)?.name === 'Hot';
-  }, [temperatureDim, selectedDimensions]);
+  // Sengaja dihitung langsung tanpa useMemo: memo manual di sini membuat
+  // React Compiler gagal mempertahankan memoization (lint error).
+  // Datanya kecil (beberapa dimensi saja) sehingga hitung ulang per render
+  // tidak ada biayanya.
+  const temperatureDim = options?.dimensions?.find(
+    (d) => /temperature/i.test(d.name) || d.values.some((v) => v.name === 'Hot')
+  );
+  const selectedTempValue = temperatureDim?.values.find(
+    (v) => v.id === selectedDimensions[temperatureDim.code]
+  );
+  const isHotSelected = selectedTempValue?.name === 'Hot';
 
   const isIceNoteGroup = (name: string) => /ice/i.test(name);
 
