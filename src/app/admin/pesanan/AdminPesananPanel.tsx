@@ -329,9 +329,22 @@ export default function AdminPesananPanel() {
     }
   };
 
+  // Tampilan default panel hanya menampilkan pesanan yang sudah melewati
+  // klaim pembayaran (sudah klik "Saya Sudah Bayar"): pesanan yang masih
+  // menunggu_pembayaran dan pesanan kedaluwarsa/dibatalkan tanpa flag refund
+  // tidak dimasukkan supaya tidak membingungkan. Pesanan belum bayar tetap
+  // bisa dilihat lewat tab "Belum Bayar", dan pesanan terminal lewat tabnya
+  // masing-masing.
+  const isPaidRelevantOrder = (o: OrderRecord) =>
+    o.status === 'menunggu_konfirmasi' ||
+    o.status === 'antrian' ||
+    o.status === 'diproses' ||
+    o.status === 'selesai' ||
+    ((o.status === 'dibatalkan' || o.status === 'kedaluwarsa') && Boolean(o.needs_refund));
+
   // Filter orders
   const filteredOrders = orders.filter((o) => {
-    if (filterStatus === 'all') return true;
+    if (filterStatus === 'all') return isPaidRelevantOrder(o);
     if (filterStatus === 'perlu_refund') return Boolean(o.needs_refund);
     return o.status === filterStatus;
   });
@@ -589,7 +602,7 @@ export default function AdminPesananPanel() {
         {/* Filter Tab Chips */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
           {[
-            { id: 'all', label: `Semua (${orders.length})` },
+            { id: 'all', label: `Sudah Bayar (${orders.filter(isPaidRelevantOrder).length})` },
             {
               id: 'perlu_refund',
               label: `⚠️ Perlu Refund (${needsRefundCount})`,
@@ -657,7 +670,7 @@ export default function AdminPesananPanel() {
             <p className="font-semibold text-sm text-[#26150B]">Tidak ada pesanan ditemukan</p>
             <p className="text-xs text-[#8C7667]">
               {filterStatus === 'all'
-                ? 'Belum ada pesanan yang masuk ke sistem.'
+                ? 'Belum ada pesanan yang sudah dibayar.'
                 : 'Tidak ada pesanan untuk filter status ini.'}
             </p>
           </div>
