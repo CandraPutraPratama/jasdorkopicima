@@ -49,11 +49,14 @@ export const CONTENT_SECURITY_POLICY = [
   'upgrade-insecure-requests',
 ].join('; ');
 
-/** CSP untuk pengembangan: tanpa upgrade-insecure-requests agar localhost tetap jalan. */
-export const CONTENT_SECURITY_POLICY_DEV = CONTENT_SECURITY_POLICY.replace(
-  '; upgrade-insecure-requests',
-  ''
-);
+/**
+ * CSP untuk pengembangan:
+ * - Menyertakan 'unsafe-eval' pada script-src untuk fitur React dev tools & Turbopack callstack reconstruction.
+ * - Tanpa upgrade-insecure-requests agar localhost (HTTP) tetap jalan.
+ */
+export const CONTENT_SECURITY_POLICY_DEV = CONTENT_SECURITY_POLICY
+  .replace("script-src 'self'", "script-src 'self' 'unsafe-eval'")
+  .replace('; upgrade-insecure-requests', '');
 
 export interface SecurityHeader {
   key: string;

@@ -92,6 +92,15 @@ describe('Step D - Security headers', () => {
       assert.equal(devMap.has('strict-transport-security'), false);
     });
 
+    it('allows unsafe-eval in development mode for React dev tools, but never in production', () => {
+      const prodCsp = CONTENT_SECURITY_POLICY;
+      assert.equal(prodCsp.includes("'unsafe-eval'"), false, 'Production CSP must not allow unsafe-eval');
+
+      const devMap = toMap(buildSecurityHeaders({ isProduction: false }));
+      const devCsp = devMap.get('content-security-policy') as string;
+      assert.match(devCsp, /script-src[^;]*'unsafe-eval'/, 'Development CSP must include unsafe-eval for React dev');
+    });
+
     it('returns plain header pairs ready for Next.js config', () => {
       const headers = buildSecurityHeaders({ isProduction: true });
       assert.ok(Array.isArray(headers));
