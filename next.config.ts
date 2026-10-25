@@ -4,6 +4,9 @@ import { buildSecurityHeaders } from "./src/lib/security-headers.ts";
 const isProduction = process.env.NODE_ENV === "production";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    agentUpgrade: "security",
+  },
   images: {
     unoptimized: true,
     remotePatterns: [
