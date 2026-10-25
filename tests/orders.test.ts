@@ -109,6 +109,10 @@ describe('Order Service - QRIS On-Site Flow', () => {
       assert.equal(res62.isValid, true);
       assert.equal(res62.sanitized, '6281234567890');
 
+      const resDirect8 = validateCustomerPhone('812-3456-7890');
+      assert.equal(resDirect8.isValid, true);
+      assert.equal(resDirect8.sanitized, '6281234567890');
+
       const resInvalid = validateCustomerPhone('12345');
       assert.equal(resInvalid.isValid, false);
       assert.ok(resInvalid.errorMessage);

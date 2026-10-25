@@ -127,9 +127,19 @@ function timingSafeEqualHex(expected: string, provided: string): boolean {
  * Menghindari manipulasi harga dari sisi client.
  */
 export function calculateServerOrderPricing(items: CartItem[], brandSlug?: string): OrderPricingResult {
+  const isFore =
+    brandSlug === 'fore' ||
+    items.some(
+      (it) =>
+        it.brandSlug === 'fore' ||
+        (typeof it.bundleCode === 'string' &&
+          (it.bundleCode.startsWith('FORE_') || it.bundleCode.startsWith('fore-')))
+    );
+
   const isTomoro =
-    brandSlug === 'tomoro' ||
-    items.some((it) => it.brandSlug === 'tomoro' || it.bundleType === 'tomoro-b1g1');
+    !isFore &&
+    (brandSlug === 'tomoro' ||
+      items.some((it) => it.brandSlug === 'tomoro' || it.bundleType === 'tomoro-b1g1'));
 
   const pricingInputs: OrderItemInput[] = items.map((it) => ({
     name: it.name,
@@ -142,7 +152,8 @@ export function calculateServerOrderPricing(items: CartItem[], brandSlug?: strin
     bundleType: it.bundleType,
     bundleFee: it.bundleFee,
     bundleNormalPrice: it.bundleNormalPrice,
-    brandSlug: it.brandSlug || (isTomoro ? 'tomoro' : undefined),
+    brandSlug: it.brandSlug || (isFore ? 'fore' : isTomoro ? 'tomoro' : undefined),
+    bundleCode: it.bundleCode,
   }));
 
   return calculateOrderPricing(pricingInputs, undefined, brandSlug);
@@ -516,18 +527,24 @@ export function createOrderRecord(params: CreateOrderParams): OrderRecord {
   );
 
   const itemSnapshots: OrderItemSnapshot[] = items.map((it, idx) => {
-    const itemPricing = calculateItemPricing({
-      name: it.name,
-      basePrice: it.basePrice,
-      skuPrice: it.skuPrice,
-      variantAddition: it.variantAddition || 0,
-      toppingTotal: it.toppingTotal || 0,
-      quantity: it.quantity,
-      isBundle: it.isBundle,
-      bundleType: it.bundleType,
-      bundleFee: it.bundleFee,
-      bundleNormalPrice: it.bundleNormalPrice,
-    });
+    const itemPricing = calculateItemPricing(
+      {
+        name: it.name,
+        basePrice: it.basePrice,
+        skuPrice: it.skuPrice,
+        variantAddition: it.variantAddition || 0,
+        toppingTotal: it.toppingTotal || 0,
+        quantity: it.quantity,
+        isBundle: it.isBundle,
+        bundleType: it.bundleType,
+        bundleFee: it.bundleFee,
+        bundleNormalPrice: it.bundleNormalPrice,
+        brandSlug: it.brandSlug || (brandSlug === 'fore' ? 'fore' : undefined),
+        bundleCode: it.bundleCode,
+      },
+      undefined,
+      brandSlug
+    );
 
     // Rincian opsi varian: untuk bundling, tampilkan rincian isi paket
     let variantOptions: string[] = [];

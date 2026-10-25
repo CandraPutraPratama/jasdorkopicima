@@ -73,7 +73,7 @@ export interface Addon {
   category?: string;
   icon?: string;
   isSoldOut?: boolean;
-  group?: 'whipped_cream' | 'syrup' | 'topping' | null;
+  group?: 'whipped_cream' | 'syrup' | 'topping' | 'dairy' | 'espresso' | null;
 }
 
 export interface ProductNoteGroup {

@@ -130,27 +130,43 @@ describe('Server-Side Price Recalculation (K1 Security Audit)', () => {
 
     // Mock Supabase Server Client
     setSupabaseServerClientInstance({
-      from: () => ({
-        select: () => ({
-          ilike: () => ({
-            maybeSingle: async () => ({
-              data: { code: 'KK-TEST-01', brand: 'kopi-kenangan', is_in_scope: true },
-              error: null,
+      from: (table?: string) => {
+        if (table === 'site_settings') {
+          return {
+            select: () => ({
+              eq: (_col: string, val: string) => ({
+                maybeSingle: async () => {
+                  if (val === 'operational_override') {
+                    return { data: { key: 'operational_override', value: 'force_open' }, error: null };
+                  }
+                  return { data: null, error: null };
+                },
+              }),
             }),
-          }),
-          eq: () => ({
-            maybeSingle: async () => ({
-              data: { code: 'KK-TEST-01', brand: 'kopi-kenangan', is_in_scope: true },
-              error: null,
-            }),
-          }),
-        }),
-        insert: (record: any) => ({
+          };
+        }
+        return {
           select: () => ({
-            single: async () => ({ data: { ...record, id: record.id || 'CG-TEST12' }, error: null }),
+            ilike: () => ({
+              maybeSingle: async () => ({
+                data: { code: 'KK-TEST-01', brand: 'kopi-kenangan', is_in_scope: true },
+                error: null,
+              }),
+            }),
+            eq: () => ({
+              maybeSingle: async () => ({
+                data: { code: 'KK-TEST-01', brand: 'kopi-kenangan', is_in_scope: true },
+                error: null,
+              }),
+            }),
           }),
-        }),
-      }),
+          insert: (record: any) => ({
+            select: () => ({
+              single: async () => ({ data: { ...record, id: record.id || 'CG-TEST12' }, error: null }),
+            }),
+          }),
+        };
+      },
     } as any);
   });
 

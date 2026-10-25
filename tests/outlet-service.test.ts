@@ -1,6 +1,6 @@
 import { describe, it, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { verifyStoreScope } from '../src/lib/outlet-service.ts';
+import { verifyStoreScope, getOutletByCode, safeNormalizeOutletCode } from '../src/lib/outlet-service.ts';
 import { cacheService, cacheKeys } from '../src/lib/cache.ts';
 import { kkApiClient } from '../src/lib/kk-client.ts';
 import { setSupabaseServerClientInstance } from '../src/lib/supabase-server.ts';
@@ -142,5 +142,88 @@ describe('verifyStoreScope - Resilient Scope Verification', () => {
     } finally {
       (kkApiClient as any).queryStore = originalQueryStore;
     }
+  });
+
+  describe('safeNormalizeOutletCode', () => {
+    it('handles normal codes without modification', () => {
+      assert.equal(safeNormalizeOutletCode('fore-ctp2'), 'fore-ctp2');
+      assert.equal(safeNormalizeOutletCode('LIPPO-PURI'), 'LIPPO-PURI');
+      assert.equal(safeNormalizeOutletCode('tomoro-jkt10d-m'), 'tomoro-jkt10d-m');
+    });
+
+    it('decodes single-encoded %20 spaces correctly', () => {
+      assert.equal(
+        safeNormalizeOutletCode('fore-fore%20coffee%20cempaka%20putih'),
+        'fore-fore coffee cempaka putih'
+      );
+    });
+
+    it('decodes double-encoded %2520 spaces safely', () => {
+      assert.equal(
+        safeNormalizeOutletCode('fore-fore%2520coffee%2520cempaka%2520putih'),
+        'fore-fore coffee cempaka putih'
+      );
+    });
+
+    it('handles null, undefined, empty string gracefully', () => {
+      assert.equal(safeNormalizeOutletCode(''), '');
+      assert.equal(safeNormalizeOutletCode(null as any), '');
+      assert.equal(safeNormalizeOutletCode(undefined as any), '');
+    });
+  });
+
+  describe('getOutletByCode with Fore flexible matching', () => {
+    it('retrieves Fore outlet with exact spaces, %20, %2520, and hyphens', async () => {
+      const mockForeOutlet = {
+        id: 10910,
+        code: 'fore-fore coffee cempaka putih',
+        name: 'Fore Coffee - Cempaka Putih',
+        address: 'Jl. Cempaka Putih',
+        open_time: '07:00:00',
+        close_time: '22:00:00',
+        is_active: true,
+        is_in_scope: true,
+        brand: 'Fore Coffee',
+        updated_at: new Date().toISOString(),
+      };
+
+      setSupabaseServerClientInstance({
+        from: (_table: string) => ({
+          select: () => ({
+            ilike: (col: string, val: string) => ({
+              maybeSingle: async () => {
+                if (
+                  val === 'fore-fore coffee cempaka putih' ||
+                  val === 'fore-fore\\ coffee\\ cempaka\\ putih'
+                ) {
+                  return { data: mockForeOutlet, error: null };
+                }
+                return { data: null, error: null };
+              },
+            }),
+          }),
+        }),
+      } as any);
+
+      // 1. Plain spaces
+      const plain = await getOutletByCode('fore-fore coffee cempaka putih');
+      assert.ok(plain);
+      assert.equal(plain.name, 'Fore Coffee - Cempaka Putih');
+
+      // 2. Single-encoded %20
+      const single = await getOutletByCode('fore-fore%20coffee%20cempaka%20putih');
+      assert.ok(single);
+      assert.equal(single.name, 'Fore Coffee - Cempaka Putih');
+
+      // 3. Double-encoded %2520
+      const double = await getOutletByCode('fore-fore%2520coffee%2520cempaka%2520putih');
+      assert.ok(double);
+      assert.equal(double.name, 'Fore Coffee - Cempaka Putih');
+
+      // 4. Hyphenated fallback
+      const hyphens = await getOutletByCode('fore-fore-coffee-cempaka-putih');
+      assert.ok(hyphens);
+      assert.equal(hyphens.name, 'Fore Coffee - Cempaka Putih');
+    });
   });
 });

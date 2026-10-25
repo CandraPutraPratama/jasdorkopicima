@@ -185,6 +185,8 @@ export function cleanCustomerPhone(phone?: string | null): string {
   let digits = phone.replace(/[^0-9]/g, '');
   if (digits.startsWith('08')) {
     digits = '62' + digits.slice(1);
+  } else if (digits.startsWith('8')) {
+    digits = '62' + digits;
   }
   return digits.slice(0, 16);
 }
@@ -225,4 +227,24 @@ export function validateCustomerPhone(phone?: string | null): {
     sanitized: cleaned,
   };
 }
+
+/**
+ * Menormalkan kode outlet yang berpotensi mengalami encoding URL satu kali atau berulang (double-encoded).
+ * Menghindari bug 404 ketika kode outlet mengandung spasi atau karakter khusus (misal outlet Fore Coffee).
+ */
+export function safeNormalizeOutletCode(rawCode?: string | null): string {
+  let code = (rawCode || '').trim();
+  try {
+    if (code.includes('%')) {
+      code = decodeURIComponent(code);
+    }
+    if (code.includes('%')) {
+      code = decodeURIComponent(code);
+    }
+  } catch {
+    // Abaikan jika string bukan format URI encoded yang valid
+  }
+  return code.trim();
+}
+
 

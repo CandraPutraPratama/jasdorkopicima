@@ -18,17 +18,6 @@ export function evaluateTomoroOutletStatus(row: {
   is_active?: boolean | null;
   updated_at?: string | null;
 }): { isOpen: boolean; canOrder: boolean; orderReason?: string } {
-  const updatedAt = row.updated_at ? new Date(row.updated_at).getTime() : 0;
-  // Basi lebih dari 30 menit atau belum pernah tersinkronisasi
-  const isStale = !updatedAt || Date.now() - updatedAt > 30 * 60 * 1000;
-  if (isStale) {
-    return {
-      isOpen: false,
-      canOrder: false,
-      orderReason: 'Status outlet belum terverifikasi \u2014 cek langsung ke outlet',
-    };
-  }
-
   const isOpen = Boolean(row.is_active);
   return {
     isOpen,
@@ -492,11 +481,14 @@ export function escapeSqlWildcards(str: string): string {
   return (str || '').replace(/[%_\\]/g, (match) => `\\${match}`);
 }
 
+import { safeNormalizeOutletCode } from './sanitizer.ts';
+export { safeNormalizeOutletCode };
+
 /**
  * Mengambil satu outlet berdasarkan kodenya (mendukung Fore Coffee, TOMORO Coffee & Kopi Kenangan).
  */
 export async function getOutletByCode(code: string): Promise<Outlet | null> {
-  const trimmedCode = (code || '').trim();
+  const trimmedCode = safeNormalizeOutletCode(code);
   if (!trimmedCode) return null;
 
   const isFore = trimmedCode.toLowerCase().startsWith('fore-');
@@ -505,11 +497,42 @@ export async function getOutletByCode(code: string): Promise<Outlet | null> {
   try {
     const supabase = getSupabaseServerClient();
     const sanitizedCode = escapeSqlWildcards(trimmedCode);
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('outlets')
       .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand, updated_at')
       .ilike('code', sanitizedCode)
       .maybeSingle();
+
+    // Fallback pencarian fleksibel untuk outlet Fore Coffee: toleransi spasi vs tanda hubung (-)
+    if (!data && isFore) {
+      const sub = trimmedCode.slice(5);
+      const withSpaces = `fore-${sub.replace(/-/g, ' ')}`;
+      const withHyphens = `fore-${sub.replace(/\s+/g, '-')}`;
+
+      if (withSpaces !== trimmedCode) {
+        const res = await supabase
+          .from('outlets')
+          .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand, updated_at')
+          .ilike('code', escapeSqlWildcards(withSpaces))
+          .maybeSingle();
+        if (res.data) {
+          data = res.data;
+          error = null;
+        }
+      }
+
+      if (!data && withHyphens !== trimmedCode) {
+        const res = await supabase
+          .from('outlets')
+          .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand, updated_at')
+          .ilike('code', escapeSqlWildcards(withHyphens))
+          .maybeSingle();
+        if (res.data) {
+          data = res.data;
+          error = null;
+        }
+      }
+    }
 
     if (!error && data) {
       const isTomoroRow = isTomoro || data.brand === 'TOMORO Coffee';

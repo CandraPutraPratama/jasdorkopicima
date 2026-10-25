@@ -91,6 +91,7 @@ test('OutletSearchCard menggunakan isOutletClosed dan mendukung klik seluruh kar
   assert.ok(cardCode.includes('handleCardClick'), 'OutletSearchCard harus memiliki handler klik kartu');
   assert.ok(cardCode.includes('router.push'), 'OutletSearchCard harus navigasi dengan router.push');
   assert.ok(cardCode.includes("'button'") || cardCode.includes('"button"'), 'OutletSearchCard harus memiliki role button untuk aksesibilitas');
+  assert.ok(cardCode.includes('Lihat Menu'), 'OutletSearchCard harus menyediakan link Lihat Menu saat outlet tutup');
 });
 
 

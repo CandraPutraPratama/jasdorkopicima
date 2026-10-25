@@ -31,7 +31,7 @@ async function defaultFetcher(pageIndex: number, pageSize: number): Promise<any>
       signal: controller.signal,
       headers: {
         'Accept': 'application/json',
-        'User-Agent': 'Jasdor-Sync/1.0',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
       },
     });
 
@@ -188,30 +188,12 @@ export async function syncTomoroOutletsStatusToDb(): Promise<TomoroSyncResult> {
 
 /**
  * Mengevaluasi status buka/tutup outlet TOMORO berdasarkan snapshot database.
- * Jika data lebih tua dari 30 menit (stale), status ditandai belum terverifikasi.
  */
 export function evaluateTomoroOutletStatus(
   dbRecord: { is_active?: boolean | null; updated_at?: string | null },
-  now: Date = new Date()
+  _now: Date = new Date()
 ): { isOpen: boolean; canOrder: boolean; orderReason: string | null } {
   const isActive = Boolean(dbRecord.is_active);
-  const updatedAtStr = dbRecord.updated_at;
-
-  let isStale = true;
-  if (updatedAtStr) {
-    const updatedAt = new Date(updatedAtStr).getTime();
-    if (!isNaN(updatedAt) && now.getTime() - updatedAt <= 30 * 60 * 1000) {
-      isStale = false;
-    }
-  }
-
-  if (isStale) {
-    return {
-      isOpen: false,
-      canOrder: false,
-      orderReason: 'Status outlet belum terverifikasi \u2014 cek langsung ke outlet',
-    };
-  }
 
   if (!isActive) {
     return {

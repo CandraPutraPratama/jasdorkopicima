@@ -8,12 +8,13 @@ import { isBrandOrderable } from '@/lib/site-config';
 interface BrandCardProps {
   brand: BrandConfig;
   outletCount?: number;
+  isActive?: boolean;
 }
 
-export function BrandCard({ brand, outletCount }: BrandCardProps) {
-  // Aturan brand yang bisa diklik/diorder terpusat di isBrandOrderable
-  // (site-config), sumber yang sama dengan badge hitungan portal.
-  const isClickable = isBrandOrderable(brand);
+export function BrandCard({ brand, outletCount, isActive = true }: BrandCardProps) {
+  // Brand clickable jika isActive true dan brand terdaftar aktif
+  const isClickable = isActive && isBrandOrderable(brand);
+  const isOutOfStock = !isActive;
   const [imgError, setImgError] = useState(false);
 
   // Inisial emblem/logo ringkas jika tidak ada gambar logo
@@ -124,6 +125,46 @@ export function BrandCard({ brand, outletCount }: BrandCardProps) {
       </div>
     </div>
   );
+
+  // Jika brand sedang dinonaktifkan / stok habis oleh admin
+  if (isOutOfStock) {
+    return (
+      <div className="col-span-2 block cursor-not-allowed select-none">
+        <div className="rounded-2xl overflow-hidden flex flex-row items-center transition relative bg-[#F6F2EB] border-2 border-[#2B1D12]/40 shadow-[3px_3px_0px_#2B1D12]/30 opacity-85">
+          {/* Visual Logo Brand (Kiri) */}
+          <div className="w-24 sm:w-28 h-24 sm:h-28 relative flex items-center justify-center overflow-hidden border-r-2 border-[#2B1D12]/40 bg-[#ECE5D8] shrink-0 opacity-80">
+            {renderLogo()}
+          </div>
+
+          {/* Konten Kartu Kanan */}
+          <div className="p-3 sm:p-3.5 flex-1 flex flex-col justify-between min-w-0">
+            <div>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h3 className="font-display font-black text-sm sm:text-base text-[#2B1D12]/75 leading-tight">
+                  {brand.name}
+                </h3>
+                <span className="text-[10px] font-black text-rose-700 bg-rose-50 border border-rose-300 px-1.5 py-0.5 rounded-lg uppercase tracking-wide">
+                  Stok Habis
+                </span>
+              </div>
+              <p className="text-[11px] text-[#7A6658] font-bold mt-1">
+                Stok promo sedang habis / ditutup sementara
+              </p>
+            </div>
+
+            <div className="mt-2 flex items-center justify-between">
+              <span className="text-[10px] font-extrabold text-[#7A6658] bg-[#E3DBD0] px-2 py-0.5 rounded-md border border-[#C2B7A8]">
+                Tutup Sementara
+              </span>
+              <span className="text-xs font-black text-[#7A6658]">
+                Tidak Tersedia
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (isClickable) {
     return (

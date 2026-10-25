@@ -235,7 +235,7 @@ export const BRANDS: Record<string, BrandConfig> = {
     name: 'Fore Coffee',
     shortName: 'Fore Coffee',
     tagline: 'Setiap Fore Punya Cerita',
-    promoBadge: '',
+    promoBadge: 'DISKON 25% • FREE FEE',
     description:
       'Layanan jasa order Fore Coffee resmi. Pesan menu kopi, teh, dan Fore Deli favoritmu, checkout praktis via WhatsApp!',
     accentColor: '#00543C',
@@ -246,8 +246,8 @@ export const BRANDS: Record<string, BrandConfig> = {
     adminWhatsApp: NOMOR_WHATSAPP_ADMIN,
     operatingHoursText: JADWAL_OPERASIONAL_LENGKAP,
     feeConfig: {
-      singleItemFee: BUSINESS_CONFIG.pricing.feeSingleItem,
-      multiItemFee: BUSINESS_CONFIG.pricing.feeMultiItem,
+      singleItemFee: 0,
+      multiItemFee: 0,
     },
   },
   tomoro: {

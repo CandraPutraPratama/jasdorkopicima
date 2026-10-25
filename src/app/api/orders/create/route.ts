@@ -210,9 +210,7 @@ export async function POST(request: NextRequest) {
       }
 
       if (!tomoroOutlet.isOpen || !tomoroOutlet.canOrder) {
-        const reason =
-          tomoroOutlet.orderReason ||
-          'Status outlet belum terverifikasi \u2014 cek langsung ke outlet';
+        const reason = tomoroOutlet.orderReason || 'Outlet sedang tutup';
         return NextResponse.json(
           {
             error: `Outlet ${tomoroOutlet.name || outletCode} sedang tutup (${reason}). Pemesanan tidak dapat diproses.`,

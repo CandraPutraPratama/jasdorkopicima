@@ -7,6 +7,7 @@ export interface SiteSettingsResponse {
   min_order_50k_mode: boolean;
   bundling_only_mode: boolean;
   operational_override: OperationalOverride;
+  brand_status?: Record<string, boolean>;
 }
 
 export class SiteSettingsError extends Error {
@@ -127,5 +128,48 @@ export async function setOperationalOverride(value: OperationalOverride): Promis
   }
   await setSiteSetting('operational_override', normalized);
   return normalized;
+}
+
+export const MANAGED_BRAND_SLUGS = ['kopi-kenangan', 'fore', 'tomoro'] as const;
+export type ManagedBrandSlug = (typeof MANAGED_BRAND_SLUGS)[number];
+
+export function isManagedBrandSlug(slug: string): slug is ManagedBrandSlug {
+  return (MANAGED_BRAND_SLUGS as readonly string[]).includes(slug);
+}
+
+/**
+ * Memeriksa apakah brand tertentu aktif (bisa dipesan).
+ * Default bernilai true untuk semua brand jika belum disetel di database.
+ */
+export async function getBrandActiveStatus(slug: string): Promise<boolean> {
+  const dbVal = await getSiteSetting(`brand_active_${slug}`);
+  if (dbVal !== null) {
+    return dbVal.trim().toLowerCase() === 'true';
+  }
+  return true;
+}
+
+/**
+ * Mengambil peta status aktif/nonaktif untuk seluruh brand yang dikelola.
+ */
+export async function getAllBrandActiveStatuses(): Promise<Record<string, boolean>> {
+  const result: Record<string, boolean> = {};
+  await Promise.all(
+    MANAGED_BRAND_SLUGS.map(async (slug) => {
+      result[slug] = await getBrandActiveStatus(slug);
+    })
+  );
+  return result;
+}
+
+/**
+ * Mengubah status aktif/nonaktif suatu brand di database site_settings.
+ */
+export async function setBrandActiveStatus(slug: string, active: boolean): Promise<boolean> {
+  if (!isManagedBrandSlug(slug)) {
+    throw new SiteSettingsError(`Brand "${slug}" tidak valid. Pilihan: ${MANAGED_BRAND_SLUGS.join(', ')}`);
+  }
+  await setSiteSetting(`brand_active_${slug}`, active ? 'true' : 'false');
+  return active;
 }
 

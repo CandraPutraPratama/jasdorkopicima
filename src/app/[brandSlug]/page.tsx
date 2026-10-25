@@ -4,6 +4,7 @@ import { use, useState, useEffect, useTransition } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { useOperationalStatus } from '@/hooks/useOperationalStatus';
+import { useBrandStatus } from '@/hooks/useBrandStatus';
 import { ClosedScreen } from '@/components/ClosedScreen';
 import { Header } from '@/components/Header';
 import { OutletSearchCard } from '@/components/OutletSearchCard';
@@ -57,6 +58,7 @@ export default function BrandPage({ params }: BrandPageProps) {
   }, [brand]);
 
   const { isOpen, status, isLoading: isStatusLoading, refetch } = useOperationalStatus();
+  const { isBrandActive, isLoading: isBrandStatusLoading } = useBrandStatus();
   const isBundlingOnly = useBundlingOnlyMode();
 
   // State pencarian outlet untuk brand aktif
@@ -189,6 +191,75 @@ export default function BrandPage({ params }: BrandPageProps) {
         message={status?.message}
         onRefresh={refetch}
       />
+    );
+  }
+
+  // Handle Brand Sedang Dimatikan / Stok Habis oleh Admin
+  if (!isBrandStatusLoading && !isBrandActive(brandSlug)) {
+    return (
+      <div className="min-h-screen bg-[#FAF4E8] flex flex-col selection:bg-amber-300 selection:text-[#2B1D12]">
+        <Header
+          showBack={true}
+          backHref="/"
+          backLabel="Kembali ke Portal"
+          title={brand.name}
+          showChatAdmin={true}
+        />
+
+        <main className="flex-1 w-full max-w-md mx-auto px-4 py-8 flex flex-col items-center justify-center text-center">
+          <div className="w-full bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-3xl p-6 sm:p-8 shadow-[4px_4px_0px_#2B1D12] space-y-4">
+            {/* Visual Emblem Brand */}
+            <div
+              className="w-20 h-20 mx-auto rounded-2xl flex items-center justify-center font-display font-black text-2xl shadow-[3px_3px_0px_#2B1D12] border-2 border-[#2B1D12] grayscale-[30%]"
+              style={{
+                background: brand.accentColor || '#6B7280',
+                color: '#FFFFFF',
+              }}
+            >
+              {brand.name
+                .split(' ')
+                .map((w) => w[0])
+                .slice(0, 2)
+                .join('')
+                .toUpperCase()}
+            </div>
+
+            <div className="space-y-1">
+              <span className="inline-block px-3 py-1 rounded-full bg-rose-100 text-rose-800 border-2 border-rose-300 text-xs font-black uppercase tracking-wider shadow-[2px_2px_0px_#2B1D12]">
+                Stok Habis / Tutup Sementara
+              </span>
+              <h1 className="font-display font-black text-xl sm:text-2xl text-[#2B1D12] pt-1">
+                {brand.name}
+              </h1>
+              <p className="text-xs text-[#7A6658] font-bold">
+                Pemesanan {brand.name} Sedang Ditutup
+              </p>
+            </div>
+
+            <p className="text-xs sm:text-sm text-[#4A3628] leading-relaxed max-w-xs mx-auto font-medium">
+              Maaf, kuota atau stok promo untuk {brand.name} sedang habis saat ini. Silakan cek brand lain yang masih buka di portal!
+            </p>
+
+            <div className="pt-2 flex flex-col gap-2.5">
+              <Link
+                href="/"
+                className="w-full py-3 px-4 bg-[#2B1D12] hover:bg-[#3D2313] text-[#FAF4E8] text-xs sm:text-sm font-display font-black rounded-xl transition border-2 border-[#2B1D12] shadow-[3px_3px_0px_#C67D0A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+              >
+                Kembali ke Portal
+              </Link>
+              <a
+                href={getAdminWhatsAppUrl(`Halo Admin Jasdor, stok promo untuk ${brand.name} kapan ready lagi ya?`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2.5 px-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-xs sm:text-sm font-bold rounded-xl transition border-2 border-emerald-300 flex items-center justify-center gap-2"
+              >
+                <WhatsAppIcon className="w-4 h-4 fill-emerald-800" />
+                <span>Tanya Admin via WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        </main>
+      </div>
     );
   }
 

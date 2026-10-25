@@ -4,6 +4,7 @@ import { normalizeMenu } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { verifyStoreScope } from '@/lib/outlet-service';
+import { safeNormalizeOutletCode } from '@/lib/sanitizer';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
 import type { MenuGroup } from '@/types/domain';
 import { applyCachePolicy, CACHE_POLICY } from '../../../../../lib/cache-headers.ts';
@@ -32,7 +33,8 @@ async function handleGet(
     );
   }
 
-  const { code } = await segmentData.params;
+  const { code: rawCode } = await segmentData.params;
+  const code = safeNormalizeOutletCode(rawCode);
   if (!code) {
     return NextResponse.json({ error: 'Parameter code wajib disertakan' }, { status: 400 });
   }

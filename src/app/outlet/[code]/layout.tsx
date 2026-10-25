@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getSupabaseServerClient } from '@/lib/supabase-server';
+import { safeNormalizeOutletCode } from '@/lib/sanitizer';
 
 interface OutletLayoutProps {
   children: React.ReactNode;
@@ -18,21 +19,46 @@ export async function generateMetadata({
     };
   }
 
-  const cleanCode = decodeURIComponent(code).trim().toUpperCase();
+  const cleanCode = safeNormalizeOutletCode(code);
 
   try {
     const supabase = getSupabaseServerClient();
-    const { data: outlet } = await supabase
+    let { data: outlet } = await supabase
       .from('outlets')
       .select('name, address, is_in_scope')
-      .eq('code', cleanCode)
+      .ilike('code', cleanCode)
       .maybeSingle();
+
+    if (!outlet && cleanCode.toLowerCase().startsWith('fore-')) {
+      const sub = cleanCode.slice(5);
+      const withSpaces = `fore-${sub.replace(/-/g, ' ')}`;
+      const withHyphens = `fore-${sub.replace(/\s+/g, '-')}`;
+
+      if (withSpaces !== cleanCode) {
+        const res = await supabase
+          .from('outlets')
+          .select('name, address, is_in_scope')
+          .ilike('code', withSpaces)
+          .maybeSingle();
+        if (res.data) outlet = res.data;
+      }
+
+      if (!outlet && withHyphens !== cleanCode) {
+        const res = await supabase
+          .from('outlets')
+          .select('name, address, is_in_scope')
+          .ilike('code', withHyphens)
+          .maybeSingle();
+        if (res.data) outlet = res.data;
+      }
+    }
 
     if (outlet && outlet.name) {
       const outletName = outlet.name.trim();
       const address = (outlet.address || '').trim();
-      const isFore = cleanCode.startsWith('FORE-') || outletName.toLowerCase().includes('fore');
-      const brandName = isFore ? 'Fore Coffee' : 'Kopi Kenangan';
+      const isFore = cleanCode.toLowerCase().startsWith('fore-') || outletName.toLowerCase().includes('fore');
+      const isTomoro = cleanCode.toLowerCase().startsWith('tomoro-') || outletName.toLowerCase().includes('tomoro');
+      const brandName = isFore ? 'Fore Coffee' : isTomoro ? 'TOMORO Coffee' : 'Kopi Kenangan';
       const description = `Pesan ${brandName} di ${outletName}${
         address ? ` (${address})` : ''
       }. Layanan jasa order hemat, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.`;

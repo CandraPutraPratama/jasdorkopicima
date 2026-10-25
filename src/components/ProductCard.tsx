@@ -26,18 +26,36 @@ export function ProductCard({
 }: ProductCardProps) {
   const [imageFailed, setImageFailed] = useState(false);
 
-  const pricing = calculateItemPricing({
-    name: product.name,
-    basePrice: product.basePrice,
-    skuPrice: product.basePrice,
-    quantity: 1,
-  });
+  const isFore =
+    brandSlug === 'fore' ||
+    (typeof product.bundleCode === 'string' &&
+      (product.bundleCode.startsWith('FORE_') || product.bundleCode.startsWith('fore-'))) ||
+    (typeof product.productCode === 'string' && product.productCode.startsWith('FORE_'));
 
-  // Fee jasa per item mengikuti brand: TOMORO Rp1.500/item (samakan pricing.ts),
-  // brand lain memakai konfigurasi fee standar.
-  const feePerItem =
-    brandSlug === 'tomoro' ? 1500 : BUSINESS_CONFIG.pricing.feeMultiItem;
-  const feeDescription = `+${formatRupiah(feePerItem)}/item`;
+  const isTomoro =
+    !isFore &&
+    (brandSlug === 'tomoro' ||
+      (typeof product.bundleCode === 'string' && product.bundleCode.startsWith('tomoro-')) ||
+      (typeof product.productCode === 'string' && product.productCode.startsWith('TOMORO_')));
+
+  const pricing = calculateItemPricing(
+    {
+      name: product.name,
+      basePrice: product.basePrice,
+      skuPrice: product.basePrice,
+      quantity: 1,
+      brandSlug: isFore ? 'fore' : isTomoro ? 'tomoro' : undefined,
+      bundleCode: product.bundleCode,
+    },
+    BUSINESS_CONFIG.pricing,
+    brandSlug
+  );
+
+  const feeDescription = isFore
+    ? 'Gratis'
+    : isTomoro
+      ? `+${formatRupiah(1500)}/item`
+      : `+${formatRupiah(BUSINESS_CONFIG.pricing.feeMultiItem)}/item`;
   const isSoldOut = Boolean(product.isSoldOut);
 
   return (
@@ -165,9 +183,9 @@ export function ProductCard({
               <span className="text-[11px] text-[#7A6658] line-through font-bold">
                 {formatRupiah(pricing.originalPricePerItem)}
               </span>
-              {/* 3. Badge Diskon 50% (Punch Merah) */}
+              {/* 3. Badge Diskon */}
               <span className="text-[9px] font-black text-[#DC2626] bg-[#FEF2F2] border border-[#DC2626] px-1 py-0.2 rounded">
-                -50%
+                {isFore ? '-25%' : '-50%'}
               </span>
             </div>
 

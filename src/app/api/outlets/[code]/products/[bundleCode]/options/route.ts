@@ -4,6 +4,7 @@ import { normalizeProductOptions } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { verifyStoreScope } from '@/lib/outlet-service';
+import { safeNormalizeOutletCode } from '@/lib/sanitizer';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
 import { checkAndLogMarginSafety } from '@/lib/margin-guard';
 import type { ProductOptionDetails } from '@/types/domain';
@@ -33,7 +34,9 @@ async function handleGet(
     );
   }
 
-  const { code, bundleCode } = await segmentData.params;
+  const { code: rawCode, bundleCode: rawBundleCode } = await segmentData.params;
+  const code = safeNormalizeOutletCode(rawCode);
+  const bundleCode = safeNormalizeOutletCode(rawBundleCode);
   if (!code || !bundleCode) {
     return NextResponse.json(
       { error: 'Parameter code dan bundleCode wajib disertakan' },

@@ -84,7 +84,8 @@ export function calculateBottomSheetPricing(
   optionsOrSku: string[] | VariantSku | null,
   selectedAddons: Addon[],
   quantity = 1,
-  skuPrice?: number
+  skuPrice?: number,
+  brandSlugOrOutletCode?: string
 ): {
   originalPricePerItem: number;
   promoPricePerItem: number;
@@ -99,6 +100,13 @@ export function calculateBottomSheetPricing(
 
   if (Array.isArray(optionsOrSku)) {
     variantAddition = calculateFlatVariantAddition(optionsOrSku);
+    const isFore =
+      brandSlugOrOutletCode === 'fore' ||
+      (typeof brandSlugOrOutletCode === 'string' &&
+        brandSlugOrOutletCode.toLowerCase().startsWith('fore-'));
+    if (isFore && resolvedSkuPrice != null && resolvedSkuPrice > basePrice && variantAddition === 0) {
+      variantAddition = Math.max(0, resolvedSkuPrice - basePrice);
+    }
   } else if (optionsOrSku && typeof optionsOrSku === 'object') {
     variantAddition = optionsOrSku.variantAddition || 0;
     if (resolvedSkuPrice == null && typeof optionsOrSku.price === 'number') {
@@ -106,16 +114,21 @@ export function calculateBottomSheetPricing(
     }
   }
 
-  const toppingTotal = calculateFlatAddonTotal(selectedAddons);
+  const toppingTotal = calculateFlatAddonTotal(selectedAddons, brandSlugOrOutletCode);
 
-  const pricing = calculateItemPricing({
-    name: 'Produk',
-    basePrice,
-    skuPrice: resolvedSkuPrice,
-    variantAddition,
-    toppingTotal,
-    quantity,
-  });
+  const pricing = calculateItemPricing(
+    {
+      name: 'Produk',
+      basePrice,
+      skuPrice: resolvedSkuPrice,
+      variantAddition,
+      toppingTotal,
+      quantity,
+      brandSlug: brandSlugOrOutletCode,
+    },
+    undefined,
+    brandSlugOrOutletCode
+  );
 
   return {
     originalPricePerItem: pricing.originalPricePerItem,

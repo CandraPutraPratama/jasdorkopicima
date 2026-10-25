@@ -61,9 +61,13 @@ export function useCart() {
         bundleType: it.bundleType,
         bundleFee: it.bundleFee,
         bundleNormalPrice: it.bundleNormalPrice,
-      }))
+        brandSlug: it.brandSlug,
+        bundleCode: it.bundleCode,
+      })),
+      undefined,
+      state.outletCode || undefined
     );
-  }, [state.items]);
+  }, [state.items, state.outletCode]);
 
   const addItem = useCallback(
     (item: Omit<CartItem, 'id'>, outletCode: string, outletName: string) => {

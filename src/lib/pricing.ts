@@ -23,6 +23,7 @@ export interface OrderItemInput {
   bundleFee?: number;
   bundleNormalPrice?: number;
   brandSlug?: string;
+  bundleCode?: string;
 }
 
 export interface ItemPricingResult {
@@ -74,9 +75,20 @@ export interface OrderPricingResult {
  */
 export function calculateItemPricing(
   item: OrderItemInput,
-  config: PricingConfig = BUSINESS_CONFIG.pricing
+  config: PricingConfig = BUSINESS_CONFIG.pricing,
+  brandSlugOrOutletCode?: string
 ): ItemPricingResult {
   const quantity = Math.min(99, Math.max(1, Math.round(item.quantity)));
+
+  const isFore =
+    item.brandSlug === 'fore' ||
+    brandSlugOrOutletCode === 'fore' ||
+    (typeof brandSlugOrOutletCode === 'string' &&
+      brandSlugOrOutletCode.toLowerCase().startsWith('fore-')) ||
+    (typeof item.bundleCode === 'string' &&
+      (item.bundleCode.startsWith('FORE_') || item.bundleCode.startsWith('fore-')));
+
+  const discountPercent = isFore ? 0.25 : config.baseDiscountPercent;
 
   // Penanganan khusus paket bundling
   if (item.isBundle) {
@@ -102,7 +114,7 @@ export function calculateItemPricing(
       Math.round(item.bundleNormalPrice || item.basePrice)
     );
     const promoPricePerItem = Math.round(
-      originalPricePerItem * (1 - config.baseDiscountPercent)
+      originalPricePerItem * (1 - discountPercent)
     );
     const savingsPerItem = originalPricePerItem - promoPricePerItem;
 
@@ -123,14 +135,23 @@ export function calculateItemPricing(
   if (typeof item.skuPrice === 'number' && !isNaN(item.skuPrice) && item.skuPrice > 0) {
     originalPricePerItem = Math.round(item.skuPrice) + toppingTotal;
   } else {
-    console.warn(
-      `[Pricing] Peringatan: skuPrice tidak ditemukan atau tidak valid untuk "${item.name}", fallback ke basePrice + variantAddition.`
-    );
+    if (!isFore) {
+      console.warn(
+        `[Pricing] Peringatan: skuPrice tidak ditemukan atau tidak valid untuk "${item.name}", fallback ke basePrice + variantAddition.`
+      );
+    }
     originalPricePerItem = basePrice + variantAddition + toppingTotal;
   }
 
-  const discountedBasePrice = Math.round(basePrice * (1 - config.baseDiscountPercent));
-  const promoPricePerItem = discountedBasePrice + variantAddition + toppingTotal;
+  let promoPricePerItem: number;
+  if (isFore) {
+    // Khusus Fore Coffee: Diskon 25% memotong seluruh subtotal item (harga menu + upsize Large + add-on susu/sirup/topping)
+    promoPricePerItem = Math.round(originalPricePerItem * (1 - discountPercent));
+  } else {
+    // Kopi Kenangan & Tomoro: Diskon hanya untuk basePrice, varian & add-on dibayar flat
+    const discountedBasePrice = Math.round(basePrice * (1 - discountPercent));
+    promoPricePerItem = discountedBasePrice + variantAddition + toppingTotal;
+  }
   const savingsPerItem = originalPricePerItem - promoPricePerItem;
 
   return {
@@ -154,11 +175,23 @@ export function calculateOrderPricing(
   config: PricingConfig = BUSINESS_CONFIG.pricing,
   brandSlugOrOutletCode?: string
 ): OrderPricingResult {
-  const isTomoro =
-    brandSlugOrOutletCode === 'tomoro' ||
+  const isFore =
+    brandSlugOrOutletCode === 'fore' ||
     (typeof brandSlugOrOutletCode === 'string' &&
-      brandSlugOrOutletCode.toLowerCase().startsWith('tomoro-')) ||
-    items.some((it) => it.brandSlug === 'tomoro' || it.bundleType === 'tomoro-b1g1');
+      brandSlugOrOutletCode.toLowerCase().startsWith('fore-')) ||
+    items.some(
+      (it) =>
+        it.brandSlug === 'fore' ||
+        (typeof it.bundleCode === 'string' &&
+          (it.bundleCode.startsWith('FORE_') || it.bundleCode.startsWith('fore-')))
+    );
+
+  const isTomoro =
+    !isFore &&
+    (brandSlugOrOutletCode === 'tomoro' ||
+      (typeof brandSlugOrOutletCode === 'string' &&
+        brandSlugOrOutletCode.toLowerCase().startsWith('tomoro-')) ||
+      items.some((it) => it.brandSlug === 'tomoro' || it.bundleType === 'tomoro-b1g1'));
 
   let totalQuantity = 0;
   let subtotal = 0;
@@ -174,13 +207,23 @@ export function calculateOrderPricing(
     const qty = Math.min(99, Math.max(1, Math.round(item.quantity)));
     totalQuantity += qty;
 
-    const pricing = calculateItemPricing(item, config);
+    const itemBrand = item.brandSlug || (isFore ? 'fore' : isTomoro ? 'tomoro' : undefined);
+    const pricing = calculateItemPricing(
+      { ...item, brandSlug: itemBrand },
+      config,
+      brandSlugOrOutletCode
+    );
     subtotal += pricing.subtotalItem;
     totalSavings += pricing.totalSavingsItem;
 
     if (item.isBundle) {
-      const itemBundleFee =
-        typeof item.bundleFee === 'number' ? item.bundleFee : isTomoro ? 3000 : 0;
+      const itemBundleFee = isFore
+        ? 0
+        : typeof item.bundleFee === 'number'
+          ? item.bundleFee
+          : isTomoro
+            ? 3000
+            : 0;
       bundleFeeTotal += itemBundleFee * qty;
       bundleQuantity += qty;
       bundleSubtotal += pricing.subtotalItem;
@@ -198,7 +241,9 @@ export function calculateOrderPricing(
 
   let regularFee = 0;
   if (regularQuantity > 0) {
-    if (isTomoro) {
+    if (isFore) {
+      regularFee = 0; // FREE fee jasa untuk Fore Coffee
+    } else if (isTomoro) {
       regularFee = 1500 * regularQuantity;
     } else if (bundleFeeTotal > 0 || regularQuantity > 1) {
       regularFee = config.feeMultiItem * regularQuantity;
@@ -207,7 +252,7 @@ export function calculateOrderPricing(
     }
   }
 
-  const fee = bundleFeeTotal + regularFee;
+  const fee = isFore ? 0 : bundleFeeTotal + regularFee;
   const total = subtotal + fee;
 
   return {
@@ -245,6 +290,7 @@ export function getOrderBreakdown(
     isBundle?: boolean;
     bundleType?: string;
     brandSlug?: string;
+    bundleCode?: string;
     quantity: number;
     subtotal?: number;
     bundleFee?: number;
@@ -254,16 +300,29 @@ export function getOrderBreakdown(
   config: PricingConfig = BUSINESS_CONFIG.pricing,
   brandSlugOrOutletCode?: string
 ): OrderBreakdownSummary {
-  const isTomoro =
-    brandSlugOrOutletCode === 'tomoro' ||
+  const isFore =
+    brandSlugOrOutletCode === 'fore' ||
     (typeof brandSlugOrOutletCode === 'string' &&
-      brandSlugOrOutletCode.toLowerCase().startsWith('tomoro-')) ||
+      brandSlugOrOutletCode.toLowerCase().startsWith('fore-')) ||
     items.some(
       (it) =>
-        it.brandSlug === 'tomoro' ||
-        it.bundleType === 'tomoro-b1g1' ||
-        it.name?.toLowerCase().includes('tomoro')
+        it.brandSlug === 'fore' ||
+        (typeof it.bundleCode === 'string' &&
+          (it.bundleCode.startsWith('FORE_') || it.bundleCode.startsWith('fore-'))) ||
+        it.name?.toLowerCase().includes('fore')
     );
+
+  const isTomoro =
+    !isFore &&
+    (brandSlugOrOutletCode === 'tomoro' ||
+      (typeof brandSlugOrOutletCode === 'string' &&
+        brandSlugOrOutletCode.toLowerCase().startsWith('tomoro-')) ||
+      items.some(
+        (it) =>
+          it.brandSlug === 'tomoro' ||
+          it.bundleType === 'tomoro-b1g1' ||
+          it.name?.toLowerCase().includes('tomoro')
+      ));
 
   let bundleQuantity = 0;
   let bundleSubtotal = 0;
@@ -279,18 +338,24 @@ export function getOrderBreakdown(
         item.name?.toLowerCase().includes('bundling') ||
         item.name?.toLowerCase().includes('b1g1')
     );
+    const itemDiscount = isFore ? 0.25 : 0.5;
     const sub =
       typeof item.subtotal === 'number'
         ? item.subtotal
         : typeof (item as any).basePrice === 'number'
-          ? (isBundle ? (item as any).basePrice * qty : Math.round((item as any).basePrice * 0.5) * qty)
+          ? (isBundle ? (item as any).basePrice * qty : Math.round((item as any).basePrice * (1 - itemDiscount)) * qty)
           : 0;
 
     if (isBundle) {
       bundleQuantity += qty;
       bundleSubtotal += sub;
-      const feePerPkg =
-        typeof item.bundleFee === 'number' ? item.bundleFee : isTomoro ? 3000 : 0;
+      const feePerPkg = isFore
+        ? 0
+        : typeof item.bundleFee === 'number'
+          ? item.bundleFee
+          : isTomoro
+            ? 3000
+            : 0;
       bundleFee += feePerPkg * qty;
     } else {
       regularQuantity += qty;
@@ -300,13 +365,19 @@ export function getOrderBreakdown(
 
   let regularFee = 0;
   if (regularQuantity > 0) {
-    if (isTomoro) {
+    if (isFore) {
+      regularFee = 0; // FREE fee untuk Fore
+    } else if (isTomoro) {
       regularFee = 1500 * regularQuantity;
     } else if (bundleQuantity > 0 || regularQuantity > 1) {
       regularFee = config.feeMultiItem * regularQuantity;
     } else {
       regularFee = config.feeSingleItem;
     }
+  }
+
+  if (isFore) {
+    bundleFee = 0;
   }
 
   if (typeof fallbackFee === 'number' && fallbackFee > 0) {
@@ -350,10 +421,18 @@ export function calculateFlatVariantAddition(selectedOptionValueNames: string[])
  * - Topping: +Rp6.000 per pilihan
  */
 export function calculateFlatAddonTotal(
-  addons: Array<{ name: string; categoryName?: string; price?: number }>
+  addons: Array<{ name: string; categoryName?: string; price?: number }>,
+  brandSlug?: string
 ): number {
   if (!addons || addons.length === 0) return 0;
+  const isFore =
+    brandSlug === 'fore' ||
+    (typeof brandSlug === 'string' && brandSlug.toLowerCase().startsWith('fore-'));
+
   return addons.reduce((sum, addon) => {
+    if (isFore && typeof addon.price === 'number') {
+      return sum + addon.price;
+    }
     const group = classifyAddonGroup(addon.name, addon.categoryName);
     if (group === 'whipped_cream') {
       return sum + BUSINESS_CONFIG.pricing.addonPrices.whippedCream;

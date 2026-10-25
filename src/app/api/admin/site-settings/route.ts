@@ -5,6 +5,8 @@ import {
   setMinOrder50kMode,
   getOperationalOverride,
   setOperationalOverride,
+  getAllBrandActiveStatuses,
+  setBrandActiveStatus,
   setSiteSetting,
   SiteSettingsError,
   type OperationalOverride,
@@ -21,9 +23,10 @@ export async function GET(request: Request) {
   }
 
   try {
-    const [minOrder50k, operationalOverride] = await Promise.all([
+    const [minOrder50k, operationalOverride, brandStatus] = await Promise.all([
       getMinOrder50kMode(),
       getOperationalOverride(),
+      getAllBrandActiveStatuses(),
     ]);
 
     return adminJson(
@@ -33,6 +36,7 @@ export async function GET(request: Request) {
           min_order_50k_mode: minOrder50k,
           bundling_only_mode: minOrder50k,
           operational_override: operationalOverride,
+          brand_status: brandStatus,
         },
       },
       {
@@ -65,6 +69,7 @@ export async function POST(request: Request) {
   try {
     let modeUpdated: boolean | null = null;
     let overrideUpdated: OperationalOverride | null = null;
+    let brandUpdated = false;
 
     if (typeof body.operational_override === 'string') {
       overrideUpdated = await setOperationalOverride(body.operational_override as OperationalOverride);
@@ -74,7 +79,21 @@ export async function POST(request: Request) {
       modeUpdated = await setMinOrder50kMode(body.min_order_50k_mode);
     } else if (typeof body.bundling_only_mode === 'boolean') {
       modeUpdated = await setMinOrder50kMode(body.bundling_only_mode);
-    } else if (typeof body.key === 'string' && typeof body.value === 'string') {
+    }
+
+    if (typeof body.brand_slug === 'string' && typeof body.is_active === 'boolean') {
+      await setBrandActiveStatus(body.brand_slug, body.is_active);
+      brandUpdated = true;
+    } else if (body.brand_status && typeof body.brand_status === 'object') {
+      await Promise.all(
+        Object.entries(body.brand_status as Record<string, unknown>).map(([slug, active]) =>
+          setBrandActiveStatus(slug, Boolean(active))
+        )
+      );
+      brandUpdated = true;
+    }
+
+    if (typeof body.key === 'string' && typeof body.value === 'string') {
       if (body.key === 'operational_override') {
         overrideUpdated = await setOperationalOverride(body.value as OperationalOverride);
       } else {
@@ -83,16 +102,17 @@ export async function POST(request: Request) {
           modeUpdated = body.value.trim().toLowerCase() === 'true';
         }
       }
-    } else if (overrideUpdated === null) {
+    } else if (overrideUpdated === null && modeUpdated === null && !brandUpdated) {
       return adminJson(
-        { error: 'Parameter operational_override, min_order_50k_mode / bundling_only_mode, atau key/value wajib disertakan' },
+        { error: 'Parameter operational_override, min_order_50k_mode, brand_slug/is_active, atau key/value wajib disertakan' },
         { status: 400 }
       );
     }
 
-    const [currentMode, currentOverride] = await Promise.all([
+    const [currentMode, currentOverride, currentBrandStatus] = await Promise.all([
       modeUpdated !== null ? Promise.resolve(modeUpdated) : getMinOrder50kMode(),
       overrideUpdated !== null ? Promise.resolve(overrideUpdated) : getOperationalOverride(),
+      getAllBrandActiveStatuses(),
     ]);
 
     return adminJson({
@@ -102,6 +122,7 @@ export async function POST(request: Request) {
         min_order_50k_mode: currentMode,
         bundling_only_mode: currentMode,
         operational_override: currentOverride,
+        brand_status: currentBrandStatus,
       },
     });
   } catch (err: unknown) {

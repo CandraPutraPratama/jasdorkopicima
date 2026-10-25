@@ -20,6 +20,7 @@ interface ProductBottomSheetProps {
   onClose: () => void;
   onAddToCart: (item: Omit<CartItem, 'id'>) => void;
   isOutletClosed?: boolean;
+  brandSlug?: string;
 }
 
 export function ProductBottomSheet({
@@ -28,9 +29,15 @@ export function ProductBottomSheet({
   onClose,
   onAddToCart,
   isOutletClosed = false,
+  brandSlug,
 }: ProductBottomSheetProps) {
   // Kunci scroll halaman belakang selama sheet detail produk terbuka
   useScrollLock(true);
+
+  const isFore =
+    brandSlug === 'fore' ||
+    outletCode.toLowerCase().startsWith('fore-') ||
+    product.bundleCode?.startsWith('FORE_');
 
   const [imageFailed, setImageFailed] = useState<boolean>(false);
   const [options, setOptions] = useState<ProductOptionDetails | null>(null);
@@ -41,6 +48,8 @@ export function ProductBottomSheet({
   const [selectedDimensions, setSelectedDimensions] = useState<Record<number, number>>({});
   const [selectedNotes, setSelectedNotes] = useState<Record<string, string>>({});
   const [selectedWhippedCream, setSelectedWhippedCream] = useState<Addon | null>(null);
+  const [selectedDairy, setSelectedDairy] = useState<Addon | null>(null);
+  const [selectedEspresso, setSelectedEspresso] = useState<Addon | null>(null);
   const [selectedSyrups, setSelectedSyrups] = useState<Addon[]>([]);
   const [selectedToppings, setSelectedToppings] = useState<Addon[]>([]);
   const [quantity, setQuantity] = useState<number>(1);
@@ -90,7 +99,32 @@ export function ProductBottomSheet({
           }
           setSelectedNotes(initialNotes);
 
-          // Whipped cream: jika ada opsi yang tersedia, biarkan user memilih (atau default null)
+          // Inisialisasi default dairy (Fore Coffee)
+          const allAddons = opt?.addons || [];
+          const dairies = allAddons.filter((a) => a.group === 'dairy');
+          if (dairies.length > 0) {
+            const defaultDairy =
+              dairies.find((d) => d.name.toLowerCase() === 'milk') ||
+              dairies.find((d) => d.name.toLowerCase() === 'no milk') ||
+              dairies[0];
+            setSelectedDairy(defaultDairy);
+          } else {
+            setSelectedDairy(null);
+          }
+
+          // Inisialisasi default espresso (Fore Coffee)
+          const espressos = allAddons.filter((a) => a.group === 'espresso');
+          if (espressos.length > 0) {
+            const defaultEsp =
+              espressos.find((e) => e.name.toLowerCase() === 'normal shot') ||
+              espressos.find((e) => e.name.toLowerCase() === 'no coffee') ||
+              espressos[0];
+            setSelectedEspresso(defaultEsp);
+          } else {
+            setSelectedEspresso(null);
+          }
+
+          // Whipped cream & sirup/topping
           setSelectedWhippedCream(null);
           setSelectedSyrups([]);
           setSelectedToppings([]);
@@ -110,16 +144,20 @@ export function ProductBottomSheet({
     };
   }, [outletCode, product.bundleCode]);
 
-  // Pisahkan addons ke dalam 3 grup per spesifikasi
-  const { whippedCreamAddons, syrupAddons, toppingAddons } = useMemo(() => {
+  // Pisahkan addons ke dalam grup per spesifikasi
+  const { whippedCreamAddons, syrupAddons, toppingAddons, dairyAddons, espressoAddons } = useMemo(() => {
     const all = options?.addons || [];
     const whipped = all.filter((a) => a.group === 'whipped_cream');
     const syrup = all.filter((a) => a.group === 'syrup');
     const topping = all.filter((a) => a.group === 'topping');
+    const dairy = all.filter((a) => a.group === 'dairy');
+    const espresso = all.filter((a) => a.group === 'espresso');
     return {
       whippedCreamAddons: whipped,
       syrupAddons: syrup,
       toppingAddons: topping,
+      dairyAddons: dairy,
+      espressoAddons: espresso,
     };
   }, [options?.addons]);
 
@@ -129,10 +167,16 @@ export function ProductBottomSheet({
     if (selectedWhippedCream) {
       list.push(selectedWhippedCream);
     }
+    if (selectedDairy) {
+      list.push(selectedDairy);
+    }
+    if (selectedEspresso) {
+      list.push(selectedEspresso);
+    }
     list.push(...selectedSyrups);
     list.push(...selectedToppings);
     return list;
-  }, [selectedWhippedCream, selectedSyrups, selectedToppings]);
+  }, [selectedWhippedCream, selectedDairy, selectedEspresso, selectedSyrups, selectedToppings]);
 
   // Daftar nama opsi yang dipilih user
   const selectedOptionNames = useMemo(() => {
@@ -178,15 +222,23 @@ export function ProductBottomSheet({
       selectedOptionNames,
       selectedAddons,
       quantity,
-      matchedSku?.price
+      matchedSku?.price,
+      brandSlug || outletCode
     );
-  }, [product.basePrice, selectedOptionNames, selectedAddons, quantity, matchedSku?.price]);
+  }, [product.basePrice, selectedOptionNames, selectedAddons, quantity, matchedSku?.price, brandSlug, outletCode]);
 
-  // Cek apakah Whipped Cream wajib tapi belum dipilih
+  // Cek apakah Whipped Cream / Susu / Espresso wajib tapi belum dipilih
   const hasWhippedCreamOptions = whippedCreamAddons.length > 0;
   const isWhippedCreamMissing = hasWhippedCreamOptions && !selectedWhippedCream;
+  const isDairyMissing = dairyAddons.length > 0 && !selectedDairy;
+  const isEspressoMissing = espressoAddons.length > 0 && !selectedEspresso;
   const isAddToCartDisabled =
-    isLoading || Boolean(errorMessage) || isWhippedCreamMissing || Boolean(isOutletClosed);
+    isLoading ||
+    Boolean(errorMessage) ||
+    isWhippedCreamMissing ||
+    isDairyMissing ||
+    isEspressoMissing ||
+    Boolean(isOutletClosed);
 
   const handleSelectDimensionValue = (dimCode: number, valId: number) => {
     if (!options?.optionMap) return;
@@ -236,6 +288,10 @@ export function ProductBottomSheet({
       if (exists) {
         return prev.filter((a) => a.sku !== addon.sku);
       }
+      if (isFore) {
+        // Fore maksimal 1 pilihan sirup
+        return [addon];
+      }
       return [...prev, addon];
     });
   };
@@ -247,6 +303,10 @@ export function ProductBottomSheet({
       if (exists) {
         return prev.filter((a) => a.sku !== addon.sku);
       }
+      if (isFore && prev.length >= 2) {
+        // Fore maksimal 2 pilihan topping
+        return prev;
+      }
       return [...prev, addon];
     });
   };
@@ -257,11 +317,25 @@ export function ProductBottomSheet({
     // Kumpulkan ringkasan varian
     const variantParts: string[] = [...selectedOptionNames];
 
-    // Tambahkan notes (misal: Ice Level), kecuali Ice Level saat Hot
-    // (pengaman lapis kedua bila ada nilai es nyangkut dari default awal)
+    // Tambahkan pilihan susu dan espresso jika ada
+    if (selectedDairy && !variantParts.includes(selectedDairy.name)) {
+      variantParts.push(selectedDairy.name);
+    }
+    if (selectedEspresso && !variantParts.includes(selectedEspresso.name)) {
+      variantParts.push(selectedEspresso.name);
+    }
+
+    // Tambahkan notes (misal: Ice Level, Tingkat Kepanasan, Kemanisan)
     if (selectedNotes) {
+      const isHot = isHotSelected || selectedOptionNames.includes('Hot');
       for (const [groupName, valText] of Object.entries(selectedNotes)) {
         if (isHotSelected && isIceNoteGroup(groupName)) continue;
+        if (isHot && (groupName === 'Jumlah Es Batu' || groupName === 'Jumlah Es')) {
+          continue;
+        }
+        if (!isHot && groupName === 'Tingkat Kepanasan') {
+          continue;
+        }
         if (valText && !variantParts.includes(valText)) {
           variantParts.push(valText);
         }
@@ -283,6 +357,7 @@ export function ProductBottomSheet({
       variantDescription,
       addons: selectedAddons,
       notes: cleanNotes(customerNotes),
+      brandSlug: brandSlug || (isFore ? 'fore' : undefined),
     });
 
     onClose();
@@ -383,7 +458,7 @@ export function ProductBottomSheet({
                   {formatRupiah(pricing.originalPricePerItem)}
                 </span>
                 <span className="text-[10px] font-black text-[#DC2626] bg-[#FFEBEB] border-2 border-[#DC2626] px-1.5 py-0.2 rounded-md">
-                  -50%
+                  {isFore ? '-25%' : '-50%'}
                 </span>
               </div>
             </div>
@@ -465,9 +540,16 @@ export function ProductBottomSheet({
             );
           })}
 
-          {/* 2. Opsi Notes (Ice Level) - disembunyikan total saat Hot */}
+          {/* 2. Opsi Notes (Ice Level, Kepanasan, Kemanisan, Cup) */}
           {!isLoading && options?.notes && options.notes.map((note) => {
             if (isHotSelected && isIceNoteGroup(note.name)) return null;
+            const isHot = isHotSelected || selectedOptionNames.includes('Hot');
+            if (isHot && (note.name === 'Jumlah Es Batu' || note.name === 'Jumlah Es')) {
+              return null;
+            }
+            if (!isHot && note.name === 'Tingkat Kepanasan') {
+              return null;
+            }
             const gridClass = getGridColsClass(note.options.length);
             return (
               <div key={note.name} className="space-y-2">
@@ -549,7 +631,101 @@ export function ProductBottomSheet({
             </div>
           )}
 
-          {/* 4. Opsi Syrup (Checkbox, Opsional, +Rp6.000 per pilihan) */}
+          {/* 4. Opsi Pilihan Susu (Dairy, Radio, Wajib Pilih 1) */}
+          {!isLoading && dairyAddons.length > 0 && (
+            <div className="space-y-2 pt-2 border-t-2 border-[#2B1D12]">
+              <div className="flex justify-between items-center">
+                <span className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide flex items-center gap-1">
+                  <span>Pilihan Susu</span>
+                  <span className="text-[#DC2626] text-sm">*</span>
+                </span>
+                <span className="text-[10px] text-[#2B1D12] font-black bg-[#FFF0C2] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
+                  Wajib Pilih 1
+                </span>
+              </div>
+
+              <div className={`grid ${getGridColsClass(dairyAddons.length)} gap-2`}>
+                {dairyAddons.map((addon) => {
+                  const isSelected = selectedDairy?.sku === addon.sku;
+                  return (
+                    <button
+                      key={addon.sku}
+                      type="button"
+                      disabled={addon.isSoldOut}
+                      onClick={() => setSelectedDairy(addon)}
+                      className={`min-h-[46px] p-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
+                        isSelected
+                          ? 'border-[#2B1D12] bg-[#2B1D12] text-[#FAF4E8] font-display shadow-[2px_2px_0px_#C67D0A]'
+                          : addon.isSoldOut
+                          ? 'border-[#D4C3B2] bg-[#EFE5D8] text-[#8C7667] cursor-not-allowed line-through'
+                          : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
+                      }`}
+                    >
+                      <span className="line-clamp-2 leading-tight">{addon.name}</span>
+                      {addon.price > 0 ? (
+                        <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#C67D0A]'}`}>
+                          +{formatRupiah(addon.price)}
+                        </span>
+                      ) : (
+                        <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#15803D]'}`}>
+                          Gratis
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 5. Opsi Espresso (Radio, Wajib Pilih 1) */}
+          {!isLoading && espressoAddons.length > 0 && (
+            <div className="space-y-2 pt-2 border-t-2 border-[#2B1D12]">
+              <div className="flex justify-between items-center">
+                <span className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide flex items-center gap-1">
+                  <span>Espresso</span>
+                  <span className="text-[#DC2626] text-sm">*</span>
+                </span>
+                <span className="text-[10px] text-[#2B1D12] font-black bg-[#FFF0C2] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
+                  Wajib Pilih 1
+                </span>
+              </div>
+
+              <div className={`grid ${getGridColsClass(espressoAddons.length)} gap-2`}>
+                {espressoAddons.map((addon) => {
+                  const isSelected = selectedEspresso?.sku === addon.sku;
+                  return (
+                    <button
+                      key={addon.sku}
+                      type="button"
+                      disabled={addon.isSoldOut}
+                      onClick={() => setSelectedEspresso(addon)}
+                      className={`min-h-[46px] p-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
+                        isSelected
+                          ? 'border-[#2B1D12] bg-[#2B1D12] text-[#FAF4E8] font-display shadow-[2px_2px_0px_#C67D0A]'
+                          : addon.isSoldOut
+                          ? 'border-[#D4C3B2] bg-[#EFE5D8] text-[#8C7667] cursor-not-allowed line-through'
+                          : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
+                      }`}
+                    >
+                      <span className="line-clamp-2 leading-tight">{addon.name}</span>
+                      {addon.price > 0 ? (
+                        <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#C67D0A]'}`}>
+                          +{formatRupiah(addon.price)}
+                        </span>
+                      ) : (
+                        <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#15803D]'}`}>
+                          Gratis
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 6. Opsi Syrup (Checkbox, Opsional) */}
           {!isLoading && syrupAddons.length > 0 && (
             <div className="space-y-2 pt-2 border-t-2 border-[#2B1D12]">
               <div className="flex justify-between items-center">
@@ -557,13 +733,16 @@ export function ProductBottomSheet({
                   Syrup
                 </span>
                 <span className="text-[10px] text-[#2B1D12] font-bold bg-[#FFE7D6] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
-                  Opsional • +{formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.syrup)}
+                  {isFore
+                    ? 'Opsional (Maks. 1) • +Rp7.000'
+                    : `Opsional • +${formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.syrup)}`}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 {syrupAddons.map((addon) => {
                   const isChecked = selectedSyrups.some((a) => a.sku === addon.sku);
+                  const priceToAdd = isFore ? (addon.price || 7000) : BUSINESS_CONFIG.pricing.addonPrices.syrup;
                   return (
                     <button
                       key={addon.sku}
@@ -595,7 +774,7 @@ export function ProductBottomSheet({
                         <span className="line-clamp-2 leading-tight text-[11px] font-bold">{addon.name}</span>
                       </div>
                       <span className="text-[10px] text-[#2B1D12] shrink-0 font-extrabold">
-                        +{formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.syrup)}
+                        +{formatRupiah(priceToAdd)}
                       </span>
                     </button>
                   );
@@ -604,7 +783,7 @@ export function ProductBottomSheet({
             </div>
           )}
 
-          {/* 5. Opsi Topping (Checkbox, Opsional, +Rp6.000 per pilihan) */}
+          {/* 7. Opsi Topping (Checkbox, Opsional) */}
           {!isLoading && toppingAddons.length > 0 && (
             <div className="space-y-2 pt-2 border-t-2 border-[#2B1D12]">
               <div className="flex justify-between items-center">
@@ -612,13 +791,16 @@ export function ProductBottomSheet({
                   Topping
                 </span>
                 <span className="text-[10px] text-[#2B1D12] font-bold bg-[#D9F3EA] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
-                  Opsional • +{formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.topping)}
+                  {isFore
+                    ? 'Opsional (Maks. 2) • +Rp7.000'
+                    : `Opsional • +${formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.topping)}`}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 {toppingAddons.map((addon) => {
                   const isChecked = selectedToppings.some((a) => a.sku === addon.sku);
+                  const priceToAdd = isFore ? (addon.price || 7000) : BUSINESS_CONFIG.pricing.addonPrices.topping;
                   return (
                     <button
                       key={addon.sku}
@@ -650,7 +832,7 @@ export function ProductBottomSheet({
                         <span className="line-clamp-2 leading-tight text-[11px] font-bold">{addon.name}</span>
                       </div>
                       <span className="text-[10px] text-[#2B1D12] shrink-0 font-extrabold">
-                        +{formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.topping)}
+                        +{formatRupiah(priceToAdd)}
                       </span>
                     </button>
                   );

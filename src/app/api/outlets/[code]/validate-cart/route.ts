@@ -5,6 +5,7 @@ import { isOutletClosed } from '@/lib/orderability';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
 import { verifyStoreScope } from '@/lib/outlet-service';
+import { safeNormalizeOutletCode } from '@/lib/sanitizer';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
 import { applyCachePolicy, CACHE_POLICY } from '../../../../../lib/cache-headers.ts';
 
@@ -44,7 +45,8 @@ async function handlePost(
     );
   }
 
-  const { code } = await segmentData.params;
+  const { code: rawCode } = await segmentData.params;
+  const code = safeNormalizeOutletCode(rawCode);
   if (!code) {
     return NextResponse.json({ error: 'Parameter code outlet wajib disertakan' }, { status: 400 });
   }

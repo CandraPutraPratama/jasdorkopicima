@@ -56,6 +56,14 @@ export default function AdminPesananPanel() {
   const [isUpdatingOverride, setIsUpdatingOverride] = useState<boolean>(false);
   const [overrideNotification, setOverrideNotification] = useState<string | null>(null);
 
+  // Pengaturan Situs: Kontrol Ketersediaan Brand (Stok On / Off)
+  const [brandStatusMap, setBrandStatusMap] = useState<Record<string, boolean>>({
+    'kopi-kenangan': true,
+    'fore': true,
+    'tomoro': true,
+  });
+  const [updatingBrandSlug, setUpdatingBrandSlug] = useState<string | null>(null);
+
   // Fetch settings & operational status from API
   const fetchSettings = useCallback(async () => {
     setIsLoadingSettings(true);
@@ -76,6 +84,12 @@ export default function AdminPesananPanel() {
         }
         if (typeof data?.settings?.operational_override === 'string') {
           setOperationalOverrideState(data.settings.operational_override);
+        }
+        if (data?.settings?.brand_status && typeof data.settings.brand_status === 'object') {
+          setBrandStatusMap((prev) => ({
+            ...prev,
+            ...data.settings.brand_status,
+          }));
         }
       }
 
@@ -195,6 +209,38 @@ export default function AdminPesananPanel() {
       alert(err.message || 'Gagal menyimpan pengaturan');
     } finally {
       setIsUpdatingSettings(false);
+    }
+  };
+
+  // Handle Toggle Status Ketersediaan Brand (Stok Habis / Buka)
+  const handleToggleBrandStatus = async (brandSlug: string, currentStatus: boolean) => {
+    const nextStatus = !currentStatus;
+    setUpdatingBrandSlug(brandSlug);
+    try {
+      const res = await fetch('/api/admin/site-settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brand_slug: brandSlug,
+          is_active: nextStatus,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Gagal mengubah status brand');
+      }
+      setBrandStatusMap((prev) => ({
+        ...prev,
+        [brandSlug]: nextStatus,
+      }));
+      setSettingsNotification(
+        `Status brand ${brandSlug} berhasil diubah jadi ${nextStatus ? 'Aktif' : 'Nonaktif'}`
+      );
+      setTimeout(() => setSettingsNotification(null), 3000);
+    } catch (err: unknown) {
+      alert((err as Error).message || 'Gagal mengubah status brand');
+    } finally {
+      setUpdatingBrandSlug(null);
     }
   };
 
@@ -663,6 +709,103 @@ export default function AdminPesananPanel() {
               <span>{settingsNotification}</span>
             </div>
           )}
+        </section>
+
+        {/* Kontrol Ketersediaan Brand (Stok Habis / Buka) */}
+        <section aria-label="Kontrol Ketersediaan Brand" className="bg-white rounded-2xl border-2 border-[#26150B] p-4 shadow-[3px_3px_0px_#26150B] space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-base shrink-0">🏷️</span>
+                <h2 className="text-xs font-black text-[#26150B] uppercase tracking-wider">
+                  Kontrol Ketersediaan Brand (Stok)
+                </h2>
+                <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full border bg-neutral-100 text-neutral-800 border-neutral-300">
+                  {Object.values(brandStatusMap).filter(Boolean).length} / 3 Brand Aktif
+                </span>
+              </div>
+              <p className="text-[11px] text-[#7A6455] leading-relaxed">
+                Matikan brand tertentu jika stok voucher/promo habis, sehingga website tetap bisa dibuka untuk brand lain yang masih ready.
+              </p>
+            </div>
+          </div>
+
+          {/* 3 Brand Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+            {[
+              {
+                slug: 'kopi-kenangan',
+                name: 'Kopi Kenangan',
+                badgeText: 'Diskon 50%',
+              },
+              {
+                slug: 'fore',
+                name: 'Fore Coffee',
+                badgeText: 'Fore Menu',
+              },
+              {
+                slug: 'tomoro',
+                name: 'TOMORO Coffee',
+                badgeText: 'Diskon 50% + B1G1',
+              },
+            ].map((b) => {
+              const isActive = brandStatusMap[b.slug] ?? true;
+              const isUpdating = updatingBrandSlug === b.slug;
+
+              return (
+                <div
+                  key={b.slug}
+                  className={`p-3 rounded-xl border-2 flex flex-col justify-between gap-3 transition ${
+                    isActive
+                      ? 'bg-[#FAF4E8] border-[#26150B] shadow-[2px_2px_0px_#26150B]'
+                      : 'bg-rose-50/60 border-rose-300 opacity-90'
+                  }`}
+                >
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-display font-black text-xs text-[#26150B] leading-tight">
+                        {b.name}
+                      </span>
+                      <span
+                        className={`text-[9px] font-black px-1.5 py-0.5 rounded-md border ${
+                          isActive
+                            ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                            : 'bg-rose-100 text-rose-800 border-rose-300'
+                        }`}
+                      >
+                        {isActive ? 'Buka (Aktif)' : 'Mati (Stok Habis)'}
+                      </span>
+                    </div>
+                    <span className="inline-block text-[10px] text-[#7A6455] font-semibold">
+                      {b.badgeText}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleToggleBrandStatus(b.slug, isActive)}
+                    disabled={isLoadingSettings || isUpdating}
+                    className={`w-full py-2 px-3 rounded-lg text-xs font-black transition flex items-center justify-center gap-1.5 border shadow-2xs ${
+                      isActive
+                        ? 'bg-rose-50 text-rose-800 border-rose-300 hover:bg-rose-100 active:bg-rose-200'
+                        : 'bg-emerald-700 text-white border-emerald-900 hover:bg-emerald-800 active:bg-emerald-900'
+                    } disabled:opacity-50`}
+                  >
+                    {isUpdating ? (
+                      <>
+                        <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        <span>Menyimpan...</span>
+                      </>
+                    ) : isActive ? (
+                      <span>Matikan (Stok Habis)</span>
+                    ) : (
+                      <span>Nyalakan (Ready)</span>
+                    )}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         {/* Filter Tab Chips */}

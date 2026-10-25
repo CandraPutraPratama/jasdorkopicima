@@ -1,11 +1,21 @@
 /**
  * Data menu resmi Fore Coffee (74 item, 6 kategori).
- * Kategori: Coffee (23), Non Coffee (10), Tea (6), Fore Deli (17), Ice Blended (4), FOREveryone 1L (14).
+ * Kategori: Favorit Choice (2), Fore Signature (5), Americano Series (4), Coffee (12), Non Coffee (5), Fore Junior (4), Refresher (3), Tea (4), Ice Blended (4), FOREveryone 1L (14), Fore Deli (17).
  * Seluruh item berstatus flat tersedia (isSoldOut: false).
  * URL Foto: R2 self-hosted https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/<slug>.webp.
  * Deskripsi 100% ditulis ulang secara orisinal.
  */
-import type { MenuGroup, Product, ProductOptionDetails } from '../types/domain.ts';
+import type {
+  MenuGroup,
+  Product,
+  ProductOptionDetails,
+  VariantDimension,
+  VariantSku,
+  Addon,
+  ProductNoteGroup,
+  VariantDimensionValue,
+} from '../types/domain.ts';
+import { getForeItemConfig } from './fore-customization-data.ts';
 
 export const AIRPORT_OUTLET_CODES = new Set<string>([
   'fore-t3inb', // T3 International Boarding Soekarno Hatta
@@ -132,21 +142,39 @@ export const FORE_AIRPORT_PRICE_MAP: Record<string, number> = {
 export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
   "menuGroups": [
     {
-      "code": "coffee",
-      "name": "Coffee",
+      "code": "favorit-choice",
+      "name": "Favorit Choice",
       "products": [
         {
-          "id": 2001,
-          "name": "Americano",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/americano.webp",
+          "id": 2021,
+          "name": "Starrycano",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/starrycano.webp",
           "isCombo": false,
-          "basePrice": 23000,
-          "originalPrice": 23000,
+          "basePrice": 29000,
+          "originalPrice": 29000,
           "isSoldOut": false,
-          "bundleCode": "FORE_AMERICANO",
-          "description": "Seduhan espresso pilihan dengan air murni, menghasilkan rasa kopi yang bersih, bold, dan menyegarkan.",
-          "productCode": "FORE_AMERICANO"
+          "bundleCode": "FORE_STARRYCANO",
+          "description": "Sensasi kopi hitam sparkling dengan semburat rasa buah segar berkilau yang menyegarkan dahaga.",
+          "productCode": "FORE_STARRYCANO"
         },
+        {
+          "id": 2022,
+          "name": "Sunrise Mont-Black",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/sunrise-mont-black.webp",
+          "isCombo": false,
+          "basePrice": 29000,
+          "originalPrice": 29000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_SUNRISE_MONT_BLACK",
+          "description": "Kopi hitam elegan dengan lapisan foam lembut dan aksen jeruk cerah bak pemandangan fajar.",
+          "productCode": "FORE_SUNRISE_MONT_BLACK"
+        }
+      ]
+    },
+    {
+      "code": "fore-signature",
+      "name": "Fore Signature",
+      "products": [
         {
           "id": 2002,
           "name": "Aren Latte",
@@ -158,30 +186,6 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "bundleCode": "FORE_AREN_LATTE",
           "description": "Kombinasi klasik espresso mantap dan susu segar dengan sentuhan manis legit gula aren nusantara.",
           "productCode": "FORE_AREN_LATTE"
-        },
-        {
-          "id": 2003,
-          "name": "Berry Manuka Americano",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/berry-manuka-americano.webp",
-          "isCombo": false,
-          "basePrice": 31000,
-          "originalPrice": 31000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_BERRY_MANUKA_AMERICANO",
-          "description": "Espresso aromatik dipadu sensasi manis madu Manuka alami dan kesegaran buah beri yang semerbak.",
-          "productCode": "FORE_BERRY_MANUKA_AMERICANO"
-        },
-        {
-          "id": 2004,
-          "name": "Bumi Latte",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/bumi-latte.webp",
-          "isCombo": false,
-          "basePrice": 25000,
-          "originalPrice": 25000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_BUMI_LATTE",
-          "description": "Racikan latte ramah di lidah dengan keseimbangan rasa kopi lembut dan manis krim yang memikat.",
-          "productCode": "FORE_BUMI_LATTE"
         },
         {
           "id": 2005,
@@ -196,18 +200,6 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "productCode": "FORE_BUTTERCREAM_LATTE"
         },
         {
-          "id": 2006,
-          "name": "Buttercream Tiramisu Latte",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/buttercream-tiramisu-latte.webp",
-          "isCombo": false,
-          "basePrice": 34000,
-          "originalPrice": 34000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_BUTTERCREAM_TIRAMISU_LATTE",
-          "description": "Paduan kelezatan aroma tiramisu khas Italia berselimut krim butter lembut dan espresso pekat.",
-          "productCode": "FORE_BUTTERCREAM_TIRAMISU_LATTE"
-        },
-        {
           "id": 2007,
           "name": "Butterscotch Sea Salt Latte",
           "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/butterscotch-sea-salt-latte.webp",
@@ -218,6 +210,114 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "bundleCode": "FORE_BUTTERSCOTCH_SEA_SALT_LATTE",
           "description": "Menu favorit Fore dengan butterscotch karamel manis serta lapisan krim sea salt gurih menggoda.",
           "productCode": "FORE_BUTTERSCOTCH_SEA_SALT_LATTE"
+        },
+        {
+          "id": 2015,
+          "name": "Kopi Dari Tani",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/kopi-dari-tani.webp",
+          "isCombo": false,
+          "basePrice": 25000,
+          "originalPrice": 25000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_KOPI_DARI_TANI",
+          "description": "Kopi susu istimewa hasil dedikasi petani lokal Indonesia, menghadirkan cita rasa autentik nusantara.",
+          "productCode": "FORE_KOPI_DARI_TANI"
+        },
+        {
+          "id": 2019,
+          "name": "Pandan Latte",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/pandan-latte.webp",
+          "isCombo": false,
+          "basePrice": 29000,
+          "originalPrice": 29000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_PANDAN_LATTE",
+          "description": "Keharuman daun pandan wangi alami berpadu lembut dengan kopi susu racikan khas Fore.",
+          "productCode": "FORE_PANDAN_LATTE"
+        }
+      ]
+    },
+    {
+      "code": "americano-series",
+      "name": "Americano Series",
+      "products": [
+        {
+          "id": 2001,
+          "name": "Americano",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/americano.webp",
+          "isCombo": false,
+          "basePrice": 23000,
+          "originalPrice": 23000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_AMERICANO",
+          "description": "Seduhan espresso pilihan dengan air murni, menghasilkan rasa kopi yang bersih, bold, dan menyegarkan.",
+          "productCode": "FORE_AMERICANO"
+        },
+        {
+          "id": 2003,
+          "name": "Berry Manuka Americano",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/berry-manuka-americano.webp",
+          "isCombo": false,
+          "basePrice": 31000,
+          "originalPrice": 31000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_BERRY_MANUKA_AMERICANO",
+          "description": "Espresso aromatik dipadu sensasi manis madu Manuka alami dan kesegaran buah beri yang semerbak.",
+          "productCode": "FORE_BERRY_MANUKA_AMERICANO"
+        },
+        {
+          "id": 2017,
+          "name": "Manuka Americano",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/manuka-americano.webp",
+          "isCombo": false,
+          "basePrice": 29000,
+          "originalPrice": 29000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_MANUKA_AMERICANO",
+          "description": "Americano segar yang dipadukan dengan kemurnian madu Manuka asli berkhasiat dan manis seimbang.",
+          "productCode": "FORE_MANUKA_AMERICANO"
+        },
+        {
+          "id": 2023,
+          "name": "Triple Peach Americano",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/triple-peach-americano.webp",
+          "isCombo": false,
+          "basePrice": 29000,
+          "originalPrice": 29000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_TRIPLE_PEACH_AMERICANO",
+          "description": "Espresso dingin yang berpadu dengan kesegaran manis buah persik berlapis tiga tingkat kenikmatan.",
+          "productCode": "FORE_TRIPLE_PEACH_AMERICANO"
+        }
+      ]
+    },
+    {
+      "code": "coffee",
+      "name": "Coffee",
+      "products": [
+        {
+          "id": 2004,
+          "name": "Bumi Latte",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/bumi-latte.webp",
+          "isCombo": false,
+          "basePrice": 25000,
+          "originalPrice": 25000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_BUMI_LATTE",
+          "description": "Racikan latte ramah di lidah dengan keseimbangan rasa kopi lembut dan manis krim yang memikat.",
+          "productCode": "FORE_BUMI_LATTE"
+        },
+        {
+          "id": 2006,
+          "name": "Buttercream Tiramisu Latte",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/buttercream-tiramisu-latte.webp",
+          "isCombo": false,
+          "basePrice": 34000,
+          "originalPrice": 34000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_BUTTERCREAM_TIRAMISU_LATTE",
+          "description": "Paduan kelezatan aroma tiramisu khas Italia berselimut krim butter lembut dan espresso pekat.",
+          "productCode": "FORE_BUTTERCREAM_TIRAMISU_LATTE"
         },
         {
           "id": 2008,
@@ -304,18 +404,6 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "productCode": "FORE_ESPRESSO"
         },
         {
-          "id": 2015,
-          "name": "Kopi Dari Tani",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/kopi-dari-tani.webp",
-          "isCombo": false,
-          "basePrice": 25000,
-          "originalPrice": 25000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_KOPI_DARI_TANI",
-          "description": "Kopi susu istimewa hasil dedikasi petani lokal Indonesia, menghadirkan cita rasa autentik nusantara.",
-          "productCode": "FORE_KOPI_DARI_TANI"
-        },
-        {
           "id": 2016,
           "name": "Malty Latte",
           "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/malty-latte.webp",
@@ -326,18 +414,6 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "bundleCode": "FORE_MALTY_LATTE",
           "description": "Latte lembut dengan sentuhan rasa malt hangat yang gurih manis dan nyaman di setiap tegukan.",
           "productCode": "FORE_MALTY_LATTE"
-        },
-        {
-          "id": 2017,
-          "name": "Manuka Americano",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/manuka-americano.webp",
-          "isCombo": false,
-          "basePrice": 29000,
-          "originalPrice": 29000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_MANUKA_AMERICANO",
-          "description": "Americano segar yang dipadukan dengan kemurnian madu Manuka asli berkhasiat dan manis seimbang.",
-          "productCode": "FORE_MANUKA_AMERICANO"
         },
         {
           "id": 2018,
@@ -352,18 +428,6 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "productCode": "FORE_NUTTY_OAT_LATTE"
         },
         {
-          "id": 2019,
-          "name": "Pandan Latte",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/pandan-latte.webp",
-          "isCombo": false,
-          "basePrice": 29000,
-          "originalPrice": 29000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_PANDAN_LATTE",
-          "description": "Keharuman daun pandan wangi alami berpadu lembut dengan kopi susu racikan khas Fore.",
-          "productCode": "FORE_PANDAN_LATTE"
-        },
-        {
           "id": 2020,
           "name": "Salted Spanish Latte",
           "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/salted-spanish-latte.webp",
@@ -374,42 +438,6 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "bundleCode": "FORE_SALTED_SPANISH_LATTE",
           "description": "Latte gaya Spanyol dengan susu kental manis dan sejumput garam laut gurih penyeimbang rasa.",
           "productCode": "FORE_SALTED_SPANISH_LATTE"
-        },
-        {
-          "id": 2021,
-          "name": "Starrycano",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/starrycano.webp",
-          "isCombo": false,
-          "basePrice": 29000,
-          "originalPrice": 29000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_STARRYCANO",
-          "description": "Sensasi kopi hitam sparkling dengan semburat rasa buah segar berkilau yang menyegarkan dahaga.",
-          "productCode": "FORE_STARRYCANO"
-        },
-        {
-          "id": 2022,
-          "name": "Sunrise Mont-Black",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/sunrise-mont-black.webp",
-          "isCombo": false,
-          "basePrice": 29000,
-          "originalPrice": 29000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_SUNRISE_MONT_BLACK",
-          "description": "Kopi hitam elegan dengan lapisan foam lembut dan aksen jeruk cerah bak pemandangan fajar.",
-          "productCode": "FORE_SUNRISE_MONT_BLACK"
-        },
-        {
-          "id": 2023,
-          "name": "Triple Peach Americano",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/triple-peach-americano.webp",
-          "isCombo": false,
-          "basePrice": 29000,
-          "originalPrice": 29000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_TRIPLE_PEACH_AMERICANO",
-          "description": "Espresso dingin yang berpadu dengan kesegaran manis buah persik berlapis tiga tingkat kenikmatan.",
-          "productCode": "FORE_TRIPLE_PEACH_AMERICANO"
         }
       ]
     },
@@ -429,6 +457,60 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "description": "Cokelat kaya rasa berpadu dengan susu almond lembut dan aroma kacang panggang yang harum.",
           "productCode": "FORE_ALMOND_CHOCO"
         },
+        {
+          "id": 2028,
+          "name": "Classic Milo",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/classic-milo.webp",
+          "isCombo": false,
+          "basePrice": 25000,
+          "originalPrice": 25000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_CLASSIC_MILO",
+          "description": "Kelezatan malt cokelat Milo legendaris disajikan dengan racikan khas Fore yang ekstra creamy.",
+          "productCode": "FORE_CLASSIC_MILO"
+        },
+        {
+          "id": 2030,
+          "name": "Dark Chocolate",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/dark-chocolate.webp",
+          "isCombo": false,
+          "basePrice": 34000,
+          "originalPrice": 34000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_DARK_CHOCOLATE",
+          "description": "Cokelat hitam premium pekat dengan citarasa pahit-manis mewah bertekstur kental.",
+          "productCode": "FORE_DARK_CHOCOLATE"
+        },
+        {
+          "id": 2031,
+          "name": "Matcha Butter Salt Cream",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/matcha-butter-salt-cream.webp",
+          "isCombo": false,
+          "basePrice": 31000,
+          "originalPrice": 31000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_MATCHA_BUTTER_SALT_CREAM",
+          "description": "Teh hijau matcha murni berdampingan dengan lapisan krim butter sea salt gurih legit.",
+          "productCode": "FORE_MATCHA_BUTTER_SALT_CREAM"
+        },
+        {
+          "id": 2032,
+          "name": "Matcha Green Tea",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/matcha-green-tea.webp",
+          "isCombo": false,
+          "basePrice": 34000,
+          "originalPrice": 34000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_MATCHA_GREEN_TEA",
+          "description": "Bubuk matcha berkualitas tinggi asal Jepang diaduk bersama susu segar bercitarasa lembut.",
+          "productCode": "FORE_MATCHA_GREEN_TEA"
+        }
+      ]
+    },
+    {
+      "code": "fore-junior",
+      "name": "Fore Junior",
+      "products": [
         {
           "id": 2025,
           "name": "Butterscotch Milk Crumble",
@@ -466,17 +548,23 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "productCode": "FORE_CHOCO_COOKIE_SHAKE"
         },
         {
-          "id": 2028,
-          "name": "Classic Milo",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/classic-milo.webp",
+          "id": 2033,
+          "name": "Vanilla O' Crumbs",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/vanilla-o-crumbs.webp",
           "isCombo": false,
-          "basePrice": 25000,
-          "originalPrice": 25000,
+          "basePrice": 29000,
+          "originalPrice": 29000,
           "isSoldOut": false,
-          "bundleCode": "FORE_CLASSIC_MILO",
-          "description": "Kelezatan malt cokelat Milo legendaris disajikan dengan racikan khas Fore yang ekstra creamy.",
-          "productCode": "FORE_CLASSIC_MILO"
-        },
+          "bundleCode": "FORE_VANILLA_O_CRUMBS",
+          "description": "Susu vanila harum manis dilengkapi topping remah biskuit cokelat renyah yang seru dikunyah.",
+          "productCode": "FORE_VANILLA_O_CRUMBS"
+        }
+      ]
+    },
+    {
+      "code": "refresher",
+      "name": "Refresher",
+      "products": [
         {
           "id": 2029,
           "name": "Coco Peach Fusion",
@@ -490,52 +578,28 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "productCode": "FORE_COCO_PEACH_FUSION"
         },
         {
-          "id": 2030,
-          "name": "Dark Chocolate",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/dark-chocolate.webp",
-          "isCombo": false,
-          "basePrice": 34000,
-          "originalPrice": 34000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_DARK_CHOCOLATE",
-          "description": "Cokelat hitam premium pekat dengan citarasa pahit-manis mewah bertekstur kental.",
-          "productCode": "FORE_DARK_CHOCOLATE"
-        },
-        {
-          "id": 2031,
-          "name": "Matcha Butter Salt Cream",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/matcha-butter-salt-cream.webp",
-          "isCombo": false,
-          "basePrice": 31000,
-          "originalPrice": 31000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_MATCHA_BUTTER_SALT_CREAM",
-          "description": "Teh hijau matcha murni berdampingan dengan lapisan krim butter sea salt gurih legit.",
-          "productCode": "FORE_MATCHA_BUTTER_SALT_CREAM"
-        },
-        {
-          "id": 2032,
-          "name": "Matcha Green Tea",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/matcha-green-tea.webp",
-          "isCombo": false,
-          "basePrice": 34000,
-          "originalPrice": 34000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_MATCHA_GREEN_TEA",
-          "description": "Bubuk matcha berkualitas tinggi asal Jepang diaduk bersama susu segar bercitarasa lembut.",
-          "productCode": "FORE_MATCHA_GREEN_TEA"
-        },
-        {
-          "id": 2033,
-          "name": "Vanilla O' Crumbs",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/vanilla-o-crumbs.webp",
+          "id": 2037,
+          "name": "Hibiscus Lychee Peach Yakult",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/hibiscus-lychee-peach-yakult.webp",
           "isCombo": false,
           "basePrice": 29000,
           "originalPrice": 29000,
           "isSoldOut": false,
-          "bundleCode": "FORE_VANILLA_O_CRUMBS",
-          "description": "Susu vanila harum manis dilengkapi topping remah biskuit cokelat renyah yang seru dikunyah.",
-          "productCode": "FORE_VANILLA_O_CRUMBS"
+          "bundleCode": "FORE_HIBISCUS_LYCHEE_PEACH_YAKULT",
+          "description": "Teh bunga rosella berpadu manis leci, persik harum, dan kebaikan Yakult yang menyegarkan.",
+          "productCode": "FORE_HIBISCUS_LYCHEE_PEACH_YAKULT"
+        },
+        {
+          "id": 2039,
+          "name": "Sunny Citrus Jasmine",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/sunny-citrus-jasmine.webp",
+          "isCombo": false,
+          "basePrice": 31000,
+          "originalPrice": 31000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_SUNNY_CITRUS_JASMINE",
+          "description": "Teh melati wangi berpadu perasan sari jeruk sitrus segar yang membangkitkan keceriaan hari.",
+          "productCode": "FORE_SUNNY_CITRUS_JASMINE"
         }
       ]
     },
@@ -580,18 +644,6 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "productCode": "FORE_GREEN_TEA_MINT"
         },
         {
-          "id": 2037,
-          "name": "Hibiscus Lychee Peach Yakult",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/hibiscus-lychee-peach-yakult.webp",
-          "isCombo": false,
-          "basePrice": 29000,
-          "originalPrice": 29000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_HIBISCUS_LYCHEE_PEACH_YAKULT",
-          "description": "Teh bunga rosella berpadu manis leci, persik harum, dan kebaikan Yakult yang menyegarkan.",
-          "productCode": "FORE_HIBISCUS_LYCHEE_PEACH_YAKULT"
-        },
-        {
           "id": 2038,
           "name": "Pure Chamomile",
           "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/pure-chamomile.webp",
@@ -602,228 +654,6 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "bundleCode": "FORE_PURE_CHAMOMILE",
           "description": "Seduhan kuncup bunga chamomile alami bebas kafein dengan aroma lembut penenang suasana.",
           "productCode": "FORE_PURE_CHAMOMILE"
-        },
-        {
-          "id": 2039,
-          "name": "Sunny Citrus Jasmine",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/sunny-citrus-jasmine.webp",
-          "isCombo": false,
-          "basePrice": 31000,
-          "originalPrice": 31000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_SUNNY_CITRUS_JASMINE",
-          "description": "Teh melati wangi berpadu perasan sari jeruk sitrus segar yang membangkitkan keceriaan hari.",
-          "productCode": "FORE_SUNNY_CITRUS_JASMINE"
-        }
-      ]
-    },
-    {
-      "code": "fore-deli",
-      "name": "Fore Deli",
-      "products": [
-        {
-          "id": 2040,
-          "name": "Almond Croissant",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/almond-croissant.webp",
-          "isCombo": false,
-          "basePrice": 36000,
-          "originalPrice": 36000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_ALMOND_CROISSANT",
-          "description": "Croissant berlapis renyah dengan isian pasta almond manis dan taburan irisan almond panggang.",
-          "productCode": "FORE_ALMOND_CROISSANT"
-        },
-        {
-          "id": 2041,
-          "name": "Banana Chocolate Cake",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/banana-chocolate-cake.webp",
-          "isCombo": false,
-          "basePrice": 27000,
-          "originalPrice": 27000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_BANANA_CHOCOLATE_CAKE",
-          "description": "Kue pisang empuk lembut berpadu lelehan cokelat lezat yang pas menemani waktu ngopi.",
-          "productCode": "FORE_BANANA_CHOCOLATE_CAKE"
-        },
-        {
-          "id": 2042,
-          "name": "Beef Mentai Sandwich",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/beef-mentai-sandwich.webp",
-          "isCombo": false,
-          "basePrice": 39000,
-          "originalPrice": 39000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_BEEF_MENTAI_SANDWICH",
-          "description": "Roti lapis isi daging sapi gurih dengan saus mentai bakar khas Jepang yang creamy dan umami.",
-          "productCode": "FORE_BEEF_MENTAI_SANDWICH"
-        },
-        {
-          "id": 2043,
-          "name": "Beef & Omelette Toast",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/beef-omelette-toast.webp",
-          "isCombo": false,
-          "basePrice": 36000,
-          "originalPrice": 36000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_BEEF_OMELETTE_TOAST",
-          "description": "Roti panggang garing dengan isian telur dadar empuk dan irisan daging sapi gurih mengenyangkan.",
-          "productCode": "FORE_BEEF_OMELETTE_TOAST"
-        },
-        {
-          "id": 2044,
-          "name": "Blueberry Cheese Muffin",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/blueberry-cheese-muffin.webp",
-          "isCombo": false,
-          "basePrice": 36000,
-          "originalPrice": 36000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_BLUEBERRY_CHEESE_MUFFIN",
-          "description": "Muffin lembut dengan sensasi manis asam buah bluberi segar dan gurihnya potongan keju.",
-          "productCode": "FORE_BLUEBERRY_CHEESE_MUFFIN"
-        },
-        {
-          "id": 2045,
-          "name": "Butter Croissant",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/butter-croissant.webp",
-          "isCombo": false,
-          "basePrice": 24000,
-          "originalPrice": 24000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_BUTTER_CROISSANT",
-          "description": "Pastry klasik Prancis berbahan butter pilihan dengan lapisan luar renyah dan bagian dalam lembut.",
-          "productCode": "FORE_BUTTER_CROISSANT"
-        },
-        {
-          "id": 2046,
-          "name": "Cheesy Tuna Sandwich",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/cheesy-tuna-sandwich.webp",
-          "isCombo": false,
-          "basePrice": 39000,
-          "originalPrice": 39000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_CHEESY_TUNA_SANDWICH",
-          "description": "Sandwich isi olahan tuna gurih berbumbu rempah dengan lelehan keju lezat yang melimpah.",
-          "productCode": "FORE_CHEESY_TUNA_SANDWICH"
-        },
-        {
-          "id": 2047,
-          "name": "Chicken Teriyaki Sandwich",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/chicken-teriyaki-sandwich.webp",
-          "isCombo": false,
-          "basePrice": 39000,
-          "originalPrice": 39000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_CHICKEN_TERIYAKI_SANDWICH",
-          "description": "Daging ayam empuk berbalut saus teriyaki manis gurih diapit roti lembut segar pilihan.",
-          "productCode": "FORE_CHICKEN_TERIYAKI_SANDWICH"
-        },
-        {
-          "id": 2048,
-          "name": "Choco Melt Muffin",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/choco-melt-muffin.webp",
-          "isCombo": false,
-          "basePrice": 36000,
-          "originalPrice": 36000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_CHOCO_MELT_MUFFIN",
-          "description": "Muffin cokelat kaya rasa dengan inti cokelat meleleh hangat yang memanjakan pecinta manis.",
-          "productCode": "FORE_CHOCO_MELT_MUFFIN"
-        },
-        {
-          "id": 2049,
-          "name": "Kouign-Amann",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/kouign-amann.webp",
-          "isCombo": false,
-          "basePrice": 29000,
-          "originalPrice": 29000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_KOUIGN_AMANN",
-          "description": "Pastry tradisional berlapis mentega dengan karamelisasi gula garing di permukaan yang adiktif.",
-          "productCode": "FORE_KOUIGN_AMANN"
-        },
-        {
-          "id": 2050,
-          "name": "Mushroom Truffle Sandwich",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/mushroom-truffle-sandwich.webp",
-          "isCombo": false,
-          "basePrice": 42000,
-          "originalPrice": 42000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_MUSHROOM_TRUFFLE_SANDWICH",
-          "description": "Sandwich premium dengan tumisan jamur gurih beraroma minyak truffle mewah nan menggugah selera.",
-          "productCode": "FORE_MUSHROOM_TRUFFLE_SANDWICH"
-        },
-        {
-          "id": 2051,
-          "name": "Pain au Chocolat",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/pain-au-chocolat.webp",
-          "isCombo": false,
-          "basePrice": 29000,
-          "originalPrice": 29000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_PAIN_AU_CHOCOLAT",
-          "description": "Croissant renyah berlapis mentega dengan dua batang cokelat hitam lezat di bagian tengahnya.",
-          "productCode": "FORE_PAIN_AU_CHOCOLAT"
-        },
-        {
-          "id": 2052,
-          "name": "Roll Cake Cheese Pandan",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/roll-cake-cheese-pandan.webp",
-          "isCombo": false,
-          "basePrice": 27000,
-          "originalPrice": 27000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_ROLL_CAKE_CHEESE_PANDAN",
-          "description": "Bolu gulung lembut wangi pandan asli berpadu krim gurih dan parutan keju melimpah.",
-          "productCode": "FORE_ROLL_CAKE_CHEESE_PANDAN"
-        },
-        {
-          "id": 2053,
-          "name": "Roll Cake Mocha",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/roll-cake-mocha.webp",
-          "isCombo": false,
-          "basePrice": 27000,
-          "originalPrice": 27000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_ROLL_CAKE_MOCHA",
-          "description": "Bolu gulung moka klasik bertekstur airy dengan krim moka beraroma kopi cokelat yang harmonis.",
-          "productCode": "FORE_ROLL_CAKE_MOCHA"
-        },
-        {
-          "id": 2054,
-          "name": "Roll Cake Peanut Butter & Jam",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/roll-cake-peanut-butter-jam.webp",
-          "isCombo": false,
-          "basePrice": 27000,
-          "originalPrice": 27000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_ROLL_CAKE_PEANUT_BUTTER_JAM",
-          "description": "Bolu gulung lezat dengan perpaduan selai kacang gurih creamy dan selai buah manis segar.",
-          "productCode": "FORE_ROLL_CAKE_PEANUT_BUTTER_JAM"
-        },
-        {
-          "id": 2055,
-          "name": "Smoked Beef & Cheese Sandwich",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/smoked-beef-cheese-sandwich.webp",
-          "isCombo": false,
-          "basePrice": 39000,
-          "originalPrice": 39000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_SMOKED_BEEF_CHEESE_SANDWICH",
-          "description": "Roti lapis dengan irisan daging sapi asap harum berpadu keju cheddar lezat yang gurih mantap.",
-          "productCode": "FORE_SMOKED_BEEF_CHEESE_SANDWICH"
-        },
-        {
-          "id": 2056,
-          "name": "Triple Cheese Danish",
-          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/triple-cheese-danish.webp",
-          "isCombo": false,
-          "basePrice": 36000,
-          "originalPrice": 36000,
-          "isSoldOut": false,
-          "bundleCode": "FORE_TRIPLE_CHEESE_DANISH",
-          "description": "Pastry danish renyah dengan kombinasi tiga jenis keju pilihan untuk sensasi rasa gurih maksimal.",
-          "productCode": "FORE_TRIPLE_CHEESE_DANISH"
         }
       ]
     },
@@ -1054,6 +884,216 @@ export const FORE_MENU_CACHE: { menuGroups: MenuGroup[] } = {
           "productCode": "FORE_SALTED_SPANISH_LATTE_1L"
         }
       ]
+    },
+    {
+      "code": "fore-deli",
+      "name": "Fore Deli",
+      "products": [
+        {
+          "id": 2040,
+          "name": "Almond Croissant",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/almond-croissant.webp",
+          "isCombo": false,
+          "basePrice": 36000,
+          "originalPrice": 36000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_ALMOND_CROISSANT",
+          "description": "Croissant berlapis renyah dengan isian pasta almond manis dan taburan irisan almond panggang.",
+          "productCode": "FORE_ALMOND_CROISSANT"
+        },
+        {
+          "id": 2041,
+          "name": "Banana Chocolate Cake",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/banana-chocolate-cake.webp",
+          "isCombo": false,
+          "basePrice": 27000,
+          "originalPrice": 27000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_BANANA_CHOCOLATE_CAKE",
+          "description": "Kue pisang empuk lembut berpadu lelehan cokelat lezat yang pas menemani waktu ngopi.",
+          "productCode": "FORE_BANANA_CHOCOLATE_CAKE"
+        },
+        {
+          "id": 2042,
+          "name": "Beef Mentai Sandwich",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/beef-mentai-sandwich.webp",
+          "isCombo": false,
+          "basePrice": 39000,
+          "originalPrice": 39000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_BEEF_MENTAI_SANDWICH",
+          "description": "Roti lapis isi daging sapi gurih dengan saus mentai bakar khas Jepang yang creamy dan umami.",
+          "productCode": "FORE_BEEF_MENTAI_SANDWICH"
+        },
+        {
+          "id": 2043,
+          "name": "Beef & Omelette Toast",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/beef-omelette-toast.webp",
+          "isCombo": false,
+          "basePrice": 36000,
+          "originalPrice": 36000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_BEEF_OMELETTE_TOAST",
+          "description": "Roti panggang garing dengan isian telur dadar empuk dan irisan daging sapi gurih mengenyangkan.",
+          "productCode": "FORE_BEEF_OMELETTE_TOAST"
+        },
+        {
+          "id": 2044,
+          "name": "Blueberry Cheese Muffin",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/blueberry-cheese-muffin.webp",
+          "isCombo": false,
+          "basePrice": 36000,
+          "originalPrice": 36000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_BLUEBERRY_CHEESE_MUFFIN",
+          "description": "Muffin lembut dengan sensasi manis asam buah bluberi segar dan gurihnya potongan keju.",
+          "productCode": "FORE_BLUEBERRY_CHEESE_MUFFIN"
+        },
+        {
+          "id": 2045,
+          "name": "Butter Croissant",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/butter-croissant.webp",
+          "isCombo": false,
+          "basePrice": 24000,
+          "originalPrice": 24000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_BUTTER_CROISSANT",
+          "description": "Pastry klasik Prancis berbahan butter pilihan dengan lapisan luar renyah dan bagian dalam lembut.",
+          "productCode": "FORE_BUTTER_CROISSANT"
+        },
+        {
+          "id": 2046,
+          "name": "Cheesy Tuna Sandwich",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/cheesy-tuna-sandwich.webp",
+          "isCombo": false,
+          "basePrice": 39000,
+          "originalPrice": 39000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_CHEESY_TUNA_SANDWICH",
+          "description": "Sandwich isi olahan tuna gurih berbumbu rempah dengan lelehan keju lezat yang melimpah.",
+          "productCode": "FORE_CHEESY_TUNA_SANDWICH"
+        },
+        {
+          "id": 2047,
+          "name": "Chicken Teriyaki Sandwich",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/chicken-teriyaki-sandwich.webp",
+          "isCombo": false,
+          "basePrice": 39000,
+          "originalPrice": 39000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_CHICKEN_TERIYAKI_SANDWICH",
+          "description": "Daging ayam empuk berbalut saus teriyaki manis gurih diapit roti lembut segar pilihan.",
+          "productCode": "FORE_CHICKEN_TERIYAKI_SANDWICH"
+        },
+        {
+          "id": 2048,
+          "name": "Choco Melt Muffin",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/choco-melt-muffin.webp",
+          "isCombo": false,
+          "basePrice": 36000,
+          "originalPrice": 36000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_CHOCO_MELT_MUFFIN",
+          "description": "Muffin cokelat kaya rasa dengan inti cokelat meleleh hangat yang memanjakan pecinta manis.",
+          "productCode": "FORE_CHOCO_MELT_MUFFIN"
+        },
+        {
+          "id": 2049,
+          "name": "Kouign-Amann",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/kouign-amann.webp",
+          "isCombo": false,
+          "basePrice": 29000,
+          "originalPrice": 29000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_KOUIGN_AMANN",
+          "description": "Pastry tradisional berlapis mentega dengan karamelisasi gula garing di permukaan yang adiktif.",
+          "productCode": "FORE_KOUIGN_AMANN"
+        },
+        {
+          "id": 2050,
+          "name": "Mushroom Truffle Sandwich",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/mushroom-truffle-sandwich.webp",
+          "isCombo": false,
+          "basePrice": 42000,
+          "originalPrice": 42000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_MUSHROOM_TRUFFLE_SANDWICH",
+          "description": "Sandwich premium dengan tumisan jamur gurih beraroma minyak truffle mewah nan menggugah selera.",
+          "productCode": "FORE_MUSHROOM_TRUFFLE_SANDWICH"
+        },
+        {
+          "id": 2051,
+          "name": "Pain au Chocolat",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/pain-au-chocolat.webp",
+          "isCombo": false,
+          "basePrice": 29000,
+          "originalPrice": 29000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_PAIN_AU_CHOCOLAT",
+          "description": "Croissant renyah berlapis mentega dengan dua batang cokelat hitam lezat di bagian tengahnya.",
+          "productCode": "FORE_PAIN_AU_CHOCOLAT"
+        },
+        {
+          "id": 2052,
+          "name": "Roll Cake Cheese Pandan",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/roll-cake-cheese-pandan.webp",
+          "isCombo": false,
+          "basePrice": 27000,
+          "originalPrice": 27000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_ROLL_CAKE_CHEESE_PANDAN",
+          "description": "Bolu gulung lembut wangi pandan asli berpadu krim gurih dan parutan keju melimpah.",
+          "productCode": "FORE_ROLL_CAKE_CHEESE_PANDAN"
+        },
+        {
+          "id": 2053,
+          "name": "Roll Cake Mocha",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/roll-cake-mocha.webp",
+          "isCombo": false,
+          "basePrice": 27000,
+          "originalPrice": 27000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_ROLL_CAKE_MOCHA",
+          "description": "Bolu gulung moka klasik bertekstur airy dengan krim moka beraroma kopi cokelat yang harmonis.",
+          "productCode": "FORE_ROLL_CAKE_MOCHA"
+        },
+        {
+          "id": 2054,
+          "name": "Roll Cake Peanut Butter & Jam",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/roll-cake-peanut-butter-jam.webp",
+          "isCombo": false,
+          "basePrice": 27000,
+          "originalPrice": 27000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_ROLL_CAKE_PEANUT_BUTTER_JAM",
+          "description": "Bolu gulung lezat dengan perpaduan selai kacang gurih creamy dan selai buah manis segar.",
+          "productCode": "FORE_ROLL_CAKE_PEANUT_BUTTER_JAM"
+        },
+        {
+          "id": 2055,
+          "name": "Smoked Beef & Cheese Sandwich",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/smoked-beef-cheese-sandwich.webp",
+          "isCombo": false,
+          "basePrice": 39000,
+          "originalPrice": 39000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_SMOKED_BEEF_CHEESE_SANDWICH",
+          "description": "Roti lapis dengan irisan daging sapi asap harum berpadu keju cheddar lezat yang gurih mantap.",
+          "productCode": "FORE_SMOKED_BEEF_CHEESE_SANDWICH"
+        },
+        {
+          "id": 2056,
+          "name": "Triple Cheese Danish",
+          "image": "https://gambar.cimagroup.my.id/fore/fore-images-webp-v2/triple-cheese-danish.webp",
+          "isCombo": false,
+          "basePrice": 36000,
+          "originalPrice": 36000,
+          "isSoldOut": false,
+          "bundleCode": "FORE_TRIPLE_CHEESE_DANISH",
+          "description": "Pastry danish renyah dengan kombinasi tiga jenis keju pilihan untuk sensasi rasa gurih maksimal.",
+          "productCode": "FORE_TRIPLE_CHEESE_DANISH"
+        }
+      ]
     }
   ]
 };
@@ -1111,26 +1151,19 @@ export function findForeProduct(identifier: string, outletCode?: string | null):
 }
 
 /**
- * Menghasilkan ProductOptionDetails untuk produk Fore.
- * Menyediakan opsi umum (Ukuran, Es, Manis) jika diperlukan bottom sheet varian.
+ * Menghasilkan ProductOptionDetails untuk produk Fore Coffee berdasarkan
+ * matriks kustomisasi resmi yang telah disesuaikan admin (fore-customization-data.ts).
  */
 export function getForeProductOptions(bundleCode: string, outletCode?: string | null): ProductOptionDetails | null {
   const product = findForeProduct(bundleCode, outletCode);
   if (!product) return null;
 
-  const is1L = product.bundleCode.includes('1L') || product.name.includes('1L');
-  const isFood = product.bundleCode.includes('SANDWICH') ||
-    product.bundleCode.includes('CROISSANT') ||
-    product.bundleCode.includes('CAKE') ||
-    product.bundleCode.includes('MUFFIN') ||
-    product.bundleCode.includes('TOAST') ||
-    product.bundleCode.includes('DANISH') ||
-    product.bundleCode.includes('KOUIGN');
+  const itemConfig = getForeItemConfig(product.name);
 
-  // Makanan atau 1L tidak memerlukan opsi ice/sweetness kompleks
-  if (isFood || is1L) {
+  // Jika produk tidak memiliki konfigurasi kustomisasi atau hasCustomization === false (misal: Fore Deli)
+  if (!itemConfig || !itemConfig.hasCustomization) {
     const skuCode = `${product.bundleCode}_DEFAULT`;
-    const sku = {
+    const sku: VariantSku = {
       sku: skuCode,
       combinationKey: 'default',
       name: product.name,
@@ -1150,62 +1183,274 @@ export function getForeProductOptions(bundleCode: string, outletCode?: string | 
     };
   }
 
-  // Minuman standar Fore
-  const regularSkuCode = `${product.bundleCode}_REGULAR`;
-  const largeSkuCode = `${product.bundleCode}_LARGE`;
+  const dimensions: VariantDimension[] = [];
+  const skus: VariantSku[] = [];
+  const optionMap: Record<string, VariantSku> = {};
+  const defaultSelectionMap: Record<string, string> = {};
   const largeAddition = 7000;
 
-  const regularSku = {
-    sku: regularSkuCode,
-    combinationKey: '1',
-    name: `${product.name} (Regular)`,
-    description: product.description,
-    price: product.basePrice,
-    variantAddition: 0,
-  };
+  // Kasus 1: Minuman Ice & Hot (canIce && canHot)
+  if (itemConfig.canIce && itemConfig.canHot) {
+    dimensions.push({
+      code: 1,
+      name: 'Suhu',
+      values: [
+        { id: 1, name: 'Ice' },
+        { id: 2, name: 'Hot' },
+      ],
+    });
 
-  const largeSku = {
-    sku: largeSkuCode,
-    combinationKey: '2',
-    name: `${product.name} (Large)`,
-    description: product.description,
-    price: product.basePrice + largeAddition,
-    variantAddition: largeAddition,
-  };
+    const cupValues: VariantDimensionValue[] = [{ id: 1, name: 'Regular' }];
+    if (itemConfig.sizes.large) {
+      cupValues.push({ id: 2, name: 'Large (+Rp7.000)' });
+    }
+    dimensions.push({
+      code: 2,
+      name: 'Ukuran Cup',
+      values: cupValues,
+    });
+
+    defaultSelectionMap['1'] = '1'; // Ice
+    defaultSelectionMap['2'] = '1'; // Regular
+
+    // Kombinasi SKUs
+    // Ice Regular
+    const iceRegSku: VariantSku = {
+      sku: `${product.bundleCode}_ICE_REG`,
+      combinationKey: '1-1:2-1:',
+      name: `${product.name} (Ice, Regular)`,
+      description: product.description,
+      price: product.basePrice,
+      variantAddition: 0,
+    };
+    skus.push(iceRegSku);
+    optionMap['1-1:2-1:'] = iceRegSku;
+
+    // Ice Large
+    if (itemConfig.sizes.large) {
+      const iceLargeSku: VariantSku = {
+        sku: `${product.bundleCode}_ICE_LRG`,
+        combinationKey: '1-1:2-2:',
+        name: `${product.name} (Ice, Large)`,
+        description: product.description,
+        price: product.basePrice + largeAddition,
+        variantAddition: largeAddition,
+      };
+      skus.push(iceLargeSku);
+      optionMap['1-1:2-2:'] = iceLargeSku;
+    }
+
+    // Hot Regular
+    const hotRegSku: VariantSku = {
+      sku: `${product.bundleCode}_HOT_REG`,
+      combinationKey: '1-2:2-1:',
+      name: `${product.name} (Hot, Regular)`,
+      description: product.description,
+      price: product.basePrice,
+      variantAddition: 0,
+    };
+    skus.push(hotRegSku);
+    optionMap['1-2:2-1:'] = hotRegSku;
+
+    // Hot Large
+    if (itemConfig.sizes.large) {
+      const hotLargeSku: VariantSku = {
+        sku: `${product.bundleCode}_HOT_LRG`,
+        combinationKey: '1-2:2-2:',
+        name: `${product.name} (Hot, Large)`,
+        description: product.description,
+        price: product.basePrice + largeAddition,
+        variantAddition: largeAddition,
+      };
+      skus.push(hotLargeSku);
+      optionMap['1-2:2-2:'] = hotLargeSku;
+    }
+  } else if (itemConfig.canIce && !itemConfig.canHot) {
+    // Kasus 2: Minuman Ice Only (canIce && !canHot)
+    const cupValues: VariantDimensionValue[] = [{ id: 1, name: 'Regular' }];
+    if (itemConfig.sizes.large) {
+      cupValues.push({ id: 2, name: 'Large (+Rp7.000)' });
+    }
+    dimensions.push({
+      code: 1,
+      name: 'Ukuran Cup',
+      values: cupValues,
+    });
+    defaultSelectionMap['1'] = '1';
+
+    const regSku: VariantSku = {
+      sku: `${product.bundleCode}_REG`,
+      combinationKey: '1-1:',
+      name: `${product.name} (Regular)`,
+      description: product.description,
+      price: product.basePrice,
+      variantAddition: 0,
+    };
+    skus.push(regSku);
+    optionMap['1-1:'] = regSku;
+
+    if (itemConfig.sizes.large) {
+      const largeSku: VariantSku = {
+        sku: `${product.bundleCode}_LRG`,
+        combinationKey: '1-2:',
+        name: `${product.name} (Large)`,
+        description: product.description,
+        price: product.basePrice + largeAddition,
+        variantAddition: largeAddition,
+      };
+      skus.push(largeSku);
+      optionMap['1-2:'] = largeSku;
+    }
+  } else if (!itemConfig.canIce && itemConfig.canHot) {
+    // Kasus 3: Minuman Hot Only (!canIce && canHot)
+    const cupValues: VariantDimensionValue[] = [{ id: 1, name: 'Regular' }];
+    if (itemConfig.sizes.large) {
+      cupValues.push({ id: 2, name: 'Large (+Rp7.000)' });
+    }
+    dimensions.push({
+      code: 1,
+      name: 'Ukuran Cup',
+      values: cupValues,
+    });
+    defaultSelectionMap['1'] = '1';
+
+    const regSku: VariantSku = {
+      sku: `${product.bundleCode}_REG`,
+      combinationKey: '1-1:',
+      name: `${product.name} (Regular)`,
+      description: product.description,
+      price: product.basePrice,
+      variantAddition: 0,
+    };
+    skus.push(regSku);
+    optionMap['1-1:'] = regSku;
+
+    if (itemConfig.sizes.large) {
+      const largeSku: VariantSku = {
+        sku: `${product.bundleCode}_LRG`,
+        combinationKey: '1-2:',
+        name: `${product.name} (Large)`,
+        description: product.description,
+        price: product.basePrice + largeAddition,
+        variantAddition: largeAddition,
+      };
+      skus.push(largeSku);
+      optionMap['1-2:'] = largeSku;
+    }
+  } else {
+    // Kasus 4: FOREveryone 1L (!canIce && !canHot, botol siap saji)
+    const defaultSku: VariantSku = {
+      sku: `${product.bundleCode}_1L`,
+      combinationKey: 'default',
+      name: product.name,
+      description: product.description,
+      price: product.basePrice,
+      variantAddition: 0,
+    };
+    skus.push(defaultSku);
+    optionMap['default'] = defaultSku;
+  }
+
+  // Notes Group (Es Batu, Kepanasan, Kemanisan, Cup)
+  const notes: ProductNoteGroup[] = [];
+
+  if (itemConfig.canIce && itemConfig.iceOptions.length > 0) {
+    notes.push({
+      name: 'Jumlah Es Batu',
+      type: 'radio',
+      options: [...itemConfig.iceOptions],
+    });
+  }
+
+  if (itemConfig.canHot) {
+    notes.push({
+      name: 'Tingkat Kepanasan',
+      type: 'radio',
+      options: ['Hot', 'Extra Hot'],
+    });
+  }
+
+  if (itemConfig.sweetnessOptions.length > 0) {
+    notes.push({
+      name: 'Tingkat Kemanisan',
+      type: 'radio',
+      options: [...itemConfig.sweetnessOptions],
+    });
+  }
+
+  if (itemConfig.seasonalCup) {
+    notes.push({
+      name: 'Pilihan Cup',
+      type: 'radio',
+      options: ['Seasonal Cup'],
+    });
+  }
+
+  // Addons: Dairy, Espresso, Syrup, Topping
+  const addons: Addon[] = [];
+
+  const slugify = (text: string) =>
+    text
+      .replace(/[^a-zA-Z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '')
+      .toUpperCase();
+
+  // Pilihan Susu
+  for (const dairy of itemConfig.dairyOptions) {
+    addons.push({
+      sku: `FORE_DAIRY_${slugify(dairy.name)}`,
+      name: dairy.name,
+      price: dairy.price,
+      categoryName: 'Pilihan Susu',
+      group: 'dairy',
+      isSoldOut: false,
+    });
+  }
+
+  // Pilihan Espresso
+  for (const esp of itemConfig.espressoOptions) {
+    addons.push({
+      sku: `FORE_ESPRESSO_${slugify(esp.name)}`,
+      name: esp.name,
+      price: esp.price,
+      categoryName: 'Pilihan Espresso',
+      group: 'espresso',
+      isSoldOut: false,
+    });
+  }
+
+  // Pilihan Sirup
+  for (const syrup of itemConfig.syrupOptions) {
+    addons.push({
+      sku: `FORE_SYRUP_${slugify(syrup.name)}`,
+      name: syrup.name,
+      price: syrup.price,
+      categoryName: 'Pilihan Sirup',
+      group: 'syrup',
+      isSoldOut: false,
+    });
+  }
+
+  // Pilihan Topping
+  for (const top of itemConfig.toppingOptions) {
+    addons.push({
+      sku: `FORE_TOPPING_${slugify(top.name)}`,
+      name: top.name,
+      price: top.price,
+      categoryName: 'Pilihan Topping',
+      group: 'topping',
+      isSoldOut: false,
+    });
+  }
 
   return {
     product,
-    dimensions: [
-      {
-        code: 1,
-        name: 'Ukuran Cup',
-        values: [
-          { id: 1, name: 'Regular' },
-          { id: 2, name: 'Large (+Rp7.000)' },
-        ],
-      },
-    ],
-    skus: [regularSku, largeSku],
-    optionMap: {
-      '1': regularSku,
-      '2': largeSku,
-    },
-    defaultSelectionMap: {
-      '1': '1',
-    },
-    addons: [],
-    notes: [
-      {
-        name: 'Tingkat Kemanisan',
-        type: 'radio',
-        options: ['Normal Sweet', 'Less Sweet', 'No Sugar'],
-      },
-      {
-        name: 'Jumlah Es',
-        type: 'radio',
-        options: ['Normal Ice', 'Less Ice', 'No Ice'],
-      },
-    ],
+    dimensions,
+    skus,
+    optionMap,
+    defaultSelectionMap,
+    addons,
+    notes,
   };
 }
 

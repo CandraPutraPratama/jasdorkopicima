@@ -44,7 +44,7 @@ test('getBrandConfig returns full config for fore', () => {
   assert.equal(brand?.name, 'Fore Coffee');
   assert.equal(brand?.status, 'active');
   assert.equal(brand?.tagline, 'Setiap Fore Punya Cerita');
-  assert.equal(brand?.promoBadge, '', 'Badge promo Fore dikosongkan');
+  assert.equal(brand?.promoBadge, 'DISKON 25% • FREE FEE');
   assert.equal(brand?.logo, '/brand-logos/logo-fore-baru.webp');
   assert.equal(brand?.outletCountLabel, undefined, 'Tidak ada angka outlet di-hardcode di BrandConfig');
   assert.ok(brand?.accentColor);
@@ -96,24 +96,43 @@ test('Fore menu and airport pricing tier override verification', async () => {
 
   // 1. Outlet bandara fore-t3inb menampilkan Aren Latte Rp33.000 (bukan Rp29.000)
   const airportMenu = getForeMenuForOutlet('fore-t3inb');
-  const airportCoffee = airportMenu.find((g) => g.code === 'coffee');
-  assert.ok(airportCoffee, 'Group coffee harus ada di menu bandara');
-  const airportArenLatte = airportCoffee.products.find((p) => p.name === 'Aren Latte');
+  const airportSignature = airportMenu.find((g) => g.code === 'fore-signature');
+  assert.ok(airportSignature, 'Group fore-signature harus ada di menu bandara');
+  const airportArenLatte = airportSignature.products.find((p) => p.name === 'Aren Latte');
   assert.ok(airportArenLatte, 'Aren Latte harus ada di menu bandara');
   assert.equal(airportArenLatte.basePrice, 33000, 'Harga Aren Latte di outlet bandara fore-t3inb harus Rp33.000');
 
   // 2. Outlet non-bandara fore-ahnas menampilkan Aren Latte harga nasional Rp29.000
   const nationalMenu = getForeMenuForOutlet('fore-ahnas');
-  const nationalCoffee = nationalMenu.find((g) => g.code === 'coffee');
-  assert.ok(nationalCoffee, 'Group coffee harus ada di menu nasional');
-  const nationalArenLatte = nationalCoffee.products.find((p) => p.name === 'Aren Latte');
+  const nationalSignature = nationalMenu.find((g) => g.code === 'fore-signature');
+  assert.ok(nationalSignature, 'Group fore-signature harus ada di menu nasional');
+  const nationalArenLatte = nationalSignature.products.find((p) => p.name === 'Aren Latte');
   assert.ok(nationalArenLatte, 'Aren Latte harus ada di menu nasional');
   assert.equal(nationalArenLatte.basePrice, 29000, 'Harga Aren Latte di outlet nasional fore-ahnas harus Rp29.000');
 
-  // 3. Total produk harus 74 item across 6 categories
+  // 3. Total produk harus 74 item across 11 categories sesuai Excel
   const totalItems = nationalMenu.reduce((sum, g) => sum + g.products.length, 0);
   assert.equal(totalItems, 74, 'Total item menu Fore harus 74');
-  assert.equal(nationalMenu.length, 6, 'Total kategori Fore harus 6');
+  assert.equal(nationalMenu.length, 11, 'Total kategori Fore harus 11 sesuai Excel');
+
+  const expectedCategoryOrder = [
+    'Favorit Choice',
+    'Fore Signature',
+    'Americano Series',
+    'Coffee',
+    'Non Coffee',
+    'Fore Junior',
+    'Refresher',
+    'Tea',
+    'Ice Blended',
+    'FOREveryone 1L',
+    'Fore Deli',
+  ];
+  assert.deepEqual(
+    nationalMenu.map((g) => g.name),
+    expectedCategoryOrder,
+    'Urutan kategori menu Fore harus presisi sesuai permintaan'
+  );
 
   // 4. Semua foto produk menggunakan URL R2 self-hosted cimagroup
   for (const group of nationalMenu) {

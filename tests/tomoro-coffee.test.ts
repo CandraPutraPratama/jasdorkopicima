@@ -234,10 +234,10 @@ test('Tomoro Coffee - Mixed Cart (1 B1G1 + 1 regular)', () => {
   assert.equal(breakdown.regularFee, 1500);
 });
 
-test('Tomoro Coffee - Status outlet snapshot & stale > 30m detection', () => {
+test('Tomoro Coffee - Status outlet mandiri tanpa blokir stale', () => {
   const now = new Date();
 
-  // Fresh active snapshot (10 menit lalu) -> BUKA
+  // Active snapshot -> BUKA
   const freshTime = new Date(now.getTime() - 10 * 60 * 1000).toISOString();
   const freshStatus = evaluateTomoroOutletStatus({
     is_active: true,
@@ -256,15 +256,15 @@ test('Tomoro Coffee - Status outlet snapshot & stale > 30m detection', () => {
   assert.equal(inactiveStatus.canOrder, false);
   assert.equal(inactiveStatus.orderReason, 'Outlet tidak aktif');
 
-  // Stale snapshot (> 30 menit lalu, misal 35 menit) -> TUTUP dengan peringatan belum terverifikasi
-  const staleTime = new Date(now.getTime() - 35 * 60 * 1000).toISOString();
-  const staleStatus = evaluateTomoroOutletStatus({
+  // Outlet aktif tetap BUKA mandiri meskipun snapshot lama (> 30 menit lalu)
+  const pastTime = new Date(now.getTime() - 35 * 60 * 1000).toISOString();
+  const pastStatus = evaluateTomoroOutletStatus({
     is_active: true,
-    updated_at: staleTime,
+    updated_at: pastTime,
   }, now);
-  assert.equal(staleStatus.isOpen, false);
-  assert.equal(staleStatus.canOrder, false);
-  assert.ok(staleStatus.orderReason?.includes('Status outlet belum terverifikasi'));
+  assert.equal(pastStatus.isOpen, true);
+  assert.equal(pastStatus.canOrder, true);
+  assert.equal(pastStatus.orderReason, null);
 });
 
 test('Tomoro Coffee - buildTomoroStatusUpsertRows hanya memuat outlet DB yang dikenal penyedia', () => {

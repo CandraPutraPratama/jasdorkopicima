@@ -60,3 +60,6 @@ supabase/.temp/
 
 # log dev lokal
 .dev-server.log
+
+# temporary office lock files
+~$*

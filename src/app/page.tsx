@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useOperationalStatus } from '@/hooks/useOperationalStatus';
+import { useBrandStatus } from '@/hooks/useBrandStatus';
 import { ClosedScreen } from '@/components/ClosedScreen';
 import { Header } from '@/components/Header';
 import { BrandCard } from '@/components/BrandCard';
@@ -23,6 +24,7 @@ export default function PortalPage() {
   }, []);
 
   const { isOpen, status, isLoading: isStatusLoading, refetch } = useOperationalStatus();
+  const { isBrandActive } = useBrandStatus();
   const brands = getAllBrands();
   const [outletCounts, setOutletCounts] = useState<Record<string, number>>({});
 
@@ -31,7 +33,7 @@ export default function PortalPage() {
 
     async function loadOutletCounts() {
       const activeBrands = getAllBrands().filter(
-        (b) => b.status === 'active' || b.slug === 'kopi-kenangan' || b.slug === 'tomoro'
+        (b) => b.status === 'active' && isBrandActive(b.slug)
       );
       const counts: Record<string, number> = {};
 
@@ -132,7 +134,7 @@ export default function PortalPage() {
               Pilih Brand Kopi
             </h2>
             <span className="text-[11px] text-[#2B1D12] font-extrabold bg-[#FFE7D6] border border-[#2B1D12] px-2 py-0.5 rounded-lg shadow-[1px_1px_0px_#2B1D12]">
-              {brands.filter(isBrandOrderable).length} Brand Aktif
+              {brands.filter((b) => isBrandOrderable(b) && isBrandActive(b.slug)).length} Brand Aktif
             </span>
           </div>
 
@@ -142,6 +144,7 @@ export default function PortalPage() {
                 key={brand.slug}
                 brand={brand}
                 outletCount={outletCounts[brand.slug]}
+                isActive={isBrandActive(brand.slug)}
               />
             ))}
           </div>

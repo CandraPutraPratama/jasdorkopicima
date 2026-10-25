@@ -29,6 +29,7 @@ import { getRecommendedProducts } from '@/lib/recommendations';
 import { BundlePackageCard } from '@/components/BundlePackageCard';
 import { BundlePickerBottomSheet } from '@/components/BundlePickerBottomSheet';
 import { TomoroB1G1Modal } from '@/components/TomoroB1G1Modal';
+import { safeNormalizeOutletCode } from '@/lib/sanitizer';
 import type { Outlet, MenuGroup, Product } from '@/types/domain';
 
 interface OutletMenuPageProps {
@@ -37,7 +38,7 @@ interface OutletMenuPageProps {
 
 export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   const resolvedParams = use(params);
-  const outletCode = resolvedParams.code;
+  const outletCode = safeNormalizeOutletCode(resolvedParams.code);
   const brandSlug = resolveBrandSlugFromOutletCode(outletCode);
 
   const { isOpen: isJasdorOpen, status: jasdorStatus, isLoading: isJasdorLoading, refetch } =
@@ -621,7 +622,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                           <ProductCard
                             key={`${group.code}-${product.bundleCode || product.id}`}
                             product={product}
-                            brandSlug={isTomoro ? 'tomoro' : undefined}
+                            brandSlug={brandSlug}
                             isFavorite={isFavorite(product.id)}
                             onToggleFavorite={() => toggleFavorite(product.id)}
                             onSelectProduct={(p) => {
@@ -697,6 +698,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           onClose={() => setSelectedProduct(null)}
           onAddToCart={(item) => cart.addItem(item, outlet.code, outlet.name)}
           isOutletClosed={isOutletClosed}
+          brandSlug={brandSlug}
         />
       )}
 
