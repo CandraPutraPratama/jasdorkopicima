@@ -25,8 +25,8 @@ test('Tomoro Coffee - Brand Config and Provider', async () => {
   assert.ok(brand !== null, 'Brand tomoro harus terdaftar');
   assert.equal(brand?.slug, 'tomoro');
   assert.equal(brand?.name, 'TOMORO Coffee');
-  // Tomoro ditutup sementara (keputusan pemilik 2026-10-24)
-  assert.equal(brand?.status, 'coming_soon');
+  // Tomoro aktif
+  assert.equal(brand?.status, 'active');
   assert.equal(brand?.promoBadge, 'DISKON 50% + B1G1');
   assert.equal(brand?.logo, '/brand-logos/tomoro-logo-baru.svg');
 

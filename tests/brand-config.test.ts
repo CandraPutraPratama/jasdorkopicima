@@ -25,8 +25,8 @@ test('getBrandConfig returns full config for tomoro', () => {
   assert.ok(brand !== null, 'brand tomoro harus terdaftar');
   assert.equal(brand?.slug, 'tomoro');
   assert.equal(brand?.name, 'TOMORO Coffee');
-  // Tomoro ditutup sementara (keputusan pemilik 2026-10-24)
-  assert.equal(brand?.status, 'coming_soon');
+  // Tomoro aktif
+  assert.equal(brand?.status, 'active');
   assert.equal(brand?.promoBadge, 'DISKON 50% + B1G1');
   assert.equal(brand?.logo, '/brand-logos/tomoro-logo-baru.svg');
   assert.equal(brand?.outletCountLabel, undefined, 'Tidak ada angka outlet di-hardcode di BrandConfig');
@@ -60,15 +60,15 @@ test('getAllBrands returns registered brands list including fore', () => {
   assert.ok(slugs.includes('tomoro'));
 });
 
-test('isBrandOrderable: hanya Kopi Kenangan yang bisa diorder saat ini', () => {
+test('isBrandOrderable: brand dengan status active bisa diorder', () => {
   const kenangan = getBrandConfig('kopi-kenangan');
   const fore = getBrandConfig('fore');
   const tomoro = getBrandConfig('tomoro');
   assert.ok(kenangan && fore && tomoro);
   assert.equal(isBrandOrderable(kenangan), true);
-  assert.equal(isBrandOrderable(fore), false, 'Fore belum dibuka untuk order');
-  assert.equal(isBrandOrderable(tomoro), false, 'TOMORO sedang ditutup');
-  assert.equal(getAllBrands().filter(isBrandOrderable).length, 1, 'Badge portal harus menghitung 1 brand aktif');
+  assert.equal(isBrandOrderable(fore), true, 'Fore aktif untuk order');
+  assert.equal(isBrandOrderable(tomoro), true, 'TOMORO aktif untuk order');
+  assert.equal(getAllBrands().filter(isBrandOrderable).length, 3, 'Badge portal harus menghitung 3 brand aktif');
 });
 
 test('isReservedSlug blocks protected system routes', () => {

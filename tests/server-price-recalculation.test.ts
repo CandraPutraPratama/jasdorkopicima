@@ -9,6 +9,7 @@ import { calculateBundlePricing } from '../src/lib/bundling.ts';
 import { cacheService } from '../src/lib/cache.ts';
 import { kkApiClient } from '../src/lib/kk-client.ts';
 import { POST } from '../src/app/api/orders/create/route.ts';
+import { BRANDS } from '../src/lib/site-config.ts';
 import { setSupabaseServerClientInstance } from '../src/lib/supabase-server.ts';
 import type { CartItem } from '../src/lib/cart-reducer.ts';
 import type { Product } from '../src/types/domain.ts';
@@ -525,30 +526,37 @@ describe('Server-Side Price Recalculation (K1 Security Audit)', () => {
     });
 
     it('menolak order brand Tomoro selama brand ditutup (coming_soon) dengan HTTP 400', async () => {
-      const req = new Request('http://localhost:3000/api/orders/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          brandSlug: 'tomoro',
-          outletCode: 'tomoro-tgr47c',
-          customerName: 'Budi Santoso',
-          customerWa: '081234567890',
-          items: [
-            {
-              id: 'item-1',
-              bundleCode: 'tomoro-caffe-latte',
-              name: 'Caffe Latte',
-              basePrice: 25000,
-              quantity: 1,
-            },
-          ],
-        }),
-      });
+      const originalStatus = BRANDS['tomoro'].status;
+      BRANDS['tomoro'].status = 'coming_soon';
 
-      const res = await POST(req as any);
-      assert.strictEqual(res.status, 400);
-      const data = await res.json();
-      assert.ok(data.error?.includes('TOMORO Coffee saat ini sedang ditutup'));
+      try {
+        const req = new Request('http://localhost:3000/api/orders/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            brandSlug: 'tomoro',
+            outletCode: 'tomoro-tgr47c',
+            customerName: 'Budi Santoso',
+            customerWa: '081234567890',
+            items: [
+              {
+                id: 'item-1',
+                bundleCode: 'tomoro-caffe-latte',
+                name: 'Caffe Latte',
+                basePrice: 25000,
+                quantity: 1,
+              },
+            ],
+          }),
+        });
+
+        const res = await POST(req as any);
+        assert.strictEqual(res.status, 400);
+        const data = await res.json();
+        assert.ok(data.error?.includes('TOMORO Coffee saat ini sedang ditutup'));
+      } finally {
+        BRANDS['tomoro'].status = originalStatus;
+      }
     });
 
     it('menolak manipulasi basePrice dengan pesan "Harga menu berubah, silakan refresh keranjangmu."', async () => {

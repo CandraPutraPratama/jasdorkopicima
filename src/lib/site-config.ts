@@ -262,9 +262,7 @@ export const BRANDS: Record<string, BrandConfig> = {
     accentColor: '#E11D48',
     themeColor: '#BE123C',
     bannerGradient: 'from-[#E11D48] to-[#9F1239]',
-    // Ditutup sementara atas keputusan pemilik (2026-10-24): portal tampil
-    // "Segera Hadir", halaman brand = layar coming soon, order ditolak server.
-    status: 'coming_soon',
+    status: 'active',
     logo: '/brand-logos/tomoro-logo-baru.svg',
     adminWhatsApp: NOMOR_WHATSAPP_ADMIN,
     operatingHoursText: JADWAL_OPERASIONAL_LENGKAP,
@@ -286,13 +284,10 @@ export function getAllBrands(): BrandConfig[] {
 
 /**
  * Brand yang saat ini benar-benar bisa diorder pelanggan.
- * Satu-satunya sumber kebenaran untuk kartu brand portal dan badge hitungan
- * "Brand Aktif": hanya Kopi Kenangan yang buka order. TOMORO ditutup
- * sementara atas keputusan pemilik (2026-10-24) dan Fore belum dibuka untuk
- * order, jadi keduanya tampil "Segera Hadir" dan tidak ikut terhitung.
+ * Mengikuti konfigurasi status brand (active).
  */
 export function isBrandOrderable(brand: BrandConfig): boolean {
-  return brand.status === 'active' && brand.slug === 'kopi-kenangan';
+  return brand.status === 'active';
 }
 
 /**
