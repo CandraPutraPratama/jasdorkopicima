@@ -454,7 +454,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                         : `Outlet ini sedang tutup (${outlet.orderReason || 'Tidak menerima pesanan'})`}
                     </p>
                     <p className="text-[11px] text-amber-900 mt-1 leading-relaxed">
-                      Katalog menu tetap dapat dilihat (read-only) untuk window shopping. Silakan pilih outlet lain yang sedang buka untuk memesan.
+                      Menu tidak dapat dilihat saat outlet tutup. Silakan pilih outlet lain yang sedang buka untuk memesan.
                     </p>
                   </div>
                 </div>
@@ -479,7 +479,50 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
             )}
           </div>
 
-          {/* Kolom Pencarian Menu (Live Filter) */}
+          {isOutletClosed ? (
+            <div className="p-6 py-12 max-w-md mx-auto text-center space-y-4">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-[#FEF2F2] border-2 border-[#2B1D12] flex items-center justify-center text-3xl shadow-[3px_3px_0px_#2B1D12]">
+                🔒
+              </div>
+              <div className="space-y-2">
+                <h2 className="font-display font-black text-lg text-[#2B1D12]">
+                  Outlet Sedang Tutup
+                </h2>
+                <p className="text-xs text-[#4A3628] font-medium leading-relaxed">
+                  {outlet.openTime && outlet.closeTime
+                    ? `Pemesanan dibuka kembali pukul ${outlet.openTime.slice(0, 5)} WIB.`
+                    : `Outlet ini sedang tidak menerima pesanan (${outlet.orderReason || 'Tutup'}).`}
+                </p>
+                <p className="text-xs text-[#7A6658] font-bold">
+                  Menu tidak dapat dilihat saat outlet tutup. Silakan pilih outlet lain yang sedang buka untuk memesan.
+                </p>
+              </div>
+              <div className="pt-2 flex justify-center">
+                <Link
+                  href={`/${brandSlug}`}
+                  className="min-h-[44px] px-5 py-2.5 bg-[#2B1D12] text-[#FAF4E8] hover:bg-[#3D2817] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-display font-black rounded-xl inline-flex items-center gap-2 transition-all border-2 border-[#2B1D12] shadow-[3px_3px_0px_#C67D0A]"
+                >
+                  <span>Pilih Outlet Lain yang Buka</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Kolom Pencarian Menu (Live Filter) */}
           <div className="px-4 pt-3 pb-2 bg-[#FBF8F4]">
             <div className="relative flex items-center">
               <span className="absolute left-3.5 text-base text-[#8C7667] pointer-events-none select-none" aria-hidden="true">
@@ -756,11 +799,13 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
               </>
             )}
           </div>
+            </>
+          )}
         </div>
       )}
 
       {/* Lembar Pemilihan Isi Paket Bundling */}
-      {selectedBundleConfig && outlet && (
+      {!isOutletClosed && selectedBundleConfig && outlet && (
         <BundlePickerBottomSheet
           config={selectedBundleConfig}
           liveProducts={allOutletProducts}
@@ -774,7 +819,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
       )}
 
       {/* Modal Pemilihan Isi Paket B1G1 TOMORO */}
-      {isTomoro && isB1G1ModalOpen && outlet && (
+      {!isOutletClosed && isTomoro && isB1G1ModalOpen && outlet && (
         <TomoroB1G1Modal
           isOpen={isB1G1ModalOpen}
           onClose={() => setIsB1G1ModalOpen(false)}
@@ -788,7 +833,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
       )}
 
       {/* Lembar Detail Produk (Bottom Sheet) */}
-      {selectedProduct && outlet && (
+      {!isOutletClosed && selectedProduct && outlet && (
         <ProductBottomSheet
           outletCode={outlet.code}
           product={selectedProduct}

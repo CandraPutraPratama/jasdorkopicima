@@ -16,26 +16,36 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
   const statusBadgeText = isOrderable ? 'Buka' : outlet.orderReason || 'Tutup';
 
   const handleCardClick = () => {
-    // Selalu izinkan pembeli membuka outlet untuk melihat katalog menu
+    // Outlet yang tutup tidak dapat diklik
+    if (!isOrderable) return;
     router.push(`/outlet/${outlet.code}`);
   };
 
   return (
     <div
-      onClick={handleCardClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          router.push(`/outlet/${outlet.code}`);
-        }
-      }}
-      role="button"
-      tabIndex={0}
-      aria-label={`Pilih outlet ${outlet.name} - ${statusBadgeText}`}
-      className={`p-4 rounded-2xl border-2 transition outline-hidden cursor-pointer ${
+      onClick={isOrderable ? handleCardClick : undefined}
+      onKeyDown={
         isOrderable
-          ? 'bg-[#FFFDF9] border-[#2B1D12] shadow-[4px_4px_0px_#2B1D12] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_#2B1D12] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none focus-visible:ring-2 focus-visible:ring-[#C67D0A]'
-          : 'bg-[#FFFDF9]/95 border-[#2B1D12]/70 shadow-[3px_3px_0px_#2B1D12] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#2B1D12] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none focus-visible:ring-2 focus-visible:ring-[#C67D0A]'
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                router.push(`/outlet/${outlet.code}`);
+              }
+            }
+          : undefined
+      }
+      role={isOrderable ? 'button' : undefined}
+      tabIndex={isOrderable ? 0 : undefined}
+      aria-disabled={!isOrderable ? true : undefined}
+      aria-label={
+        isOrderable
+          ? `Pilih outlet ${outlet.name} - ${statusBadgeText}`
+          : `Outlet ${outlet.name} - ${statusBadgeText} (Tutup)`
+      }
+      className={`p-4 rounded-2xl border-2 transition outline-hidden ${
+        isOrderable
+          ? 'bg-[#FFFDF9] border-[#2B1D12] shadow-[4px_4px_0px_#2B1D12] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_#2B1D12] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none focus-visible:ring-2 focus-visible:ring-[#C67D0A] cursor-pointer'
+          : 'bg-[#F9F6F0] border-[#2B1D12]/30 shadow-none opacity-75 cursor-not-allowed select-none'
       }`}
     >
       <div className="flex items-start justify-between gap-2 mb-2">
@@ -95,7 +105,7 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
 
       <div className="pt-2.5 border-t-2 border-[#2B1D12]/10 flex items-center justify-between">
         <span className="text-[11px] text-[#4A3628] font-bold">
-          {isOrderable ? 'Pickup jasa order tersedia' : 'Tidak menerima pesanan'}
+          {isOrderable ? 'Pickup jasa order tersedia' : 'Outlet sedang tutup'}
         </span>
 
         {isOrderable ? (
@@ -124,18 +134,15 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
             </svg>
           </Link>
         ) : (
-          <Link
-            href={`/outlet/${outlet.code}`}
-            prefetch={true}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            className="min-h-[44px] px-4 py-2.5 bg-[#FAF4E8] hover:bg-[#F3EAD8] text-[#2B1D12] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-display font-black rounded-xl flex items-center gap-1.5 transition-all border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]"
+          <button
+            type="button"
+            disabled
+            aria-disabled="true"
+            className="min-h-[44px] px-4 py-2.5 bg-[#EFE9DF] text-[#7A6658] text-xs font-display font-black rounded-xl flex items-center gap-1.5 border-2 border-[#2B1D12]/20 cursor-not-allowed select-none opacity-80"
           >
-            <span>Lihat Menu</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-3.5 w-3.5"
+              className="h-3.5 w-3.5 text-[#7A6658]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -143,11 +150,12 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M9 5l7 7-7 7"
+                strokeWidth={2.3}
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
               />
             </svg>
-          </Link>
+            <span>Tutup</span>
+          </button>
         )}
       </div>
     </div>

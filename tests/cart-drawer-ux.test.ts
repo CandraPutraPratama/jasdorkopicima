@@ -72,17 +72,19 @@ test('ProductCard & ProductBottomSheet mendukung status outlet tutup', async () 
   assert.ok(bottomSheetCode.includes('Outlet Sedang Tutup'), 'ProductBottomSheet harus menampilkan teks Outlet Sedang Tutup saat nonaktif');
 });
 
-test('Outlet page memuat banner peringatan operasional tutup dan merender katalog read-only', async () => {
+test('Outlet page memuat banner peringatan operasional tutup dan menyembunyikan katalog menu saat tutup', async () => {
   const fs = await import('node:fs');
   const path = await import('node:path');
   const outletPageCode = fs.readFileSync(path.resolve('src/app/outlet/[code]/page.tsx'), 'utf-8');
 
   assert.ok(outletPageCode.includes('isOutletClosed'), 'Halaman outlet harus memiliki flag isOutletClosed');
   assert.ok(outletPageCode.includes('Outlet ini sedang tutup - pemesanan dibuka kembali pukul'), 'Halaman outlet harus memuat teks banner pembukaan kembali');
-  assert.ok(outletPageCode.includes('Katalog menu tetap dapat dilihat (read-only) untuk window shopping'), 'Halaman outlet harus menginformasikan bahwa menu tetap dapat dilihat');
+  assert.ok(outletPageCode.includes('Menu tidak dapat dilihat saat outlet tutup'), 'Halaman outlet harus menginformasikan bahwa menu tidak dapat dilihat saat outlet tutup');
+  assert.ok(outletPageCode.includes('{isOutletClosed ? ('), 'Halaman outlet harus memiliki percabangan kondisional saat outlet tutup');
+  assert.ok(outletPageCode.includes('Pilih Outlet Lain yang Buka'), 'Halaman outlet harus menyediakan tombol CTA ke outlet buka saat tutup');
 });
 
-test('OutletSearchCard menggunakan isOutletClosed dan mendukung klik seluruh kartu', async () => {
+test('OutletSearchCard menggunakan isOutletClosed dan menonaktifkan klik saat outlet tutup', async () => {
   const fs = await import('node:fs');
   const path = await import('node:path');
   const cardCode = fs.readFileSync(path.resolve('src/components/OutletSearchCard.tsx'), 'utf-8');
@@ -90,8 +92,10 @@ test('OutletSearchCard menggunakan isOutletClosed dan mendukung klik seluruh kar
   assert.ok(cardCode.includes('isOutletClosed'), 'OutletSearchCard harus mengimpor isOutletClosed');
   assert.ok(cardCode.includes('handleCardClick'), 'OutletSearchCard harus memiliki handler klik kartu');
   assert.ok(cardCode.includes('router.push'), 'OutletSearchCard harus navigasi dengan router.push');
-  assert.ok(cardCode.includes("'button'") || cardCode.includes('"button"'), 'OutletSearchCard harus memiliki role button untuk aksesibilitas');
-  assert.ok(cardCode.includes('Lihat Menu'), 'OutletSearchCard harus menyediakan link Lihat Menu saat outlet tutup');
+  assert.ok(cardCode.includes('if (!isOrderable) return'), 'OutletSearchCard harus memblokir navigasi saat outlet tutup');
+  assert.ok(cardCode.includes('cursor-not-allowed'), 'OutletSearchCard harus menggunakan cursor-not-allowed saat outlet tutup');
+  assert.ok(!cardCode.includes('Lihat Menu'), 'OutletSearchCard tidak boleh menyediakan link Lihat Menu saat outlet tutup');
+  assert.ok(cardCode.includes('Tutup'), 'OutletSearchCard harus menampilkan indikator Tutup saat outlet tutup');
 });
 
 
