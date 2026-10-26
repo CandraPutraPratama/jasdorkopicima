@@ -23,11 +23,38 @@ function isPaidRelevantOrder(o: OrderRecord): boolean {
   );
 }
 
+export type AdminTab = 'pesanan' | 'operasional' | 'mode_minimal' | 'brand';
+
 export default function AdminPesananPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
+
+  // Tab navigasi admin: default selalu 'pesanan' (Halaman Utama / Page 1)
+  const [activeTab, setActiveTab] = useState<AdminTab>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab') as AdminTab;
+      if (tabParam && ['pesanan', 'operasional', 'mode_minimal', 'brand'].includes(tabParam)) {
+        return tabParam;
+      }
+    }
+    return 'pesanan';
+  });
+
+  const handleSelectTab = (tab: AdminTab) => {
+    setActiveTab(tab);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (tab === 'pesanan') {
+        url.searchParams.delete('tab');
+      } else {
+        url.searchParams.set('tab', tab);
+      }
+      window.history.replaceState(null, '', url.pathname + (url.search ? url.search : ''));
+    }
+  };
 
   const [orders, setOrders] = useState<OrderRecord[]>([]);
   const [lastUpdatedAt, setLastUpdatedAt] = useState<Date | null>(null);
@@ -133,21 +160,45 @@ export default function AdminPesananPanel() {
     fetchSettings();
   }, [fetchOrders, fetchSettings]);
 
-  // Auto-refresh live: daftar pesanan diperbarui tiap 15 detik selama panel
-  // dibuka dan tab terlihat, supaya pesanan yang baru klik "Saya Sudah Bayar"
-  // langsung muncul tanpa menekan Segarkan. Polling ini sengaja tidak
-  // memakai spinner (tidak mengganggu admin yang sedang bekerja) dan
-  // dilewati saat tab tersembunyi, saat status sedang diubah, atau saat
-  // aksi massal berjalan. Pilihan massal yang ordernya sudah tidak lagi
-  // berstatus menunggu_konfirmasi ikut dibersihkan.
+  // Deteksi aktivitas user untuk smart polling hemat resource
+  const lastActivityRef = useRef<number>(0);
+  useEffect(() => {
+    lastActivityRef.current = Date.now();
+    const handleActivity = () => {
+      lastActivityRef.current = Date.now();
+    };
+    window.addEventListener('mousemove', handleActivity, { passive: true });
+    window.addEventListener('keydown', handleActivity, { passive: true });
+    window.addEventListener('scroll', handleActivity, { passive: true });
+    window.addEventListener('touchstart', handleActivity, { passive: true });
+    window.addEventListener('focus', handleActivity);
+    return () => {
+      window.removeEventListener('mousemove', handleActivity);
+      window.removeEventListener('keydown', handleActivity);
+      window.removeEventListener('scroll', handleActivity);
+      window.removeEventListener('touchstart', handleActivity);
+      window.removeEventListener('focus', handleActivity);
+    };
+  }, []);
+
+  // Auto-refresh live: daftar pesanan diperbarui tiap 20 detik (atau 60 detik jika standby/idle > 5 menit)
+  // Ini mencegah rate limit Cloudflare/Supabase ketika laptop dibuka seharian.
   useEffect(() => {
     if (isAuthenticated !== true) return;
     const tick = async () => {
       if (document.hidden || updatingOrderId !== null || isBulkQueueing) return;
+      const isIdle = lastActivityRef.current > 0 && Date.now() - lastActivityRef.current > 5 * 60 * 1000;
+      if (isIdle && Math.floor(Date.now() / 1000) % 60 >= 20) {
+        return;
+      }
       try {
         const res = await fetch('/api/admin/orders');
         if (res.status === 401) {
           setIsAuthenticated(false);
+          return;
+        }
+        if (res.status === 429) {
+          console.warn('[AdminOrders] Polling terkena pembatasan frekuensi sementara, menunggu siklus berikutnya.');
           return;
         }
         if (!res.ok) return;
@@ -168,7 +219,7 @@ export default function AdminPesananPanel() {
         // Abaikan galat sesaat; tick berikutnya mencoba lagi.
       }
     };
-    const timer = setInterval(tick, 15000);
+    const timer = setInterval(tick, 20000);
     return () => clearInterval(timer);
   }, [isAuthenticated, updatingOrderId, isBulkQueueing]);
 
@@ -450,6 +501,8 @@ export default function AdminPesananPanel() {
   });
 
   const needsRefundCount = orders.filter((o) => o.needs_refund).length;
+  const pendingConfirmationCount = orders.filter((o) => o.status === 'menunggu_konfirmasi').length;
+  const activeBrandsCount = Object.values(brandStatusMap).filter(Boolean).length;
 
   // Tampilan Loading Awal
   if (isAuthenticated === null) {
@@ -518,11 +571,11 @@ export default function AdminPesananPanel() {
   return (
     <div className="min-h-screen bg-[#FBF8F4] text-[#26150B] pb-20 font-sans">
       {/* Top Navbar */}
-      <header className="sticky top-0 z-20 bg-[#FBF8F4]/95 backdrop-blur-md border-b border-[#EFE5D8] px-4 py-3">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
+      <header className="sticky top-0 z-20 bg-[#FBF8F4]/95 backdrop-blur-md border-b-2 border-[#26150B]/10 px-4 py-2.5">
+        <div className="max-w-4xl mx-auto flex items-center justify-between mb-2">
           <div>
-            <h1 className="font-display text-base font-bold text-[#26150B]">Panel Pesanan Jasdor</h1>
-            <p className="text-[11px] text-[#7A6455]">Konfirmasi manual pembayaran QRIS</p>
+            <h1 className="font-display text-base font-black text-[#26150B]">Panel Admin Jasdor</h1>
+            <p className="text-[11px] text-[#7A6455] font-medium">Kelola pesanan dan kontrol operasional website</p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -545,25 +598,115 @@ export default function AdminPesananPanel() {
                 fetchSettings();
               }}
               disabled={isLoadingOrders || isLoadingSettings}
-              className="px-3 py-1.5 bg-white border border-[#E0D4C5] hover:bg-[#F2EBE1] text-[#26150B] text-xs font-semibold rounded-lg shadow-2xs transition"
+              className="px-3 py-1.5 bg-white border border-[#E0D4C5] hover:bg-[#F2EBE1] text-[#26150B] text-xs font-semibold rounded-lg shadow-2xs transition cursor-pointer"
             >
               {isLoadingOrders || isLoadingSettings ? 'Memuat...' : 'Segarkan'}
             </button>
             <button
               type="button"
               onClick={handleLogout}
-              className="px-3 py-1.5 bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold rounded-lg transition"
+              className="px-3 py-1.5 bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold rounded-lg transition cursor-pointer"
             >
               Keluar
             </button>
           </div>
         </div>
+
+        {/* Tab Navigasi Admin */}
+        <nav aria-label="Menu Navigasi Admin" className="max-w-4xl mx-auto flex items-center gap-1.5 overflow-x-auto pt-1 pb-0.5 text-xs">
+          <button
+            type="button"
+            onClick={() => handleSelectTab('pesanan')}
+            className={`min-h-[38px] px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 shrink-0 transition-all border-2 cursor-pointer ${
+              activeTab === 'pesanan'
+                ? 'bg-[#26150B] text-[#FBBF24] border-[#26150B] shadow-[2px_2px_0px_#C67D0A]'
+                : 'bg-white text-[#5A4537] border-[#E0D4C5] hover:bg-[#F2EBE1]'
+            }`}
+          >
+            <span>📋 Pesanan</span>
+            {pendingConfirmationCount > 0 && (
+              <span
+                className={`px-1.5 py-0.2 rounded-md text-[10px] font-black ${
+                  activeTab === 'pesanan'
+                    ? 'bg-[#E11D48] text-white'
+                    : 'bg-rose-100 text-rose-800 border border-rose-300'
+                }`}
+              >
+                {pendingConfirmationCount}
+              </span>
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSelectTab('operasional')}
+            className={`min-h-[38px] px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 shrink-0 transition-all border-2 cursor-pointer ${
+              activeTab === 'operasional'
+                ? 'bg-[#26150B] text-[#FBBF24] border-[#26150B] shadow-[2px_2px_0px_#C67D0A]'
+                : 'bg-white text-[#5A4537] border-[#E0D4C5] hover:bg-[#F2EBE1]'
+            }`}
+          >
+            <span>🕒 Status Operasional</span>
+            <span
+              className={`px-1.5 py-0.2 rounded-md text-[10px] font-black ${
+                operationalOverride === 'force_open'
+                  ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                  : operationalOverride === 'force_closed'
+                  ? 'bg-rose-100 text-rose-900 border border-rose-300'
+                  : 'bg-amber-100 text-amber-900 border border-amber-300'
+              }`}
+            >
+              {operationalOverride === 'force_open'
+                ? 'Buka'
+                : operationalOverride === 'force_closed'
+                ? 'Tutup'
+                : 'Otomatis'}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSelectTab('mode_minimal')}
+            className={`min-h-[38px] px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 shrink-0 transition-all border-2 cursor-pointer ${
+              activeTab === 'mode_minimal'
+                ? 'bg-[#26150B] text-[#FBBF24] border-[#26150B] shadow-[2px_2px_0px_#C67D0A]'
+                : 'bg-white text-[#5A4537] border-[#E0D4C5] hover:bg-[#F2EBE1]'
+            }`}
+          >
+            <span>🛍️ Mode Min 50k</span>
+            <span
+              className={`px-1.5 py-0.2 rounded-md text-[10px] font-black ${
+                isBundlingOnly
+                  ? 'bg-amber-100 text-amber-950 border border-amber-300'
+                  : 'bg-neutral-100 text-neutral-700 border border-neutral-300'
+              }`}
+            >
+              {isBundlingOnly ? 'ON' : 'OFF'}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSelectTab('brand')}
+            className={`min-h-[38px] px-3.5 py-1.5 rounded-xl font-bold flex items-center gap-1.5 shrink-0 transition-all border-2 cursor-pointer ${
+              activeTab === 'brand'
+                ? 'bg-[#26150B] text-[#FBBF24] border-[#26150B] shadow-[2px_2px_0px_#C67D0A]'
+                : 'bg-white text-[#5A4537] border-[#E0D4C5] hover:bg-[#F2EBE1]'
+            }`}
+          >
+            <span>🏷️ Ketersediaan Brand</span>
+            <span className="px-1.5 py-0.2 rounded-md text-[10px] font-black bg-neutral-100 text-neutral-800 border border-neutral-300">
+              {activeBrandsCount}/3 Aktif
+            </span>
+          </button>
+        </nav>
       </header>
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 pt-4 space-y-4">
         {/* Kontrol Status Operasional Website (Manual Override) */}
-        <section aria-label="Status Operasional Website" className="bg-white rounded-2xl border-2 border-[#26150B] p-4 shadow-[3px_3px_0px_#26150B] space-y-3">
+        {activeTab === 'operasional' && (
+          <section aria-label="Status Operasional Website" className="bg-white rounded-2xl border-2 border-[#26150B] p-4 shadow-[3px_3px_0px_#26150B] space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
@@ -653,66 +796,70 @@ export default function AdminPesananPanel() {
             </div>
           )}
         </section>
+        )}
 
         {/* Kontrol Mode Minimal Pembelian 50k */}
-        <section aria-label="Pengaturan Mode Minimal Pembelian 50k" className="bg-white rounded-2xl border-2 border-[#26150B] p-4 shadow-[3px_3px_0px_#26150B] space-y-2.5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-base shrink-0">🛍️</span>
-                <h2 className="text-xs font-black text-[#26150B] uppercase tracking-wider">
-                  Mode Minimal Pembelian 50k
-                </h2>
-                <span
-                  className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border shadow-2xs ${
-                    isBundlingOnly
-                      ? 'bg-amber-100 text-amber-950 border-amber-400'
-                      : 'bg-neutral-100 text-neutral-700 border-neutral-300'
-                  }`}
-                >
-                  {isBundlingOnly ? 'ON (Min 50k - Max 60k)' : 'OFF (Normal)'}
-                </span>
+        {activeTab === 'mode_minimal' && (
+          <section aria-label="Pengaturan Mode Minimal Pembelian 50k" className="bg-white rounded-2xl border-2 border-[#26150B] p-4 shadow-[3px_3px_0px_#26150B] space-y-2.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-base shrink-0">🛍️</span>
+                  <h2 className="text-xs font-black text-[#26150B] uppercase tracking-wider">
+                    Mode Minimal Pembelian 50k
+                  </h2>
+                  <span
+                    className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border shadow-2xs ${
+                      isBundlingOnly
+                        ? 'bg-amber-100 text-amber-950 border-amber-400'
+                        : 'bg-neutral-100 text-neutral-700 border-neutral-300'
+                    }`}
+                  >
+                    {isBundlingOnly ? 'ON (Min 50k - Max 60k)' : 'OFF (Normal)'}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#7A6455] leading-relaxed">
+                  Saat <strong>ON</strong>, menu reguler dibuka kembali dengan batas total harga normal menu reguler Rp50.000 - Rp60.000 (pre-diskon). Paket bundling tetap aktif sesuai kuota per-paket. Efek aktif dalam 1-2 menit.
+                </p>
               </div>
-              <p className="text-[11px] text-[#7A6455] leading-relaxed">
-                Saat <strong>ON</strong>, menu reguler dibuka kembali dengan batas total harga normal menu reguler Rp50.000 - Rp60.000 (pre-diskon). Paket bundling tetap aktif sesuai kuota per-paket. Efek aktif dalam 1-2 menit.
-              </p>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleToggleBundlingOnly}
+                  disabled={isLoadingSettings || isUpdatingSettings}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-black transition flex items-center gap-1.5 shadow-xs min-h-[38px] ${
+                    isBundlingOnly
+                      ? 'bg-rose-100 text-rose-800 hover:bg-rose-200 border-2 border-rose-300'
+                      : 'bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313]'
+                  } disabled:opacity-50`}
+                >
+                  {isUpdatingSettings ? (
+                    <>
+                      <span className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      <span>Menyimpan...</span>
+                    </>
+                  ) : isBundlingOnly ? (
+                    <span>Matikan Mode Min 50k (Kembali Bebas)</span>
+                  ) : (
+                    <span>Aktifkan Mode Minimal Pembelian 50k</span>
+                  )}
+                </button>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={handleToggleBundlingOnly}
-                disabled={isLoadingSettings || isUpdatingSettings}
-                className={`px-3.5 py-2 rounded-xl text-xs font-black transition flex items-center gap-1.5 shadow-xs min-h-[38px] ${
-                  isBundlingOnly
-                    ? 'bg-rose-100 text-rose-800 hover:bg-rose-200 border-2 border-rose-300'
-                    : 'bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313]'
-                } disabled:opacity-50`}
-              >
-                {isUpdatingSettings ? (
-                  <>
-                    <span className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    <span>Menyimpan...</span>
-                  </>
-                ) : isBundlingOnly ? (
-                  <span>Matikan Mode Min 50k (Kembali Bebas)</span>
-                ) : (
-                  <span>Aktifkan Mode Minimal Pembelian 50k</span>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {settingsNotification && (
-            <div className="p-2.5 bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs rounded-xl font-bold flex items-center gap-2">
-              <span>✅</span>
-              <span>{settingsNotification}</span>
-            </div>
-          )}
-        </section>
+            {settingsNotification && (
+              <div className="p-2.5 bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs rounded-xl font-bold flex items-center gap-2">
+                <span>✅</span>
+                <span>{settingsNotification}</span>
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Kontrol Ketersediaan Brand (Stok Habis / Buka) */}
-        <section aria-label="Kontrol Ketersediaan Brand" className="bg-white rounded-2xl border-2 border-[#26150B] p-4 shadow-[3px_3px_0px_#26150B] space-y-3">
+        {activeTab === 'brand' && (
+          <section aria-label="Kontrol Ketersediaan Brand" className="bg-white rounded-2xl border-2 border-[#26150B] p-4 shadow-[3px_3px_0px_#26150B] space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
@@ -807,8 +954,12 @@ export default function AdminPesananPanel() {
             })}
           </div>
         </section>
+        )}
 
-        {/* Filter Tab Chips */}
+        {/* Kontrol dan Daftar Pesanan (Halaman Utama / Page 1) */}
+        {activeTab === 'pesanan' && (
+          <>
+            {/* Filter Tab Chips */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
           {[
             { id: 'all', label: `Sudah Bayar (${orders.filter(isPaidRelevantOrder).length})` },
@@ -1210,6 +1361,8 @@ export default function AdminPesananPanel() {
               </button>
             </div>
           </div>
+        )}
+          </>
         )}
       </main>
     </div>
