@@ -7,7 +7,6 @@ import { ClosedScreen } from '@/components/ClosedScreen';
 import { Header } from '@/components/Header';
 import { MenuCategoryNav } from '@/components/MenuCategoryNav';
 import { ProductCard } from '@/components/ProductCard';
-import { QueueInfoBar } from '@/components/QueueInfoBar';
 import { ProductBottomSheet } from '@/components/ProductBottomSheet';
 import { ProductCardSkeleton, CategoryTabSkeleton } from '@/components/Skeleton';
 import { useCart } from '@/hooks/useCart';
@@ -30,6 +29,7 @@ import { BundlePackageCard } from '@/components/BundlePackageCard';
 import { BundlePickerBottomSheet } from '@/components/BundlePickerBottomSheet';
 import { TomoroB1G1Modal } from '@/components/TomoroB1G1Modal';
 import { safeNormalizeOutletCode } from '@/lib/sanitizer';
+import { filterProductsByQuery } from '@/lib/menu-search';
 import type { Outlet, MenuGroup, Product } from '@/types/domain';
 
 interface OutletMenuPageProps {
@@ -126,6 +126,16 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedBundleConfig, setSelectedBundleConfig] = useState<BundlePackageConfig | null>(null);
 
+  // Search query state (Live Filter Menu)
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    return filterProductsByQuery(allOutletProducts, searchQuery);
+  }, [allOutletProducts, searchQuery]);
+
+  const isSearching = searchQuery.trim().length > 0;
+
   const categoryRefs = useRef<Record<string, HTMLElement | null>>({});
   const isManualClickRef = useRef<boolean>(false);
   const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -215,7 +225,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
 
   // Penanda aktif mengikuti scroll manual (scrollspy)
   useEffect(() => {
-    if (displayedGroups.length === 0) return;
+    if (displayedGroups.length === 0 || isSearching) return;
 
     let ticking = false;
 
@@ -266,7 +276,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
         clearTimeout(clickTimeoutRef.current);
       }
     };
-  }, [displayedGroups]);
+  }, [displayedGroups, isSearching]);
 
   // 1. Loading Jam Operasional
   if (isJasdorLoading) {
@@ -469,18 +479,106 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
             )}
           </div>
 
-          {/* Sticky Horizontally Swipeable Menu Category Nav (Baris 2 sticky tepat di bawah Header) */}
-          <MenuCategoryNav
-            categories={displayedGroups}
-            activeCategoryCode={activeCategoryCode}
-            onSelectCategory={handleSelectCategory}
-            stickyTopClass="top-[49px]"
-          />
+          {/* Kolom Pencarian Menu (Live Filter) */}
+          <div className="px-4 pt-3 pb-2 bg-[#FBF8F4]">
+            <div className="relative flex items-center">
+              <span className="absolute left-3.5 text-base text-[#8C7667] pointer-events-none select-none" aria-hidden="true">
+                🔍
+              </span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Cari menu favoritmu di sini..."
+                className="w-full min-h-[44px] pl-10 pr-10 py-2.5 bg-white border-2 border-[#2B1D12] rounded-2xl text-xs sm:text-sm text-[#2B1D12] font-bold placeholder-[#8C7667] shadow-[2px_2px_0px_#2B1D12] focus:border-[#C67D0A] focus:outline-hidden transition"
+                aria-label="Cari menu"
+              />
+              {isSearching && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 w-6 h-6 rounded-full bg-[#EFE5D8] hover:bg-[#D4C3B2] border border-[#2B1D12] text-[#2B1D12] flex items-center justify-center text-xs font-black transition active:scale-95"
+                  aria-label="Hapus kata kunci pencarian"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          </div>
 
-          {/* Daftar Produk per Kategori */}
+          {/* Sticky Horizontally Swipeable Menu Category Nav (Disembunyikan saat sedang mencari) */}
+          {!isSearching && (
+            <MenuCategoryNav
+              categories={displayedGroups}
+              activeCategoryCode={activeCategoryCode}
+              onSelectCategory={handleSelectCategory}
+              stickyTopClass="top-[49px]"
+            />
+          )}
+
+          {/* Daftar Produk per Kategori atau Hasil Pencarian */}
           <div className="p-4 space-y-6 pb-28">
-            {/* Info antrean pemrosesan */}
-            <QueueInfoBar />
+            {isSearching ? (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b-2 border-[#2B1D12]">
+                  <div>
+                    <h2 className="font-display text-sm sm:text-base font-black text-[#2B1D12] tracking-tight">
+                      Hasil Pencarian
+                    </h2>
+                    <p className="text-xs text-[#7A6658] font-bold mt-0.5">
+                      {searchResults.length > 0
+                        ? `Ditemukan ${searchResults.length} menu untuk "${searchQuery}"`
+                        : `Tidak ada menu yang cocok untuk "${searchQuery}"`}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="px-3 py-1.5 bg-[#FFF0C2] hover:bg-[#FFE082] text-[#2B1D12] border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] font-display font-black text-[11px] rounded-xl active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition"
+                  >
+                    ✕ Reset
+                  </button>
+                </div>
+
+                {searchResults.length > 0 ? (
+                  <div className="space-y-2.5">
+                    {searchResults.map((product) => (
+                      <ProductCard
+                        key={`search-${product.bundleCode || product.productCode || product.id}`}
+                        product={product}
+                        brandSlug={brandSlug}
+                        isFavorite={isFavorite(product.id)}
+                        onToggleFavorite={() => toggleFavorite(product.id)}
+                        onSelectProduct={(p) => setSelectedProduct(p)}
+                        isOutletClosed={isOutletClosed}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-8 bg-white rounded-3xl border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] text-center space-y-3">
+                    <div className="w-12 h-12 bg-[#FFF0C2] rounded-2xl border-2 border-[#2B1D12] flex items-center justify-center text-xl mx-auto shadow-[2px_2px_0px_#2B1D12]">
+                      🔍
+                    </div>
+                    <div>
+                      <h3 className="font-display font-black text-sm text-[#2B1D12]">
+                        Menu Tidak Ditemukan
+                      </h3>
+                      <p className="text-xs text-[#6A584D] max-w-xs mx-auto mt-1 leading-relaxed">
+                        Tidak ada menu yang cocok dengan kata kunci &quot;<span className="font-bold text-[#2B1D12]">{searchQuery}</span>&quot;. Coba cari nama minuman atau bahan lainnya.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="min-h-[40px] px-4 py-2 bg-[#2B1D12] text-[#FAF4E8] font-display font-bold text-xs rounded-xl shadow-[2px_2px_0px_#C67D0A] hover:bg-[#3D2313] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+                    >
+                      Tampilkan Semua Menu
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
 
             {/* Banner Mode Minimal Pembelian 50k */}
             {isKopiKenangan && isBundlingOnly && (
@@ -497,12 +595,23 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
 
             {/* Banner Paket B1G1 Tomoro Coffee */}
             {isTomoro && (
-              <div className="p-4 bg-gradient-to-r from-[#FFF1F2] to-[#FFE4E6] border-2 border-[#2B1D12] rounded-3xl shadow-[4px_4px_0px_#2B1D12] space-y-2">
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => setIsB1G1ModalOpen(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setIsB1G1ModalOpen(true);
+                  }
+                }}
+                className="p-4 bg-gradient-to-r from-[#FFF1F2] to-[#FFE4E6] border-2 border-[#2B1D12] rounded-3xl shadow-[4px_4px_0px_#2B1D12] space-y-2 cursor-pointer hover:shadow-[5px_5px_0px_#2B1D12] hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition group"
+              >
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="text-base">🎉</span>
-                      <h2 className="font-display font-black text-sm sm:text-base text-[#2B1D12] tracking-tight">
+                      <h2 className="font-display font-black text-sm sm:text-base text-[#2B1D12] tracking-tight group-hover:text-[#BE123C] transition-colors">
                         B1G1 - Pilih 2 Menu (Small)
                       </h2>
                       <span className="text-[10px] font-black uppercase tracking-wider bg-[#E11D48] text-white px-2 py-0.5 rounded-md border border-[#2B1D12]">
@@ -515,13 +624,20 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                   </div>
                   <button
                     type="button"
-                    disabled={isOutletClosed}
-                    onClick={() => setIsB1G1ModalOpen(true)}
-                    className="px-3.5 py-2 bg-[#E11D48] hover:bg-[#BE123C] disabled:bg-[#FDA4AF] disabled:cursor-not-allowed text-white font-display font-black text-xs rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition shrink-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsB1G1ModalOpen(true);
+                    }}
+                    className="px-3.5 py-2 bg-[#E11D48] hover:bg-[#BE123C] text-white font-display font-black text-xs rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition shrink-0 cursor-pointer"
                   >
                     Pilih Menu
                   </button>
                 </div>
+                {isOutletClosed && (
+                  <p className="text-[11px] font-bold text-[#9F1239] bg-white/70 px-2.5 py-1 rounded-lg border border-[#FDA4AF] mt-1">
+                    Outlet sedang tutup - kamu tetap bisa melihat pilihan menu & simulasi paket B1G1.
+                  </p>
+                )}
               </div>
             )}
 
@@ -626,29 +742,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                             isFavorite={isFavorite(product.id)}
                             onToggleFavorite={() => toggleFavorite(product.id)}
                             onSelectProduct={(p) => {
-                              if (isTomoro) {
-                                if (isOutletClosed || !outlet) return;
-                                cart.addItem(
-                                  {
-                                    bundleCode:
-                                      p.bundleCode ||
-                                      `tomoro-${p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
-                                    name: p.name,
-                                    image: p.image,
-                                    basePrice: p.basePrice,
-                                    variantAddition: 0,
-                                    toppingTotal: 0,
-                                    quantity: 1,
-                                    variantDescription: 'Small',
-                                    brandSlug: 'tomoro',
-                                  },
-                                  outlet.code,
-                                  outlet.name
-                                );
-                                setIsCartDrawerOpen(true);
-                                return;
-                              }
-                              setSelectedProduct(p);
+                              setSelectedProduct(p.category ? p : { ...p, category: group.name });
                             }}
                             isOutletClosed={isOutletClosed}
                           />
@@ -658,6 +752,8 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                   </section>
                 );
               })
+            )}
+              </>
             )}
           </div>
         </div>
@@ -683,6 +779,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           isOpen={isB1G1ModalOpen}
           onClose={() => setIsB1G1ModalOpen(false)}
           products={allOutletProducts}
+          isOutletClosed={isOutletClosed}
           onAddToCart={(bundleItem) => {
             cart.addItem(bundleItem, outlet.code, outlet.name);
             setIsCartDrawerOpen(true);

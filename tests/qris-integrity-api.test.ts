@@ -1,6 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import path from 'node:path';
 import { GET } from '../src/app/api/cron/jasdor-qris-integrity-check/route.ts';
 
 describe('QRIS Integrity Monitoring API', () => {
@@ -59,8 +60,16 @@ describe('QRIS Integrity Monitoring API', () => {
 
   it('returns 200 with fallbackSvg.exists=true when fs is unavailable and ASSETS binding absent (Strategy C: Public URL fetch)', async () => {
     const originalExistsSync = fs.existsSync;
+    const originalFetch = globalThis.fetch;
+    const localContent = fs.readFileSync(path.resolve('public/payment/qris-cima-group.svg'));
     try {
       (fs as any).existsSync = () => false;
+      globalThis.fetch = async () => {
+        return new Response(localContent, {
+          status: 200,
+          headers: { 'Content-Type': 'image/svg+xml' },
+        });
+      };
 
       // Mock request from production domain or local
       const request = new Request('https://jasdor.cimagroup.my.id/api/cron/jasdor-qris-integrity-check');
@@ -78,6 +87,7 @@ describe('QRIS Integrity Monitoring API', () => {
       );
     } finally {
       fs.existsSync = originalExistsSync;
+      globalThis.fetch = originalFetch;
     }
   });
 });

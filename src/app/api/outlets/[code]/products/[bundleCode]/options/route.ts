@@ -44,14 +44,6 @@ async function handleGet(
     );
   }
 
-  const cacheKey = cacheKeys.productOptions(code, bundleCode);
-
-  // 1. Cek cache segar
-  const cached = await cacheService.get<{ options: ProductOptionDetails }>(cacheKey);
-  if (cached) {
-    return NextResponse.json(cached);
-  }
-
   // Penanganan khusus brand Fore Coffee
   if (code.toLowerCase().startsWith('fore-')) {
     const { getForeProductOptions } = await import('@/lib/fore-menu-data');
@@ -62,9 +54,28 @@ async function handleGet(
         { status: 404 }
       );
     }
-    const responsePayload = { options };
-    await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.optionsTtlSeconds);
-    return NextResponse.json(responsePayload);
+    return NextResponse.json({ options });
+  }
+
+  // Penanganan khusus brand TOMORO Coffee
+  if (code.toLowerCase().startsWith('tomoro-')) {
+    const { getTomoroProductOptions } = await import('@/lib/tomoro-menu-data');
+    const options = getTomoroProductOptions(bundleCode, code);
+    if (!options) {
+      return NextResponse.json(
+        { error: 'Produk tidak ditemukan di outlet ini' },
+        { status: 404 }
+      );
+    }
+    return NextResponse.json({ options });
+  }
+
+  const cacheKey = cacheKeys.productOptions(code, bundleCode);
+
+  // 1. Cek cache segar untuk Kopi Kenangan
+  const cached = await cacheService.get<{ options: ProductOptionDetails }>(cacheKey);
+  if (cached) {
+    return NextResponse.json(cached);
   }
 
   // 2. Ambil dari KK API dengan proteksi stale-if-error

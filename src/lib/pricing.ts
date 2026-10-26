@@ -428,9 +428,12 @@ export function calculateFlatAddonTotal(
   const isFore =
     brandSlug === 'fore' ||
     (typeof brandSlug === 'string' && brandSlug.toLowerCase().startsWith('fore-'));
+  const isTomoro =
+    brandSlug === 'tomoro' ||
+    (typeof brandSlug === 'string' && brandSlug.toLowerCase().startsWith('tomoro-'));
 
   return addons.reduce((sum, addon) => {
-    if (isFore && typeof addon.price === 'number') {
+    if ((isFore || isTomoro) && typeof addon.price === 'number') {
       return sum + addon.price;
     }
     const group = classifyAddonGroup(addon.name, addon.categoryName);

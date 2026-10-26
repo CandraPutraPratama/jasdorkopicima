@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import type { Product, ProductOptionDetails, Addon, VariantSku } from '@/types/domain';
 import type { CartItem } from '@/lib/cart-reducer';
@@ -13,6 +13,74 @@ import { formatRupiah } from '@/lib/currency';
 import { getOptionAddition, BUSINESS_CONFIG } from '@/config/business';
 import { cleanNotes, filterOrderNotesInput } from '@/lib/sanitizer';
 import { useScrollLock } from '@/hooks/useScrollLock';
+import {
+  isFoodOrNonCustomizableProduct,
+  getSynthesizedNonCustomizableOptions,
+  getClientCachedProductOptions,
+  setClientCachedProductOptions,
+  getProductDescriptionFallback,
+} from '@/lib/product-customization';
+
+function getInitialDimensions(opt: ProductOptionDetails | null): Record<number, number> {
+  const initialDims: Record<number, number> = {};
+  if (opt?.dimensions) {
+    for (const dim of opt.dimensions) {
+      const defaultVal = opt.defaultSelectionMap?.[String(dim.code)];
+      if (defaultVal) {
+        initialDims[dim.code] = Number(defaultVal);
+      } else if (dim.values && dim.values.length > 0) {
+        initialDims[dim.code] = dim.values[0].id;
+      }
+    }
+  }
+  return initialDims;
+}
+
+function getInitialNotes(opt: ProductOptionDetails | null): Record<string, string> {
+  const initialNotes: Record<string, string> = {};
+  if (opt?.notes) {
+    for (const noteGroup of opt.notes) {
+      if (noteGroup.options && noteGroup.options.length > 0) {
+        initialNotes[noteGroup.name] = noteGroup.options[0];
+      }
+    }
+  }
+  return initialNotes;
+}
+
+function getInitialDairy(opt: ProductOptionDetails | null): Addon | null {
+  const allAddons = opt?.addons || [];
+  const dairies = allAddons.filter((a) => a.group === 'dairy');
+  if (dairies.length > 0) {
+    return (
+      dairies.find((d) => d.name.toLowerCase() === 'master milk') ||
+      dairies.find((d) => d.name.toLowerCase() === 'milk') ||
+      dairies.find((d) => d.name.toLowerCase() === 'no milk') ||
+      dairies[0]
+    );
+  }
+  return null;
+}
+
+function getInitialEspresso(opt: ProductOptionDetails | null): Addon | null {
+  const allAddons = opt?.addons || [];
+  const espressos = allAddons.filter((a) => a.group === 'espresso');
+  if (espressos.length > 0) {
+    return (
+      espressos.find((e) => e.name.toLowerCase() === 'normal shot') ||
+      espressos.find((e) => e.name.toLowerCase() === 'no coffee') ||
+      espressos[0]
+    );
+  }
+  return null;
+}
+
+function getInitialToppings(opt: ProductOptionDetails | null): Addon[] {
+  const allAddons = opt?.addons || [];
+  const toppings = allAddons.filter((a) => a.group === 'topping');
+  const noTop = toppings.find((t) => t.name.toLowerCase() === 'no topping');
+  return noTop ? [noTop] : [];
+}
 
 interface ProductBottomSheetProps {
   outletCode: string;
@@ -39,25 +107,81 @@ export function ProductBottomSheet({
     outletCode.toLowerCase().startsWith('fore-') ||
     product.bundleCode?.startsWith('FORE_');
 
+  const isTomoro =
+    !isFore &&
+    (brandSlug === 'tomoro' ||
+      outletCode.toLowerCase().startsWith('tomoro-') ||
+      product.bundleCode?.startsWith('tomoro-') ||
+      product.productCode?.startsWith('TOMORO_'));
+
+  // Deteksi apakah produk merupakan menu makanan / non-kustomisasi
+  const isFood = useMemo(
+    () => isFoodOrNonCustomizableProduct(product),
+    [product]
+  );
+
+  const initialOptions = useMemo(() => {
+    if (isFood) {
+      return getSynthesizedNonCustomizableOptions(product);
+    }
+    return getClientCachedProductOptions(outletCode, product.bundleCode) || null;
+  }, [isFood, product, outletCode]);
+
   const [imageFailed, setImageFailed] = useState<boolean>(false);
-  const [options, setOptions] = useState<ProductOptionDetails | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [options, setOptions] = useState<ProductOptionDetails | null>(initialOptions);
+  const [isLoading, setIsLoading] = useState<boolean>(!initialOptions);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // User selections
-  const [selectedDimensions, setSelectedDimensions] = useState<Record<number, number>>({});
-  const [selectedNotes, setSelectedNotes] = useState<Record<string, string>>({});
+  const [selectedDimensions, setSelectedDimensions] = useState<Record<number, number>>(() =>
+    getInitialDimensions(initialOptions)
+  );
+  const [selectedNotes, setSelectedNotes] = useState<Record<string, string>>(() =>
+    getInitialNotes(initialOptions)
+  );
   const [selectedWhippedCream, setSelectedWhippedCream] = useState<Addon | null>(null);
-  const [selectedDairy, setSelectedDairy] = useState<Addon | null>(null);
-  const [selectedEspresso, setSelectedEspresso] = useState<Addon | null>(null);
+  const [selectedDairy, setSelectedDairy] = useState<Addon | null>(() =>
+    getInitialDairy(initialOptions)
+  );
+  const [selectedEspresso, setSelectedEspresso] = useState<Addon | null>(() =>
+    getInitialEspresso(initialOptions)
+  );
   const [selectedSyrups, setSelectedSyrups] = useState<Addon[]>([]);
-  const [selectedToppings, setSelectedToppings] = useState<Addon[]>([]);
+  const [selectedToppings, setSelectedToppings] = useState<Addon[]>(() =>
+    getInitialToppings(initialOptions)
+  );
   const [quantity, setQuantity] = useState<number>(1);
   const [customerNotes, setCustomerNotes] = useState<string>('');
+
+  const applyOptions = useCallback((opt: ProductOptionDetails) => {
+    setOptions(opt);
+    setSelectedDimensions(getInitialDimensions(opt));
+    setSelectedNotes(getInitialNotes(opt));
+    setSelectedDairy(getInitialDairy(opt));
+    setSelectedEspresso(getInitialEspresso(opt));
+    setSelectedWhippedCream(null);
+    setSelectedSyrups([]);
+    setSelectedToppings(getInitialToppings(opt));
+    setIsLoading(false);
+  }, []);
 
   // Fetch product options
   useEffect(() => {
     let isCancelled = false;
+
+    // Menu makanan / non-kustomisasi tidak memerlukan fetch opsi varian
+    if (isFood) {
+      return;
+    }
+
+    // Cek cache browser klien
+    const cached = getClientCachedProductOptions(outletCode, product.bundleCode);
+    if (cached) {
+      applyOptions(cached);
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
     setErrorMessage(null);
 
@@ -72,64 +196,8 @@ export function ProductBottomSheet({
       .then((data) => {
         if (!isCancelled) {
           const opt: ProductOptionDetails = data.options;
-          setOptions(opt);
-
-          // Inisialisasi default selections dimensi
-          const initialDims: Record<number, number> = {};
-          if (opt && opt.dimensions) {
-            for (const dim of opt.dimensions) {
-              const defaultVal = opt.defaultSelectionMap?.[String(dim.code)];
-              if (defaultVal) {
-                initialDims[dim.code] = Number(defaultVal);
-              } else if (dim.values && dim.values.length > 0) {
-                initialDims[dim.code] = dim.values[0].id;
-              }
-            }
-          }
-          setSelectedDimensions(initialDims);
-
-          // Inisialisasi default notes (Ice level)
-          const initialNotes: Record<string, string> = {};
-          if (opt && opt.notes) {
-            for (const noteGroup of opt.notes) {
-              if (noteGroup.options && noteGroup.options.length > 0) {
-                initialNotes[noteGroup.name] = noteGroup.options[0];
-              }
-            }
-          }
-          setSelectedNotes(initialNotes);
-
-          // Inisialisasi default dairy (Fore Coffee)
-          const allAddons = opt?.addons || [];
-          const dairies = allAddons.filter((a) => a.group === 'dairy');
-          if (dairies.length > 0) {
-            const defaultDairy =
-              dairies.find((d) => d.name.toLowerCase() === 'milk') ||
-              dairies.find((d) => d.name.toLowerCase() === 'no milk') ||
-              dairies[0];
-            setSelectedDairy(defaultDairy);
-          } else {
-            setSelectedDairy(null);
-          }
-
-          // Inisialisasi default espresso (Fore Coffee)
-          const espressos = allAddons.filter((a) => a.group === 'espresso');
-          if (espressos.length > 0) {
-            const defaultEsp =
-              espressos.find((e) => e.name.toLowerCase() === 'normal shot') ||
-              espressos.find((e) => e.name.toLowerCase() === 'no coffee') ||
-              espressos[0];
-            setSelectedEspresso(defaultEsp);
-          } else {
-            setSelectedEspresso(null);
-          }
-
-          // Whipped cream & sirup/topping
-          setSelectedWhippedCream(null);
-          setSelectedSyrups([]);
-          setSelectedToppings([]);
-
-          setIsLoading(false);
+          setClientCachedProductOptions(outletCode, product.bundleCode, opt);
+          applyOptions(opt);
         }
       })
       .catch((err) => {
@@ -142,7 +210,7 @@ export function ProductBottomSheet({
     return () => {
       isCancelled = true;
     };
-  }, [outletCode, product.bundleCode]);
+  }, [outletCode, product, isFood, applyOptions]);
 
   // Pisahkan addons ke dalam grup per spesifikasi
   const { whippedCreamAddons, syrupAddons, toppingAddons, dairyAddons, espressoAddons } = useMemo(() => {
@@ -299,15 +367,26 @@ export function ProductBottomSheet({
   const handleToggleTopping = (addon: Addon) => {
     if (addon.isSoldOut) return;
     setSelectedToppings((prev) => {
-      const exists = prev.some((a) => a.sku === addon.sku);
+      const isNoTopping = addon.name.toLowerCase() === 'no topping';
+      if (isNoTopping) {
+        return [addon];
+      }
+      const withoutNoTopping = prev.filter((a) => a.name.toLowerCase() !== 'no topping');
+      const exists = withoutNoTopping.some((a) => a.sku === addon.sku);
       if (exists) {
-        return prev.filter((a) => a.sku !== addon.sku);
+        const remaining = withoutNoTopping.filter((a) => a.sku !== addon.sku);
+        const noTopAddon = toppingAddons.find((t) => t.name.toLowerCase() === 'no topping');
+        return remaining.length === 0 && noTopAddon ? [noTopAddon] : remaining;
       }
-      if (isFore && prev.length >= 2) {
+      if (isTomoro) {
+        // Tomoro maksimal 1 pilihan topping
+        return [addon];
+      }
+      if (isFore && withoutNoTopping.length >= 2) {
         // Fore maksimal 2 pilihan topping
-        return prev;
+        return withoutNoTopping;
       }
-      return [...prev, addon];
+      return [...withoutNoTopping, addon];
     });
   };
 
@@ -323,6 +402,24 @@ export function ProductBottomSheet({
     }
     if (selectedEspresso && !variantParts.includes(selectedEspresso.name)) {
       variantParts.push(selectedEspresso.name);
+    }
+
+    // Tambahkan topping ke varian jika bukan 'No Topping'
+    if (selectedToppings.length > 0) {
+      for (const t of selectedToppings) {
+        if (t.name.toLowerCase() !== 'no topping' && !variantParts.includes(t.name)) {
+          variantParts.push(t.name);
+        }
+      }
+    }
+
+    // Tambahkan sirup jika ada
+    if (selectedSyrups.length > 0) {
+      for (const s of selectedSyrups) {
+        if (!variantParts.includes(s.name)) {
+          variantParts.push(s.name);
+        }
+      }
     }
 
     // Tambahkan notes (misal: Ice Level, Tingkat Kepanasan, Kemanisan)
@@ -343,6 +440,7 @@ export function ProductBottomSheet({
     }
 
     const variantDescription = variantParts.join(', ');
+    const filteredAddons = selectedAddons.filter((a) => a.name.toLowerCase() !== 'no topping');
 
     onAddToCart({
       bundleCode: product.bundleCode,
@@ -355,9 +453,9 @@ export function ProductBottomSheet({
       toppingTotal: pricing.toppingTotal,
       quantity,
       variantDescription,
-      addons: selectedAddons,
-      notes: cleanNotes(customerNotes),
-      brandSlug: brandSlug || (isFore ? 'fore' : undefined),
+      addons: filteredAddons,
+      notes: !isFore && !isTomoro ? cleanNotes(customerNotes) : undefined,
+      brandSlug: brandSlug || (isFore ? 'fore' : isTomoro ? 'tomoro' : undefined),
     });
 
     onClose();
@@ -370,23 +468,23 @@ export function ProductBottomSheet({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#26150B]/60 backdrop-blur-2xs transition-opacity animate-in fade-in duration-200 overscroll-contain">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-[#26150B]/60 backdrop-blur-2xs transition-opacity animate-in fade-in duration-200 overscroll-contain">
       {/* Backdrop tap to dismiss */}
       <div className="fixed inset-0 touch-none" onClick={onClose} aria-hidden="true" />
 
-      {/* Sheet Container (Mobile-first max-w-md) */}
-      <div className="relative w-full max-w-md max-h-[92vh] bg-[#FAF4E8] rounded-t-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300 overscroll-contain border-t-2 border-x-2 border-[#2B1D12]">
-        {/* Drag handle */}
-        <div className="w-12 h-1.5 bg-[#2B1D12] rounded-full mx-auto mt-2.5 mb-1" />
-
+      {/* Sheet Container: Full-screen (100dvh) di mobile, modal di desktop */}
+      <div
+        className="relative w-full sm:max-w-md h-[100dvh] max-h-[100dvh] sm:h-auto sm:max-h-[92vh] bg-[#FAF4E8] rounded-none sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden z-10 animate-in slide-in-from-bottom duration-300 overscroll-contain sm:border-2 border-[#2B1D12]"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header Lembar Produk */}
-        <div className="sticky top-0 z-10 bg-[#FAF4E8] px-5 py-3 border-b-2 border-[#2B1D12] flex items-center justify-between touch-none">
+        <div className="sticky top-0 z-10 bg-[#FAF4E8] px-4 sm:px-5 py-3 border-b-2 border-[#2B1D12] flex items-center justify-between touch-none shrink-0">
           <div className="pr-4">
             <h3 className="font-display font-black text-base text-[#2B1D12] line-clamp-1">
               {product.name}
             </h3>
             <span className="text-[11px] text-[#C67D0A] font-extrabold uppercase tracking-wide">
-              Kustomisasi Menu
+              {isFood ? 'Detail & Catatan Pesanan' : 'Kustomisasi Menu'}
             </span>
           </div>
 
@@ -448,7 +546,7 @@ export function ProductBottomSheet({
             </div>
             <div>
               <p className="text-xs text-[#2B1D12] font-medium line-clamp-2">
-                {product.description || 'Pilih varian suhu, ukuran, dan topping favoritmu.'}
+                {getProductDescriptionFallback(product, isFood)}
               </p>
               <div className="flex items-baseline gap-2 mt-1.5">
                 <span className="font-display text-base font-black text-[#DC2626]">
@@ -465,7 +563,7 @@ export function ProductBottomSheet({
           </div>
 
           {/* Loading Varian */}
-          {isLoading && (
+          {isLoading && !isFood && (
             <div className="space-y-4 py-4">
               <div className="h-4 bg-[#EFE5D8] rounded w-1/3 animate-pulse border-2 border-[#D4C3B2]" />
               <div className="flex gap-2">
@@ -730,19 +828,24 @@ export function ProductBottomSheet({
             <div className="space-y-2 pt-2 border-t-2 border-[#2B1D12]">
               <div className="flex justify-between items-center">
                 <span className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide">
-                  Syrup
+                  Syrup / Add-on
                 </span>
                 <span className="text-[10px] text-[#2B1D12] font-bold bg-[#FFE7D6] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
                   {isFore
                     ? 'Opsional (Maks. 1) • +Rp7.000'
-                    : `Opsional • +${formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.syrup)}`}
+                    : isTomoro
+                      ? 'Opsional • Gratis'
+                      : `Opsional • +${formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.syrup)}`}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 {syrupAddons.map((addon) => {
                   const isChecked = selectedSyrups.some((a) => a.sku === addon.sku);
-                  const priceToAdd = isFore ? (addon.price || 7000) : BUSINESS_CONFIG.pricing.addonPrices.syrup;
+                  const priceToAdd =
+                    (isFore || isTomoro) && typeof addon.price === 'number'
+                      ? addon.price
+                      : BUSINESS_CONFIG.pricing.addonPrices.syrup;
                   return (
                     <button
                       key={addon.sku}
@@ -773,9 +876,15 @@ export function ProductBottomSheet({
                         </div>
                         <span className="line-clamp-2 leading-tight text-[11px] font-bold">{addon.name}</span>
                       </div>
-                      <span className="text-[10px] text-[#2B1D12] shrink-0 font-extrabold">
-                        +{formatRupiah(priceToAdd)}
-                      </span>
+                      {priceToAdd > 0 ? (
+                        <span className="text-[10px] text-[#2B1D12] shrink-0 font-extrabold">
+                          +{formatRupiah(priceToAdd)}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-[#15803D] shrink-0 font-extrabold">
+                          Gratis
+                        </span>
+                      )}
                     </button>
                   );
                 })}
@@ -793,14 +902,19 @@ export function ProductBottomSheet({
                 <span className="text-[10px] text-[#2B1D12] font-bold bg-[#D9F3EA] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
                   {isFore
                     ? 'Opsional (Maks. 2) • +Rp7.000'
-                    : `Opsional • +${formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.topping)}`}
+                    : isTomoro
+                      ? 'Opsional (Maks. 1) • +Rp5.000'
+                      : `Opsional • +${formatRupiah(BUSINESS_CONFIG.pricing.addonPrices.topping)}`}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 {toppingAddons.map((addon) => {
                   const isChecked = selectedToppings.some((a) => a.sku === addon.sku);
-                  const priceToAdd = isFore ? (addon.price || 7000) : BUSINESS_CONFIG.pricing.addonPrices.topping;
+                  const priceToAdd =
+                    (isFore || isTomoro) && typeof addon.price === 'number'
+                      ? addon.price
+                      : BUSINESS_CONFIG.pricing.addonPrices.topping;
                   return (
                     <button
                       key={addon.sku}
@@ -831,9 +945,15 @@ export function ProductBottomSheet({
                         </div>
                         <span className="line-clamp-2 leading-tight text-[11px] font-bold">{addon.name}</span>
                       </div>
-                      <span className="text-[10px] text-[#2B1D12] shrink-0 font-extrabold">
-                        +{formatRupiah(priceToAdd)}
-                      </span>
+                      {priceToAdd > 0 ? (
+                        <span className="text-[10px] text-[#2B1D12] shrink-0 font-extrabold">
+                          +{formatRupiah(priceToAdd)}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-[#15803D] shrink-0 font-extrabold">
+                          Gratis
+                        </span>
+                      )}
                     </button>
                   );
                 })}
@@ -841,25 +961,39 @@ export function ProductBottomSheet({
             </div>
           )}
 
-          {/* 6. Kolom Catatan Pelanggan */}
-          <div className="space-y-1.5 pt-2 border-t-2 border-[#2B1D12]">
-            <label htmlFor="customer-notes" className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide block">
-              Catatan Pesanan
-            </label>
-            <input
-              id="customer-notes"
-              type="text"
-              maxLength={100}
-              value={customerNotes}
-              onChange={(e) => setCustomerNotes(filterOrderNotesInput(e.target.value))}
-              placeholder="Contoh: Jangan terlalu manis, es batu dipisah jika bisa"
-              className="w-full min-h-[44px] px-3.5 py-2 bg-white border-2 border-[#2B1D12] rounded-xl text-xs text-[#2B1D12] font-semibold placeholder-[#8C7667] focus:border-[#C67D0A] shadow-[2px_2px_0px_#2B1D12] outline-hidden transition"
-            />
-          </div>
+          {/* 6. Kolom Catatan Tambahan (Hanya untuk Kopi Kenangan, tidak ada di Fore & Tomoro) */}
+          {!isFore && !isTomoro && (
+            <div className={`space-y-1.5 ${isFood ? 'pt-0' : 'pt-2 border-t-2 border-[#2B1D12]'}`}>
+              <div className="flex justify-between items-center">
+                <label
+                  htmlFor="customer-notes"
+                  className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide block"
+                >
+                  Catatan Tambahan
+                </label>
+                <span className="text-[11px] font-bold text-[#8C7667]">
+                  {customerNotes.length}/100
+                </span>
+              </div>
+              <input
+                id="customer-notes"
+                type="text"
+                maxLength={100}
+                value={customerNotes}
+                onChange={(e) => setCustomerNotes(filterOrderNotesInput(e.target.value))}
+                placeholder={
+                  isFood
+                    ? 'Contoh: Minta tolong dipanasin yaa, dll.'
+                    : 'Contoh: Gulanya 15% aja, es sedikit, dll.'
+                }
+                className="w-full min-h-[44px] px-3.5 py-2 bg-white border-2 border-[#2B1D12] rounded-xl text-xs text-[#2B1D12] font-semibold placeholder-[#8C7667] focus:border-[#C67D0A] shadow-[2px_2px_0px_#2B1D12] outline-hidden transition"
+              />
+            </div>
+          )}
         </div>
 
         {/* Sticky Footer: Total Estimasi, Stepper di KIRI, dan Tombol Tambah ke Keranjang */}
-        <div className="sticky bottom-0 bg-[#FAF4E8] border-t-2 border-[#2B1D12] p-3.5 space-y-2.5 shadow-lg overscroll-contain touch-none">
+        <div className="sticky bottom-0 bg-[#FAF4E8] border-t-2 border-[#2B1D12] p-3.5 sm:p-4 space-y-2.5 shadow-lg overscroll-contain touch-none shrink-0 pb-[max(0.875rem,env(safe-area-inset-bottom))]">
           <div className="flex items-baseline justify-between">
             <div>
               <span className="text-[10px] text-[#6A584D] block font-bold">

@@ -27,6 +27,7 @@ import {
   isAllowedProductBrand,
 } from '../config/business.ts';
 import { rewriteProductImageUrl } from './image-url.ts';
+import { getKkMenuDescription } from './kk-menu-descriptions.ts';
 
 /**
  * Menormalkan data 1 store/outlet dari KK ke domain Outlet
@@ -74,12 +75,15 @@ export function normalizeStores(rawList: KkStoreItem[] = []): Outlet[] {
  * Menormalkan 1 produk KK ke domain Product
  */
 export function normalizeProduct(raw: KkProductItem): Product {
+  const rawDesc = (raw.description || '').trim();
+  const description = rawDesc || getKkMenuDescription(raw.name);
+
   return {
     id: raw.id,
     bundleCode: String(raw.bundle_code || ''),
     productCode: String(raw.product_code || ''),
     name: (raw.name || '').trim(),
-    description: (raw.description || '').trim(),
+    description,
     image: rewriteProductImageUrl(raw.image || ''),
     basePrice: raw.price || 0,
     originalPrice: raw.orig_price || raw.price || 0,
@@ -113,7 +117,11 @@ export function normalizeMenu(raw: KkMenuData, isOutletInScope = true): MenuGrou
         }
         return true;
       })
-      .map(normalizeProduct);
+      .map((p) => {
+        const prod = normalizeProduct(p);
+        prod.category = groupName;
+        return prod;
+      });
 
     // Hanya masukkan grup jika masih memiliki produk aktif
     if (filteredProducts.length > 0) {
@@ -142,13 +150,15 @@ export function normalizeMenu(raw: KkMenuData, isOutletInScope = true): MenuGrou
 export function normalizeProductOptions(raw: KkProductOptionsData): ProductOptionDetails {
   const base = raw.base_product || ({} as any);
   const basePrice = base.price || 0;
+  const rawBaseDesc = (base.description || '').trim();
+  const baseDesc = rawBaseDesc || getKkMenuDescription(base.name);
 
   const product: Product = {
     id: base.id || 0,
     bundleCode: String(base.bundle_code || ''),
     productCode: '',
     name: (base.name || '').trim(),
-    description: (base.description || '').trim(),
+    description: baseDesc,
     image: rewriteProductImageUrl(base.image || ''),
     basePrice,
     originalPrice: base.orig_price || basePrice,

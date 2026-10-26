@@ -93,9 +93,15 @@ export class SupabaseCacheService implements CacheService {
   }
 
   async get<T>(key: string): Promise<T | null> {
+    // 1. Cek L1 in-memory cache terlebih dahulu (sub-milidetik, hemat koneksi remote)
+    const inMem = await this.inMemoryFallback.get<T>(key);
+    if (inMem !== null) {
+      return inMem;
+    }
+
     const client = this.getClient();
     if (!client) {
-      return this.inMemoryFallback.get<T>(key);
+      return null;
     }
 
     try {
@@ -109,14 +115,21 @@ export class SupabaseCacheService implements CacheService {
 
       if (error) {
         console.warn(`[CacheService] Gagal membaca cache Supabase untuk key "${key}": ${error.message}`);
-        return this.inMemoryFallback.get<T>(key);
+        return null;
       }
 
       if (!data) return null;
+
+      // Simpan juga ke L1 in-memory cache untuk pemanggilan berikutnya
+      if (data.expires_at) {
+        const remainingTtlSeconds = Math.max(1, Math.floor((new Date(data.expires_at).getTime() - Date.now()) / 1000));
+        await this.inMemoryFallback.set(key, data.payload, remainingTtlSeconds);
+      }
+
       return data.payload as T;
     } catch (err: any) {
       console.warn(`[CacheService] Exception saat membaca cache Supabase: ${err.message}`);
-      return this.inMemoryFallback.get<T>(key);
+      return null;
     }
   }
 

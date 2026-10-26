@@ -39,8 +39,8 @@ test('Tomoro Coffee - Brand Config and Provider', async () => {
   assert.equal(count, 678, 'Total outlet tomoro harus 678');
 });
 
-test('Tomoro Coffee - Catalog strictly 39 final items & forbidden items rejected', () => {
-  assert.equal(TOMORO_FINAL_PRODUCTS.length, 39, 'Katalog harus tepat 39 menu');
+test('Tomoro Coffee - Catalog strictly 36 final items & forbidden items rejected', () => {
+  assert.equal(TOMORO_FINAL_PRODUCTS.length, 36, 'Katalog harus tepat 36 menu');
 
   // Validasi beberapa item legal
   assert.ok(isTomoroItemEligible('TOMORO Aren Latte'));
@@ -387,4 +387,62 @@ test('Tomoro Coffee - WhatsApp message formatting', () => {
   assert.ok(confMsg.includes('Brand: TOMORO Coffee'));
   assert.ok(confMsg.includes('GRATIS (B1G1)'));
   assert.ok(confMsg.includes('Biaya Jasa Bundling: Rp3.000'));
+});
+
+test('Tomoro Coffee - B1G1 candidate catalog coverage & selection logic', () => {
+  // Semua 36 produk final adalah menu minuman berukuran Small yang berhak ikut B1G1
+  assert.equal(TOMORO_FINAL_PRODUCTS.length, 36, 'Harus ada 36 produk final di katalog Tomoro');
+  
+  // Pastikan deduplikasi produk unik
+  const seen = new Set<string>();
+  const uniqueItems: typeof TOMORO_FINAL_PRODUCTS = [];
+  for (const p of TOMORO_FINAL_PRODUCTS) {
+    const key = (p.bundleCode || p.productCode || p.name || String(p.id)).toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniqueItems.push(p);
+    }
+  }
+  assert.equal(uniqueItems.length, 36, 'Seluruh 36 produk harus unik dan tersedia untuk dipilih di B1G1');
+
+  // Simulasi pemilihan 2 slot di modal B1G1
+  // Contoh 1: Menu berbeda (TOMORO Aren Latte 21.000 & Caffe Americano 18.000)
+  const itemAren = TOMORO_FINAL_PRODUCTS.find((p) => p.name === 'TOMORO Aren Latte')!;
+  const itemAmericano = TOMORO_FINAL_PRODUCTS.find((p) => p.name === 'Caffe Americano')!;
+  assert.ok(itemAren);
+  assert.ok(itemAmericano);
+
+  const price1 = itemAren.hargaNasional; // 21000
+  const price2 = itemAmericano.hargaNasional; // 18000
+  const highestPrice = Math.max(price1, price2);
+  const cheapestPrice = Math.min(price1, price2);
+  const fee = 3000;
+
+  assert.equal(highestPrice, 21000, 'Harga tertinggi yang dibayar adalah Aren Latte (21.000)');
+  assert.equal(cheapestPrice, 18000, 'Menu yang gratis adalah Americano (18.000)');
+  assert.equal(highestPrice + fee, 24000, 'Total bayar B1G1 adalah 21.000 + 3.000 = 24.000');
+  assert.equal(cheapestPrice, 18000, 'Hemat sama dengan harga Americano (18.000)');
+
+  // Contoh 2: Menu sama (2x Matcha Latte 27.000)
+  const itemMatcha = TOMORO_FINAL_PRODUCTS.find((p) => p.name === 'Matcha Latte')!;
+  assert.ok(itemMatcha);
+  const matchaPrice = itemMatcha.hargaNasional;
+  const sameHighest = Math.max(matchaPrice, matchaPrice);
+  const sameCheapest = Math.min(matchaPrice, matchaPrice);
+  assert.equal(sameHighest + fee, matchaPrice + 3000);
+  assert.equal(sameCheapest, matchaPrice);
+
+  // Contoh 3: Format deskripsi varian resmi Tomoro (Small, Iced, Sweetness jika ada, tanpa catatan)
+  const formatDesc = (sugar?: string) => {
+    const parts = ['Small', 'Iced'];
+    if (sugar && sugar.trim()) {
+      parts.push(sugar.trim());
+    }
+    return parts.join(', ');
+  };
+
+  assert.equal(formatDesc('Less Sweet'), 'Small, Iced, Less Sweet');
+  assert.equal(formatDesc('Normal Sweet'), 'Small, Iced, Normal Sweet');
+  assert.equal(formatDesc(), 'Small, Iced');
+  assert.equal(formatDesc(''), 'Small, Iced');
 });

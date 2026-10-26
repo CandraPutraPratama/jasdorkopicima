@@ -2,14 +2,21 @@
  * Data Menu Otoritatif TOMORO Coffee (Jasdor)
  *
  * KRITERIA MUTLAK:
- * - HANYA 39 menu final yang diizinkan (docs/tomoro-menu-promo-b1g1-final.json).
- * - Ke-36 menu lain di cache (semua FOOD, 1L, bundle, Master S.O.E, Triple Pistachio, Healing, Frappe)
- *   TIDAK dijual di Jasdor dan server wajib menolaknya.
+ * - 36 menu final yang disetujui & disesuaikan langsung dengan aplikasi resmi TOMORO (Excel otoritatif user).
+ * - Seluruh item mendukung kustomisasi menu (Cupsize Small, Temp Iced, Sweetness, Pilihan Susu, Topping, Add-on).
  * - Flat menu dengan override tier bandara (Palembang: tomoro-plb03b-m, tomoro-plb03d-m; Dhoho: tomoro-ked01a-m).
- * - Deskripsi dari cache apa adanya (Kopi Susu Aren & Peach Oolong Milk Tea kosong).
-  */
+ */
 
-import type { MenuGroup, Product } from '../types/domain.ts';
+import type {
+  MenuGroup,
+  Product,
+  ProductOptionDetails,
+  VariantDimension,
+  VariantSku,
+  Addon,
+  ProductNoteGroup,
+} from '../types/domain.ts';
+import { getTomoroItemConfig } from './tomoro-customization-data.ts';
 
 export const TOMORO_AIRPORT_PALEMBANG_OUTLET_CODES = new Set<string>([
   'tomoro-plb03b-m', // Bandara SMB II Palembang Gate 3
@@ -53,7 +60,7 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Kombinasi premium matcha yang wangi dan susu segar.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-matcha-latte",
     "hargaNasional": 27000,
     "hargaPalembang": 38000,
     "hargaDhoho": 34000
@@ -67,7 +74,7 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Susu oat yang luar biasa enak dengan cita rasa matcha yang khas, lahirlah matcha oat latte nya TOMORO.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-matcha-oat-latte",
     "hargaNasional": 28000,
     "hargaPalembang": 38000,
     "hargaDhoho": 36000
@@ -81,7 +88,7 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan Matcha dan Susu dengan tambahan sea salt cloud foam diatasnya",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-sea-salt-cloud-matcha-latte",
     "hargaNasional": 30000,
     "hargaPalembang": 45000,
     "hargaDhoho": 38000
@@ -95,8 +102,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "[CHARACTER CUP AKAN DIBERIKAN SELAMA PERSEDIAAN MASIH ADA] Perpaduan antara matcha aromatik dan teh melati yang lembut, dipadukan dengan susu creamy untuk menciptakan harmoni yang halus dan menyegarkan. Floral, segar, dan menenangkan di setiap tegukan.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 28000,
+    "bundleCode": "tomoro-matcha-jasmine-milk-tea",
+    "hargaNasional": 23000,
     "hargaPalembang": 38000,
     "hargaDhoho": 34000
   },
@@ -109,8 +116,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Harmoni tiga bahan pilihan, stroberi segar, matcha premium, dan susu lembut, hadir dalam satu minuman berlapis yang menyegarkan, lembut, dan menyenangkan, cocok untuk suasana apapun.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 36000,
+    "bundleCode": "tomoro-strawberry-matcha-latte",
+    "hargaNasional": 30000,
     "hargaPalembang": 45000,
     "hargaDhoho": 39000
   },
@@ -123,7 +130,7 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Kopi susu favorit kita hanya menggunakan 100% kopi arabika, gula aren lokal dan susu segar. Sudah pasti favorit semua orang.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-aren-latte",
     "hargaNasional": 21000,
     "hargaPalembang": 40000,
     "hargaDhoho": 26000
@@ -137,7 +144,7 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan espresso, susu dan sirup caramel dengan tambahan vanilla cloud foam diatasnya",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-sea-salt-cloud-caramel-macchiato",
     "hargaNasional": 30000,
     "hargaPalembang": 45000,
     "hargaDhoho": 38000
@@ -151,8 +158,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Minuman nge-hits kita, kini hadir dengan 'susu' oat yang sehat. Dijamin langsung jatuh cinta pada tegukan pertama. Percaya dehh!",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 25000,
+    "bundleCode": "tomoro-oat-latte",
+    "hargaNasional": 24000,
     "hargaPalembang": 38000,
     "hargaDhoho": 30000
   },
@@ -165,8 +172,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan antara TOMORO premium coklat, susu yang creamy, dan cheese cloud foam yang manis gurih dan lembut",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 30000,
+    "bundleCode": "tomoro-cheese-cloud-chocolate",
+    "hargaNasional": 26000,
     "hargaPalembang": 40000,
     "hargaDhoho": 34000
   },
@@ -179,8 +186,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "\"Latte\" di Italia berarti susu. Campuran antara kopi dan susu yang seimbang dengan busa susu yang tipis dan lembut di atasnya.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 25000,
+    "bundleCode": "tomoro-caffe-latte",
+    "hargaNasional": 24000,
     "hargaPalembang": 38000,
     "hargaDhoho": 30000
   },
@@ -193,7 +200,7 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Rasa espresso yang kaya di tuangkan ke air panas, mempertahankan crema kopi sempurna di cangkir dengan cita rasa cokelat hazelnut dan gula merah.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-caffe-americano",
     "hargaNasional": 18000,
     "hargaPalembang": 30000,
     "hargaDhoho": 23000
@@ -207,8 +214,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 19000,
+    "bundleCode": "tomoro-kopi-susu-aren",
+    "hargaNasional": 18000,
     "hargaPalembang": 35000,
     "hargaDhoho": 24000
   },
@@ -221,8 +228,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Espresso dan cokelat ganache yang di kombinasi dengan susu hangat yang lembut.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 26000,
+    "bundleCode": "tomoro-caffe-mocha",
+    "hargaNasional": 25000,
     "hargaPalembang": 40000,
     "hargaDhoho": 32000
   },
@@ -235,8 +242,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Cappuccino membutuhkan keterampilan dari barista terbaik, perpaduan espresso yang sempurna dengan susu dan busa susu yang lebih tebal.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 25000,
+    "bundleCode": "tomoro-cappuccino",
+    "hargaNasional": 24000,
     "hargaPalembang": 38000,
     "hargaDhoho": 30000
   },
@@ -249,8 +256,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Kami menggunakan half&half untuk membuat minuman kopi susu yang lembut dan lebih kental.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 32000,
+    "bundleCode": "tomoro-breve-latte",
+    "hargaNasional": 30000,
     "hargaPalembang": 42000,
     "hargaDhoho": 38000
   },
@@ -263,8 +270,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Espresso yang kaya dicampurkan dengan sirup karamel sebelum ditambahkan ke dalam susu yang lembut.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 27000,
+    "bundleCode": "tomoro-caramel-macchiato",
+    "hargaNasional": 26000,
     "hargaPalembang": 38000,
     "hargaDhoho": 33000
   },
@@ -277,8 +284,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "[CHARACTER CUP NAILOONG AKAN DIBERIKAN SELAMA PERSEDIAAN MASIH ADA] Perpaduan antara TOMORO Blend Espresso, sirup caramel dan cheese milk yang creamy dan gurih",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 30000,
+    "bundleCode": "tomoro-caramel-cheese-latte",
+    "hargaNasional": 26000,
     "hargaPalembang": 40000,
     "hargaDhoho": 34000
   },
@@ -291,7 +298,7 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan antara TOMORO Blend espresso, susu yang creamy dengan rasa manis dan sirup gula aren pada setiap tegukan",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-spanish-aren-latte",
     "hargaNasional": 26000,
     "hargaPalembang": 38000,
     "hargaDhoho": 33000
@@ -305,7 +312,7 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "#SeruputBuatHealing A perfect blend of 100% Real Coconut Milk, Aren Syrup and Espresso from TOMORO Blend, create a sweet and creamy drinks.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-coconut-aren-latte",
     "hargaNasional": 25000,
     "hargaPalembang": 38000,
     "hargaDhoho": 30000
@@ -319,8 +326,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "[CHARACTER CUP NAILOONG AKAN DIBERIKAN SELAMA PERSEDIAAN MASIH ADA] Perpaduan antara TOMORO Blend Espresso, susu yang creamy, dan cheese cloud foam yang manis gurih dan lembut",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 30000,
+    "bundleCode": "tomoro-cheese-cloud-latte",
+    "hargaNasional": 26000,
     "hargaPalembang": 40000,
     "hargaDhoho": 34000
   },
@@ -333,7 +340,7 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan antara TOMORO Blend espresso dan susu yang creamy dengan rasa manis pada setiap tegukan",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-spanish-latte",
     "hargaNasional": 25000,
     "hargaPalembang": 36000,
     "hargaDhoho": 32000
@@ -347,7 +354,7 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "#SeruputBuatHealing Coconut Latte Asli & Pertama di INDONESIA. Perpaduan 100% susu kelapa asli dan espresso dari TOMORO Blend menjadikan minuman ini lebih creamy & smooth.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-coconut-latte",
     "hargaNasional": 23000,
     "hargaPalembang": 38000,
     "hargaDhoho": 28000
@@ -361,36 +368,22 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan madu manuka dengan susu oat yang sehat, menjadikan minuman ini cocok buat kalian yang sedang menjalankan hidup sehat",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-manuka-oat-latte",
     "hargaNasional": 30000,
     "hargaPalembang": 40000,
     "hargaDhoho": 38000
   },
   {
-    "id": "I644",
-    "productCode": "1100138",
-    "name": "Spanish Aren Latte (Limited Edition Cup)",
-    "category": "FLAVORED LATTE",
-    "image": "https://gambar.cimagroup.my.id/tomoro/spanish-aren-latte-limited-edition-cup.webp",
-    "description": "Perpaduan antara TOMORO Blend espresso, susu yang creamy dengan rasa manis dan sirup gula aren pada setiap tegukan",
-    "isSoldOut": false,
-    "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 26000,
-    "hargaPalembang": 38000,
-    "hargaDhoho": 33000
-  },
-  {
     "id": "I00581",
     "productCode": "1100269",
-    "name": "Dino-mite Mango Frappe ",
+    "name": "Dino-mite Mango Frappe",
     "category": "CHEESE X NAILOONG SERIES",
     "image": "https://gambar.cimagroup.my.id/tomoro/dino-mite-mango-frappe.webp",
     "description": "[CHARACTER CUP NAILOONG AKAN DIBERIKAN SELAMA PERSEDIAAN MASIH ADA] Perpaduan menyegarkan dan creamy dari mangga dan keju yang creamy menghadirkan pengalaman rasa manis dan gurih yang unik dan berkesan.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 28000,
+    "bundleCode": "tomoro-dino-mite-mango-frappe",
+    "hargaNasional": 26000,
     "hargaPalembang": 38000,
     "hargaDhoho": 32000
   },
@@ -403,8 +396,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "[CHARACTER CUP NAILOONG AKAN DIBERIKAN SELAMA PERSEDIAAN MASIH ADA] Teh rasa buah mangga segar yang dipadukan dengan topping cheese cloud yang lembut, gurih dan creamy. Perpaduan lezat ini menggabungkan manisnya mangga khas buah tropis dengan cheese cloud yang lembut dan gurih, menghasilkan keseimbangan rasa yang sempurna.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 26000,
+    "bundleCode": "tomoro-dino-mite-cloud-tea",
+    "hargaNasional": 24000,
     "hargaPalembang": 38000,
     "hargaDhoho": 32000
   },
@@ -417,8 +410,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan antara espresso dari TOMORO Blend dan Strawberry Purée asli, menghasilkan rasa manis yang menyegarkan.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 23000,
+    "bundleCode": "tomoro-strawberry-americano",
+    "hargaNasional": 19000,
     "hargaPalembang": 36000,
     "hargaDhoho": 30000
   },
@@ -431,8 +424,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan sempurna dari rasa manis dari Strawberry Purée Asli dan wangi dari Jasmine Green Tea, menghasilkan rasa yang menyegarkan.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 23000,
+    "bundleCode": "tomoro-strawberry-jasmine-tea",
+    "hargaNasional": 19000,
     "hargaPalembang": 36000,
     "hargaDhoho": 27000
   },
@@ -445,8 +438,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan antara espresso dari TOMORO Blend dan Peach Purée asli, menghasilkan rasa manis yang menyegarkan.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 23000,
+    "bundleCode": "tomoro-peach-americano",
+    "hargaNasional": 19000,
     "hargaPalembang": 36000,
     "hargaDhoho": 30000
   },
@@ -459,8 +452,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan sempurna dari rasa manis dari Peach Purée Asli dan wangi dari Jasmine Green Tea, menghasilkan rasa yang menyegarkan.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 23000,
+    "bundleCode": "tomoro-peach-jasmine-tea",
+    "hargaNasional": 19000,
     "hargaPalembang": 38000,
     "hargaDhoho": 32000
   },
@@ -473,38 +466,10 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Ekstrak lemon dicampur dengan Cafe Americano, memberikan sensasi rasa yang sangat berbeda. Sangat menyegarkan dan cocok untuk pelepas dahaga",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 22000,
+    "bundleCode": "tomoro-lemonade-americano",
+    "hargaNasional": 20000,
     "hargaPalembang": 35000,
     "hargaDhoho": 25000
-  },
-  {
-    "id": "I119",
-    "productCode": "1350021",
-    "name": "Pink Pop Lemonade",
-    "category": "REFRESHING SERIES",
-    "image": "https://gambar.cimagroup.my.id/tomoro/pink-pop-lemonade.webp",
-    "description": "Perpaduan rasa lemon yang segar ditambahkan rasa manis, and it's pink!",
-    "isSoldOut": false,
-    "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 15000,
-    "hargaPalembang": 32000,
-    "hargaDhoho": 18000
-  },
-  {
-    "id": "I120",
-    "productCode": "1350020",
-    "name": "Pink Pop Lemon Tea",
-    "category": "REFRESHING SERIES",
-    "image": "https://gambar.cimagroup.my.id/tomoro/pink-pop-lemon-tea.webp",
-    "description": "Perpaduan antara rasa asam manis dari lemon dan juga teh melati",
-    "isSoldOut": false,
-    "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 19000,
-    "hargaPalembang": 32000,
-    "hargaDhoho": 22000
   },
   {
     "id": "I297",
@@ -515,8 +480,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan wangi grapefruit yang khas dengan aroma TOMORO Cafe Americano, menciptakan kombinasi yang sempurna dan pilihan yang tepat untuk musim panas",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 22000,
+    "bundleCode": "tomoro-grapefruit-americano",
+    "hargaNasional": 20000,
     "hargaPalembang": 35000,
     "hargaDhoho": 25000
   },
@@ -529,8 +494,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan coklat premium dan susu dengan sea salt cloud foam diatasnya",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 30000,
+    "bundleCode": "tomoro-sea-salt-cloud-chocolate",
+    "hargaNasional": 28000,
     "hargaPalembang": 42000,
     "hargaDhoho": 35000
   },
@@ -543,7 +508,7 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Perpaduan rasa manis dengan teknik pemanggangan dari hojicha menghasilkan wangi yang khas, berbalut dengan tekstur creamy dari susu oat yang sehat. Cocok buat kalian yang menyukai rasa manis",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-hojicha-oat-latte",
     "hargaNasional": 30000,
     "hargaPalembang": 42000,
     "hargaDhoho": 38000
@@ -557,8 +522,8 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Kombinasi cokelat premium dan susu segar, menghasilkan rasa yang kaya dan lembut.",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 25000,
+    "bundleCode": "tomoro-chocolate",
+    "hargaNasional": 24000,
     "hargaPalembang": 40000,
     "hargaDhoho": 31000
   },
@@ -571,7 +536,7 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "Coklat dan susu oat, sudah pasti tidak akan salah buat kamu. Pilihan yang tepat sekali untuk keseharianmu!",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
+    "bundleCode": "tomoro-choco-oat-latte",
     "hargaNasional": 28000,
     "hargaPalembang": 38000,
     "hargaDhoho": 36000
@@ -585,35 +550,35 @@ export const TOMORO_FINAL_PRODUCTS: TomoroProductItem[] = [
     "description": "",
     "isSoldOut": false,
     "isCombo": false,
-    "bundleCode": "",
-    "hargaNasional": 20000,
+    "bundleCode": "tomoro-peach-oolong-milk-tea",
+    "hargaNasional": 19000,
     "hargaPalembang": 35000,
     "hargaDhoho": 22000
   }
 ];
 
-export const TOMORO_FINAL_PRODUCT_IDS = new Set<string>(
-  TOMORO_FINAL_PRODUCTS.map((p) => p.id)
-);
-
 export const TOMORO_FINAL_PRODUCT_NAMES = new Set<string>(
   TOMORO_FINAL_PRODUCTS.map((p) => p.name.trim().toLowerCase())
 );
 
-/** Peta lookup cepat berdasarkan ID dan nama lowercase */
+export const TOMORO_FINAL_PRODUCT_IDS = new Set<string>(
+  TOMORO_FINAL_PRODUCTS.map((p) => p.id.trim())
+);
+
 export const TOMORO_PRODUCT_MAP = new Map<string, TomoroProductItem>();
-TOMORO_FINAL_PRODUCTS.forEach((p) => {
-  TOMORO_PRODUCT_MAP.set(p.id, p);
+for (const p of TOMORO_FINAL_PRODUCTS) {
   TOMORO_PRODUCT_MAP.set(p.name.trim().toLowerCase(), p);
-  if (p.productCode) {
-    TOMORO_PRODUCT_MAP.set(p.productCode, p);
-  }
-});
+  TOMORO_PRODUCT_MAP.set(p.name.trim(), p);
+  TOMORO_PRODUCT_MAP.set(p.id.trim(), p);
+  TOMORO_PRODUCT_MAP.set(p.id.trim().toLowerCase(), p);
+  TOMORO_PRODUCT_MAP.set(p.productCode.trim(), p);
+  TOMORO_PRODUCT_MAP.set(p.bundleCode.trim().toLowerCase(), p);
+}
 
 /**
- * Memeriksa apakah suatu menu termasuk dalam 39 menu final yang diizinkan untuk brand TOMORO Coffee.
+ * Memeriksa apakah nama/id produk termasuk dalam 36 menu final Tomoro yang diizinkan.
  */
-export function isTomoroItemEligible(idOrNameOrCode: string): boolean {
+export function isTomoroItemEligible(idOrNameOrCode?: string | null): boolean {
   if (!idOrNameOrCode) return false;
   const clean = idOrNameOrCode.trim();
   const lower = clean.toLowerCase();
@@ -627,7 +592,7 @@ export function isTomoroItemEligible(idOrNameOrCode: string): boolean {
 
 /**
  * Mengambil harga normal (pre-promo) menu Tomoro untuk outlet tertentu (memperhitungkan tier bandara).
- * Mengembalikan null jika menu tidak termasuk dalam 39 menu final yang diizinkan.
+ * Mengembalikan null jika menu tidak termasuk dalam 36 menu final yang diizinkan.
  */
 export function getTomoroProductNormalPrice(
   idOrNameOrCode: string,
@@ -647,7 +612,7 @@ export function getTomoroProductNormalPrice(
 
 /**
  * Menghasilkan menuGroups resmi Tomoro Coffee untuk outlet tertentu.
- * Mengelompokkan 39 menu final ke dalam 7 kategori resmi dengan harga tier outlet tersebut.
+ * Mengelompokkan 36 menu final ke dalam 7 kategori resmi dengan harga tier outlet tersebut.
  */
 export function getTomoroMenuForOutlet(outletCode?: string | null): MenuGroup[] {
   const tier = getTomoroAirportTier(outletCode);
@@ -692,4 +657,212 @@ export function getTomoroMenuForOutlet(outletCode?: string | null): MenuGroup[] 
       products: domainProducts,
     };
   });
+}
+
+/**
+ * Menemukan produk TOMORO berdasarkan bundleCode, productCode, id, atau nama.
+ */
+export function findTomoroProduct(identifier: string, outletCode?: string | null): Product | null {
+  if (!identifier) return null;
+  const menuGroups = getTomoroMenuForOutlet(outletCode);
+  const norm = identifier.trim().toLowerCase();
+
+  for (const group of menuGroups) {
+    for (const prod of group.products) {
+      if (
+        prod.bundleCode.toLowerCase() === norm ||
+        prod.productCode.toLowerCase() === norm ||
+        prod.name.toLowerCase() === norm ||
+        String(prod.id).toLowerCase() === norm
+      ) {
+        return prod;
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Menghasilkan ProductOptionDetails lengkap untuk produk TOMORO Coffee.
+ * Mengikuti konfigurasi otoritatif hasil verifikasi Excel user:
+ * - Ukuran Cup: Small
+ * - Suhu: Iced
+ * - Sweetness: Normal Sweet, Less Sweet (bila aktif)
+ * - Susu: Master Milk (+Rp0), Oat Milk (+Rp5.000), Coconut Milk (+Rp5.000) (bila aktif)
+ * - Topping: No Topping (+Rp0), Sea Salt Cloud (+Rp5.000), Cheese Cloud (+Rp5.000) (bila aktif)
+ * - Add-on: Sugar Syrup (+Rp0) (bila aktif)
+ */
+export function getTomoroProductOptions(
+  bundleCode: string,
+  outletCode?: string | null
+): ProductOptionDetails | null {
+  const product = findTomoroProduct(bundleCode, outletCode);
+  if (!product) return null;
+
+  const itemConfig = getTomoroItemConfig(product.name);
+  if (!itemConfig || !itemConfig.adaKustom) {
+    const skuCode = `${product.bundleCode}_DEFAULT`;
+    const sku: VariantSku = {
+      sku: skuCode,
+      combinationKey: 'default',
+      name: product.name,
+      description: product.description,
+      price: product.basePrice,
+      variantAddition: 0,
+    };
+
+    return {
+      product,
+      dimensions: [],
+      skus: [sku],
+      optionMap: { default: sku },
+      defaultSelectionMap: {},
+      addons: [],
+      notes: [],
+    };
+  }
+
+  // 1. Dimensions: Ukuran Cup (Small) & Suhu (Iced)
+  const dimensions: VariantDimension[] = [
+    {
+      code: 1,
+      name: 'Ukuran Cup',
+      values: [{ id: 1, name: 'Small' }],
+    },
+    {
+      code: 2,
+      name: 'Suhu',
+      values: [{ id: 1, name: 'Iced' }],
+    },
+  ];
+
+  const defaultSelectionMap: Record<string, string> = {
+    '1': '1', // Small
+    '2': '1', // Iced
+  };
+
+  const skuCode = `${product.bundleCode}_SM_ICE`;
+  const sku: VariantSku = {
+    sku: skuCode,
+    combinationKey: '1-1:2-1:',
+    name: `${product.name} (Small, Iced)`,
+    description: product.description,
+    price: product.basePrice,
+    variantAddition: 0,
+  };
+  const skus: VariantSku[] = [sku];
+  const optionMap: Record<string, VariantSku> = {
+    '1-1:2-1:': sku,
+  };
+
+  // 2. Notes: Sweetness
+  const notes: ProductNoteGroup[] = [];
+  if (itemConfig.sweetness.active) {
+    const sweetOptions: string[] = [];
+    if (itemConfig.sweetness.normal) sweetOptions.push('Normal Sweet');
+    if (itemConfig.sweetness.less) sweetOptions.push('Less Sweet');
+    if (sweetOptions.length > 0) {
+      notes.push({
+        name: 'Sweetness',
+        type: 'radio',
+        options: sweetOptions,
+      });
+    }
+  }
+
+  // 3. Addons: Susu, Topping, Add-on
+  const addons: Addon[] = [];
+
+  // Pilihan Susu (Dairy)
+  // Diskon 50%: Normal +Rp10.000 -> Promo +Rp5.000
+  if (itemConfig.milk.active) {
+    if (itemConfig.milk.masterMilk) {
+      addons.push({
+        sku: 'TOMORO_DAIRY_MASTER',
+        name: 'Master Milk',
+        price: 0,
+        categoryName: 'Pilihan Susu',
+        group: 'dairy',
+        isSoldOut: false,
+      });
+    }
+    if (itemConfig.milk.oatMilk) {
+      addons.push({
+        sku: 'TOMORO_DAIRY_OAT',
+        name: 'Oat Milk',
+        price: 5000,
+        categoryName: 'Pilihan Susu',
+        group: 'dairy',
+        isSoldOut: false,
+      });
+    }
+    if (itemConfig.milk.coconutMilk) {
+      addons.push({
+        sku: 'TOMORO_DAIRY_COCONUT',
+        name: 'Coconut Milk',
+        price: 5000,
+        categoryName: 'Pilihan Susu',
+        group: 'dairy',
+        isSoldOut: false,
+      });
+    }
+  }
+
+  // Pilihan Topping
+  // Normal Flat Rp5.000 (TIDAK KENA DISKON)
+  if (itemConfig.topping.active) {
+    if (itemConfig.topping.noTopping) {
+      addons.push({
+        sku: 'TOMORO_TOP_NONE',
+        name: 'No Topping',
+        price: 0,
+        categoryName: 'Pilihan Topping',
+        group: 'topping',
+        isSoldOut: false,
+      });
+    }
+    if (itemConfig.topping.seaSaltCloud) {
+      addons.push({
+        sku: 'TOMORO_TOP_SEASALT',
+        name: 'Sea Salt Cloud',
+        price: 5000,
+        categoryName: 'Pilihan Topping',
+        group: 'topping',
+        isSoldOut: false,
+      });
+    }
+    if (itemConfig.topping.cheeseCloud) {
+      addons.push({
+        sku: 'TOMORO_TOP_CHEESE',
+        name: 'Cheese Cloud',
+        price: 5000,
+        categoryName: 'Pilihan Topping',
+        group: 'topping',
+        isSoldOut: false,
+      });
+    }
+  }
+
+  // Add-on Tambahan (Sugar Syrup)
+  if (itemConfig.addon.active && itemConfig.addon.sugarSyrup) {
+    addons.push({
+      sku: 'TOMORO_ADDON_SUGAR_SYRUP',
+      name: 'Sugar Syrup',
+      price: 0,
+      categoryName: 'Add on',
+      group: 'syrup',
+      isSoldOut: false,
+    });
+  }
+
+  return {
+    product,
+    dimensions,
+    skus,
+    optionMap,
+    defaultSelectionMap,
+    addons,
+    notes,
+  };
 }

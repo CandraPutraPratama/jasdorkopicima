@@ -35,6 +35,7 @@ export interface Product {
   originalPrice: number;
   isSoldOut: boolean;
   isCombo: boolean;
+  category?: string;
 }
 
 export interface MenuGroup {
