@@ -35,7 +35,7 @@ export interface OrderItemSnapshot {
 }
 
 export interface OrderRecord {
-  id: string; // 'CG-XXXXXX'
+  id: string; // 'KK-XXXXXX' | 'TC-XXXXXX' | 'FR-XXXXXX' | 'CG-XXXXXX'
   brand_slug: string;
   outlet_code: string;
   outlet_name?: string;

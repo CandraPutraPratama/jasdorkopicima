@@ -21,22 +21,44 @@ describe('Order Service - QRIS On-Site Flow', () => {
   });
 
   describe('generateOrderId', () => {
-    it('generates ID with CG- prefix and exactly 6 uppercase alphanumeric characters', () => {
+    it('generates ID with CG- prefix and exactly 6 uppercase alphanumeric characters when no brand is provided', () => {
       const id = generateOrderId();
       assert.match(id, /^CG-[A-Z0-9]{6}$/);
     });
 
-    it('excludes ambiguous characters so customers can dictate the ID safely', () => {
+    it('generates ID with KK- prefix for Kopi Kenangan', () => {
+      const id = generateOrderId('kopi-kenangan');
+      assert.match(id, /^KK-[A-Z0-9]{6}$/);
+    });
+
+    it('generates ID with TC- prefix for Tomoro Coffee', () => {
+      const id = generateOrderId('tomoro');
+      assert.match(id, /^TC-[A-Z0-9]{6}$/);
+    });
+
+    it('generates ID with FR- prefix for Fore Coffee', () => {
+      const id = generateOrderId('fore');
+      assert.match(id, /^FR-[A-Z0-9]{6}$/);
+    });
+
+    it('falls back to CG- prefix for unknown or empty brand', () => {
+      assert.match(generateOrderId(''), /^CG-[A-Z0-9]{6}$/);
+      assert.match(generateOrderId('unknown-brand'), /^CG-[A-Z0-9]{6}$/);
+    });
+
+    it('excludes ambiguous characters so customers can dictate the ID safely across all brand prefixes', () => {
       const ambiguous = /[IO01]/;
-      for (let i = 0; i < 100; i++) {
-        assert.equal(ambiguous.test(generateOrderId()), false);
+      for (const brand of ['kopi-kenangan', 'tomoro', 'fore', undefined]) {
+        for (let i = 0; i < 25; i++) {
+          assert.equal(ambiguous.test(generateOrderId(brand)), false);
+        }
       }
     });
 
     it('generates unique IDs across multiple calls', () => {
       const ids = new Set<string>();
       for (let i = 0; i < 500; i++) {
-        ids.add(generateOrderId());
+        ids.add(generateOrderId('kopi-kenangan'));
       }
       assert.equal(ids.size, 500);
     });
@@ -186,7 +208,7 @@ describe('Order Service - QRIS On-Site Flow', () => {
         notes: 'Jangan manis',
       });
 
-      assert.match(order.id, /^CG-[A-Z0-9]{6}$/);
+      assert.match(order.id, /^KK-[A-Z0-9]{6}$/);
       assert.match(order.access_token ?? '', /^[0-9a-f]{32}$/);
       assert.equal(order.status, 'menunggu_pembayaran');
       assert.equal(order.brand_slug, 'kopi-kenangan');
@@ -203,6 +225,38 @@ describe('Order Service - QRIS On-Site Flow', () => {
       const createdTime = new Date(order.created_at).getTime();
       const expiresTime = new Date(order.expires_at).getTime();
       assert.equal(expiresTime - createdTime, 60 * 60 * 1000); // 60 minutes
+    });
+
+    it('creates order with TC- prefix for tomoro and FR- prefix for fore', () => {
+      const items: CartItem[] = [
+        {
+          id: 'item-1',
+          bundleCode: 'AMER-01',
+          name: 'Americano',
+          basePrice: 16000,
+          variantAddition: 0,
+          toppingTotal: 0,
+          quantity: 1,
+        },
+      ];
+
+      const tomoroOrder = createOrderRecord({
+        brandSlug: 'tomoro',
+        outletCode: 'TC-01',
+        customerName: 'Siti',
+        customerWa: '62811111111',
+        items,
+      });
+      assert.match(tomoroOrder.id, /^TC-[A-Z0-9]{6}$/);
+
+      const foreOrder = createOrderRecord({
+        brandSlug: 'fore',
+        outletCode: 'FR-01',
+        customerName: 'Andi',
+        customerWa: '62822222222',
+        items,
+      });
+      assert.match(foreOrder.id, /^FR-[A-Z0-9]{6}$/);
     });
   });
 

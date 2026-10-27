@@ -58,14 +58,39 @@ export class OrderStateError extends OrderError {
 }
 
 /**
- * Menghasilkan Order ID acak dengan prefix CG- dan 6 karakter alfanumerik kapital unik.
- * Contoh: "CG-A8F29K"
+ * Menentukan prefix Order ID berdasarkan brand slug:
+ * - Kopi Kenangan: "KK"
+ * - Tomoro Coffee: "TC"
+ * - Fore Coffee: "FR"
+ * - Fallback / default: "CG"
+ */
+export function getOrderPrefix(brandSlug?: string | null): string {
+  if (!brandSlug) return 'CG';
+  const slug = brandSlug.toLowerCase().trim();
+  if (slug === 'kopi-kenangan' || slug.includes('kenangan')) {
+    return 'KK';
+  }
+  if (slug === 'tomoro' || slug.includes('tomoro')) {
+    return 'TC';
+  }
+  if (slug === 'fore' || slug.includes('fore')) {
+    return 'FR';
+  }
+  if (slug.includes('kopi')) {
+    return 'KK';
+  }
+  return 'CG';
+}
+
+/**
+ * Menghasilkan Order ID acak dengan prefix dinamis per brand dan 6 karakter alfanumerik kapital unik.
+ * Contoh: "KK-A8F29K", "TC-A8F29K", "FR-A8F29K" (fallback "CG-A8F29K")
  *
  * Entropi diambil dari Web Crypto (`crypto.getRandomValues`) agar ID tidak dapat
  * diprediksi. Karakter ambigu (I, O, 0, 1) dihilangkan supaya mudah dibacakan
  * saat pelanggan menyebutkannya ke admin.
  */
-export function generateOrderId(): string {
+export function generateOrderId(brandSlug?: string | null): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   const bytes = new Uint8Array(6);
   crypto.getRandomValues(bytes);
@@ -74,7 +99,8 @@ export function generateOrderId(): string {
   for (let i = 0; i < bytes.length; i++) {
     randomPart += chars[bytes[i] % chars.length];
   }
-  return `CG-${randomPart}`;
+  const prefix = getOrderPrefix(brandSlug);
+  return `${prefix}-${randomPart}`;
 }
 
 /**
@@ -578,7 +604,7 @@ export function createOrderRecord(params: CreateOrderParams): OrderRecord {
   });
 
   return {
-    id: generateOrderId(),
+    id: generateOrderId(brandSlug),
     brand_slug: brandSlug,
     outlet_code: outletCode,
     outlet_name: outletName,
