@@ -1,6 +1,11 @@
 import { describe, it, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { verifyStoreScope, getOutletByCode, safeNormalizeOutletCode } from '../src/lib/outlet-service.ts';
+import {
+  verifyStoreScope,
+  getOutletByCode,
+  safeNormalizeOutletCode,
+  evaluateTomoroOutletStatus,
+} from '../src/lib/outlet-service.ts';
 import { cacheService, cacheKeys } from '../src/lib/cache.ts';
 import { kkApiClient } from '../src/lib/kk-client.ts';
 import { setSupabaseServerClientInstance } from '../src/lib/supabase-server.ts';
@@ -224,6 +229,58 @@ describe('verifyStoreScope - Resilient Scope Verification', () => {
       const hyphens = await getOutletByCode('fore-fore-coffee-cempaka-putih');
       assert.ok(hyphens);
       assert.equal(hyphens.name, 'Fore Coffee - Cempaka Putih');
+    });
+  });
+
+  describe('TOMORO Coffee - Autonomous schedule (08:00 - 23:20)', () => {
+    it('evaluates Tomoro outlet status based on 08:00 - 23:20 operational hours', () => {
+      // 10:00 WIB -> BUKA
+      const openTime = new Date('2026-10-27T03:00:00.000Z'); // 03:00 UTC = 10:00 WIB
+      const openRes = evaluateTomoroOutletStatus({}, openTime, 'Asia/Jakarta');
+      assert.equal(openRes.isOpen, true);
+      assert.equal(openRes.canOrder, true);
+      assert.equal(openRes.orderReason, undefined);
+
+      // 23:30 WIB -> TUTUP
+      const closeTime = new Date('2026-10-27T16:30:00.000Z'); // 16:30 UTC = 23:30 WIB
+      const closeRes = evaluateTomoroOutletStatus({}, closeTime, 'Asia/Jakarta');
+      assert.equal(closeRes.isOpen, false);
+      assert.equal(closeRes.canOrder, false);
+      assert.equal(closeRes.orderReason, 'Outlet sedang tutup');
+
+      // 05:00 WIB -> TUTUP
+      const earlyTime = new Date('2026-10-27T22:00:00.000Z'); // 22:00 UTC = 05:00 WIB
+      const earlyRes = evaluateTomoroOutletStatus({}, earlyTime, 'Asia/Jakarta');
+      assert.equal(earlyRes.isOpen, false);
+      assert.equal(earlyRes.canOrder, false);
+    });
+
+    it('getOutletByCode for Tomoro populates openTime 08:00 and closeTime 23:20', async () => {
+      const mockTomoroOutlet = {
+        id: 20779,
+        code: 'tomoro-jsd-025',
+        name: 'TOMORO - Kota Kasablanka',
+        address: 'Lt. UG, Jl. Raya Casablanca',
+        brand: 'TOMORO Coffee',
+        open_time: null,
+        close_time: null,
+      };
+
+      setSupabaseServerClientInstance({
+        from: () => ({
+          select: () => ({
+            ilike: () => ({
+              maybeSingle: async () => ({ data: mockTomoroOutlet, error: null }),
+            }),
+          }),
+        }),
+      } as any);
+
+      const outlet = await getOutletByCode('tomoro-jsd-025');
+      assert.ok(outlet);
+      assert.equal(outlet.openTime, '08:00');
+      assert.equal(outlet.closeTime, '23:20');
+      assert.equal(outlet.brand, 'TOMORO Coffee');
     });
   });
 });

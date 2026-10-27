@@ -14,11 +14,19 @@ export function resolveTomoroTimezone(code: string): string {
   return (tomoroTimezoneMap as Record<string, string>)[norm] || 'Asia/Jakarta';
 }
 
-export function evaluateTomoroOutletStatus(row: {
-  is_active?: boolean | null;
-  updated_at?: string | null;
-}): { isOpen: boolean; canOrder: boolean; orderReason?: string } {
-  const isOpen = Boolean(row.is_active);
+export function evaluateTomoroOutletStatus(
+  row?: {
+    is_active?: boolean | null;
+    updated_at?: string | null;
+    open_time?: string | null;
+    close_time?: string | null;
+  } | null,
+  now: Date = new Date(),
+  timezone: string = 'Asia/Jakarta'
+): { isOpen: boolean; canOrder: boolean; orderReason?: string } {
+  const openTime = row?.open_time || '08:00';
+  const closeTime = row?.close_time || '23:20';
+  const isOpen = isOutletOpenBySchedule(openTime, closeTime, now, timezone);
   return {
     isOpen,
     canOrder: isOpen,
@@ -81,15 +89,15 @@ export async function searchOutlets(
       if (!error && data) {
         const items: Outlet[] = data.map((row) => {
           const timezone = resolveTomoroTimezone(row.code);
-          const statusObj = evaluateTomoroOutletStatus(row);
+          const statusObj = evaluateTomoroOutletStatus(row, new Date(), timezone);
           return {
             id: Number(row.id),
             code: row.code,
             name: row.name,
             address: row.address,
             isOpen: statusObj.isOpen,
-            openTime: '',
-            closeTime: '',
+            openTime: row.open_time || '08:00',
+            closeTime: row.close_time || '23:20',
             timeZone: timezone === 'Asia/Jayapura' ? 9 : timezone === 'Asia/Makassar' ? 8 : 7,
             timezone,
             brand: 'TOMORO Coffee',
@@ -278,15 +286,15 @@ export async function getFeaturedOutlets(
       if (!error && data) {
         const items: Outlet[] = data.map((row) => {
           const timezone = resolveTomoroTimezone(row.code);
-          const statusObj = evaluateTomoroOutletStatus(row);
+          const statusObj = evaluateTomoroOutletStatus(row, new Date(), timezone);
           return {
             id: Number(row.id),
             code: row.code,
             name: row.name,
             address: row.address,
             isOpen: statusObj.isOpen,
-            openTime: '',
-            closeTime: '',
+            openTime: row.open_time || '08:00',
+            closeTime: row.close_time || '23:20',
             timeZone: timezone === 'Asia/Jayapura' ? 9 : timezone === 'Asia/Makassar' ? 8 : 7,
             timezone,
             brand: 'TOMORO Coffee',
@@ -538,15 +546,15 @@ export async function getOutletByCode(code: string): Promise<Outlet | null> {
       const isTomoroRow = isTomoro || data.brand === 'TOMORO Coffee';
       if (isTomoroRow) {
         const timezone = resolveTomoroTimezone(data.code);
-        const statusObj = evaluateTomoroOutletStatus(data);
+        const statusObj = evaluateTomoroOutletStatus(data, new Date(), timezone);
         return {
           id: Number(data.id),
           code: data.code,
           name: data.name,
           address: data.address,
           isOpen: statusObj.isOpen,
-          openTime: '',
-          closeTime: '',
+          openTime: data.open_time || '08:00',
+          closeTime: data.close_time || '23:20',
           timeZone: timezone === 'Asia/Jayapura' ? 9 : timezone === 'Asia/Makassar' ? 8 : 7,
           timezone,
           brand: 'TOMORO Coffee',

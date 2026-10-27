@@ -1,4 +1,5 @@
 import { getSupabaseServerClient } from '../supabase-server.ts';
+import { isOutletOpenBySchedule } from '../orderability.ts';
 
 export interface TomoroSyncResult {
   syncedCount: number;
@@ -187,19 +188,22 @@ export async function syncTomoroOutletsStatusToDb(): Promise<TomoroSyncResult> {
 }
 
 /**
- * Mengevaluasi status buka/tutup outlet TOMORO berdasarkan snapshot database.
+ * Mengevaluasi status buka/tutup outlet TOMORO mandiri berdasarkan jam operasional Jasdor (08:00 - 23:20).
  */
 export function evaluateTomoroOutletStatus(
-  dbRecord: { is_active?: boolean | null; updated_at?: string | null },
-  _now: Date = new Date()
+  dbRecord?: { is_active?: boolean | null; updated_at?: string | null; open_time?: string | null; close_time?: string | null } | null,
+  now: Date = new Date(),
+  timezone: string = 'Asia/Jakarta'
 ): { isOpen: boolean; canOrder: boolean; orderReason: string | null } {
-  const isActive = Boolean(dbRecord.is_active);
+  const openTime = dbRecord?.open_time || '08:00';
+  const closeTime = dbRecord?.close_time || '23:20';
+  const isOpen = isOutletOpenBySchedule(openTime, closeTime, now, timezone);
 
-  if (!isActive) {
+  if (!isOpen) {
     return {
       isOpen: false,
       canOrder: false,
-      orderReason: 'Outlet tidak aktif',
+      orderReason: 'Outlet sedang tutup',
     };
   }
 

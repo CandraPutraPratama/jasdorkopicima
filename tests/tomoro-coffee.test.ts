@@ -234,37 +234,34 @@ test('Tomoro Coffee - Mixed Cart (1 B1G1 + 1 regular)', () => {
   assert.equal(breakdown.regularFee, 1500);
 });
 
-test('Tomoro Coffee - Status outlet mandiri tanpa blokir stale', () => {
-  const now = new Date();
+test('Tomoro Coffee - Status outlet mandiri mengikuti jadwal operasional Jasdor (08:00 - 23:20)', () => {
+  // 12:00 WIB (05:00 UTC) -> BUKA
+  const noonWib = new Date('2026-10-27T05:00:00.000Z');
+  const noonStatus = evaluateTomoroOutletStatus({}, noonWib, 'Asia/Jakarta');
+  assert.equal(noonStatus.isOpen, true);
+  assert.equal(noonStatus.canOrder, true);
+  assert.equal(noonStatus.orderReason, null);
 
-  // Active snapshot -> BUKA
-  const freshTime = new Date(now.getTime() - 10 * 60 * 1000).toISOString();
-  const freshStatus = evaluateTomoroOutletStatus({
-    is_active: true,
-    updated_at: freshTime,
-  }, now);
-  assert.equal(freshStatus.isOpen, true);
-  assert.equal(freshStatus.canOrder, true);
-  assert.equal(freshStatus.orderReason, null);
+  // 23:25 WIB (16:25 UTC) -> TUTUP (setelah 23:20)
+  const nightWib = new Date('2026-10-27T16:25:00.000Z');
+  const nightStatus = evaluateTomoroOutletStatus({}, nightWib, 'Asia/Jakarta');
+  assert.equal(nightStatus.isOpen, false);
+  assert.equal(nightStatus.canOrder, false);
+  assert.equal(nightStatus.orderReason, 'Outlet sedang tutup');
 
-  // Inactive snapshot -> TUTUP
-  const inactiveStatus = evaluateTomoroOutletStatus({
-    is_active: false,
-    updated_at: freshTime,
-  }, now);
-  assert.equal(inactiveStatus.isOpen, false);
-  assert.equal(inactiveStatus.canOrder, false);
-  assert.equal(inactiveStatus.orderReason, 'Outlet tidak aktif');
+  // 06:00 WIB (23:00 UTC kemarin) -> TUTUP (sebelum 08:00)
+  const earlyWib = new Date('2026-10-27T23:00:00.000Z');
+  const earlyStatus = evaluateTomoroOutletStatus({}, earlyWib, 'Asia/Jakarta');
+  assert.equal(earlyStatus.isOpen, false);
+  assert.equal(earlyStatus.canOrder, false);
+  assert.equal(earlyStatus.orderReason, 'Outlet sedang tutup');
 
-  // Outlet aktif tetap BUKA mandiri meskipun snapshot lama (> 30 menit lalu)
-  const pastTime = new Date(now.getTime() - 35 * 60 * 1000).toISOString();
-  const pastStatus = evaluateTomoroOutletStatus({
-    is_active: true,
-    updated_at: pastTime,
-  }, now);
-  assert.equal(pastStatus.isOpen, true);
-  assert.equal(pastStatus.canOrder, true);
-  assert.equal(pastStatus.orderReason, null);
+  // Zona Waktu Makassar (WITA, UTC+8):
+  // 07:30 WIB = 08:30 WITA -> Di Makassar sudah jam 08:30, jadi BUKA
+  const makassarMorning = new Date('2026-10-27T00:30:00.000Z');
+  const makassarStatus = evaluateTomoroOutletStatus({}, makassarMorning, 'Asia/Makassar');
+  assert.equal(makassarStatus.isOpen, true);
+  assert.equal(makassarStatus.canOrder, true);
 });
 
 test('Tomoro Coffee - buildTomoroStatusUpsertRows hanya memuat outlet DB yang dikenal penyedia', () => {
