@@ -20,7 +20,7 @@ import { TrustStrip } from '@/components/TrustStrip';
 
 export default function PortalPage() {
   useEffect(() => {
-    document.title = 'Cima Group - Portal Jasa Order Multi-Brand Promo Hemat';
+    document.title = 'Jasdor Kopi Cima - Jasa Order Kopi Kenangan, Fore & Tomoro Promo Hemat';
   }, []);
 
   const { isOpen, status, isLoading: isStatusLoading, refetch } = useOperationalStatus();
