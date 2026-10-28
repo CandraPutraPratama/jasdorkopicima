@@ -8,6 +8,7 @@ import {
 } from '../../../../../lib/order-service.ts';
 import { checkRateLimitKV, getClientIp } from '../../../../../lib/rate-limit-kv.ts';
 import { verifyAdminAuth } from '../../../../../lib/admin-auth.ts';
+import { sendTelegramOrderNotification } from '../../../../../lib/telegram.ts';
 import type { OrderRecord } from '../../../../../types/order.ts';
 
 /**
@@ -68,6 +69,12 @@ export async function POST(
     }
 
     const updatedOrder = await confirmOrderPayment(id);
+
+    // Kirim notifikasi instan ke Telegram Admin (non-blocking agar respons pembeli tetap cepat)
+    void sendTelegramOrderNotification(updatedOrder).catch((err) => {
+      console.warn('[ConfirmPayment] Gagal mengirim notifikasi Telegram:', err);
+    });
+
     return NextResponse.json({ success: true, order: toPublicOrder(updatedOrder) });
   } catch (err: any) {
     if (err instanceof OrderNotFoundError) {
