@@ -30,6 +30,11 @@ export { cleanNotes, cleanCustomerName };
 export function formatItemDetails(item: CartItem): string {
   const parts: string[] = [];
 
+  const isFore =
+    item.brandSlug === 'fore' ||
+    (typeof item.bundleCode === 'string' &&
+      (item.bundleCode.startsWith('FORE_') || item.bundleCode.startsWith('fore-')));
+
   // 1. Opsi Varian
   if (item.variantDescription && item.variantDescription.trim()) {
     const tokens = item.variantDescription
@@ -38,11 +43,21 @@ export function formatItemDetails(item: CartItem): string {
       .filter(Boolean);
 
     for (const token of tokens) {
+      // Jika token Fore sudah membawa label harga resmi (misal: "Large (+Rp7.000)"),
+      // pertahankan label harga tersebut tanpa ditimpa oleh getOptionAddition Kopi Kenangan
+      if (isFore && /\(\+Rp[\d.]+\)$/i.test(token)) {
+        const cleanFore = token.replace(/\s*\(\+Rp[\d.]+\)$/i, '').trim();
+        if (!isHiddenOptionValue(cleanFore)) {
+          parts.push(token);
+        }
+        continue;
+      }
+
       // Hapus suffix harga sebelumnya jika ada (misal: "Large (+Rp5.000)")
       const cleanToken = token.replace(/\s*\(\+Rp[\d.]+\)$/i, '').trim();
       if (!cleanToken || isHiddenOptionValue(cleanToken)) continue;
 
-      const addition = getOptionAddition(cleanToken);
+      const addition = !isFore ? getOptionAddition(cleanToken) : 0;
       if (addition > 0) {
         parts.push(`${cleanToken} (+${formatRupiah(addition)})`);
       } else {
@@ -81,17 +96,31 @@ export function formatItemDetails(item: CartItem): string {
     }
 
     if (syrups.length > 0) {
-      const syrupParts = syrups.map(
-        (s) => `${s.name} (+${formatRupiah(addonPrices.syrup)})`
+      // Jangan menduplikasi jika nama sirup sudah terdaftar di opsi varian
+      const unlistedSyrups = syrups.filter(
+        (s) => !parts.some((p) => p.toLowerCase().includes(s.name.toLowerCase()))
       );
-      parts.push(`Syrup: ${syrupParts.join(', ')}`);
+      if (unlistedSyrups.length > 0) {
+        const syrupPrice = isFore ? (unlistedSyrups[0].price || 7000) : addonPrices.syrup;
+        const syrupParts = unlistedSyrups.map(
+          (s) => `${s.name} (+${formatRupiah(s.price ?? syrupPrice)})`
+        );
+        parts.push(`Syrup: ${syrupParts.join(', ')}`);
+      }
     }
 
     if (toppings.length > 0) {
-      const toppingParts = toppings.map(
-        (t) => `${t.name} (+${formatRupiah(addonPrices.topping)})`
+      // Jangan menduplikasi jika nama topping sudah terdaftar di opsi varian
+      const unlistedToppings = toppings.filter(
+        (t) => !parts.some((p) => p.toLowerCase().includes(t.name.toLowerCase()))
       );
-      parts.push(`Topping: ${toppingParts.join(', ')}`);
+      if (unlistedToppings.length > 0) {
+        const toppingPrice = isFore ? (unlistedToppings[0].price || 7000) : addonPrices.topping;
+        const toppingParts = unlistedToppings.map(
+          (t) => `${t.name} (+${formatRupiah(t.price ?? toppingPrice)})`
+        );
+        parts.push(`Topping: ${toppingParts.join(', ')}`);
+      }
     }
   }
 
@@ -270,15 +299,23 @@ export function buildOrderWhatsAppConfirmationMessage(
   order: OrderWhatsAppConfirmationInput
 ): string {
   const outletLabel = order.outlet_name?.trim() || order.outlet_code;
-  const brandDisplay =
-    order.brand_slug?.toLowerCase() === 'tomoro' || order.outlet_code.toLowerCase().startsWith('tomoro-')
-      ? 'TOMORO Coffee'
-      : order.brand_slug &&
-        !order.brand_slug.toLowerCase().includes('kopi') &&
-        !order.brand_slug.toLowerCase().includes('kenangan') &&
-        order.brand_slug.toLowerCase().includes('fore')
-        ? 'Fore Coffee'
-        : 'Kopi Kenangan';
+  const isTomoroOrder =
+    order.brand_slug?.toLowerCase() === 'tomoro' || order.outlet_code.toLowerCase().startsWith('tomoro-');
+
+  const isForeOrder =
+    !isTomoroOrder &&
+    (order.brand_slug?.toLowerCase() === 'fore' ||
+      order.outlet_code.toLowerCase().startsWith('fore-') ||
+      (Boolean(order.brand_slug) &&
+        !order.brand_slug!.toLowerCase().includes('kopi') &&
+        !order.brand_slug!.toLowerCase().includes('kenangan') &&
+        order.brand_slug!.toLowerCase().includes('fore')));
+
+  const brandDisplay = isTomoroOrder
+    ? 'TOMORO Coffee'
+    : isForeOrder
+      ? 'Fore Coffee'
+      : 'Kopi Kenangan';
 
   let pickupLine = 'Pickup: Sekarang (estimasi siap ~jam segera)';
   // Nilai pickup_time mode "sekarang" dari checkout tersimpan sebagai
@@ -366,7 +403,12 @@ export function buildOrderWhatsAppConfirmationMessage(
         optParts.push(...it.variantOptions.filter(Boolean));
       }
       if (it.addons && it.addons.length > 0) {
-        optParts.push(...it.addons.map((a) => a.name).filter(Boolean));
+        const existingLower = optParts.join(', ').toLowerCase();
+        for (const a of it.addons) {
+          if (a.name && !existingLower.includes(a.name.toLowerCase())) {
+            optParts.push(a.name);
+          }
+        }
       }
       const optText = optParts.length > 0 ? ` (${optParts.join(', ')})` : '';
       lines.push(`- ${it.quantity}x ${it.name}${optText} - ${formatRupiah(it.subtotal)}`);

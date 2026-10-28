@@ -271,7 +271,10 @@ export async function POST(request: NextRequest) {
               {
                 name: d1.name,
                 category: 'drink',
-                variantDescription: 'Small',
+                variantDescription:
+                  d1.variantDescription && d1.variantDescription.trim() && d1.variantDescription.trim() !== 'Small'
+                    ? d1.variantDescription.trim()
+                    : 'Small, Iced, Normal Sweet',
                 normalPrice: p1,
                 promoPrice: p1 >= p2 ? p1 : 0,
                 notes: d1.notes || '',
@@ -279,7 +282,10 @@ export async function POST(request: NextRequest) {
               {
                 name: d2.name,
                 category: 'drink',
-                variantDescription: 'Small',
+                variantDescription:
+                  d2.variantDescription && d2.variantDescription.trim() && d2.variantDescription.trim() !== 'Small'
+                    ? d2.variantDescription.trim()
+                    : 'Small, Iced, Normal Sweet',
                 normalPrice: p2,
                 promoPrice: p1 >= p2 ? 0 : p2,
                 notes: d2.notes || '',
@@ -309,10 +315,14 @@ export async function POST(request: NextRequest) {
             name: it.name,
             basePrice: normalPrice,
             skuPrice: normalPrice,
-            variantAddition: 0,
-            toppingTotal: 0,
+            variantAddition: it.variantAddition || 0,
+            toppingTotal: it.toppingTotal || 0,
             quantity: it.quantity,
-            variantDescription: 'Small',
+            variantDescription:
+              it.variantDescription && it.variantDescription.trim() && it.variantDescription.trim() !== 'Small'
+                ? it.variantDescription.trim()
+                : 'Small, Iced, Master Milk, Normal Sweet',
+            addons: it.addons || [],
             notes: it.notes || '',
           });
         }
