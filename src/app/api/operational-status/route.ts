@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getEffectiveJasdorOperationalStatus, resolveOperationalStatusWithSimulation } from '@/lib/operational';
-import { getOperationalOverride } from '@/lib/site-settings';
-import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
+import { NextRequest, NextResponse } from 'next/server.js';
+import { getEffectiveJasdorOperationalStatus, resolveOperationalStatusWithSimulation } from '../../../lib/operational.ts';
+import { getOperationalOverride } from '../../../lib/site-settings.ts';
+import { checkRateLimit, getClientIp } from '../../../lib/rate-limit.ts';
+import { applyCachePolicy, CACHE_POLICY } from '../../../lib/cache-headers.ts';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,6 +22,7 @@ export async function GET(request: NextRequest) {
           'Retry-After': String(rateLimit.resetInSeconds),
           'X-RateLimit-Limit': String(rateLimit.limit),
           'X-RateLimit-Remaining': '0',
+          'Cache-Control': 'no-store',
         },
       }
     );
@@ -31,9 +33,12 @@ export async function GET(request: NextRequest) {
   const simulateParam = request.nextUrl.searchParams.get('simulate');
   const status = resolveOperationalStatusWithSimulation(baseStatus, simulateParam);
 
-  return NextResponse.json(status, {
-    headers: {
-      'Cache-Control': 'no-store, no-cache, must-revalidate',
-    },
-  });
+  const response = NextResponse.json(status);
+
+  // Jika sedang mode simulasi (?simulate=...), jangan di-cache agar testing/preview tidak terdistorsi
+  if (simulateParam) {
+    return applyCachePolicy(response, CACHE_POLICY.noStore);
+  }
+
+  return applyCachePolicy(response, CACHE_POLICY.operationalStatus);
 }

@@ -31,6 +31,12 @@ export const CACHE_POLICY = {
    * pemilik.
    */
   wifiToday: 'public, s-maxage=60, stale-while-revalidate=60',
+  /**
+   * Status operasional Jasdor (buka/tutup, jam operasional).
+   * 30 detik s-maxage diserap di Cloudflare Edge untuk menghentikan kuota Worker habis
+   * dari polling pengunjung, dengan stale-while-revalidate 60 detik.
+   */
+  operationalStatus: 'public, s-maxage=30, stale-while-revalidate=60',
   noStore: 'no-store',
 } as const;
 
