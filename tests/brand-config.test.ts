@@ -58,6 +58,9 @@ test('promoTitle per-brand: Fore 25%, lainnya default 50%', () => {
   assert.equal(fore?.promoTitle, 'Promo Diskon 25%', 'Judul /fore harus klaim diskon 25%');
   assert.equal(kenangan?.promoTitle, undefined, 'Kopi Kenangan pakai default 50%');
   assert.equal(tomoro?.promoTitle, undefined, 'Tomoro pakai default 50%');
+  assert.equal(fore?.promoDescription, 'dengan diskon 25%', 'Deskripsi /fore harus klaim diskon 25%');
+  assert.equal(kenangan?.promoDescription, undefined, 'Kopi Kenangan pakai default');
+  assert.equal(tomoro?.promoDescription, undefined, 'Tomoro pakai default');
 });
 
 test('getAllBrands returns registered brands list including fore', () => {

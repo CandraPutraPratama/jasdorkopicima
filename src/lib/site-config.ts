@@ -178,6 +178,8 @@ export interface BrandConfig {
   promoBadge: string;
   /** Teks promo untuk judul halaman/tab, cth 'Promo Diskon 25%'. Default: 'Promo Diskon 50%'. */
   promoTitle?: string;
+  /** Frasa promo untuk meta description, cth 'dengan diskon 25%'. Default: 'hemat setengah harga'. */
+  promoDescription?: string;
   description: string;
   accentColor: string;
   themeColor: string;
@@ -239,6 +241,7 @@ export const BRANDS: Record<string, BrandConfig> = {
     tagline: 'Setiap Fore Punya Cerita',
     promoBadge: 'DISKON 25% • FREE FEE',
     promoTitle: 'Promo Diskon 25%',
+    promoDescription: 'dengan diskon 25%',
     description:
       'Layanan jasa order Fore Coffee resmi. Pesan menu kopi, teh, dan Fore Deli favoritmu, checkout praktis via WhatsApp!',
     accentColor: '#00543C',
