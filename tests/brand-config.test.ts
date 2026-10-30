@@ -50,6 +50,16 @@ test('getBrandConfig returns full config for fore', () => {
   assert.ok(brand?.accentColor);
 });
 
+test('promoTitle per-brand: Fore 25%, lainnya default 50%', () => {
+  const fore = getBrandConfig('fore');
+  const kenangan = getBrandConfig('kopi-kenangan');
+  const tomoro = getBrandConfig('tomoro');
+  assert.ok(fore && kenangan && tomoro);
+  assert.equal(fore?.promoTitle, 'Promo Diskon 25%', 'Judul /fore harus klaim diskon 25%');
+  assert.equal(kenangan?.promoTitle, undefined, 'Kopi Kenangan pakai default 50%');
+  assert.equal(tomoro?.promoTitle, undefined, 'Tomoro pakai default 50%');
+});
+
 test('getAllBrands returns registered brands list including fore', () => {
   const brands = getAllBrands();
   assert.ok(Array.isArray(brands));

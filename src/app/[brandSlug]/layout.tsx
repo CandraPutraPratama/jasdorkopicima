@@ -25,13 +25,15 @@ export async function generateMetadata({ params }: BrandLayoutProps): Promise<Me
     };
   }
 
+  const promoTitle = brand.promoTitle ?? 'Promo Diskon 50%';
+
   return {
     title: {
-      absolute: `Jasa Order ${brand.name} Promo Diskon 50% | Cima Group`,
+      absolute: `Jasa Order ${brand.name} ${promoTitle} | Cima Group`,
     },
     description: `Pesan ${brand.name} hemat setengah harga via WhatsApp. ${brand.tagline || ''}`,
     openGraph: {
-      title: `Jasa Order ${brand.name} Promo Diskon 50% | Cima Group`,
+      title: `Jasa Order ${brand.name} ${promoTitle} | Cima Group`,
       description: `Pesan ${brand.name} hemat setengah harga via WhatsApp.`,
     },
   };
