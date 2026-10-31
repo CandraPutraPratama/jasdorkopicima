@@ -32,7 +32,7 @@ test('AdminPesananPanel membagi tampilan menjadi 4 tab navigasi terpisah', () =>
   assert.ok(code.includes("activeTab === 'brand'"), 'Kontrol brand hanya tampil di tab brand');
   assert.ok(code.includes("activeTab === 'pesanan'"), 'Daftar pesanan hanya tampil di tab pesanan');
 
-  // Smart polling dan penanganan rate limit
-  assert.ok(code.includes('lastActivityRef'), 'Harus melacak aktivitas pengguna untuk smart polling');
-  assert.ok(code.includes('res.status === 429'), 'Harus menangani respons HTTP 429 rate limit tanpa crash');
+  // Mode refresh manual untuk mencegah Error 1102
+  assert.ok(code.includes('Manual'), 'Harus menampilkan status mode refresh Manual');
+  assert.ok(code.includes('Segarkan'), 'Harus memiliki tombol Segarkan untuk refresh manual');
 });
