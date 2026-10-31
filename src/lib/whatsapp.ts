@@ -287,6 +287,8 @@ export interface OrderWhatsAppConfirmationInput {
   queueAhead?: number;
   /** Estimasi menit hingga pesanan siap, dinamis dari antrean (pengganti tetap 15 menit). */
   queueEstimateMinutes?: number;
+  /** Token akses rahasia pesanan untuk membuka halaman status pesanan. */
+  access_token?: string;
 }
 
 const EM_DASH = '\u2014';
@@ -454,6 +456,10 @@ export function buildOrderWhatsAppConfirmationMessage(
       'Mohon jangan spam chat/telepon ya Kak, chat yang naik ke atas justru diproses lebih akhir.'
     );
   }
+
+  const trackingUrl = `https://jasdor.cimagroup.my.id/bayar/${encodeURIComponent(order.id)}${order.access_token ? `?t=${encodeURIComponent(order.access_token)}` : ''}`;
+  lines.push('');
+  lines.push(`Pantau status pesanan:\n${trackingUrl}`);
 
   lines.push('');
   lines.push('Mohon konfirmasi pesanan saya. Terima kasih!');

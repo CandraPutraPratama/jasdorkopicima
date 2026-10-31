@@ -281,14 +281,19 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
   const queueAhead = queueStatus
     ? Math.max(queueStatus.activeOrders - (selfInQueue ? 1 : 0), 0)
     : undefined;
+  const resolvedAccessToken = order.access_token ?? accessToken ?? undefined;
   const waConfirmText = buildOrderWhatsAppConfirmationMessage(
     queueStatus && queueAhead !== undefined
       ? {
           ...order,
+          access_token: resolvedAccessToken,
           queueAhead,
           queueEstimateMinutes: estimateQueueMinutes(queueAhead),
         }
-      : order
+      : {
+          ...order,
+          access_token: resolvedAccessToken,
+        }
   );
   const waConfirmUrl = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(waConfirmText)}`;
 

@@ -288,6 +288,9 @@ test('buildOrderWhatsAppConfirmationMessage formats pre-filled message correctly
     '',
     'Kamu hemat Rp78.000 dari harga normal!',
     '',
+    'Pantau status pesanan:',
+    'https://jasdor.cimagroup.my.id/bayar/CG-AB12CD',
+    '',
     'Mohon konfirmasi pesanan saya. Terima kasih!',
   ].join('\n');
 
@@ -395,6 +398,9 @@ test('buildOrderWhatsAppConfirmationMessage formats Bundling 3 Reguler exactly a
     'Total: Rp32.500',
     '',
     'Kamu hemat Rp24.500 dari harga normal!',
+    '',
+    'Pantau status pesanan:',
+    'https://jasdor.cimagroup.my.id/bayar/CG-BND001',
     '',
     'Mohon konfirmasi pesanan saya. Terima kasih!',
   ].join('\n');
@@ -563,4 +569,32 @@ test('buildOrderWhatsAppConfirmationMessage menyertakan banner wajib lampirkan b
   assert.ok(message.includes('----------------------------------------'));
   assert.ok(message.includes('Halo Kak, saya sudah bayar pesanan #CG-BUKTI01'));
 });
+
+test('buildOrderWhatsAppConfirmationMessage menyertakan link pantau status pesanan (P1)', async () => {
+  const { buildOrderWhatsAppConfirmationMessage } = await import('../src/lib/whatsapp.ts');
+
+  const order = {
+    id: 'CG-TRACK99',
+    customer_name: 'Doni Pratama',
+    outlet_name: 'Mall Kelapa Gading',
+    outlet_code: 'MKG-1',
+    access_token: 'abc123token456',
+    created_at: '2026-10-17T07:00:00Z',
+    subtotal: 18000,
+    fee: 3000,
+    total: 21000,
+    items: [
+      {
+        name: 'Kopi Kenangan Mantan',
+        quantity: 1,
+        subtotal: 18000,
+      },
+    ],
+  };
+
+  const message = buildOrderWhatsAppConfirmationMessage(order);
+  assert.ok(message.includes('Pantau status pesanan:'));
+  assert.ok(message.includes('https://jasdor.cimagroup.my.id/bayar/CG-TRACK99?t=abc123token456'));
+});
+
 

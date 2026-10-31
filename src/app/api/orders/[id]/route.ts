@@ -31,22 +31,36 @@ export async function GET(
   request: NextRequest,
   segmentData: { params: Promise<{ id: string }> }
 ) {
-  const clientIp = getClientIp(request.headers);
-  const rateLimit = checkRateLimit(`order-get:${clientIp}`, {
-    maxRequests: 60,
-    windowSeconds: 60,
-  });
-
-  if (!rateLimit.success) {
-    return NextResponse.json(
-      { error: 'Terlalu banyak permintaan. Silakan tunggu sebentar.' },
-      { status: 429 }
-    );
-  }
-
   const { id } = await segmentData.params;
   if (!id) {
     return NextResponse.json({ error: 'ID pesanan wajib disertakan' }, { status: 400 });
+  }
+
+  // 1. Cek otorisasi admin: Admin resmi dibebaskan dari rate-limiting agar operasional tidak terblokir
+  const isAdmin = await verifyAdminAuth(request);
+
+  if (!isAdmin) {
+    const clientIp = getClientIp(request.headers);
+    // Batas 180 req/menit per IP untuk mengakomodasi polling antrean, multi-tab,
+    // dan jaringan WiFi bersama (shared NAT di kantor / kampus / outlet).
+    const rateLimit = checkRateLimit(`order-get:${clientIp}`, {
+      maxRequests: 180,
+      windowSeconds: 60,
+    });
+
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: 'Terlalu banyak permintaan. Silakan tunggu sebentar.' },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rateLimit.resetInSeconds),
+            'X-RateLimit-Limit': String(rateLimit.limit),
+            'X-RateLimit-Remaining': '0',
+          },
+        }
+      );
+    }
   }
 
   const providedToken = readAccessToken(request);
@@ -59,7 +73,6 @@ export async function GET(
     // 2. Sesi admin yang valid (cookie token HMAC)
     // Jawaban seragam 404 jika keduanya tidak terpenuhi (anti-enumerasi).
     const isTokenValid = verifyOrderAccessToken(order, providedToken);
-    const isAdmin = !isTokenValid && (await verifyAdminAuth(request));
 
     if (!isTokenValid && !isAdmin) {
       return NextResponse.json({ error: 'Pesanan tidak ditemukan' }, { status: 404 });
