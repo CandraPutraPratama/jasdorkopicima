@@ -27,7 +27,7 @@ test('Mode Khusus Bundling: Flag ON membuat bundling tetap aktif di luar tanggal
   try {
     process.env.NEXT_PUBLIC_BUNDLING_ONLY_MODE = 'true';
     // Tanggal di luar promo: 31 Oktober 2026
-    const futureDate = new Date('2026-10-31T12:00:00+07:00');
+    const futureDate = new Date('2026-11-05T12:00:00+07:00');
     assert.equal(isBundlingPromoActive(futureDate), true, 'Saat flag ON, bundling tetap aktif di luar periode');
 
     // Countdown TIDAK tampil di luar tanggal promo
@@ -41,8 +41,8 @@ test('Mode Khusus Bundling: Flag OFF kembali ke perilaku normal promo', () => {
   const originalEnv = process.env.NEXT_PUBLIC_BUNDLING_ONLY_MODE;
   try {
     process.env.NEXT_PUBLIC_BUNDLING_ONLY_MODE = 'false';
-    const activeDate = new Date('2026-10-24T12:00:00+07:00');
-    const expiredDate = new Date('2026-10-31T12:00:00+07:00');
+    const activeDate = new Date('2026-10-31T12:00:00+07:00');
+    const expiredDate = new Date('2026-11-02T12:00:00+07:00');
 
     assert.equal(isBundlingPromoActive(activeDate), true);
     assert.equal(isBundlingPromoActive(expiredDate), false);

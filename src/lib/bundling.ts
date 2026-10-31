@@ -97,8 +97,8 @@ export const ELIGIBLE_FOODS: BundleEligibleItem[] = [
 export const BASE_MANTAN_REGULAR_PRICE = 19000;
 
 /** Periode promo bundling terbatas Sabtu-Minggu (WIB) */
-export const BUNDLING_PROMO_START = '2026-10-24T00:00:00+07:00';
-export const BUNDLING_PROMO_END = '2026-10-25T23:59:59+07:00';
+export const BUNDLING_PROMO_START = '2026-10-31T00:00:00+07:00';
+export const BUNDLING_PROMO_END = '2026-11-01T23:59:59+07:00';
 
 /**
  * Cek apakah promo bundling saat ini sedang aktif.
