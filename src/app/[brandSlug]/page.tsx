@@ -11,6 +11,7 @@ import { OutletSearchCard } from '@/components/OutletSearchCard';
 import { OutletCardSkeleton } from '@/components/Skeleton';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { ActiveOrderBanner } from '@/components/ActiveOrderBanner';
+import { QueueInfoBar } from '@/components/QueueInfoBar';
 import {
   isBundlingPromoActive,
   getBundlingRemainingTime,
@@ -368,6 +369,9 @@ export default function BrandPage({ params }: BrandPageProps) {
 
         {/* Banner Pengingat Pesanan Menunggu Pembayaran */}
         <ActiveOrderBanner />
+
+        {/* Live Status Antrean Pemrosesan Toko */}
+        <QueueInfoBar />
 
         {/* Hero Ramping Brand Aktif */}
         <div className="bg-[#2B1D12] text-[#FAF4E8] border-2 border-[#2B1D12] rounded-3xl p-5 relative overflow-hidden shadow-[4px_4px_0px_#C67D0A]">

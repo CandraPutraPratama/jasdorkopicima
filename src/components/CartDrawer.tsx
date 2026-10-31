@@ -21,7 +21,7 @@ import { isOutletClosed as checkIsOutletClosed } from '@/lib/orderability';
 import { saveMyOrder, buildOrderPaymentUrl } from '@/lib/my-orders';
 import { useMinOrder50kMode } from '@/hooks/useBundlingOnlyMode';
 import { useQueueStatus, fetchQueueStatus } from '@/hooks/useQueueStatus';
-import { QUEUE_POPUP_THRESHOLD_MINUTES, type QueueStatus } from '@/lib/queue';
+import { QUEUE_POPUP_THRESHOLD_MINUTES, getQueueLoadInfo, type QueueStatus } from '@/lib/queue';
 import { resolveBrandSlugFromOutletCode } from '@/lib/site-config';
 
 interface CartDrawerProps {
@@ -835,15 +835,25 @@ export function CartDrawer({
               )}
 
               {/* Info antrean pemrosesan saat ini */}
-              {queue && (
-                <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-xl bg-[#FFFDF9] border-2 border-[#2B1D12]/15 text-[11px] font-bold text-[#4A3628] leading-snug">
-                  <span className="shrink-0 text-xs">⏳</span>
-                  <span>
-                    Antrean: {queue.activeOrders} order ({queue.totalItems} item) sedang
-                    diproses. Estimasi order baru ±{queue.estimateMinutes} menit.
-                  </span>
-                </div>
-              )}
+              {queue && (() => {
+                const loadInfo = getQueueLoadInfo(queue.activeOrders);
+                return (
+                  <div
+                    aria-label="Status Antrean Pemrosesan"
+                    className={`mb-3 flex items-center justify-between gap-2 px-3 py-2 rounded-xl border-2 border-[#2B1D12] text-[11px] font-bold shadow-[2px_2px_0px_#2B1D12] ${loadInfo.badgeBg} ${loadInfo.badgeText}`}
+                  >
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className={`w-2 h-2 rounded-full shrink-0 animate-pulse ${loadInfo.dotColor}`} />
+                      <span className="truncate">
+                        Antrean: {queue.activeOrders} order ({queue.totalItems} item) • {loadInfo.label}
+                      </span>
+                    </div>
+                    <span className="shrink-0 text-[10px] font-black">
+                      ±{queue.estimateMinutes} mnt
+                    </span>
+                  </div>
+                );
+              })()}
 
             </div>
             </div>
