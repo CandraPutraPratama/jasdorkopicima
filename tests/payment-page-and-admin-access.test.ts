@@ -182,11 +182,14 @@ describe('PERBAIKAN 2: Tampilan Halaman Bayar (PaymentView) Mengikuti Status', (
 
   it('PaymentView merender kartu antrean menenangkan, estimasi ~15 - 25 menit, dan kebijakan anti-cancel/refund', () => {
     const pvCode = fs.readFileSync(path.resolve('src/components/PaymentView.tsx'), 'utf-8');
-    assert.ok(pvCode.includes('Pesanan Masuk Antrean Outlet'));
+    assert.ok(pvCode.includes('Pesanan Masuk Antrian Outlet'));
     assert.ok(pvCode.includes('~15 - 25 Menit'));
     assert.ok(pvCode.includes('Harap Menunggu dengan Santai:'));
     assert.ok(pvCode.includes('Kebijakan Pembatalan & Refund:'));
-    assert.ok(pvCode.includes('TIDAK DAPAT DIBATALKAN atau di-refund sepihak'));
+    assert.ok(pvCode.includes('TIDAK DAPAT DIBATALKAN atau di-refund sepihak yaa kak🥰🙏.'));
+    assert.ok(pvCode.includes('Admin Memproses'));
+    assert.ok(pvCode.includes('Pesanan diterima'));
+    assert.ok(pvCode.includes('Siap Di Pick Up/Ambil'));
   });
 
   it('PaymentView tidak menghentikan polling otomatis sebelum order mencapai status final', () => {

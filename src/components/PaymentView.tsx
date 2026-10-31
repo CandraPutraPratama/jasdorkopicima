@@ -374,35 +374,35 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
         )}
 
         {(status === 'antrian' || status === 'menunggu_konfirmasi') && (
-          <div className="bg-[#F0F5FF] border-2 border-[#2B1D12] rounded-2xl p-4 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-3 animate-in fade-in">
+          <div className="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-2xl p-4 sm:p-5 text-xs text-[#2B1D12] shadow-[4px_4px_0px_#2B1D12] space-y-3.5 animate-in fade-in">
             {/* Header Status */}
-            <div className="flex items-center justify-between pb-2 border-b-2 border-[#2B1D12]/15">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-[#2B1D12]/15">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse shrink-0" />
-                <span className="font-display font-black text-sm text-[#1E40AF]">
-                  Pesanan Masuk Antrean Outlet
+                <span className="w-2.5 h-2.5 rounded-full bg-[#C67D0A] animate-pulse shrink-0" />
+                <span className="font-display font-black text-sm sm:text-base text-[#2B1D12]">
+                  Pesanan Masuk Antrian Outlet
                 </span>
               </div>
-              <span className="px-2 py-0.5 text-[10px] font-black rounded-lg bg-blue-100 text-[#1E40AF] border border-blue-300">
-                {status === 'antrian' ? 'Dalam Antrean' : 'Menunggu Konfirmasi'}
+              <span className="px-2.5 py-1 text-[10px] font-black rounded-lg bg-[#FFF0C2] text-[#854D0E] border-2 border-[#2B1D12] shadow-[1.5px_1.5px_0px_#2B1D12]">
+                {status === 'antrian' ? 'Dalam Antrian' : 'Menunggu Konfirmasi'}
               </span>
             </div>
 
             {/* Info Posisi & Estimasi */}
-            <div className="grid grid-cols-2 gap-2 text-center">
-              <div className="bg-white rounded-xl p-2.5 border-2 border-[#2B1D12]/20 shadow-[1px_1px_0px_#2B1D12]">
-                <span className="text-[10px] font-bold text-[#6A584D] uppercase block">Posisi Antrean</span>
-                <span className="font-display font-black text-sm text-[#2B1D12]">
+            <div className="grid grid-cols-2 gap-2.5 text-center">
+              <div className="bg-[#FAF4E8] rounded-xl p-2.5 sm:p-3 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
+                <span className="text-[10px] font-bold text-[#7A6658] uppercase tracking-wider block">Posisi Antrian</span>
+                <span className="font-display font-black text-sm sm:text-base text-[#2B1D12] mt-0.5 block">
                   {queueAhead !== undefined
                     ? queueAhead === 0
                       ? 'Giliran Terdepan'
                       : `${queueAhead} pesanan di depan`
-                    : 'Dalam Antrean'}
+                    : 'Dalam Antrian'}
                 </span>
               </div>
-              <div className="bg-white rounded-xl p-2.5 border-2 border-[#2B1D12]/20 shadow-[1px_1px_0px_#2B1D12]">
-                <span className="text-[10px] font-bold text-[#6A584D] uppercase block">Estimasi Siap</span>
-                <span className="font-display font-black text-sm text-[#DC2626]">
+              <div className="bg-[#FAF4E8] rounded-xl p-2.5 sm:p-3 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
+                <span className="text-[10px] font-bold text-[#7A6658] uppercase tracking-wider block">Estimasi Siap</span>
+                <span className="font-display font-black text-sm sm:text-base text-[#C67D0A] mt-0.5 block">
                   {queueAhead !== undefined && queueAhead > 3
                     ? `~${Math.max(20, (queueAhead + 1) * 4)} Menit`
                     : '~15 - 25 Menit'}
@@ -410,39 +410,51 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
               </div>
             </div>
 
-            {/* Transparansi Alur Proses */}
-            <div className="text-[11px] text-[#475569] leading-relaxed bg-white/70 rounded-xl p-2.5 border border-[#2B1D12]/10 space-y-1">
-              <p className="font-bold text-[#2B1D12]">Tahapan Proses Pesanan:</p>
-              <div className="flex items-center justify-between text-[10px] text-[#6A584D] font-bold">
-                <span className="text-[#15803D]">1. Verifikasi Mutasi</span>
-                <span>→</span>
-                <span className="text-[#2563EB]">2. Input Outlet</span>
-                <span>→</span>
-                <span className="text-[#D97706]">3. Barista Meracik</span>
-                <span>→</span>
-                <span className="text-[#15803D]">4. Siap Ambil</span>
+            {/* Transparansi Alur Proses: 4 Tahapan */}
+            <div className="bg-[#FAF4E8] rounded-xl p-3 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] space-y-2">
+              <p className="text-[11px] font-black text-[#2B1D12] flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C67D0A]" />
+                Tahapan Proses Pesanan:
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[10px] font-bold">
+                <div className="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-lg border border-[#2B1D12]/20">
+                  <span className="w-4 h-4 rounded-full bg-[#15803D] text-white flex items-center justify-center text-[9px] font-black shrink-0">1</span>
+                  <span className="text-[#15803D] leading-tight">Verifikasi Pembayaran</span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-lg border border-[#2B1D12]/20">
+                  <span className="w-4 h-4 rounded-full bg-[#C67D0A] text-white flex items-center justify-center text-[9px] font-black shrink-0">2</span>
+                  <span className="text-[#C67D0A] leading-tight">Admin Memproses</span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-lg border border-[#2B1D12]/20">
+                  <span className="w-4 h-4 rounded-full bg-[#7A6658] text-white flex items-center justify-center text-[9px] font-black shrink-0">3</span>
+                  <span className="text-[#7A6658] leading-tight">Pesanan diterima</span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-lg border border-[#2B1D12]/20">
+                  <span className="w-4 h-4 rounded-full bg-[#7A6658] text-white flex items-center justify-center text-[9px] font-black shrink-0">4</span>
+                  <span className="text-[#7A6658] leading-tight">Siap Di Pick Up/Ambil</span>
+                </div>
               </div>
             </div>
 
             {/* Box Penenang: Anti Spam Chat WA */}
-            <div className="bg-[#FFF8E7] border-2 border-[#C67D0A] rounded-xl p-2.5 text-[11px] leading-snug">
-              <p className="font-black text-[#854D0E] flex items-center gap-1">
+            <div className="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-xl p-3 shadow-[2px_2px_0px_#2B1D12] text-[11px] leading-snug">
+              <p className="font-black text-[#854D0E] flex items-center gap-1.5">
                 <span>💬</span>
                 <span>Harap Menunggu dengan Santai:</span>
               </p>
-              <p className="text-[#2B1D12] mt-0.5 font-medium">
-                Admin Jasdor memproses pesanan satu per satu secara berurutan (FIFO). Mohon tidak spam chat WhatsApp agar admin bisa fokus memesankan pesananmu secepat mungkin tanpa terdistraksi.
+              <p className="text-[#2B1D12] mt-1 font-medium leading-relaxed">
+                Admin Jasdor memproses pesanan satu per satu secara berurutan sesuai antrian. Mohon tidak spam chat WhatsApp agar admin bisa fokus memesankan pesananmu secepat mungkin tanpa terdistraksi.
               </p>
             </div>
 
             {/* Box Kebijakan Tegas: Anti Batal & Anti Refund */}
-            <div className="bg-[#FFEBEB] border-2 border-[#DC2626] rounded-xl p-2.5 text-[11px] leading-snug">
-              <p className="font-black text-[#DC2626] flex items-center gap-1">
+            <div className="bg-[#FFF5F5] border-2 border-[#DC2626] rounded-xl p-3 shadow-[2px_2px_0px_#DC2626] text-[11px] leading-snug">
+              <p className="font-black text-[#DC2626] flex items-center gap-1.5">
                 <span>⚠️</span>
                 <span>Kebijakan Pembatalan & Refund:</span>
               </p>
-              <p className="text-[#2B1D12] mt-0.5 font-medium">
-                Pesanan yang sudah dibayar langsung masuk ke sistem pemesanan outlet dan <strong>TIDAK DAPAT DIBATALKAN atau di-refund sepihak</strong> karena saldo dan voucher promo outlet langsung terpakai.
+              <p className="text-[#2B1D12] mt-1 font-medium leading-relaxed">
+                Pesanan yang sudah dibayar langsung masuk ke sistem pemesanan dan <strong>TIDAK DAPAT DIBATALKAN atau di-refund sepihak yaa kak🥰🙏.</strong>
               </p>
             </div>
           </div>
@@ -516,7 +528,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
             <div className="text-[11px] text-[#2B1D12] leading-relaxed bg-white/70 rounded-xl p-2.5 border border-[#2B1D12]/10 space-y-1">
               <p className="font-medium">
-                Admin Jasdor telah selesai memesankan dan membayarkan pesananmu di kasir gerai resmi. Saat ini barista gerai sedang meracik pesanan sesuai antrean outlet.
+                Admin Jasdor telah selesai memesankan dan membayarkan pesananmu di kasir gerai resmi. Saat ini barista gerai sedang meracik pesanan sesuai antrian outlet.
               </p>
               <div className="pt-1 flex items-center justify-between text-[11px] font-bold border-t border-[#2B1D12]/10">
                 <span className="text-[#6A584D]">Order atas nama:</span>
@@ -883,7 +895,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
             {status === 'menunggu_pembayaran' && (
               <div className="space-y-1.5">
                 <div className="bg-[#FFF8E7] border border-[#C67D0A]/40 rounded-xl px-2.5 py-1 text-[10px] text-[#6A584D] text-center leading-tight">
-                  <span className="font-bold text-[#2B1D12]">Catatan:</span> Pesanan yang sudah dibayar tidak dapat dibatalkan atau di-refund sepihak karena saldo promo langsung terpotong saat diproses.
+                  <span className="font-bold text-[#2B1D12]">Catatan:</span> Pesanan yang sudah dibayar tidak dapat dibatalkan atau di-refund sepihak yaa kak🥰🙏.
                 </div>
                 <button
                   type="button"
