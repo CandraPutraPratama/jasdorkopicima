@@ -23,10 +23,12 @@ export interface OperationalStatusResult {
   closeTime: string;
   /** Pesan status informatif untuk user */
   message: string;
-  /** Nilai kontrol manual buka/tutup ('auto' | 'force_open' | 'force_closed') */
+  /** Nilai kontrol manual buka/tutup ('auto' | 'force_open' | 'force_closed' | 'temporary_break') */
   overrideType?: OperationalOverride;
   /** Menandakan apakah Jasdor dibuka secara manual oleh admin */
   isManualOpen?: boolean;
+  /** Menandakan apakah Jasdor sedang dalam mode istirahat / jeda sejenak */
+  isBreak?: boolean;
 }
 
 const INDONESIAN_DAY_NAMES = [
@@ -228,6 +230,21 @@ export function getEffectiveJasdorOperationalStatus(
       message: 'Jasdor sedang ditutup sementara oleh admin.',
       overrideType: 'force_closed',
       isManualOpen: false,
+    };
+  }
+
+  if (override === 'temporary_break') {
+    return {
+      ...base,
+      isOpen: false,
+      dayStatus: 'closed',
+      isTentative: false,
+      tentativeNote: null,
+      message:
+        'Sebentar yaa kak istirahat sebentar, Mimin lagi ada keperluan singkat sekitar 15-30 menit. Jasdor TIDAK tutup seharian kok. Halaman ini akan otomatis aktif kembali begitu mimin online. Terimakasih udah sabar menunggu!',
+      overrideType: 'temporary_break',
+      isManualOpen: false,
+      isBreak: true,
     };
   }
 

@@ -1,7 +1,7 @@
 import { getSupabaseServerClient } from './supabase-server.ts';
 import { isMinOrder50kMode } from './feature-flags.ts';
 
-export type OperationalOverride = 'auto' | 'force_open' | 'force_closed';
+export type OperationalOverride = 'auto' | 'force_open' | 'force_closed' | 'temporary_break';
 
 export interface SiteSettingsResponse {
   min_order_50k_mode: boolean;
@@ -101,7 +101,12 @@ export async function setMinOrder50kMode(enabled: boolean): Promise<boolean> {
 export const getBundlingOnlyMode = getMinOrder50kMode;
 export const setBundlingOnlyMode = setMinOrder50kMode;
 
-const VALID_OPERATIONAL_OVERRIDES: OperationalOverride[] = ['auto', 'force_open', 'force_closed'];
+const VALID_OPERATIONAL_OVERRIDES: OperationalOverride[] = [
+  'auto',
+  'force_open',
+  'force_closed',
+  'temporary_break',
+];
 
 /**
  * Mengambil status kontrol manual buka/tutup (operational override) dari tabel site_settings.
@@ -124,7 +129,7 @@ export async function getOperationalOverride(): Promise<OperationalOverride> {
 export async function setOperationalOverride(value: OperationalOverride): Promise<OperationalOverride> {
   const normalized = (value || '').trim().toLowerCase() as OperationalOverride;
   if (!VALID_OPERATIONAL_OVERRIDES.includes(normalized)) {
-    throw new SiteSettingsError(`Nilai operational_override tidak valid: "${value}". Pilihan: auto, force_open, force_closed.`);
+    throw new SiteSettingsError(`Nilai operational_override tidak valid: "${value}". Pilihan: auto, force_open, force_closed, temporary_break.`);
   }
   await setSiteSetting('operational_override', normalized);
   return normalized;

@@ -204,6 +204,20 @@ describe('Jasdor Operational Hours & Day Schedule Checker', () => {
       assert.strictEqual(isJasdorOpen(sundayNoon, 'force_closed'), false);
     });
 
+    it('temporary_break di hari Minggu jam 12:00 -> isOpen: false, isBreak: true, overrideType: temporary_break', () => {
+      const res = getEffectiveJasdorOperationalStatus(sundayNoon, 'temporary_break');
+      assert.strictEqual(res.isOpen, false);
+      assert.strictEqual(res.dayStatus, 'closed');
+      assert.strictEqual(res.isManualOpen, false);
+      assert.strictEqual(res.isBreak, true);
+      assert.strictEqual(res.overrideType, 'temporary_break');
+      assert.ok(res.message.includes('keperluan singkat sekitar 15-30 menit'));
+      assert.ok(res.message.includes('TIDAK tutup seharian'));
+
+      // isJasdorOpen shortcut
+      assert.strictEqual(isJasdorOpen(sundayNoon, 'temporary_break'), false);
+    });
+
     it('auto -> mengikuti jadwal normal operasional secara day-aware', () => {
       // Senin di auto -> TUTUP
       const mondayAuto = getEffectiveJasdorOperationalStatus(mondayNoon, 'auto');

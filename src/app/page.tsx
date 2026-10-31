@@ -72,6 +72,7 @@ export default function PortalPage() {
         closeTime={status?.closeTime}
         dayName={status?.dayName}
         message={status?.message}
+        isBreak={status?.isBreak}
         onRefresh={refetch}
       />
     );

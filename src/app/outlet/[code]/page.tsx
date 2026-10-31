@@ -297,6 +297,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
         closeTime={jasdorStatus?.closeTime}
         dayName={jasdorStatus?.dayName}
         message={jasdorStatus?.message}
+        isBreak={jasdorStatus?.isBreak}
         onRefresh={refetch}
       />
     );

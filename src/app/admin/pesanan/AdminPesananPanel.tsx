@@ -256,6 +256,7 @@ export default function AdminPesananPanel() {
       const labelMap: Record<OperationalOverride, string> = {
         auto: 'Otomatis (mengikuti jadwal)',
         force_open: 'Paksa Buka (buka sekarang)',
+        temporary_break: 'Izin Istirahat Sebentar (rehat sejenak 15-30 mnt)',
         force_closed: 'Paksa Tutup (tutup sekarang)',
       };
       setOverrideNotification(`Status operasional berhasil diubah ke "${labelMap[newOverride]}". Tersimpan.`);
@@ -272,6 +273,9 @@ export default function AdminPesananPanel() {
   const getEffectiveStatusLabel = () => {
     if (operationalOverride === 'force_open') {
       return 'BUKA (manual)';
+    }
+    if (operationalOverride === 'temporary_break') {
+      return 'REHAT SEBENTAR (manual)';
     }
     if (operationalOverride === 'force_closed') {
       return 'TUTUP (manual)';
@@ -669,13 +673,13 @@ export default function AdminPesananPanel() {
                 </span>
               </div>
               <p className="text-[11px] text-[#7A6455] leading-relaxed pt-0.5">
-                Pilihan <strong>Paksa Buka</strong> atau <strong>Paksa Tutup</strong> mengabaikan jadwal otomatis (sangat berguna untuk hari Selasa jika buka cuma 3-4 jam atau tutup total). Pilih <strong>Otomatis</strong> untuk mengikuti jadwal standar Jasdor (Jumat-Minggu 08:00-23:20 buka, Selasa tentatif, Senin/Rabu/Kamis tutup).
+                Pilihan <strong>Paksa Buka</strong>, <strong>Izin Istirahat</strong>, atau <strong>Paksa Tutup</strong> mengabaikan jadwal otomatis. Pilih <strong>Izin Istirahat</strong> jika ingin jeda sebentar (sholat / urusan singkat 15-30 menit) agar customer tidak mengira toko tutup seharian. Pilih <strong>Otomatis</strong> untuk mengikuti jadwal standar Jasdor (Jumat-Minggu 08:00-23:20 buka, Selasa tentatif, Senin/Rabu/Kamis tutup).
               </p>
             </div>
           </div>
 
-          {/* 3 Tombol Pilihan Status Operasional */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+          {/* 4 Tombol Pilihan Status Operasional */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
             <button
               type="button"
               onClick={() => handleChangeOperationalOverride('auto')}
@@ -702,6 +706,20 @@ export default function AdminPesananPanel() {
             >
               <span className="font-black text-xs">Paksa Buka</span>
               <span className="text-[10px] opacity-80 font-medium">Buka abaikan jadwal</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleChangeOperationalOverride('temporary_break')}
+              disabled={isLoadingSettings || isUpdatingOverride}
+              className={`p-2.5 rounded-xl text-xs font-bold border-2 transition flex flex-col items-center justify-center text-center gap-0.5 ${
+                operationalOverride === 'temporary_break'
+                  ? 'bg-amber-500 text-[#2B1D12] border-amber-800 shadow-[2px_2px_0px_#78350F]'
+                  : 'bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100'
+              } disabled:opacity-50`}
+            >
+              <span className="font-black text-xs">Izin Istirahat</span>
+              <span className="text-[10px] opacity-80 font-medium">Rehat 15-30 menit</span>
             </button>
 
             <button

@@ -10,6 +10,7 @@ interface ClosedScreenProps {
   dayName?: string;
   message?: string;
   onRefresh?: () => void;
+  isBreak?: boolean;
 }
 
 export function ClosedScreen({
@@ -19,8 +20,25 @@ export function ClosedScreen({
   dayName,
   message,
   onRefresh,
+  isBreak,
 }: ClosedScreenProps) {
+  const isTemporaryBreak = Boolean(
+    isBreak ||
+    (message && (
+      message.includes('keperluan singkat') ||
+      message.includes('istirahat sebentar') ||
+      message.includes('Mimin lagi ada keperluan')
+    ))
+  );
+
+  const displayTitle = isTemporaryBreak
+    ? 'Izin Istirahat Sebentar Yaa gais ☕'
+    : 'Jasdor Sedang Tutup';
+
   const displaySubtitle = (() => {
+    if (isTemporaryBreak && message) {
+      return message;
+    }
     if (!message || message.includes('Jadwal buka:')) {
       return `Kami sedang istirahat hari ini${dayName ? ` (${dayName})` : ''}. Pemesanan jasa order buka kembali sesuai jadwal berikut:`;
     }
@@ -55,61 +73,104 @@ export function ClosedScreen({
       {/* Main Status Message Card */}
       <div className="w-full max-w-sm bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-3xl p-5 sm:p-6 text-center shadow-[4px_4px_0px_#2B1D12]">
         {/* Status Icon Badge */}
-        <div className="w-12 h-12 mx-auto mb-3.5 rounded-2xl bg-[#FFF0C2] border-2 border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A] flex items-center justify-center text-[#2B1D12]">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2.2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        </div>
+        {isTemporaryBreak ? (
+          <div className="w-12 h-12 mx-auto mb-3.5 rounded-2xl bg-[#FFF0C2] border-2 border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A] flex items-center justify-center text-[#C67D0A]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"
+              />
+            </svg>
+          </div>
+        ) : (
+          <div className="w-12 h-12 mx-auto mb-3.5 rounded-2xl bg-[#FFF0C2] border-2 border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A] flex items-center justify-center text-[#2B1D12]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+        )}
 
         <h2 className="font-display text-xl sm:text-2xl font-black text-[#2B1D12] tracking-tight mb-1.5">
-          Jasdor Sedang Tutup
+          {displayTitle}
         </h2>
         <p className="text-xs text-[#6A584D] leading-relaxed mb-4">
           {displaySubtitle}
         </p>
 
-        {/* Operating Hours Box */}
-        <div className="bg-[#FAF4E8] rounded-2xl p-3.5 border-2 border-[#2B1D12]/15 text-left space-y-2">
-          <div className="text-[11px] uppercase tracking-wider text-[#7A6658] font-bold text-center">
-            Jadwal Layanan Jasdor
-          </div>
-          <div className="pt-1.5 border-t border-[#2B1D12]/15 space-y-1.5">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-[#2B1D12]">Jumat, Sabtu, Minggu</span>
-              <span className="text-[#C67D0A] font-black">{openTime.replace(':', '.')} - {closeTime.replace(':', '.')} WIB</span>
-            </div>
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-medium text-[#2B1D12]">Selasa</span>
-              <span className="text-[#C67D0A] text-[10px] font-black uppercase tracking-wider bg-[#FFF0C2] border border-[#C67D0A]/30 px-2 py-0.5 rounded-md">
-                Tentatif
+        {/* Operating Hours / Temporary Break Box */}
+        {isTemporaryBreak ? (
+          <div className="bg-[#FAF4E8] rounded-2xl p-3.5 border-2 border-[#2B1D12]/15 text-left space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+                <span className="text-xs font-black text-[#2B1D12]">Jeda Operasional Singkat</span>
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-wider bg-[#FFF0C2] text-[#C67D0A] border border-[#C67D0A]/30 px-2 py-0.5 rounded-md">
+                15-30 Menit
               </span>
             </div>
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-medium text-[#7A6658]">Senin, Rabu, Kamis</span>
-              <span className="text-[#8C7667] text-[11px] font-bold bg-[#2B1D12]/5 px-2 py-0.5 rounded-md">
-                Libur
-              </span>
-            </div>
+            <p className="text-[11px] text-[#6A584D] leading-relaxed">
+              Jasdor tetap buka hari ini. Pemesanan dibuka kembali segera setelah mimin online.
+            </p>
+            {currentWibTime && (
+              <div className="text-[11px] text-[#7A6658] font-medium pt-2 border-t border-[#2B1D12]/10 text-center flex items-center justify-center gap-1.5">
+                <span>Waktu server:</span>
+                <span className="font-bold text-[#2B1D12]">{currentWibTime.replace(':', '.')} WIB</span>
+                {dayName && <span className="text-[#7A6658]">({dayName})</span>}
+              </div>
+            )}
           </div>
-          {currentWibTime && (
-            <div className="text-[11px] text-[#7A6658] font-medium pt-2 border-t border-[#2B1D12]/10 text-center flex items-center justify-center gap-1.5">
-              <span>Waktu server:</span>
-              <span className="font-bold text-[#2B1D12]">{currentWibTime.replace(':', '.')} WIB</span>
-              {dayName && <span className="text-[#7A6658]">({dayName})</span>}
+        ) : (
+          <div className="bg-[#FAF4E8] rounded-2xl p-3.5 border-2 border-[#2B1D12]/15 text-left space-y-2">
+            <div className="text-[11px] uppercase tracking-wider text-[#7A6658] font-bold text-center">
+              Jadwal Layanan Jasdor
             </div>
-          )}
-        </div>
+            <div className="pt-1.5 border-t border-[#2B1D12]/15 space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-bold text-[#2B1D12]">Jumat, Sabtu, Minggu</span>
+                <span className="text-[#C67D0A] font-black">{openTime.replace(':', '.')} - {closeTime.replace(':', '.')} WIB</span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-medium text-[#2B1D12]">Selasa</span>
+                <span className="text-[#C67D0A] text-[10px] font-black uppercase tracking-wider bg-[#FFF0C2] border border-[#C67D0A]/30 px-2 py-0.5 rounded-md">
+                  Tentatif
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-medium text-[#7A6658]">Senin, Rabu, Kamis</span>
+                <span className="text-[#8C7667] text-[11px] font-bold bg-[#2B1D12]/5 px-2 py-0.5 rounded-md">
+                  Libur
+                </span>
+              </div>
+            </div>
+            {currentWibTime && (
+              <div className="text-[11px] text-[#7A6658] font-medium pt-2 border-t border-[#2B1D12]/10 text-center flex items-center justify-center gap-1.5">
+                <span>Waktu server:</span>
+                <span className="font-bold text-[#2B1D12]">{currentWibTime.replace(':', '.')} WIB</span>
+                {dayName && <span className="text-[#7A6658]">({dayName})</span>}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* WiFi Info Box */}
         <div className="mt-3.5">
@@ -137,7 +198,7 @@ export function ClosedScreen({
                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
               />
             </svg>
-            <span>Periksa Ulang Status</span>
+            <span>{isTemporaryBreak ? 'Cek Status Sekarang' : 'Periksa Ulang Status'}</span>
           </button>
         )}
       </div>
