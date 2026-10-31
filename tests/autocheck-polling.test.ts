@@ -78,6 +78,10 @@ describe('AutoCheck Polling & QRIS Mockup Visual Elements', () => {
       paymentViewContent.includes('Meong approved. 😎'),
       'Elemen 3: Teks Meong approved. 😎 harus ada di samping avatar kucing'
     );
+    assert.ok(
+      paymentViewContent.includes('scan via m-banking/e-wallet'),
+      'Elemen 3: Format m-banking/e-wallet tanpa spasi di sekitar slash'
+    );
 
     // 4. Komponen AutoCheck dengan countdown ring
     assert.ok(

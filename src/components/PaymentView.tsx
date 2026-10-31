@@ -737,7 +737,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                     />
                   </div>
                   <p className="text-[10px] sm:text-[11px] text-[#7A6658] font-bold leading-tight">
-                    Screenshot layar ini untuk scan via m-banking / e-wallet. Meong approved. 😎
+                    Screenshot layar ini untuk scan via m-banking/e-wallet. Meong approved. 😎
                   </p>
                 </div>
               </div>
