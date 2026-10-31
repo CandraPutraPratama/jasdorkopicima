@@ -498,7 +498,7 @@ describe('Server-Side Price Recalculation (K1 Security Audit)', () => {
   });
 
   describe('3. Manipulasi Request Ditolak HTTP 400 di /api/orders/create', () => {
-    it('menolak order pembuatan brand Fore dengan HTTP 400', async () => {
+    it('tidak lagi memblokir order brand Fore dengan pesan "belum dibuka"', async () => {
       const req = new Request('http://localhost:3000/api/orders/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -520,9 +520,15 @@ describe('Server-Side Price Recalculation (K1 Security Audit)', () => {
       });
 
       const res = await POST(req as any);
-      assert.strictEqual(res.status, 400);
       const data = await res.json();
-      assert.ok(data.error?.includes('Fore Coffee saat ini belum dibuka') || data.error?.includes('belum bisa dipesan'));
+      // Blokir hard-coded Fore sudah dicabut (keputusan pemilik 2026-10-31):
+      // order Fore kini diproses lewat jalur full self-order. Di test env ini
+      // outlet mock tidak punya jam operasional sehingga ditolak sebagai
+      // "sedang tutup" — yang penting BUKAN lagi pesan "belum dibuka".
+      assert.ok(
+        !data.error?.includes('belum dibuka'),
+        'Fore tidak boleh diblokir lagi dengan pesan "belum dibuka"'
+      );
     });
 
     it('menolak order brand Tomoro selama brand ditutup (coming_soon) dengan HTTP 400', async () => {

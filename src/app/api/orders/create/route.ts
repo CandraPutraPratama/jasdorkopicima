@@ -4,6 +4,7 @@ import { normalizeStore } from '../../../../lib/adapter.ts';
 import { isOutletClosed } from '../../../../lib/orderability.ts';
 import { verifyStoreScope, getOutletByCode } from '../../../../lib/outlet-service.ts';
 import { getTomoroProductNormalPrice, isTomoroItemEligible } from '../../../../lib/tomoro-menu-data.ts';
+import { findForeProduct } from '../../../../lib/fore-menu-data.ts';
 import { checkRateLimitKV, getClientIp } from '../../../../lib/rate-limit-kv.ts';
 import { validateCustomerName, validateCustomerPhone } from '../../../../lib/sanitizer.ts';
 import { getEffectiveJasdorOperationalStatus } from '../../../../lib/operational.ts';
@@ -168,19 +169,134 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // 5. Jalur Fore: blokir pembuatan pesanan untuk brand Fore di server
+  // 5. Jalur Fore Coffee (Full Self-Order, diskon 25% semua menu, fee Rp0)
   if (
     serverBrandSlug === 'fore' ||
     outletCode.toLowerCase().startsWith('fore-') ||
     body.brandSlug === 'fore'
   ) {
-    return NextResponse.json(
-      {
-        error:
-          'Layanan pemesanan untuk Fore Coffee saat ini belum dibuka. Silakan pilih outlet Kopi Kenangan.',
-      },
-      { status: 400 }
-    );
+    try {
+      const foreOutlet = await getOutletByCode(outletCode);
+      if (!foreOutlet) {
+        return NextResponse.json(
+          { error: 'Outlet tidak ditemukan atau di luar jangkauan layanan' },
+          { status: 404 }
+        );
+      }
+
+      if (!foreOutlet.isOpen || !foreOutlet.canOrder) {
+        const reason = foreOutlet.orderReason || 'Outlet sedang tutup';
+        return NextResponse.json(
+          {
+            error: `Outlet ${foreOutlet.name || outletCode} sedang tutup (${reason}). Pemesanan tidak dapat diproses.`,
+            isOutletClosed: true,
+            reason,
+          },
+          { status: 400 }
+        );
+      }
+
+      // Validasi katalog otoritatif Fore + rekalkulasi harga server (K1 toleransi Rp0).
+      // Model promo: diskon 25% untuk (harga dasar + semua add-on) x qty, fee Rp0,
+      // berlaku untuk semua menu termasuk seri Deli/1L, tanpa pembulatan khusus.
+      const serverItems: CartItem[] = [];
+      for (const it of items) {
+        if (it.isBundle) {
+          return NextResponse.json(
+            { error: 'Harga menu berubah, silakan refresh keranjangmu.' },
+            { status: 400 }
+          );
+        }
+        const product = findForeProduct(it.bundleCode || it.name, outletCode);
+        if (!product || typeof product.basePrice !== 'number' || product.basePrice <= 0) {
+          return NextResponse.json(
+            { error: 'Harga menu berubah, silakan refresh keranjangmu.' },
+            { status: 400 }
+          );
+        }
+        serverItems.push({
+          id: it.id || `fore-item-${Date.now()}-${Math.random()}`,
+          bundleCode: product.bundleCode || it.bundleCode,
+          name: product.name,
+          basePrice: product.basePrice,
+          skuPrice: product.basePrice,
+          variantAddition: it.variantAddition || 0,
+          toppingTotal: it.toppingTotal || 0,
+          quantity: it.quantity,
+          brandSlug: 'fore',
+          variantDescription: it.variantDescription || '',
+          addons: it.addons || [],
+          notes: it.notes || '',
+        });
+      }
+
+      const serverPricing = calculateServerOrderPricing(serverItems, 'fore');
+      const rawClientPricing = calculateServerOrderPricing(items, 'fore');
+      const clientSentTotal =
+        typeof body.total === 'number'
+          ? Math.round(body.total)
+          : typeof (body as any).clientTotal === 'number'
+            ? Math.round((body as any).clientTotal)
+            : rawClientPricing.total;
+
+      if (
+        clientSentTotal !== serverPricing.total ||
+        rawClientPricing.total !== serverPricing.total
+      ) {
+        return NextResponse.json(
+          { error: 'Harga menu berubah, silakan refresh keranjangmu.' },
+          { status: 400 }
+        );
+      }
+
+      const pickupVal = validateAndSanitizePickupTime({
+        pickupTime,
+        outletOpen: undefined,
+        outletClose: undefined,
+      });
+      if (!pickupVal.isValid) {
+        return NextResponse.json(
+          { error: pickupVal.errorMessage || 'Waktu pengambilan tidak valid' },
+          { status: 400 }
+        );
+      }
+
+      const orderRecord = createOrderRecord({
+        brandSlug: 'fore',
+        outletCode,
+        outletName: foreOutlet.name || outletCode,
+        customerName: nameVal.sanitized,
+        customerWa: phoneVal.sanitized,
+        items: serverItems,
+        pickupTime: pickupVal.sanitized,
+        notes,
+      });
+
+      const savedOrder = await saveOrderToDb(orderRecord);
+      const accessToken =
+        savedOrder.access_token ?? orderRecord.access_token ?? '';
+      const redirectUrl = accessToken
+        ? `/bayar/${savedOrder.id}?t=${encodeURIComponent(accessToken)}`
+        : `/bayar/${savedOrder.id}`;
+
+      const { access_token: _accessToken, ...publicOrder } = savedOrder;
+
+      return NextResponse.json({
+        success: true,
+        orderId: savedOrder.id,
+        accessToken,
+        redirectUrl,
+        order: publicOrder,
+      });
+    } catch (foreErr: any) {
+      console.error('[CreateOrder] Kesalahan saat memproses pesanan Fore:', foreErr);
+      return NextResponse.json(
+        {
+          error: 'Terjadi kendala sistem saat membuat pesanan. Silakan coba beberapa saat lagi.',
+        },
+        { status: 500 }
+      );
+    }
   }
 
   // 5a. Brand TOMORO ditutup sementara (status coming_soon): tolak order.
