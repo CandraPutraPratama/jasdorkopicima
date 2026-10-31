@@ -306,7 +306,14 @@ export function CartDrawer({
         }),
       });
 
-      const orderData = await orderRes.json();
+      let orderData: any;
+      try {
+        orderData = await orderRes.json();
+      } catch {
+        // Server mengembalikan respons non-JSON (mis. halaman error Cloudflare
+        // saat deploy). Jangan tampilkan "Unexpected token" ke pelanggan.
+        throw new Error('Gagal membuat pesanan. Silakan coba beberapa saat lagi.');
+      }
 
       if (!orderRes.ok || !orderData.success) {
         if (orderData.isOutletClosed) {

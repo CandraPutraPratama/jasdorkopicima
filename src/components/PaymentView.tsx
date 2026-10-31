@@ -167,7 +167,13 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
           method: 'POST',
         }
       );
-      const data = await res.json();
+      let data: any;
+      try {
+        data = await res.json();
+      } catch {
+        // Server mengembalikan respons non-JSON. Jangan tampilkan "Unexpected token" ke pelanggan.
+        throw new Error('Gagal mengonfirmasi pembayaran. Silakan coba beberapa saat lagi.');
+      }
 
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Gagal mengonfirmasi status pembayaran');
