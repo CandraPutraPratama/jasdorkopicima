@@ -58,7 +58,6 @@ export default function AdminPesananPanel() {
 
   const [orders, setOrders] = useState<OrderRecord[]>([]);
   const [lastUpdatedAt, setLastUpdatedAt] = useState<Date | null>(null);
-  const [newOrderNotice, setNewOrderNotice] = useState<string | null>(null);
   const ordersRef = useRef<OrderRecord[]>([]);
   useEffect(() => {
     ordersRef.current = orders;
@@ -148,6 +147,7 @@ export default function AdminPesananPanel() {
       }
       setIsAuthenticated(true);
       setOrders(data.orders || []);
+      setLastUpdatedAt(new Date());
     } catch (err: any) {
       setOrderError(err.message || 'Terjadi kesalahan saat memuat pesanan');
     } finally {
@@ -160,75 +160,8 @@ export default function AdminPesananPanel() {
     fetchSettings();
   }, [fetchOrders, fetchSettings]);
 
-  // Deteksi aktivitas user untuk smart polling hemat resource
-  const lastActivityRef = useRef<number>(0);
-  useEffect(() => {
-    lastActivityRef.current = Date.now();
-    const handleActivity = () => {
-      lastActivityRef.current = Date.now();
-    };
-    window.addEventListener('mousemove', handleActivity, { passive: true });
-    window.addEventListener('keydown', handleActivity, { passive: true });
-    window.addEventListener('scroll', handleActivity, { passive: true });
-    window.addEventListener('touchstart', handleActivity, { passive: true });
-    window.addEventListener('focus', handleActivity);
-    return () => {
-      window.removeEventListener('mousemove', handleActivity);
-      window.removeEventListener('keydown', handleActivity);
-      window.removeEventListener('scroll', handleActivity);
-      window.removeEventListener('touchstart', handleActivity);
-      window.removeEventListener('focus', handleActivity);
-    };
-  }, []);
 
-  // Auto-refresh live: daftar pesanan diperbarui tiap 20 detik (atau 60 detik jika standby/idle > 5 menit)
-  // Ini mencegah rate limit Cloudflare/Supabase ketika laptop dibuka seharian.
-  useEffect(() => {
-    if (isAuthenticated !== true) return;
-    const tick = async () => {
-      if (document.hidden || updatingOrderId !== null || isBulkQueueing) return;
-      const isIdle = lastActivityRef.current > 0 && Date.now() - lastActivityRef.current > 5 * 60 * 1000;
-      if (isIdle && Math.floor(Date.now() / 1000) % 60 >= 20) {
-        return;
-      }
-      try {
-        const res = await fetch('/api/admin/orders');
-        if (res.status === 401) {
-          setIsAuthenticated(false);
-          return;
-        }
-        if (res.status === 429) {
-          console.warn('[AdminOrders] Polling terkena pembatasan frekuensi sementara, menunggu siklus berikutnya.');
-          return;
-        }
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!data.success) return;
-        const fresh: OrderRecord[] = data.orders || [];
-        const prevIds = new Set(ordersRef.current.map((o) => o.id));
-        const arrived = fresh.filter((o) => !prevIds.has(o.id) && isPaidRelevantOrder(o));
-        setOrders(fresh);
-        setSelectedQueueIds((prev) =>
-          prev.filter((id) => fresh.some((o) => o.id === id && o.status === 'menunggu_konfirmasi'))
-        );
-        setLastUpdatedAt(new Date());
-        if (arrived.length > 0) {
-          setNewOrderNotice(`${arrived.length} pesanan baru masuk`);
-        }
-      } catch {
-        // Abaikan galat sesaat; tick berikutnya mencoba lagi.
-      }
-    };
-    const timer = setInterval(tick, 20000);
-    return () => clearInterval(timer);
-  }, [isAuthenticated, updatingOrderId, isBulkQueueing]);
-
-  // Banner pesanan baru hilang sendiri setelah 20 detik.
-  useEffect(() => {
-    if (!newOrderNotice) return;
-    const timer = setTimeout(() => setNewOrderNotice(null), 20000);
-    return () => clearTimeout(timer);
-  }, [newOrderNotice]);
+  
 
   // Handle Toggle Min Order 50k Mode
   const handleToggleBundlingOnly = async () => {
@@ -579,14 +512,11 @@ export default function AdminPesananPanel() {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600" />
-              </span>
-              Live
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#7A6455]">
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7A6455]" />
+              Manual
               {lastUpdatedAt && (
-                <span className="font-normal text-[#7A6455]">
+                <span className="font-normal">
                   · {lastUpdatedAt.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                 </span>
               )}
@@ -1024,18 +954,6 @@ export default function AdminPesananPanel() {
           </div>
         )}
 
-        {newOrderNotice && (
-          <button
-            type="button"
-            onClick={() => {
-              setNewOrderNotice(null);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className="w-full p-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-xs transition cursor-pointer"
-          >
-            🔔 {newOrderNotice} - ketuk untuk melihat
-          </button>
-        )}
 
         {/* Order Cards List */}
         {filteredOrders.length === 0 ? (
