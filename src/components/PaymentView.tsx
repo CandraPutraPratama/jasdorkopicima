@@ -9,6 +9,7 @@ import { QRIS_CONFIG, SITE_CONFIG } from '@/lib/site-config';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { buildOrderWhatsAppConfirmationMessage } from '@/lib/whatsapp';
 import { saveMyOrder } from '@/lib/my-orders';
+import { AutoCheck } from '@/components/AutoCheck';
 import { fetchQueueStatus } from '@/hooks/useQueueStatus';
 import { estimateQueueMinutes, type QueueStatus } from '@/lib/queue';
 import {
@@ -209,20 +210,6 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
       }
     }
   }, [order.id, tokenQuery]);
-
-  // Polling otomatis setiap 20 detik jika status BELUM final
-  useEffect(() => {
-    const isFinal = status === 'selesai' || status === 'dibatalkan' || status === 'kedaluwarsa';
-    if (isFinal) {
-      return;
-    }
-
-    const pollInterval = setInterval(() => {
-      checkLatestStatus(false);
-    }, 20000);
-
-    return () => clearInterval(pollInterval);
-  }, [status, checkLatestStatus]);
 
   // Simpan ke Pesanan Saya di perangkat ini
   useEffect(() => {
@@ -461,36 +448,12 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
           </div>
         )}
 
-        {/* Indikator Polling Otomatis & Tombol Manual Refresh Status */}
+        {/* Indikator Polling Otomatis dengan Ring Countdown & Tombol Refresh (Elemen #4 Mockup) */}
         {(status === 'menunggu_pembayaran' || status === 'menunggu_konfirmasi' || status === 'antrian' || status === 'diproses') && (
-          <div className="flex items-center justify-between gap-2 px-1 pt-0.5">
-            <div className="flex items-center gap-1.5 text-[11px] text-[#6A584D] font-bold">
-              <span className="w-2 h-2 rounded-full bg-[#15803D] animate-pulse" />
-              <span>Cek otomatis tiap 20 dtk</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => checkLatestStatus(true)}
-              disabled={isRefreshingStatus}
-              className="inline-flex items-center gap-1.5 px-3 py-1 bg-white hover:bg-[#FFF8E7] text-[#2B1D12] text-xs font-black rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer disabled:opacity-60"
-              title="Segarkan status pesanan"
-            >
-              <svg
-                className={`w-3.5 h-3.5 text-[#2B1D12] ${isRefreshingStatus ? 'animate-spin' : ''}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
-              <span>{isRefreshingStatus ? 'Memeriksa...' : 'Refresh Status'}</span>
-            </button>
-          </div>
+          <AutoCheck
+            onCheck={checkLatestStatus}
+            isChecking={isRefreshingStatus}
+          />
         )}
 
         {status === 'diproses' && (
@@ -671,8 +634,27 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
         {/* Section Pembayaran QRIS (HANYA tampil pada status menunggu_pembayaran) */}
         {status === 'menunggu_pembayaran' && (
           <section className="bg-[#FFFDF9] rounded-3xl p-4 sm:p-5 border-2 border-[#2B1D12] shadow-[4px_4px_0px_#2B1D12] space-y-3">
-            {/* Box Nominal Total yang Menonjol */}
-            <div className="bg-[#FFF8E7] rounded-2xl p-3 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] text-center space-y-0.5">
+            {/* Box Nominal Total yang Menonjol dengan Uap Kopi (Elemen #1 Mockup) */}
+            <div className="relative bg-[#FFF8E7] rounded-2xl p-3 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] text-center space-y-0.5">
+              {/* 3 Garis Uap Kopi di Pojok Kanan Atas */}
+              <div
+                className="absolute -top-3.5 right-4 flex items-end gap-1 pointer-events-none"
+                aria-hidden="true"
+              >
+                <span
+                  className="w-[6px] h-[22px] rounded-full border-2 border-[#2B1D12] bg-[#2B1D12]/20 motion-safe:animate-steam"
+                  style={{ animationDelay: '0s' }}
+                />
+                <span
+                  className="w-[6px] h-[22px] rounded-full border-2 border-[#2B1D12] bg-[#2B1D12]/20 motion-safe:animate-steam"
+                  style={{ animationDelay: '0.4s' }}
+                />
+                <span
+                  className="w-[6px] h-[22px] rounded-full border-2 border-[#2B1D12] bg-[#2B1D12]/20 motion-safe:animate-steam"
+                  style={{ animationDelay: '0.8s' }}
+                />
+              </div>
+
               <span className="text-[10px] font-black text-[#6A584D] uppercase tracking-wider block">
                 Total Nominal Pembayaran
               </span>
@@ -719,8 +701,13 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                   <p className="text-[10px] font-medium text-[#7A6658]">NMID: {QRIS_CONFIG.nmid}</p>
                 </div>
 
-                {/* QR Code Container */}
-                <div className="bg-white p-3 rounded-xl border border-[#2B1D12]/15 flex items-center justify-center">
+                {/* QR Code Container dengan Garis Hijau Scan (Elemen #2 Mockup) */}
+                <div className="relative overflow-hidden bg-white p-3 rounded-xl border border-[#2B1D12]/15 flex items-center justify-center">
+                  {/* Lapisan Garis Hijau Scan QR */}
+                  <div
+                    className="pointer-events-none absolute inset-x-0 h-[46px] bg-gradient-to-b from-transparent via-[rgba(47,158,91,0.25)] to-transparent motion-safe:animate-qr-scan z-10"
+                    aria-hidden="true"
+                  />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/payment/qris-cima-group.svg"
@@ -732,9 +719,23 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                   />
                 </div>
 
-                <p className="text-[10px] text-[#7A6658] font-bold mt-2 text-center">
-                  Screenshot layar ini untuk scan via m-banking / e-wallet
-                </p>
+                {/* Area Kucing di Bawah QR (Elemen #3 Mockup) */}
+                <div className="flex items-center gap-2.5 mt-3 px-1 text-left">
+                  <div className="w-[34px] h-[34px] min-w-[34px] min-h-[34px] rounded-full border-[3px] border-[#2B1D12] overflow-hidden bg-[#FAF4E8] shadow-[1px_1px_0px_#2B1D12] shrink-0 flex items-center justify-center">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/brand/avatar-kucing.webp"
+                      alt="Maskot Kucing Jasdor Kopi Cima"
+                      width={34}
+                      height={34}
+                      className="w-full h-full object-cover rounded-full"
+                      loading="lazy"
+                    />
+                  </div>
+                  <p className="text-[10px] sm:text-[11px] text-[#7A6658] font-bold leading-tight">
+                    Screenshot layar ini untuk scan via m-banking / e-wallet. Meong approved. 😎
+                  </p>
+                </div>
               </div>
 
               {/* Peringatan Keamanan Wajib */}
