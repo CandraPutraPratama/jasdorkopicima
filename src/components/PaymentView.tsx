@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, useTransition } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef, useTransition } from 'react';
 import Link from 'next/link';
 import type { OrderRecord, OrderStatus } from '@/types/order';
 import { formatRupiah } from '@/lib/currency';
@@ -16,6 +16,12 @@ import {
   getBrewingProgress,
   type BrewingProgress,
 } from '@/lib/brewing';
+import {
+  buildEmergencyExpiredWhatsAppUrl,
+  playOrderNotificationSound,
+  triggerDeviceVibration,
+  startTitleFlash,
+} from '@/lib/order-notifications';
 
 interface PaymentViewProps {
   initialOrder: OrderRecord;
@@ -44,6 +50,8 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
   const [isCaraBayarOpen, setIsCaraBayarOpen] = useState(false);
   const [queueStatus, setQueueStatus] = useState<QueueStatus | null>(null);
   const [, startTransition] = useTransition();
+  const prevStatusRef = useRef<OrderStatus>(initialOrder.status);
+  const hasAlertedBrewDoneRef = useRef<boolean>(false);
   const breakdown = getOrderBreakdown(order.items, order.fee);
   const tokenQuery = accessToken ? `?t=${encodeURIComponent(accessToken)}` : '';
 
@@ -125,6 +133,33 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
     return () => clearInterval(interval);
   }, [status, brewStartTimeMs, brewDurationMinutes]);
+
+  // Feedback notifikasi audio, getar & title flash saat status berubah ke diproses / selesai
+  useEffect(() => {
+    const prev = prevStatusRef.current;
+    if (prev !== status) {
+      prevStatusRef.current = status;
+      if (status === 'diproses' || status === 'selesai') {
+        playOrderNotificationSound();
+        triggerDeviceVibration([200, 100, 200]);
+        if (status === 'selesai') {
+          const stop = startTitleFlash('☕ Kopi Sedang Diracik! | Jasdor Cima', 'Jasdor Kopi Cima');
+          return stop;
+        }
+      }
+    }
+  }, [status]);
+
+  // Feedback notifikasi saat racikan kopi barista selesai (waktu racik habis -> siap ditanya ke barista)
+  useEffect(() => {
+    if (status === 'selesai' && !brewProgress.isBrewing && !hasAlertedBrewDoneRef.current) {
+      hasAlertedBrewDoneRef.current = true;
+      playOrderNotificationSound();
+      triggerDeviceVibration([300, 150, 300, 150, 300]);
+      const stop = startTitleFlash('🔔 Kopi Siap Diambil! | Jasdor Cima', 'Jasdor Kopi Cima');
+      return stop;
+    }
+  }, [status, brewProgress.isBrewing]);
 
   // Muat status antrean untuk estimasi dinamis di pesan konfirmasi WhatsApp
   useEffect(() => {
@@ -580,7 +615,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
         )}
 
         {status === 'kedaluwarsa' && (
-          <div className="bg-[#FFEBEB] border-2 border-[#DC2626] rounded-2xl p-4 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-2 animate-in fade-in">
+          <div className="bg-[#FFEBEB] border-2 border-[#DC2626] rounded-2xl p-4 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-3 animate-in fade-in">
             <div className="flex items-center gap-2 text-[#DC2626] font-black">
               <svg className="w-4 h-4 text-[#DC2626]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -590,6 +625,27 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
             <p className="text-[11px] text-[#2B1D12] leading-relaxed font-medium">
               Batas waktu pembayaran 60 menit untuk pesanan ini telah habis. Jangan transfer untuk pesanan yang sudah kedaluwarsa.
             </p>
+
+            {/* Tombol Darurat: Jika customer terlanjur transfer */}
+            <div className="p-3 bg-white rounded-xl border-2 border-[#DC2626]/30 shadow-[2px_2px_0px_#DC2626] space-y-1.5">
+              <p className="text-[11px] font-bold text-[#DC2626] flex items-center gap-1.5">
+                <span>⚠️</span>
+                <span>Terlanjur Transfer di Menit Terakhir?</span>
+              </p>
+              <p className="text-[10px] text-[#4A3628] leading-snug font-medium">
+                Jika uangmu sudah terlanjur terpotong dari m-banking/e-wallet, klik tombol di bawah untuk verifikasi manual ke admin:
+              </p>
+              <a
+                href={buildEmergencyExpiredWhatsAppUrl(order.id, order.total)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full mt-1 py-2 px-3 bg-[#15803D] hover:bg-[#166534] text-white text-[11px] font-bold rounded-lg transition border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] flex items-center justify-center gap-1.5 active:translate-x-[1px] active:translate-y-[1px]"
+              >
+                <WhatsAppIcon className="w-3.5 h-3.5 fill-white" />
+                <span>Terlanjur Transfer? Hubungi Admin WhatsApp</span>
+              </a>
+            </div>
+
             <Link
               href="/"
               className="inline-flex items-center justify-center w-full min-h-[40px] px-4 py-2 bg-[#2B1D12] text-[#FAF4E8] font-display font-black text-xs rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A] transition"
