@@ -355,7 +355,7 @@ export function buildOrderWhatsAppConfirmationMessage(
   }
 
   const lines: string[] = [];
-  lines.push('📸 *[WAJIB LAMPIRKAN FOTO BUKTI TRANSFER DI SINI]*');
+  lines.push('📸 *[WAJIB LAMPIRKAN FOTO BUKTI PEMBAYARAN]*');
   lines.push('_Pesanan baru akan diproses setelah foto bukti transfer masuk._');
   lines.push('----------------------------------------');
   lines.push(`Halo Kak, saya sudah bayar pesanan #${order.id}`);

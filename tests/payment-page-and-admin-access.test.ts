@@ -182,7 +182,7 @@ describe('PERBAIKAN 2: Tampilan Halaman Bayar (PaymentView) Mengikuti Status', (
 
   it('PaymentView merender kartu antrean menenangkan, estimasi ~15 - 25 menit, dan kebijakan anti-cancel/refund', () => {
     const pvCode = fs.readFileSync(path.resolve('src/components/PaymentView.tsx'), 'utf-8');
-    assert.ok(pvCode.includes('Pesanan Masuk Antrian Outlet'));
+    assert.ok(pvCode.includes('Pesanan Masuk Antrian'));
     assert.ok(pvCode.includes('~15 - 25 Menit'));
     assert.ok(pvCode.includes('Harap Menunggu dengan Santai:'));
     assert.ok(pvCode.includes('Kebijakan Pembatalan & Refund:'));
@@ -203,9 +203,9 @@ describe('PERBAIKAN 2: Tampilan Halaman Bayar (PaymentView) Mengikuti Status', (
 
   it('PaymentView merender alur Sedang Diracik Barista dan rekomendasi pick-up aman saat status selesai', () => {
     const pvCode = fs.readFileSync(path.resolve('src/components/PaymentView.tsx'), 'utf-8');
-    assert.ok(pvCode.includes('Sedang Diracik Barista'), 'Harus ada tampilan barista sedang meracik');
+    assert.ok(pvCode.includes('Pesananmu sedang Dibuat'), 'Harus ada tampilan barista sedang membuat');
     assert.ok(
-      pvCode.includes('sepertinya kopi sudah siap di pick up, silahkan tanya ke barista apakah orderan atas nama'),
+      pvCode.includes('Halo kak👋! sepertinya kopi sudah siap di pick up, silahkan tanya ke barista/kasir apakah orderan atas nama'),
       'Harus menggunakan kata-kata aman pick-up sesuai permintaan user'
     );
     assert.ok(!pvCode.includes('\u2014'), 'PaymentView tidak boleh mengandung em dash (—)');
@@ -238,8 +238,8 @@ describe('PERBAIKAN 3: Format Pesan WhatsApp Terpadu untuk Semua Pesanan', () =>
 
     const msg = buildOrderWhatsAppConfirmationMessage(order);
 
-    // Awalan lengkap resmi diawali banner wajib lampirkan bukti transfer
-    assert.ok(msg.startsWith('📸 *[WAJIB LAMPIRKAN FOTO BUKTI TRANSFER DI SINI]*'));
+    // Awalan lengkap resmi diawali banner wajib lampirkan bukti pembayaran
+    assert.ok(msg.startsWith('📸 *[WAJIB LAMPIRKAN FOTO BUKTI PEMBAYARAN]*'));
     assert.ok(msg.includes('Halo Kak, saya sudah bayar pesanan #CG-REG123'));
     assert.ok(!msg.includes('Halo admin'));
 

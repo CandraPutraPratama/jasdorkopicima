@@ -51,7 +51,7 @@ describe('Brewing Logic & Estimasi Barista Meracik', () => {
     const message = formatSafePickupInquiry('Andi Pratama');
     assert.equal(
       message,
-      'sepertinya kopi sudah siap di pick up, silahkan tanya ke barista apakah orderan atas nama Andi Pratama sudah siap atau belum'
+      'Halo kak👋! sepertinya kopi sudah siap di pick up, silahkan tanya ke barista/kasir apakah orderan atas nama Andi Pratama sudah siap atau belum'
     );
   });
 });

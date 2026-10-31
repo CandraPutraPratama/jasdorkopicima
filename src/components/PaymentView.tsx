@@ -380,7 +380,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#C67D0A] animate-pulse shrink-0" />
                 <span className="font-display font-black text-sm sm:text-base text-[#2B1D12]">
-                  Pesanan Masuk Antrian Outlet
+                  Pesanan Masuk Antrian
                 </span>
               </div>
               <span className="px-2.5 py-1 text-[10px] font-black rounded-lg bg-[#FFF0C2] text-[#854D0E] border-2 border-[#2B1D12] shadow-[1.5px_1.5px_0px_#2B1D12]">
@@ -410,36 +410,179 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
               </div>
             </div>
 
-            {/* Transparansi Alur Proses: 4 Tahapan */}
-            <div className="bg-[#FAF4E8] rounded-xl p-3 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] space-y-2">
-              <p className="text-[11px] font-black text-[#2B1D12] flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C67D0A]" />
-                Tahapan Proses Pesanan:
+            {/* Transparansi Alur Proses: 4 Tahapan (Vertikal di Layar HP, Horizontal di Layar Tablet/Desktop) */}
+            <div className="bg-[#FAF4E8] rounded-xl p-3 sm:p-3.5 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] space-y-3">
+              <p className="text-xs font-black text-[#2B1D12] flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#C67D0A] shrink-0" />
+                <span className="bg-[#FFF0C2] px-2 py-0.5 rounded border border-[#2B1D12]/20">
+                  Tahapan Proses Pesanan:
+                </span>
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[10px] font-bold">
-                <div className="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-lg border border-[#2B1D12]/20">
-                  <span className="w-4 h-4 rounded-full bg-[#15803D] text-white flex items-center justify-center text-[9px] font-black shrink-0">1</span>
-                  <span className="text-[#15803D] leading-tight">Verifikasi Pembayaran</span>
-                </div>
-                <div className="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-lg border border-[#2B1D12]/20">
-                  <span className="w-4 h-4 rounded-full bg-[#C67D0A] text-white flex items-center justify-center text-[9px] font-black shrink-0">2</span>
-                  <span className="text-[#C67D0A] leading-tight">Admin Memproses</span>
-                </div>
-                <div className="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-lg border border-[#2B1D12]/20">
-                  <span className="w-4 h-4 rounded-full bg-[#7A6658] text-white flex items-center justify-center text-[9px] font-black shrink-0">3</span>
-                  <span className="text-[#7A6658] leading-tight">Pesanan diterima</span>
-                </div>
-                <div className="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-lg border border-[#2B1D12]/20">
-                  <span className="w-4 h-4 rounded-full bg-[#7A6658] text-white flex items-center justify-center text-[9px] font-black shrink-0">4</span>
-                  <span className="text-[#7A6658] leading-tight">Siap Di Pick Up/Ambil</span>
-                </div>
+
+              {/* Tampilan Vertikal untuk Layar Kecil (< sm / 320px - 430px) */}
+              <div className="sm:hidden space-y-2">
+                {[
+                  {
+                    num: 1,
+                    label: 'Verifikasi Pembayaran',
+                    isDone: status === 'antrian',
+                    isActive: status === 'menunggu_konfirmasi',
+                  },
+                  {
+                    num: 2,
+                    label: 'Admin Memproses',
+                    isDone: false,
+                    isActive: status === 'antrian',
+                  },
+                  {
+                    num: 3,
+                    label: 'Pesanan diterima',
+                    isDone: false,
+                    isActive: false,
+                  },
+                  {
+                    num: 4,
+                    label: 'Siap Di Pick Up/Ambil',
+                    isDone: false,
+                    isActive: false,
+                  },
+                ].map((step, idx, arr) => (
+                  <div key={step.num} className="relative flex items-center gap-3">
+                    {/* Garis penghubung vertikal antar lingkaran */}
+                    {idx < arr.length - 1 && (
+                      <div
+                        className={`absolute left-[13px] top-[26px] bottom-[-10px] w-0.5 ${
+                          step.isDone ? 'bg-[#15803D]' : 'bg-[#2B1D12]/20'
+                        }`}
+                        aria-hidden="true"
+                      />
+                    )}
+
+                    {/* Lingkaran status */}
+                    <div
+                      className={`relative z-10 w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 border-2 border-[#2B1D12] ${
+                        step.isDone
+                          ? 'bg-[#15803D] text-white shadow-[1px_1px_0px_#2B1D12]'
+                          : step.isActive
+                          ? 'bg-[#C67D0A] text-white ring-2 ring-[#C67D0A]/30 shadow-[1px_1px_0px_#2B1D12]'
+                          : 'bg-[#E5E0D8] text-[#7A6658]'
+                      }`}
+                    >
+                      {step.isDone ? (
+                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        step.num
+                      )}
+                    </div>
+
+                    {/* Label tahap */}
+                    <div
+                      className={`flex-1 min-w-0 px-3 py-2 rounded-xl border transition-all ${
+                        step.isActive
+                          ? 'bg-white border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]'
+                          : step.isDone
+                          ? 'bg-white/80 border border-[#15803D]/40'
+                          : 'bg-white/40 border border-[#2B1D12]/10'
+                      }`}
+                    >
+                      <span
+                        className={`text-xs font-bold block truncate ${
+                          step.isDone
+                            ? 'text-[#15803D]'
+                            : step.isActive
+                            ? 'text-[#2B1D12]'
+                            : 'text-[#7A6658]'
+                        }`}
+                      >
+                        {step.label}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Tampilan Horizontal dari Layar Tablet/Desktop ke Atas (>= sm) */}
+              <div className="hidden sm:grid sm:grid-cols-4 gap-2">
+                {[
+                  {
+                    num: 1,
+                    label: 'Verifikasi Pembayaran',
+                    isDone: status === 'antrian',
+                    isActive: status === 'menunggu_konfirmasi',
+                  },
+                  {
+                    num: 2,
+                    label: 'Admin Memproses',
+                    isDone: false,
+                    isActive: status === 'antrian',
+                  },
+                  {
+                    num: 3,
+                    label: 'Pesanan diterima',
+                    isDone: false,
+                    isActive: false,
+                  },
+                  {
+                    num: 4,
+                    label: 'Siap Di Pick Up/Ambil',
+                    isDone: false,
+                    isActive: false,
+                  },
+                ].map((step) => (
+                  <div
+                    key={step.num}
+                    className={`p-2.5 rounded-xl border flex flex-col justify-between min-w-0 ${
+                      step.isActive
+                        ? 'bg-white border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]'
+                        : step.isDone
+                        ? 'bg-white/90 border-2 border-[#15803D]/50 shadow-[1px_1px_0px_#2B1D12]'
+                        : 'bg-white/40 border border-[#2B1D12]/15'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <span
+                        className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 border border-[#2B1D12] ${
+                          step.isDone
+                            ? 'bg-[#15803D] text-white'
+                            : step.isActive
+                            ? 'bg-[#C67D0A] text-white ring-2 ring-[#C67D0A]/30'
+                            : 'bg-[#E5E0D8] text-[#7A6658]'
+                        }`}
+                      >
+                        {step.isDone ? (
+                          <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          step.num
+                        )}
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#7A6658]">
+                        Tahap {step.num}
+                      </span>
+                    </div>
+                    <span
+                      className={`text-[11px] font-bold leading-tight break-words text-balance ${
+                        step.isDone
+                          ? 'text-[#15803D]'
+                          : step.isActive
+                          ? 'text-[#2B1D12]'
+                          : 'text-[#7A6658]'
+                      }`}
+                    >
+                      {step.label}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Box Penenang: Anti Spam Chat WA */}
             <div className="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-xl p-3 shadow-[2px_2px_0px_#2B1D12] text-[11px] leading-snug">
-              <p className="font-black text-[#854D0E] flex items-center gap-1.5">
-                <span>💬</span>
+              <p className="font-black text-[#854D0E] flex items-center gap-2">
+                <span className="text-base leading-none shrink-0" role="img" aria-label="Chat">💬</span>
                 <span>Harap Menunggu dengan Santai:</span>
               </p>
               <p className="text-[#2B1D12] mt-1 font-medium leading-relaxed">
@@ -449,8 +592,8 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
             {/* Box Kebijakan Tegas: Anti Batal & Anti Refund */}
             <div className="bg-[#FFF5F5] border-2 border-[#DC2626] rounded-xl p-3 shadow-[2px_2px_0px_#DC2626] text-[11px] leading-snug">
-              <p className="font-black text-[#DC2626] flex items-center gap-1.5">
-                <span>⚠️</span>
+              <p className="font-black text-[#DC2626] flex items-center gap-2">
+                <span className="text-base leading-none shrink-0" role="img" aria-label="Peringatan">⚠️</span>
                 <span>Kebijakan Pembatalan & Refund:</span>
               </p>
               <p className="text-[#2B1D12] mt-1 font-medium leading-relaxed">
@@ -479,14 +622,14 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
               </span>
             </div>
             <p className="text-[11px] text-[#2B1D12] mt-0.5 leading-relaxed font-medium">
-              Admin telah berhasil memverifikasi pembayaran dan memasukkan pesananmu ke gerai resmi. Saat ini barista outlet sedang meracik pesananmu.
+              Admin telah berhasil memverifikasi pembayaran dan bersiap memproses pesananmu. Mohon ditunggu bukti pesanan dan nomor antriannya yaa kak.
             </p>
             <div className="bg-white/80 rounded-xl p-2 border border-[#15803D]/20 text-[11px] flex items-center justify-between font-bold">
-              <span className="text-[#6A584D]">Estimasi Pembuatan Barista:</span>
+              <span className="text-[#6A584D]">Estimasi Pesanan diproses:</span>
               <span className="text-[#15803D]">~5 - 15 Menit</span>
             </div>
             <p className="text-[10px] text-[#6A584D] italic font-medium">
-              Pesanan yang sudah diproses di gerai tidak dapat dibatalkan atau di-refund. Kamu bisa langsung bersiap menuju outlet bila memilih pick-up sekarang.
+              Pesanan yang sudah diproses di outlet tidak dapat dibatalkan atau di-refund. Kamu bisa langsung bersiap menuju outlet bila memilih pick-up sekarang.
             </p>
           </div>
         )}
@@ -498,7 +641,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#C67D0A] animate-pulse shrink-0" />
                 <span className="font-display font-black text-sm text-[#854D0E]">
-                  Sedang Diracik Barista
+                  Pesananmu sedang Dibuat
                 </span>
               </div>
               <span className="px-2 py-0.5 text-[10px] font-black rounded-lg bg-[#C67D0A]/15 text-[#854D0E] border border-[#C67D0A]/30">
@@ -508,7 +651,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
             <div className="bg-white rounded-xl p-3 border-2 border-[#2B1D12]/20 shadow-[1px_1px_0px_#2B1D12] space-y-2">
               <div className="flex items-center justify-between text-xs font-bold">
-                <span className="text-[#6A584D]">Estimasi Waktu Racik:</span>
+                <span className="text-[#6A584D]">Estimasi Pesanan Selesai:</span>
                 <span className="font-mono font-black text-sm text-[#C67D0A]">
                   ~{formatCountdown(brewProgress.remainingSeconds)}
                 </span>
@@ -520,15 +663,15 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                 />
               </div>
               <div className="flex justify-between text-[10px] text-[#6A584D] font-bold">
-                <span>Kasir Selesai</span>
-                <span>{brewProgress.progressPercent}% Proses Racik</span>
+                <span>Admin Selesai</span>
+                <span>{brewProgress.progressPercent}% Proses Pembuatan</span>
                 <span>Siap Ambil</span>
               </div>
             </div>
 
             <div className="text-[11px] text-[#2B1D12] leading-relaxed bg-white/70 rounded-xl p-2.5 border border-[#2B1D12]/10 space-y-1">
               <p className="font-medium">
-                Admin Jasdor telah selesai memesankan dan membayarkan pesananmu di kasir gerai resmi. Saat ini barista gerai sedang meracik pesanan sesuai antrian outlet.
+                Admin Jasdor telah selesai memesankan dan membayarkan pesananmu di Outlet resmi. Saat ini barista outlet sedang membuat pesanan sesuai yang dipesan.
               </p>
               <div className="pt-1 flex items-center justify-between text-[11px] font-bold border-t border-[#2B1D12]/10">
                 <span className="text-[#6A584D]">Order atas nama:</span>
@@ -542,7 +685,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                 <span>Persiapan Pengambilan:</span>
               </p>
               <p className="text-[#2B1D12] mt-0.5 font-medium">
-                Jika lokasimu dekat dengan gerai {order.outlet_name || order.outlet_code}, kamu sudah bisa mulai berjalan santai menuju pick-up counter.
+                Jika lokasimu dekat dengan outlet {order.outlet_name || order.outlet_code}, kamu sudah bisa mulai berjalan santai menuju pick-up counter.
               </p>
             </div>
           </div>
@@ -566,18 +709,15 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
             </div>
 
             <div className="bg-white rounded-xl p-3.5 border-2 border-[#15803D] shadow-[2px_2px_0px_#15803D] space-y-1.5">
-              <p className="text-[10px] font-black uppercase tracking-wider text-[#15803D]">
-                Rekomendasi Pick-up:
-              </p>
               <p className="text-xs sm:text-[13px] font-bold text-[#2B1D12] leading-relaxed">
-                &ldquo;sepertinya kopi sudah siap di pick up, silahkan tanya ke barista apakah orderan atas nama <span className="font-black text-[#15803D] underline decoration-2">{order.customer_name}</span> sudah siap atau belum&rdquo;
+                &ldquo;Halo kak👋! sepertinya kopi sudah siap di pick up, silahkan tanya ke barista/kasir apakah orderan atas nama <span className="font-black text-[#15803D] underline decoration-2">{order.customer_name}</span> sudah siap atau belum&rdquo;
               </p>
             </div>
 
             <div className="text-[11px] text-[#2B1D12] leading-relaxed bg-white/80 rounded-xl p-2.5 border border-[#15803D]/20 space-y-1 font-medium">
               <p className="font-bold text-[#15803D]">Langkah Pengambilan di Outlet:</p>
               <ol className="list-decimal list-inside space-y-0.5 text-[#2B1D12] text-[11px]">
-                <li>Datangi pick-up counter gerai <span className="font-bold">{order.outlet_name || order.outlet_code}</span>.</li>
+                <li>Datangi pick-up counter outlet <span className="font-bold">{order.outlet_name || order.outlet_code}</span>.</li>
                 <li>Sebutkan nama pemesan: <span className="font-black text-[#15803D]">{order.customer_name}</span>.</li>
                 <li>Jika barista masih menyelesaikan pesanan, mohon menunggu sejenak dengan ramah.</li>
               </ol>

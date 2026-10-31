@@ -268,7 +268,7 @@ test('buildOrderWhatsAppConfirmationMessage formats pre-filled message correctly
   const message = buildOrderWhatsAppConfirmationMessage(order);
 
   const expected = [
-    '📸 *[WAJIB LAMPIRKAN FOTO BUKTI TRANSFER DI SINI]*',
+    '📸 *[WAJIB LAMPIRKAN FOTO BUKTI PEMBAYARAN]*',
     '_Pesanan baru akan diproses setelah foto bukti transfer masuk._',
     '----------------------------------------',
     'Halo Kak, saya sudah bayar pesanan #CG-AB12CD',
@@ -376,7 +376,7 @@ test('buildOrderWhatsAppConfirmationMessage formats Bundling 3 Reguler exactly a
   const message = buildOrderWhatsAppConfirmationMessage(order);
 
   const expected = [
-    '📸 *[WAJIB LAMPIRKAN FOTO BUKTI TRANSFER DI SINI]*',
+    '📸 *[WAJIB LAMPIRKAN FOTO BUKTI PEMBAYARAN]*',
     '_Pesanan baru akan diproses setelah foto bukti transfer masuk._',
     '----------------------------------------',
     'Halo Kak, saya sudah bayar pesanan #CG-BND001',
@@ -564,7 +564,7 @@ test('buildOrderWhatsAppConfirmationMessage menyertakan banner wajib lampirkan b
   };
 
   const message = buildOrderWhatsAppConfirmationMessage(order);
-  assert.ok(message.startsWith('📸 *[WAJIB LAMPIRKAN FOTO BUKTI TRANSFER DI SINI]*'));
+  assert.ok(message.startsWith('📸 *[WAJIB LAMPIRKAN FOTO BUKTI PEMBAYARAN]*'));
   assert.ok(message.includes('_Pesanan baru akan diproses setelah foto bukti transfer masuk._'));
   assert.ok(message.includes('----------------------------------------'));
   assert.ok(message.includes('Halo Kak, saya sudah bayar pesanan #CG-BUKTI01'));

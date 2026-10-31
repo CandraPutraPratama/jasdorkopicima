@@ -57,5 +57,5 @@ export function getBrewingProgress(
  */
 export function formatSafePickupInquiry(customerName: string): string {
   const cleanName = (customerName || '').trim() || 'Pemesan';
-  return `sepertinya kopi sudah siap di pick up, silahkan tanya ke barista apakah orderan atas nama ${cleanName} sudah siap atau belum`;
+  return `Halo kak👋! sepertinya kopi sudah siap di pick up, silahkan tanya ke barista/kasir apakah orderan atas nama ${cleanName} sudah siap atau belum`;
 }
