@@ -57,4 +57,5 @@ export interface OrderRecord {
    * pembacaan pesanan dan konfirmasi pembayaran tanpa menebak ID publik.
    */
   access_token?: string;
+  updated_at?: string | null;
 }

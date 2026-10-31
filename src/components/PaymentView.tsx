@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useTransition } from 'react';
+import { useState, useEffect, useCallback, useMemo, useTransition } from 'react';
 import Link from 'next/link';
 import type { OrderRecord, OrderStatus } from '@/types/order';
 import { formatRupiah } from '@/lib/currency';
@@ -11,6 +11,11 @@ import { buildOrderWhatsAppConfirmationMessage } from '@/lib/whatsapp';
 import { saveMyOrder } from '@/lib/my-orders';
 import { fetchQueueStatus } from '@/hooks/useQueueStatus';
 import { estimateQueueMinutes, type QueueStatus } from '@/lib/queue';
+import {
+  calculateBrewDurationMinutes,
+  getBrewingProgress,
+  type BrewingProgress,
+} from '@/lib/brewing';
 
 interface PaymentViewProps {
   initialOrder: OrderRecord;
@@ -41,6 +46,85 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
   const [, startTransition] = useTransition();
   const breakdown = getOrderBreakdown(order.items, order.fee);
   const tokenQuery = accessToken ? `?t=${encodeURIComponent(accessToken)}` : '';
+
+  // Estimasi durasi racik barista berbasis jumlah item
+  const brewDurationMinutes = useMemo(() => calculateBrewDurationMinutes(order.items), [order.items]);
+
+  // Timestamp awal peracikan (disinkronkan dengan localStorage agar refresh tidak me-reset timer)
+  const [brewStartTimeMs, setBrewStartTimeMs] = useState<number | null>(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const stored = localStorage.getItem(`jasdor_brew_start_${initialOrder.id}`);
+      if (stored) {
+        const parsed = Number(stored);
+        if (!Number.isNaN(parsed) && parsed > 0) return parsed;
+      }
+      if (initialOrder.status === 'selesai') {
+        const start = initialOrder.updated_at ? new Date(initialOrder.updated_at).getTime() : Date.now();
+        localStorage.setItem(`jasdor_brew_start_${initialOrder.id}`, String(start));
+        return start;
+      }
+    } catch {
+      // Abaikan jika localStorage tidak dapat diakses
+    }
+    return null;
+  });
+
+  // State progres barista meracik kopi
+  const [brewProgress, setBrewProgress] = useState<BrewingProgress>(() => {
+    if (initialOrder.status === 'selesai' && brewStartTimeMs) {
+      return getBrewingProgress(brewStartTimeMs, brewDurationMinutes);
+    }
+    return {
+      remainingSeconds: 0,
+      elapsedSeconds: 0,
+      progressPercent: 0,
+      isBrewing: false,
+    };
+  });
+
+  // Sinkronisasi waktu mulai brewing saat status berubah jadi 'selesai'
+  useEffect(() => {
+    if (status === 'selesai' && !brewStartTimeMs) {
+      let startTime = Date.now();
+      try {
+        const stored = typeof window !== 'undefined' ? localStorage.getItem(`jasdor_brew_start_${order.id}`) : null;
+        if (stored) {
+          const parsed = Number(stored);
+          if (!Number.isNaN(parsed) && parsed > 0) {
+            setBrewStartTimeMs(parsed);
+            return;
+          }
+        }
+        startTime = order.updated_at ? new Date(order.updated_at).getTime() : Date.now();
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(`jasdor_brew_start_${order.id}`, String(startTime));
+        }
+      } catch {
+        // Fallback jika localStorage bermasalah
+      }
+      setBrewStartTimeMs(startTime);
+    }
+  }, [status, order.id, order.updated_at, brewStartTimeMs]);
+
+  // Timer interval live countdown saat barista sedang meracik
+  useEffect(() => {
+    if (status !== 'selesai' || !brewStartTimeMs) {
+      return;
+    }
+
+    setBrewProgress(getBrewingProgress(brewStartTimeMs, brewDurationMinutes));
+
+    const interval = setInterval(() => {
+      const current = getBrewingProgress(brewStartTimeMs, brewDurationMinutes);
+      setBrewProgress(current);
+      if (!current.isBrewing) {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [status, brewStartTimeMs, brewDurationMinutes]);
 
   // Muat status antrean untuk estimasi dinamis di pesan konfirmasi WhatsApp
   useEffect(() => {
@@ -93,7 +177,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
   // Polling otomatis setiap 20 detik jika status BELUM final
   useEffect(() => {
-    const isFinal = status === 'diproses' || status === 'selesai' || status === 'dibatalkan' || status === 'kedaluwarsa';
+    const isFinal = status === 'selesai' || status === 'dibatalkan' || status === 'kedaluwarsa';
     if (isFinal) {
       return;
     }
@@ -338,7 +422,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
         )}
 
         {/* Indikator Polling Otomatis & Tombol Manual Refresh Status */}
-        {(status === 'menunggu_pembayaran' || status === 'menunggu_konfirmasi' || status === 'antrian') && (
+        {(status === 'menunggu_pembayaran' || status === 'menunggu_konfirmasi' || status === 'antrian' || status === 'diproses') && (
           <div className="flex items-center justify-between gap-2 px-1 pt-0.5">
             <div className="flex items-center gap-1.5 text-[11px] text-[#6A584D] font-bold">
               <span className="w-2 h-2 rounded-full bg-[#15803D] animate-pulse" />
@@ -392,16 +476,100 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
           </div>
         )}
 
-        {status === 'selesai' && (
-          <div className="bg-emerald-600 border-2 border-[#2B1D12] rounded-2xl p-3.5 flex items-start gap-2.5 text-xs text-white shadow-[3px_3px_0px_#2B1D12] animate-in fade-in">
-            <svg className="w-5 h-5 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div>
-              <p className="font-black text-white">Pesanan Selesai</p>
-              <p className="text-[11px] text-emerald-50 mt-0.5 leading-relaxed font-medium">
-                Pesananmu sudah selesai diproses. Terima kasih sudah order lewat Jasdor, sampai jumpa di order berikutnya!
+        {/* Status Selesai: Tahap 1 - Barista Sedang Meracik */}
+        {status === 'selesai' && brewProgress.isBrewing && (
+          <div className="bg-[#FFF8E7] border-2 border-[#2B1D12] rounded-2xl p-4 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-3 animate-in fade-in">
+            <div className="flex items-center justify-between pb-2 border-b-2 border-[#2B1D12]/15">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#C67D0A] animate-pulse shrink-0" />
+                <span className="font-display font-black text-sm text-[#854D0E]">
+                  Sedang Diracik Barista
+                </span>
+              </div>
+              <span className="px-2 py-0.5 text-[10px] font-black rounded-lg bg-[#C67D0A]/15 text-[#854D0E] border border-[#C67D0A]/30">
+                Tahap Pembuatan
+              </span>
+            </div>
+
+            <div className="bg-white rounded-xl p-3 border-2 border-[#2B1D12]/20 shadow-[1px_1px_0px_#2B1D12] space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold">
+                <span className="text-[#6A584D]">Estimasi Waktu Racik:</span>
+                <span className="font-mono font-black text-sm text-[#C67D0A]">
+                  ~{formatCountdown(brewProgress.remainingSeconds)}
+                </span>
+              </div>
+              <div className="w-full bg-[#FAF4E8] rounded-full h-3 border-2 border-[#2B1D12] overflow-hidden p-0.5">
+                <div
+                  className="bg-[#C67D0A] h-full rounded-full transition-all duration-700 ease-out"
+                  style={{ width: `${Math.max(5, brewProgress.progressPercent)}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-[10px] text-[#6A584D] font-bold">
+                <span>Kasir Selesai</span>
+                <span>{brewProgress.progressPercent}% Proses Racik</span>
+                <span>Siap Ambil</span>
+              </div>
+            </div>
+
+            <div className="text-[11px] text-[#2B1D12] leading-relaxed bg-white/70 rounded-xl p-2.5 border border-[#2B1D12]/10 space-y-1">
+              <p className="font-medium">
+                Admin Jasdor telah selesai memesankan dan membayarkan pesananmu di kasir gerai resmi. Saat ini barista gerai sedang meracik pesanan sesuai antrean outlet.
               </p>
+              <div className="pt-1 flex items-center justify-between text-[11px] font-bold border-t border-[#2B1D12]/10">
+                <span className="text-[#6A584D]">Order atas nama:</span>
+                <span className="font-black text-[#2B1D12] underline decoration-2">{order.customer_name}</span>
+              </div>
+            </div>
+
+            <div className="bg-white/90 border border-[#C67D0A]/40 rounded-xl p-2.5 text-[11px] leading-snug">
+              <p className="font-bold text-[#854D0E] flex items-center gap-1">
+                <span>📍</span>
+                <span>Persiapan Pengambilan:</span>
+              </p>
+              <p className="text-[#2B1D12] mt-0.5 font-medium">
+                Jika lokasimu dekat dengan gerai {order.outlet_name || order.outlet_code}, kamu sudah bisa mulai berjalan santai menuju pick-up counter.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Status Selesai: Tahap 2 - Rekomendasi Pick-up Realistis */}
+        {status === 'selesai' && !brewProgress.isBrewing && (
+          <div className="bg-[#E8F8F0] border-2 border-[#15803D] rounded-2xl p-4 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#15803D] space-y-3 animate-in fade-in">
+            <div className="flex items-center justify-between pb-2 border-b-2 border-[#15803D]/20">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-[#15803D] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="font-display font-black text-sm text-[#15803D]">
+                  Waktu Racik Selesai
+                </span>
+              </div>
+              <span className="px-2 py-0.5 text-[10px] font-black rounded-lg bg-[#15803D]/15 text-[#15803D] border border-[#15803D]/30">
+                Siap Ditanyakan ke Barista
+              </span>
+            </div>
+
+            <div className="bg-white rounded-xl p-3.5 border-2 border-[#15803D] shadow-[2px_2px_0px_#15803D] space-y-1.5">
+              <p className="text-[10px] font-black uppercase tracking-wider text-[#15803D]">
+                Rekomendasi Pick-up:
+              </p>
+              <p className="text-xs sm:text-[13px] font-bold text-[#2B1D12] leading-relaxed">
+                &ldquo;sepertinya kopi sudah siap di pick up, silahkan tanya ke barista apakah orderan atas nama <span className="font-black text-[#15803D] underline decoration-2">{order.customer_name}</span> sudah siap atau belum&rdquo;
+              </p>
+            </div>
+
+            <div className="text-[11px] text-[#2B1D12] leading-relaxed bg-white/80 rounded-xl p-2.5 border border-[#15803D]/20 space-y-1 font-medium">
+              <p className="font-bold text-[#15803D]">Langkah Pengambilan di Outlet:</p>
+              <ol className="list-decimal list-inside space-y-0.5 text-[#2B1D12] text-[11px]">
+                <li>Datangi pick-up counter gerai <span className="font-bold">{order.outlet_name || order.outlet_code}</span>.</li>
+                <li>Sebutkan nama pemesan: <span className="font-black text-[#15803D]">{order.customer_name}</span>.</li>
+                <li>Jika barista masih menyelesaikan pesanan, mohon menunggu sejenak dengan ramah.</li>
+              </ol>
+            </div>
+
+            <div className="text-[10px] text-[#6A584D] text-center pt-0.5 font-medium">
+              Terima kasih sudah memesan lewat Jasdor Kopi Cima. Selamat menikmati kopimu!
             </div>
           </div>
         )}

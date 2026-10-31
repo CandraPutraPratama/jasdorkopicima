@@ -188,6 +188,25 @@ describe('PERBAIKAN 2: Tampilan Halaman Bayar (PaymentView) Mengikuti Status', (
     assert.ok(pvCode.includes('Kebijakan Pembatalan & Refund:'));
     assert.ok(pvCode.includes('TIDAK DAPAT DIBATALKAN atau di-refund sepihak'));
   });
+
+  it('PaymentView tidak menghentikan polling otomatis sebelum order mencapai status final', () => {
+    const pvCode = fs.readFileSync(path.resolve('src/components/PaymentView.tsx'), 'utf-8');
+    // Polling harus tetap aktif saat antrian atau diproses, berhenti jika selesai, dibatalkan, atau kedaluwarsa
+    assert.ok(
+      !pvCode.includes("status === 'diproses' || status === 'selesai' || status === 'dibatalkan'"),
+      'Auto-polling tidak boleh berhenti saat status masih diproses'
+    );
+  });
+
+  it('PaymentView merender alur Sedang Diracik Barista dan rekomendasi pick-up aman saat status selesai', () => {
+    const pvCode = fs.readFileSync(path.resolve('src/components/PaymentView.tsx'), 'utf-8');
+    assert.ok(pvCode.includes('Sedang Diracik Barista'), 'Harus ada tampilan barista sedang meracik');
+    assert.ok(
+      pvCode.includes('sepertinya kopi sudah siap di pick up, silahkan tanya ke barista apakah orderan atas nama'),
+      'Harus menggunakan kata-kata aman pick-up sesuai permintaan user'
+    );
+    assert.ok(!pvCode.includes('\u2014'), 'PaymentView tidak boleh mengandung em dash (—)');
+  });
 });
 
 describe('PERBAIKAN 3: Format Pesan WhatsApp Terpadu untuk Semua Pesanan', () => {
