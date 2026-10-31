@@ -687,12 +687,12 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                   </div>
                   <ol className="list-decimal list-inside space-y-1 text-[11px] font-bold text-[#2B1D12] leading-snug">
                     <li>Screenshot bukti pembayaran dari aplikasi bank/e-wallet kamu</li>
-                    <li>Klik tombol &quot;Konfirmasi via WhatsApp&quot; di bawah</li>
-                    <li>Lampirkan (attach) screenshot bukti tersebut di chat WhatsApp</li>
-                    <li>Kirim - admin akan mencocokkan dan memproses pesananmu</li>
+                    <li>Klik tombol &quot;Kirim Bukti Bayar via WhatsApp&quot; di bawah</li>
+                    <li>Lampirkan (attach) foto screenshot bukti tersebut di chat WhatsApp sebelum kirim</li>
+                    <li>Kirim chat beserta fotonya - admin langsung mencocokkan dan memproses pesananmu</li>
                   </ol>
                   <p className="text-[10px] font-bold text-[#DC2626] bg-[#FFEBEB] px-2.5 py-1 rounded-lg border border-[#DC2626]/30 leading-tight">
-                    Catatan: Pesanan tanpa bukti transfer akan lebih lama diproses.
+                    Catatan: Pesanan TIDAK AKAN DIPROSES kasir sebelum bukti transfer dikirim ke WhatsApp.
                   </p>
                 </div>
 
@@ -703,10 +703,10 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                   className="w-full min-h-[46px] px-4 py-2.5 bg-[#15803D] hover:bg-[#166534] text-white font-display font-black text-xs rounded-xl flex items-center justify-center gap-2 transition border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-center cursor-pointer"
                 >
                   <WhatsAppIcon className="h-4.5 w-4.5 text-white shrink-0" />
-                  <span>Konfirmasi via WhatsApp (Wajib)</span>
+                  <span>Kirim Bukti Bayar via WhatsApp (Wajib)</span>
                 </a>
                 <p className="text-[10px] text-center text-[#2B1D12] leading-tight font-bold">
-                  Wajib dikirim agar pesananmu diproses. Pesanan tanpa konfirmasi WhatsApp tidak akan diproses admin.
+                  Wajib dikirim agar pesananmu diproses. Pesanan tanpa bukti pembayaran WhatsApp tidak akan diproses admin.
                 </p>
               </div>
             )}

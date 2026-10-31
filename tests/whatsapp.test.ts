@@ -268,6 +268,9 @@ test('buildOrderWhatsAppConfirmationMessage formats pre-filled message correctly
   const message = buildOrderWhatsAppConfirmationMessage(order);
 
   const expected = [
+    '📸 *[WAJIB LAMPIRKAN FOTO BUKTI TRANSFER DI SINI]*',
+    '_Pesanan baru akan diproses setelah foto bukti transfer masuk._',
+    '----------------------------------------',
     'Halo Kak, saya sudah bayar pesanan #CG-AB12CD',
     '',
     'Brand: Kopi Kenangan',
@@ -370,6 +373,9 @@ test('buildOrderWhatsAppConfirmationMessage formats Bundling 3 Reguler exactly a
   const message = buildOrderWhatsAppConfirmationMessage(order);
 
   const expected = [
+    '📸 *[WAJIB LAMPIRKAN FOTO BUKTI TRANSFER DI SINI]*',
+    '_Pesanan baru akan diproses setelah foto bukti transfer masuk._',
+    '----------------------------------------',
     'Halo Kak, saya sudah bayar pesanan #CG-BND001',
     '',
     'Brand: Kopi Kenangan',
@@ -528,5 +534,33 @@ test('buildOrderWhatsAppConfirmationMessage memperlakukan pickup_time "Sekarang 
   assert.ok(message.includes('Pickup: Sekarang (estimasi siap ~jam 14:04)'));
   assert.ok(!message.includes('Dijadwalkan jam Sekarang'));
   assert.ok(message.includes('Antrean: 0 order di depan kamu.'));
+});
+
+test('buildOrderWhatsAppConfirmationMessage menyertakan banner wajib lampirkan bukti transfer di baris paling atas', async () => {
+  const { buildOrderWhatsAppConfirmationMessage } = await import('../src/lib/whatsapp.ts');
+
+  const order = {
+    id: 'CG-BUKTI01',
+    customer_name: 'Budi Santoso',
+    outlet_name: 'Lippo Mall Puri',
+    outlet_code: 'lippo-puri',
+    created_at: '2026-10-17T07:00:00Z',
+    subtotal: 18000,
+    fee: 3000,
+    total: 21000,
+    items: [
+      {
+        name: 'Kopi Kenangan Mantan',
+        quantity: 1,
+        subtotal: 18000,
+      },
+    ],
+  };
+
+  const message = buildOrderWhatsAppConfirmationMessage(order);
+  assert.ok(message.startsWith('📸 *[WAJIB LAMPIRKAN FOTO BUKTI TRANSFER DI SINI]*'));
+  assert.ok(message.includes('_Pesanan baru akan diproses setelah foto bukti transfer masuk._'));
+  assert.ok(message.includes('----------------------------------------'));
+  assert.ok(message.includes('Halo Kak, saya sudah bayar pesanan #CG-BUKTI01'));
 });
 

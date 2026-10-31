@@ -63,3 +63,8 @@ supabase/.temp/
 
 # temporary office lock files
 ~$*
+
+# understand-anything
+/.ua/
+/.understand-anything/
+

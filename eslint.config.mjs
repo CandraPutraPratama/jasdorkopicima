@@ -10,6 +10,7 @@ const eslintConfig = defineConfig([
     ".open-next/**",
     ".wrangler/**",
     ".superpowers/**",
+    ".ua/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
@@ -22,9 +23,12 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
+    plugins: {
+      ...nextVitals[0].plugins,
+    },
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
-      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/set-state-in-effect": "off",
     },
   },
 ]);

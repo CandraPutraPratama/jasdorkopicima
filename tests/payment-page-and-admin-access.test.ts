@@ -216,8 +216,9 @@ describe('PERBAIKAN 3: Format Pesan WhatsApp Terpadu untuk Semua Pesanan', () =>
 
     const msg = buildOrderWhatsAppConfirmationMessage(order);
 
-    // Awalan lengkap resmi
-    assert.ok(msg.startsWith('Halo Kak, saya sudah bayar pesanan #CG-REG123'));
+    // Awalan lengkap resmi diawali banner wajib lampirkan bukti transfer
+    assert.ok(msg.startsWith('📸 *[WAJIB LAMPIRKAN FOTO BUKTI TRANSFER DI SINI]*'));
+    assert.ok(msg.includes('Halo Kak, saya sudah bayar pesanan #CG-REG123'));
     assert.ok(!msg.includes('Halo admin'));
 
     // Metadata pesanan
