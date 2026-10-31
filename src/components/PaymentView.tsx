@@ -191,10 +191,9 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
   };
 
   // Pesan pre-filled WhatsApp (dengan estimasi antrean dinamis bila tersedia).
-  // Info antrean hanya menghitung order 'diproses' (aturan pemilik), jadi
-  // order ini sendiri hanya dikeluarkan dari hitungan "di depan" bila ia
-  // sudah berstatus 'diproses'.
-  const selfInQueue = status === 'diproses';
+  // Info antrean menghitung order 'antrian' dan 'diproses', jadi order ini sendiri
+  // hanya dikeluarkan dari hitungan "di depan" bila ia sudah masuk antrean/diproses.
+  const selfInQueue = status === 'antrian' || status === 'diproses';
   const queueAhead = queueStatus
     ? Math.max(queueStatus.activeOrders - (selfInQueue ? 1 : 0), 0)
     : undefined;
@@ -246,7 +245,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
       </header>
 
       {/* Main Container */}
-      <main className={`max-w-md mx-auto px-4 pt-3 space-y-3 ${status === 'menunggu_konfirmasi' ? 'pb-72' : status === 'menunggu_pembayaran' ? 'pb-32' : 'pb-8'}`}>
+      <main className={`max-w-md mx-auto px-4 pt-3 space-y-3 ${status === 'menunggu_konfirmasi' || status === 'antrian' ? 'pb-72' : status === 'menunggu_pembayaran' ? 'pb-32' : 'pb-8'}`}>
         {/* Status Banner */}
         {status === 'menunggu_pembayaran' && (
           <div className="bg-[#FFF0C2] border-2 border-[#2B1D12] rounded-2xl p-3.5 flex items-center justify-between text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12]">
@@ -263,20 +262,83 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
           </div>
         )}
 
-        {status === 'menunggu_konfirmasi' && (
-          <div className="bg-[#DDF0FF] border-2 border-[#2B1D12] rounded-2xl p-3.5 flex items-start gap-2.5 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] animate-in fade-in">
-            <div className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping mt-1 shrink-0" />
-            <div>
-              <p className="font-black">Menunggu Konfirmasi Admin</p>
-              <p className="text-[11px] text-[#2B1D12] mt-0.5 leading-relaxed font-medium">
-                Terima kasih! Kamu sudah konfirmasi bayar. Admin Jasdor sedang mencocokkan mutasi rekening.
+        {(status === 'antrian' || status === 'menunggu_konfirmasi') && (
+          <div className="bg-[#F0F5FF] border-2 border-[#2B1D12] rounded-2xl p-4 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-3 animate-in fade-in">
+            {/* Header Status */}
+            <div className="flex items-center justify-between pb-2 border-b-2 border-[#2B1D12]/15">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse shrink-0" />
+                <span className="font-display font-black text-sm text-[#1E40AF]">
+                  Pesanan Masuk Antrean Outlet
+                </span>
+              </div>
+              <span className="px-2 py-0.5 text-[10px] font-black rounded-lg bg-blue-100 text-[#1E40AF] border border-blue-300">
+                {status === 'antrian' ? 'Dalam Antrean' : 'Menunggu Konfirmasi'}
+              </span>
+            </div>
+
+            {/* Info Posisi & Estimasi */}
+            <div className="grid grid-cols-2 gap-2 text-center">
+              <div className="bg-white rounded-xl p-2.5 border-2 border-[#2B1D12]/20 shadow-[1px_1px_0px_#2B1D12]">
+                <span className="text-[10px] font-bold text-[#6A584D] uppercase block">Posisi Antrean</span>
+                <span className="font-display font-black text-sm text-[#2B1D12]">
+                  {queueAhead !== undefined
+                    ? queueAhead === 0
+                      ? 'Giliran Terdepan'
+                      : `${queueAhead} pesanan di depan`
+                    : 'Dalam Antrean'}
+                </span>
+              </div>
+              <div className="bg-white rounded-xl p-2.5 border-2 border-[#2B1D12]/20 shadow-[1px_1px_0px_#2B1D12]">
+                <span className="text-[10px] font-bold text-[#6A584D] uppercase block">Estimasi Siap</span>
+                <span className="font-display font-black text-sm text-[#DC2626]">
+                  {queueAhead !== undefined && queueAhead > 3
+                    ? `~${Math.max(20, (queueAhead + 1) * 4)} Menit`
+                    : '~15 - 25 Menit'}
+                </span>
+              </div>
+            </div>
+
+            {/* Transparansi Alur Proses */}
+            <div className="text-[11px] text-[#475569] leading-relaxed bg-white/70 rounded-xl p-2.5 border border-[#2B1D12]/10 space-y-1">
+              <p className="font-bold text-[#2B1D12]">Tahapan Proses Pesanan:</p>
+              <div className="flex items-center justify-between text-[10px] text-[#6A584D] font-bold">
+                <span className="text-[#15803D]">1. Verifikasi Mutasi</span>
+                <span>→</span>
+                <span className="text-[#2563EB]">2. Input Outlet</span>
+                <span>→</span>
+                <span className="text-[#D97706]">3. Barista Meracik</span>
+                <span>→</span>
+                <span className="text-[#15803D]">4. Siap Ambil</span>
+              </div>
+            </div>
+
+            {/* Box Penenang: Anti Spam Chat WA */}
+            <div className="bg-[#FFF8E7] border-2 border-[#C67D0A] rounded-xl p-2.5 text-[11px] leading-snug">
+              <p className="font-black text-[#854D0E] flex items-center gap-1">
+                <span>💬</span>
+                <span>Harap Menunggu dengan Santai:</span>
+              </p>
+              <p className="text-[#2B1D12] mt-0.5 font-medium">
+                Admin Jasdor memproses pesanan satu per satu secara berurutan (FIFO). Mohon tidak spam chat WhatsApp agar admin bisa fokus memesankan pesananmu secepat mungkin tanpa terdistraksi.
+              </p>
+            </div>
+
+            {/* Box Kebijakan Tegas: Anti Batal & Anti Refund */}
+            <div className="bg-[#FFEBEB] border-2 border-[#DC2626] rounded-xl p-2.5 text-[11px] leading-snug">
+              <p className="font-black text-[#DC2626] flex items-center gap-1">
+                <span>⚠️</span>
+                <span>Kebijakan Pembatalan & Refund:</span>
+              </p>
+              <p className="text-[#2B1D12] mt-0.5 font-medium">
+                Pesanan yang sudah dibayar langsung masuk ke sistem pemesanan outlet dan <strong>TIDAK DAPAT DIBATALKAN atau di-refund sepihak</strong> karena saldo dan voucher promo outlet langsung terpakai.
               </p>
             </div>
           </div>
         )}
 
         {/* Indikator Polling Otomatis & Tombol Manual Refresh Status */}
-        {(status === 'menunggu_pembayaran' || status === 'menunggu_konfirmasi') && (
+        {(status === 'menunggu_pembayaran' || status === 'menunggu_konfirmasi' || status === 'antrian') && (
           <div className="flex items-center justify-between gap-2 px-1 pt-0.5">
             <div className="flex items-center gap-1.5 text-[11px] text-[#6A584D] font-bold">
               <span className="w-2 h-2 rounded-full bg-[#15803D] animate-pulse" />
@@ -307,31 +369,26 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
           </div>
         )}
 
-        {status === 'antrian' && (
-          <div className="bg-[#E0E7FF] border-2 border-[#2B1D12] rounded-2xl p-3.5 flex items-start gap-2.5 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] animate-in fade-in">
-            <svg className="w-5 h-5 text-[#4338CA] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div>
-              <p className="font-black text-[#4338CA]">Pesanan Masuk Antrian</p>
-              <p className="text-[11px] text-[#2B1D12] mt-0.5 leading-relaxed font-medium">
-                Pembayaranmu sudah dikonfirmasi admin. Pesananmu sedang mengantri dan akan diproses sesuai urutan masuk.
-              </p>
-            </div>
-          </div>
-        )}
-
         {status === 'diproses' && (
-          <div className="bg-[#D9F3EA] border-2 border-[#2B1D12] rounded-2xl p-3.5 flex items-start gap-2.5 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] animate-in fade-in">
-            <svg className="w-5 h-5 text-[#15803D] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-            </svg>
-            <div>
-              <p className="font-black text-[#15803D]">Pembayaran Terverifikasi & Pesanan Diproses</p>
-              <p className="text-[11px] text-[#2B1D12] mt-0.5 leading-relaxed font-medium">
-                Admin telah mengonfirmasi pembayaranmu. Pesanan sedang diproses di outlet.
-              </p>
+          <div className="bg-[#D9F3EA] border-2 border-[#2B1D12] rounded-2xl p-4 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-2.5 animate-in fade-in">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-[#15803D] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="font-display font-black text-sm text-[#15803D]">
+                Pembayaran Terverifikasi & Pesanan Diproses
+              </span>
             </div>
+            <p className="text-[11px] text-[#2B1D12] mt-0.5 leading-relaxed font-medium">
+              Admin telah berhasil memverifikasi pembayaran dan memasukkan pesananmu ke gerai resmi. Saat ini barista outlet sedang meracik pesananmu.
+            </p>
+            <div className="bg-white/80 rounded-xl p-2 border border-[#15803D]/20 text-[11px] flex items-center justify-between font-bold">
+              <span className="text-[#6A584D]">Estimasi Pembuatan Barista:</span>
+              <span className="text-[#15803D]">~5 - 15 Menit</span>
+            </div>
+            <p className="text-[10px] text-[#6A584D] italic font-medium">
+              Pesanan yang sudah diproses di gerai tidak dapat dibatalkan atau di-refund. Kamu bisa langsung bersiap menuju outlet bila memilih pick-up sekarang.
+            </p>
           </div>
         )}
 
@@ -580,7 +637,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
       </main>
 
       {/* Sticky Bottom CTA Bar (Hanya tampil pada status menunggu_pembayaran dan menunggu_konfirmasi) */}
-      {(status === 'menunggu_pembayaran' || status === 'menunggu_konfirmasi') && (
+      {(status === 'menunggu_pembayaran' || status === 'menunggu_konfirmasi' || status === 'antrian') && (
         <div className="fixed bottom-0 inset-x-0 z-40 bg-[#FAF4E8] border-t-2 border-[#2B1D12] px-4 py-2.5 sm:py-3 shadow-lg">
           <div className="max-w-md mx-auto space-y-1.5">
             {confirmError && (
@@ -591,6 +648,9 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
             {status === 'menunggu_pembayaran' && (
               <div className="space-y-1.5">
+                <div className="bg-[#FFF8E7] border border-[#C67D0A]/40 rounded-xl px-2.5 py-1 text-[10px] text-[#6A584D] text-center leading-tight">
+                  <span className="font-bold text-[#2B1D12]">Catatan:</span> Pesanan yang sudah dibayar tidak dapat dibatalkan atau di-refund sepihak karena saldo promo langsung terpotong saat diproses.
+                </div>
                 <button
                   type="button"
                   disabled={isSubmittingConfirm}
@@ -617,7 +677,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
               </div>
             )}
 
-            {status === 'menunggu_konfirmasi' && (
+            {(status === 'menunggu_konfirmasi' || status === 'antrian') && (
               <div className="space-y-2">
                 {/* Box Info Wajib Kirim Bukti Pembayaran */}
                 <div className="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-2xl p-3 sm:p-3.5 shadow-[3px_3px_0px_#2B1D12] space-y-2 animate-in fade-in">

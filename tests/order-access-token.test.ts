@@ -225,8 +225,8 @@ describe('Step A - Order ID crypto randomness and access token', () => {
       assert.equal(res.status, 200);
       const body = await res.json();
       assert.equal(body.success, true);
-      assert.equal(body.order.status, 'menunggu_konfirmasi');
-      assert.equal(readStatus(), 'menunggu_konfirmasi');
+      assert.equal(body.order.status, 'antrian');
+      assert.equal(readStatus(), 'antrian');
     });
   });
 

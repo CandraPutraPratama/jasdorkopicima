@@ -340,7 +340,7 @@ describe('Order Service - QRIS On-Site Flow', () => {
       assert.equal(updatedStatus, 'kedaluwarsa');
     });
 
-    it('confirmOrderPayment updates status from menunggu_pembayaran to menunggu_konfirmasi', async () => {
+    it('confirmOrderPayment updates status from menunggu_pembayaran to antrian', async () => {
       const mockOrder: OrderRecord = {
         id: 'CG-PAY01',
         brand_slug: 'kopi-kenangan',
@@ -375,8 +375,8 @@ describe('Order Service - QRIS On-Site Flow', () => {
       } as any);
 
       const updated = await confirmOrderPayment('CG-PAY01');
-      assert.equal(updated.status, 'menunggu_konfirmasi');
-      assert.equal(statusUpdated, 'menunggu_konfirmasi');
+      assert.equal(updated.status, 'antrian');
+      assert.equal(statusUpdated, 'antrian');
     });
 
     it('updateOrderStatusByAdmin transitions status to diproses or dibatalkan', async () => {
@@ -455,6 +455,46 @@ describe('Order Service - QRIS On-Site Flow', () => {
       const queued = await updateOrderStatusByAdmin('CG-ADM02', 'antrian');
       assert.equal(queued.status, 'antrian');
       assert.equal(newDbStatus, 'antrian');
+    });
+
+    it('updateOrderStatusByAdmin menandai needs_refund: true jika admin membatalkan pesanan antrian', async () => {
+      const mockOrder: OrderRecord = {
+        id: 'CG-ADM-QUEUE-CANCEL',
+        brand_slug: 'kopi-kenangan',
+        outlet_code: 'OUT-1',
+        customer_name: 'Dewi',
+        customer_wa: '628111999777',
+        items: [],
+        subtotal: 15000,
+        fee: 4000,
+        total: 19000,
+        status: 'antrian',
+        created_at: new Date().toISOString(),
+        expires_at: new Date(Date.now() + 3600000).toISOString(),
+      };
+
+      let updatePayload: any = null;
+
+      setSupabaseServerClientInstance({
+        from: () => ({
+          select: () => ({
+            eq: () => ({
+              maybeSingle: async () => ({ data: mockOrder, error: null }),
+            }),
+          }),
+          update: (fields: any) => ({
+            eq: () => {
+              updatePayload = fields;
+              return Promise.resolve({ error: null });
+            },
+          }),
+        }),
+      } as any);
+
+      const cancelled = await updateOrderStatusByAdmin('CG-ADM-QUEUE-CANCEL', 'dibatalkan', 'Stok habis di gerai');
+      assert.equal(cancelled.status, 'dibatalkan');
+      assert.equal(updatePayload?.needs_refund, true);
+      assert.equal(updatePayload?.cancellation_reason, 'Stok habis di gerai');
     });
 
     it('updateOrderStatusByAdmin dapat menandai pesanan diproses menjadi selesai', async () => {

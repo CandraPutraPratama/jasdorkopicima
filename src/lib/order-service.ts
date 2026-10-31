@@ -703,7 +703,9 @@ export async function getOrderById(orderId: string): Promise<OrderRecord> {
 
 /**
  * Pelanggan menekan tombol "Saya Sudah Bayar":
- * Transisi status dari 'menunggu_pembayaran' menjadi 'menunggu_konfirmasi'.
+ * Transisi status dari 'menunggu_pembayaran' langsung menjadi 'antrian'.
+ * Menghemat waktu admin agar tidak perlu klik manual 'Masuk Antrian',
+ * sekaligus memberikan kepastian antrean instan kepada pelanggan.
  */
 export async function confirmOrderPayment(orderId: string): Promise<OrderRecord> {
   const order = await getOrderById(orderId);
@@ -714,24 +716,27 @@ export async function confirmOrderPayment(orderId: string): Promise<OrderRecord>
   if (order.status === 'dibatalkan') {
     throw new OrderStateError('Pesanan ini telah dibatalkan.', order.status);
   }
-  if (order.status === 'diproses') {
-    return order; // Idempotent: sudah selesai dikonfirmasi admin
+  if (order.status === 'selesai') {
+    return order;
   }
-  if (order.status === 'menunggu_konfirmasi') {
-    return order; // Idempotent: sudah menunggu konfirmasi
+  if (order.status === 'diproses') {
+    return order; // Idempotent: sudah selesai dikonfirmasi admin dan sedang diproses
+  }
+  if (order.status === 'antrian') {
+    return order; // Idempotent: sudah masuk antrian
   }
 
   const supabase = getSupabaseServerClient();
   const { error } = await supabase
     .from('orders')
-    .update({ status: 'menunggu_konfirmasi' })
+    .update({ status: 'antrian' })
     .eq('id', orderId);
 
   if (error) {
     throw new OrderError('Gagal memperbarui status konfirmasi pesanan', 'DB_UPDATE_ERROR', 500, error);
   }
 
-  order.status = 'menunggu_konfirmasi';
+  order.status = 'antrian';
   return order;
 }
 
@@ -758,7 +763,7 @@ export async function updateOrderStatusByAdmin(
     } else {
       updatePayload.cancellation_reason = 'Dibatalkan oleh admin';
     }
-    if (order.status === 'menunggu_konfirmasi') {
+    if (order.status === 'menunggu_konfirmasi' || order.status === 'antrian') {
       updatePayload.needs_refund = true;
     }
   }
@@ -781,10 +786,10 @@ export async function updateOrderStatusByAdmin(
 
 /**
  * Membatalkan otomatis pesanan yang belum selesai saat pergantian hari (00:00 WIB).
- * - Hanya membatalkan status non-final: 'menunggu_pembayaran' dan 'menunggu_konfirmasi'.
+ * - Hanya membatalkan status non-final: 'menunggu_pembayaran', 'menunggu_konfirmasi', dan 'antrian'.
  * - Status 'diproses', 'dibatalkan', dan 'kedaluwarsa' TIDAK disentuh.
  * - Mencatat cancellation_reason: "Otomatis dibatalkan - melewati batas hari operasional"
- * - Menandai needs_refund: true jika status awal adalah 'menunggu_konfirmasi' (karena pelanggan sudah bayar via QRIS).
+ * - Menandai needs_refund: true jika status awal adalah 'menunggu_konfirmasi' atau 'antrian' (karena pelanggan sudah bayar via QRIS).
  */
 export async function autoCancelEodOrders(
   referenceDate?: Date
@@ -827,9 +832,27 @@ export async function autoCancelEodOrders(
     throw new OrderError('Gagal membatalkan pesanan sudah bayar', 'DB_UPDATE_ERROR', 500, paidError);
   }
 
+  // 3. Batch update pesanan antrian (needs_refund = true)
+  const { data: queueData, error: queueError } = await supabase
+    .from('orders')
+    .update({
+      status: 'dibatalkan',
+      cancellation_reason: cancellationReason,
+      needs_refund: true,
+    })
+    .eq('status', 'antrian')
+    .lt('created_at', startOfTodayWIB)
+    .select('id');
+
+  if (queueError) {
+    console.error('[OrderService] Gagal auto-cancel pesanan antrian:', queueError.message);
+    throw new OrderError('Gagal membatalkan pesanan antrian', 'DB_UPDATE_ERROR', 500, queueError);
+  }
+
   const unpaidIds = (unpaidData || []).map((row: any) => row.id);
   const paidIds = (paidData || []).map((row: any) => row.id);
-  const orderIds = [...unpaidIds, ...paidIds];
+  const queueIds = (queueData || []).map((row: any) => row.id);
+  const orderIds = [...unpaidIds, ...paidIds, ...queueIds];
 
   return { updatedCount: orderIds.length, orderIds };
 }

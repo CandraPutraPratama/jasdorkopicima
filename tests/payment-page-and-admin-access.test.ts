@@ -137,7 +137,7 @@ describe('PERBAIKAN 1: Dua Jalur Akses Halaman Bayar & API Order (Token vs Sesi 
 
     const res = await CONFIRM_PAYMENT(req as never, { params: Promise.resolve({ id: 'CG-TST123' }) });
     assert.equal(res.status, 200);
-    assert.equal(readStatus(), 'menunggu_konfirmasi');
+    assert.equal(readStatus(), 'antrian');
   });
 
   it('/bayar/[orderId]/page.tsx mendukung validasi sesi admin dan token pesanan', () => {
@@ -178,6 +178,15 @@ describe('PERBAIKAN 2: Tampilan Halaman Bayar (PaymentView) Mengikuti Status', (
     const pvCode = fs.readFileSync(path.resolve('src/components/PaymentView.tsx'), 'utf-8');
     assert.ok(pvCode.includes('Pembayaran Terverifikasi & Pesanan Diproses'));
     assert.ok(pvCode.includes('Jadwal Pick up:'));
+  });
+
+  it('PaymentView merender kartu antrean menenangkan, estimasi ~15 - 25 menit, dan kebijakan anti-cancel/refund', () => {
+    const pvCode = fs.readFileSync(path.resolve('src/components/PaymentView.tsx'), 'utf-8');
+    assert.ok(pvCode.includes('Pesanan Masuk Antrean Outlet'));
+    assert.ok(pvCode.includes('~15 - 25 Menit'));
+    assert.ok(pvCode.includes('Harap Menunggu dengan Santai:'));
+    assert.ok(pvCode.includes('Kebijakan Pembatalan & Refund:'));
+    assert.ok(pvCode.includes('TIDAK DAPAT DIBATALKAN atau di-refund sepihak'));
   });
 });
 

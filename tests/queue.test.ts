@@ -9,8 +9,8 @@ import {
   computeQueueStats,
 } from '../src/lib/queue.ts';
 
-test('Queue - status yang dihitung hanya diproses (aturan pemilik 2026-10-24)', () => {
-  assert.deepEqual([...QUEUE_ACTIVE_STATUSES], ['diproses']);
+test('Queue - status yang dihitung adalah antrian dan diproses', () => {
+  assert.deepEqual([...QUEUE_ACTIVE_STATUSES], ['antrian', 'diproses']);
 });
 
 test('Queue - konstanta sesuai patokan admin (4 menit per order, pop-up > 10 menit)', () => {
