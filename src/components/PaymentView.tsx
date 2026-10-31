@@ -636,21 +636,21 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
           <section className="bg-[#FFFDF9] rounded-3xl p-4 sm:p-5 border-2 border-[#2B1D12] shadow-[4px_4px_0px_#2B1D12] space-y-3">
             {/* Box Nominal Total yang Menonjol dengan Uap Kopi (Elemen #1 Mockup) */}
             <div className="relative bg-[#FFF8E7] rounded-2xl p-3 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] text-center space-y-0.5">
-              {/* 3 Garis Uap Kopi di Pojok Kanan Atas */}
+              {/* 3 Garis Uap Kopi di Dalam Pojok Kanan Atas Kartu */}
               <div
-                className="absolute -top-3.5 right-4 flex items-end gap-1 pointer-events-none"
+                className="absolute right-5 top-2 flex items-end gap-1 pointer-events-none"
                 aria-hidden="true"
               >
                 <span
-                  className="w-[6px] h-[22px] rounded-full border-2 border-[#2B1D12] bg-[#2B1D12]/20 motion-safe:animate-steam"
+                  className="w-1 h-4 rounded-full bg-[#2B1D12]/25 motion-safe:animate-steam"
                   style={{ animationDelay: '0s' }}
                 />
                 <span
-                  className="w-[6px] h-[22px] rounded-full border-2 border-[#2B1D12] bg-[#2B1D12]/20 motion-safe:animate-steam"
+                  className="w-1 h-4 rounded-full bg-[#2B1D12]/25 motion-safe:animate-steam"
                   style={{ animationDelay: '0.4s' }}
                 />
                 <span
-                  className="w-[6px] h-[22px] rounded-full border-2 border-[#2B1D12] bg-[#2B1D12]/20 motion-safe:animate-steam"
+                  className="w-1 h-4 rounded-full bg-[#2B1D12]/25 motion-safe:animate-steam"
                   style={{ animationDelay: '0.8s' }}
                 />
               </div>
@@ -703,9 +703,13 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
                 {/* QR Code Container dengan Garis Hijau Scan (Elemen #2 Mockup) */}
                 <div className="relative overflow-hidden bg-white p-3 rounded-xl border border-[#2B1D12]/15 flex items-center justify-center">
-                  {/* Lapisan Garis Hijau Scan QR */}
+                  {/* Overlay Garis Hijau Scan QR dengan Animasi background-position */}
                   <div
-                    className="pointer-events-none absolute inset-x-0 h-[46px] bg-gradient-to-b from-transparent via-[rgba(47,158,91,0.25)] to-transparent motion-safe:animate-qr-scan z-10"
+                    className="pointer-events-none absolute inset-0 bg-no-repeat motion-safe:animate-qr-scan z-10"
+                    style={{
+                      backgroundImage: 'linear-gradient(to bottom, transparent, rgba(21,128,61,0.28), transparent)',
+                      backgroundSize: '100% 46px',
+                    }}
                     aria-hidden="true"
                   />
                   {/* eslint-disable-next-line @next/next/no-img-element */}

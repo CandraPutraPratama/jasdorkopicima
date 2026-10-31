@@ -43,8 +43,12 @@ describe('AutoCheck Polling & QRIS Mockup Visual Elements', () => {
       'Elemen 1: Animasi steam uap kopi harus terpasang pada kartu total nominal'
     );
     assert.ok(
-      paymentViewContent.includes('w-[6px] h-[22px] rounded-full border-2 border-[#2B1D12]'),
-      'Elemen 1: 3 garis uap berukuran 6px x 22px dengan border cokelat tua'
+      paymentViewContent.includes('w-1 h-4 rounded-full bg-[#2B1D12]/25'),
+      'Elemen 1: 3 garis uap w-1 h-4 rounded-full tanpa border dengan opacity 25%'
+    );
+    assert.ok(
+      paymentViewContent.includes('right-5 top-2'),
+      'Elemen 1: Posisi di pojok kanan atas bagian dalam kartu (right-5 top-2)'
     );
 
     // 2. Garis hijau scan QR
@@ -53,12 +57,16 @@ describe('AutoCheck Polling & QRIS Mockup Visual Elements', () => {
       'Elemen 2: Animasi qr-scan harus terpasang pada QR container'
     );
     assert.ok(
-      paymentViewContent.includes('rgba(47,158,91,0.25)'),
-      'Elemen 2: Warna gradient hijau transparan rgba(47,158,91,0.25)'
+      paymentViewContent.includes('rgba(21,128,61,0.28)'),
+      'Elemen 2: Warna gradient hijau transparan rgba(21,128,61,0.28)'
     );
     assert.ok(
       paymentViewContent.includes('pointer-events-none'),
       'Elemen 2: Lapisan scan wajib pointer-events-none agar QR bisa di-screenshot & interaksi tidak terganggu'
+    );
+    assert.ok(
+      paymentViewContent.includes('absolute inset-0'),
+      'Elemen 2: Overlay absolute inset-0 membungkus seluruh wrapper QR'
     );
 
     // 3. Area kucing meong approved

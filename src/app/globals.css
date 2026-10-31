@@ -65,10 +65,10 @@
 
 @keyframes qr-scan {
   0% {
-    transform: translateY(-46px);
+    background-position: 0 -46px;
   }
   100% {
-    transform: translateY(320px);
+    background-position: 0 calc(100% + 46px);
   }
 }
 
