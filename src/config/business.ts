@@ -68,7 +68,7 @@ export interface BusinessConfig {
 export const BUSINESS_CONFIG: BusinessConfig = {
   pricing: {
     baseDiscountPercent: Number(process.env.NEXT_PUBLIC_BASE_DISCOUNT_PERCENT) || 0.5,
-    feeMultiItem: Number(process.env.NEXT_PUBLIC_FEE_MULTI_ITEM) || 2000,
+    feeMultiItem: Number(process.env.NEXT_PUBLIC_FEE_MULTI_ITEM) || 2300,
     feeSingleItem: Number(process.env.NEXT_PUBLIC_FEE_SINGLE_ITEM) || 4000,
     flatOptionAdditions: {
       'large': 5000,

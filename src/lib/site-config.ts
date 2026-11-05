@@ -220,7 +220,7 @@ export const BRANDS: Record<string, BrandConfig> = {
     tagline: 'Kopi Kenangan Favoritmu, Setengah Harga',
     promoBadge: 'Hemat 50%',
     description:
-      'Diskon 50% menu dasar Kopi Kenangan. Biaya jasa order transparan Rp2.000/item (Rp4.000 untuk 1 item). Pesan praktis, checkout via WhatsApp!',
+      'Diskon 50% menu dasar Kopi Kenangan. Biaya jasa order transparan Rp2.300/item (Rp4.000 untuk 1 item). Pesan praktis, checkout via WhatsApp!',
     accentColor: '#8B1E19',
     themeColor: '#A8201A',
     bannerGradient: 'from-[#8B1E19] to-[#450A0A]',

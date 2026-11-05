@@ -39,7 +39,7 @@ export function BundlePackageCard({
     config.id === 'bundle-3-reguler'
       ? 29500 // (51k x 50% + 4k = 29.5k)
       : config.id === 'bundle-2-large'
-        ? 28500 // (50k x 50% + 3.5k = 28.5k)
+        ? 29500 // (50k x 50% + 4.5k = 29.5k)
         : 32000; // (52k x 50% + 6k = 32k)
 
   return (

@@ -85,11 +85,11 @@ describe('Order Service - QRIS On-Site Flow', () => {
       const pricing = calculateServerOrderPricing(items);
       // basePrice: 20000 -> 50% = 10000 per item
       // qty: 2 -> subtotal = 20000
-      // qty: 2 -> multi-item fee: 2000 * 2 = 4000
-      // total = 24000
+      // qty: 2 -> multi-item fee: 2300 * 2 = 4600
+      // total = 24600
       assert.equal(pricing.subtotal, 20000);
-      assert.equal(pricing.fee, 4000);
-      assert.equal(pricing.total, 24000);
+      assert.equal(pricing.fee, 4600);
+      assert.equal(pricing.total, 24600);
       assert.equal(pricing.totalQuantity, 2);
     });
 

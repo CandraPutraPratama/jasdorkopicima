@@ -27,7 +27,7 @@ test('Bundling: Paket 1 (Bundling 3 Reguler) - 3x Mantan 19k -> Bayar Rp32.500',
   assert.equal(pricing.totalSavings, 28500);
 });
 
-test('Bundling: Paket 2 (Bundling 2 Large) - 2x Mantan 25k -> Bayar Rp28.500', () => {
+test('Bundling: Paket 2 (Bundling 2 Large) - 2x Mantan 25k -> Bayar Rp29.500', () => {
   const selected = [
     { name: 'Kopi Kenangan Mantan' },
     { name: 'Kopi Kenangan Mantan' },
@@ -39,8 +39,8 @@ test('Bundling: Paket 2 (Bundling 2 Large) - 2x Mantan 25k -> Bayar Rp28.500', (
   const pricing = calculateBundlePricing('bundle-2-large', selected);
   assert.equal(pricing.normalPrice, 50000);
   assert.equal(pricing.promoSubtotal, 25000);
-  assert.equal(pricing.bundleFee, 3500);
-  assert.equal(pricing.total, 28500);
+  assert.equal(pricing.bundleFee, 4500);
+  assert.equal(pricing.total, 29500);
   assert.equal(pricing.totalSavings, 25000);
 });
 
@@ -142,13 +142,13 @@ test('Pricing: calculateOrderPricing campuran bundling + regular item', () => {
   ]);
 
   // Bundle: subtotal 28.500, fee 4.000
-  // Regular 1x Americano: promo 8.500, fee multi 2.000 (karena ada item lain di keranjang)
+  // Regular 1x Americano: promo 8.500, fee multi 2.300 (karena ada item lain di keranjang)
   // Total subtotal = 28.500 + 8.500 = 37.000
-  // Total fee = 4.000 + 2.000 = 6.000
-  // Total = 43.000
+  // Total fee = 4.000 + 2.300 = 6.300
+  // Total = 43.300
   assert.equal(result.subtotal, 37000);
-  assert.equal(result.fee, 6000);
-  assert.equal(result.total, 43000);
+  assert.equal(result.fee, 6300);
+  assert.equal(result.total, 43300);
 });
 
 test('Pricing Invariant: calculateOrderPricing hanya item reguler tetap 100% identik', () => {
@@ -173,8 +173,8 @@ test('Pricing Invariant: calculateOrderPricing hanya item reguler tetap 100% ide
     },
   ]);
   assert.equal(multi.subtotal, 17000);
-  assert.equal(multi.fee, 4000); // 2 x 2.000
-  assert.equal(multi.total, 21000);
+  assert.equal(multi.fee, 4600); // 2 x 2.300
+  assert.equal(multi.total, 21600);
 });
 
 test('Bundling Promo: isBundlingPromoActive hanya aktif 31 Okt - 1 Nov 2026', async () => {
@@ -240,7 +240,7 @@ test('Bundling: Paket 2 memiliki 25 menu fixed price & deskripsi rentang 50.000-
   assert.equal(validMantan.isValid, true);
   const pricingMantan = calculateBundlePricing('bundle-2-large', selectedMantan);
   assert.equal(pricingMantan.normalPrice, 50000);
-  assert.equal(pricingMantan.total, 28500);
+  assert.equal(pricingMantan.total, 29500);
 
   // 3. Verifikasi klaim deskripsi rentang harga kartu 2
   assert.match(BUNDLE_PACKAGES['bundle-2-large'].description, /50\.000-60\.000/);
@@ -267,7 +267,7 @@ test('Bundling: Paket 2 validasi rentang 50k-60k (terima 50k & 60k, tolak 49k, 3
     { name: 'Milo Dinosaurus' },
   ]);
   assert.equal(pricing60k.normalPrice, 60000);
-  assert.equal(pricing60k.total, 33500); // 60.000 x 50% + 3.500
+  assert.equal(pricing60k.total, 34500); // 60.000 x 50% + 4.500
 
   // C. TOLAK 49k: Americano (22k) + Spanish Latte (27k) = 49k
   const invalid49k = validateBundleSelection('bundle-2-large', [
@@ -560,7 +560,7 @@ test('Tier Pricing: Paket 2 (Bundling 2 Large) di outlet normal tetap rentang FI
   ];
   const pricing = calculateBundlePricing('bundle-2-large', selected, tierDiff);
   assert.equal(pricing.normalPrice, 50000);
-  assert.equal(pricing.total, 28500);
+  assert.equal(pricing.total, 29500);
   assert.equal(validateBundleSelection('bundle-2-large', selected, tierDiff).isValid, true);
 
   // Di bawah 50k (misal Americano 22k + Mantan 25k = 47k): ditolak di outlet normal

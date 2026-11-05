@@ -419,7 +419,7 @@ export default function BrandPage({ params }: BrandPageProps) {
                   </div>
                   <div className="space-y-0.5 text-[10px] sm:text-[11px] text-[#4A3628] font-semibold pl-1 leading-snug">
                     <p>- Biaya Jasa jika order hanya 1 menu = 4.000/menu</p>
-                    <p>- Biaya Jasa jika order minimal 2 menu dst = 2.000/item</p>
+                    <p>- Biaya Jasa jika order minimal 2 menu dst = 2.300/item</p>
                   </div>
                 </div>
 

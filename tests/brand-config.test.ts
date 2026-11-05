@@ -167,7 +167,7 @@ test('Kopi Kenangan hero displays Informasi Biaya Jasa box directly above KopiKe
   // Harus memuat judul dan isi persis seperti yang diminta user
   assert.ok(pageContent.includes('Informasi Biaya Jasa'));
   assert.ok(pageContent.includes('- Biaya Jasa jika order hanya 1 menu = 4.000/menu'));
-  assert.ok(pageContent.includes('- Biaya Jasa jika order minimal 2 menu dst = 2.000/item'));
+  assert.ok(pageContent.includes('- Biaya Jasa jika order minimal 2 menu dst = 2.300/item'));
 
   // Posisi harus tepat DI ATAS KopiKenanganWifiBox
   const feeBoxIndex = pageContent.indexOf('Informasi Biaya Jasa');

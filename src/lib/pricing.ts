@@ -168,7 +168,7 @@ export function calculateItemPricing(
  *
  * Aturan fee:
  * - Paket bundling: fee paket khusus menggantikan fee per-item (bundleFee x kuantitas bundle).
- * - Item reguler: jika ada bundle di pesanan atau >1 item reguler: Rp2.000 x qty reguler; jika hanya 1 reguler: flat Rp4.000.
+ * - Item reguler: jika ada bundle di pesanan atau >1 item reguler: Rp2.300 x qty reguler; jika hanya 1 reguler: flat Rp4.000.
  */
 export function calculateOrderPricing(
   items: OrderItemInput[],

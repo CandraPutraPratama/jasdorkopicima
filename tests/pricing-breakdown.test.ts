@@ -36,18 +36,18 @@ test('Pricing Breakdown: Order campuran bundling + normal menghasilkan 2 baris f
   assert.equal(result.bundleSubtotal, 28500);
   assert.equal(result.bundleFee, 4000);
 
-  // Verifikasi rincian normal (2 item normal @ Rp2.000 = Rp4.000)
+  // Verifikasi rincian normal (2 item normal @ Rp2.300 = Rp4.600)
   assert.equal(result.regularQuantity, 2);
   assert.equal(result.regularSubtotal, 20000);
-  assert.equal(result.regularFee, 4000);
+  assert.equal(result.regularFee, 4600);
 
   // Verifikasi total gabungan konsisten
   assert.equal(result.subtotal, result.bundleSubtotal + result.regularSubtotal);
   assert.equal(result.subtotal, 48500);
   assert.equal(result.fee, result.bundleFee + result.regularFee);
-  assert.equal(result.fee, 8000);
+  assert.equal(result.fee, 8600);
   assert.equal(result.total, result.subtotal + result.fee);
-  assert.equal(result.total, 56500);
+  assert.equal(result.total, 57100);
 
   // Verifikasi getOrderBreakdown helper
   const breakdown = getOrderBreakdown([
@@ -70,7 +70,7 @@ test('Pricing Breakdown: Order campuran bundling + normal menghasilkan 2 baris f
   assert.equal(breakdown.bundleFee, 4000);
   assert.equal(breakdown.regularQuantity, 2);
   assert.equal(breakdown.regularSubtotal, 20000);
-  assert.equal(breakdown.regularFee, 4000);
+  assert.equal(breakdown.regularFee, 4600);
 });
 
 test('Pricing Breakdown: Order hanya bundling hanya menghasilkan baris bundling', () => {
@@ -201,8 +201,8 @@ test('WhatsApp Message: Order campuran menampilkan 4 baris ringkasan (2 subtotal
   assert.match(msg, /Sub Total Bundling \(1 item\): Rp28\.500/);
   assert.match(msg, /Sub Total Normal \(1 item\): Rp14\.000/);
   assert.match(msg, /Biaya Jasa Bundling: Rp4\.000/);
-  assert.match(msg, /Biaya Jasa Normal: Rp2\.000/);
-  assert.match(msg, /Total: Rp48\.500/);
+  assert.match(msg, /Biaya Jasa Normal: Rp2\.300/);
+  assert.match(msg, /Total: Rp48\.800/);
 });
 
 test('WhatsApp Message: Order hanya bundling hanya menampilkan baris bundling', () => {
@@ -264,8 +264,8 @@ test('WhatsApp Message: Order hanya normal hanya menampilkan baris normal', () =
   });
 
   assert.match(msg, /Sub Total Normal \(2 item\): Rp15\.000/);
-  assert.match(msg, /Biaya Jasa Normal: Rp4\.000/);
+  assert.match(msg, /Biaya Jasa Normal: Rp4\.600/);
   assert.doesNotMatch(msg, /Sub Total Bundling/);
   assert.doesNotMatch(msg, /Biaya Jasa Bundling/);
-  assert.match(msg, /Total: Rp19\.000/);
+  assert.match(msg, /Total: Rp19\.600/);
 });

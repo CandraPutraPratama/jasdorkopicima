@@ -44,8 +44,8 @@ const FAQ_LIST: FaqItem[] = [
     id: 'biaya-jasa',
     category: 'Tarif & Promo',
     q: 'Berapa biaya jasa order di Jasdor?',
-    a: 'Biaya jasa order kami transparan, hemat, dan otomatis dihitung di keranjang sebelum checkout:\n• Rp2.000 per item jika Anda memesan 2 item atau lebih.\n• Rp4.000 flat jika Anda hanya memesan 1 item saja.\nPromo diskon hemat dinikmati sesuai ketentuan masing-masing brand (seperti diskon 50% pada menu minuman Kopi Kenangan atau promo Fore Coffee).',
-    highlight: 'Mulai Rp2.000 / item',
+    a: 'Biaya jasa order kami transparan, hemat, dan otomatis dihitung di keranjang sebelum checkout:\n• Rp2.300 per item jika Anda memesan 2 item atau lebih (Kopi Kenangan).\n• Rp4.000 flat jika Anda hanya memesan 1 item saja.\nPromo diskon hemat dinikmati sesuai ketentuan masing-masing brand (seperti diskon 50% pada menu minuman Kopi Kenangan atau promo Fore Coffee).',
+    highlight: 'Mulai Rp2.300 / item',
   },
   {
     id: 'jadwal-operasional',

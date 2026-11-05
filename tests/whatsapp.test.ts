@@ -57,8 +57,8 @@ Pesanan:
 - 1x Oatmeal Raisin Soft Baked Cookie Rp9.500
 
 Sub Total Normal (2 item): Rp34.500
-Biaya Jasa Normal: Rp4.000
-Total: Rp38.500
+Biaya Jasa Normal: Rp4.600
+Total: Rp39.100
 
 Kamu hemat Rp26.500 dari harga normal!
 
@@ -121,7 +121,7 @@ test('buildWhatsAppMessage handles scheduled pickup format', () => {
   });
 
   assert.match(message, /Pickup: Terjadwal jam 15:30/);
-  assert.match(message, /Biaya Jasa Normal: Rp4\.000/);
+  assert.match(message, /Biaya Jasa Normal: Rp4\.600/);
 });
 
 test('buildWhatsAppMessage produces exact required template string for Korea Banana Latte with grouped addons and flat additions', () => {
@@ -283,7 +283,7 @@ test('buildOrderWhatsAppConfirmationMessage formats pre-filled message correctly
     '- 2x Oatmeal Raisin Soft Baked Cookie - Rp20.000',
     '',
     'Sub Total Normal (3 item): Rp38.000',
-    'Biaya Jasa Normal: Rp6.000',
+    'Biaya Jasa Normal: Rp6.900',
     'Total: Rp38.000',
     '',
     'Kamu hemat Rp78.000 dari harga normal!',
@@ -420,8 +420,8 @@ test('buildOrderWhatsAppConfirmationMessage formats Bundling 2 Large with pickup
     pickup_time: 'now',
     created_at: '2026-10-17T07:00:00Z', // 14:00 WIB -> +15m = 14:15
     subtotal: 26000, // 52.000 * 50%
-    fee: 3500,
-    total: 29500,
+    fee: 4500,
+    total: 30500,
     items: [
       {
         name: 'Bundling 2 Large',
@@ -458,10 +458,10 @@ test('buildOrderWhatsAppConfirmationMessage formats Bundling 2 Large with pickup
   assert.ok(message.includes('  \u2022 Kopi Kenangan Mantan (Less Sugar, Normal Ice) \u2014 Rp13.000'));
   assert.ok(message.includes('  \u2022 Latte (No Sugar, Less Ice) \u2014 Rp13.000'));
   assert.ok(message.includes('Sub Total Bundling (1 item): Rp26.000'));
-  assert.ok(message.includes('Biaya Jasa Bundling: Rp3.500'));
-  assert.ok(message.includes('Total: Rp29.500'));
-  // Hemat = 52.000 - 29.500 = 22.500
-  assert.ok(message.includes('Kamu hemat Rp22.500 dari harga normal!'));
+  assert.ok(message.includes('Biaya Jasa Bundling: Rp4.500'));
+  assert.ok(message.includes('Total: Rp30.500'));
+  // Hemat = 52.000 - 30.500 = 21.500
+  assert.ok(message.includes('Kamu hemat Rp21.500 dari harga normal!'));
   // Tanpa data antrean: tidak ada blok antrean (perilaku lama dipertahankan)
   assert.ok(!message.includes('Antrean:'));
 });

@@ -180,9 +180,9 @@ describe('Server-Side Price Recalculation (K1 Security Audit)', () => {
   });
 
   describe('1. Kasus Uji Wajib: Total Order Sah Tidak Boleh Berubah 1 Rupiah Pun', () => {
-    it('Campuran bundling + reguler: 30.500 + 10.000 + 4.000 + 2.000 = Rp46.500', () => {
+    it('Campuran bundling + reguler: 30.500 + 10.000 + 4.000 + 2.300 = Rp46.800', () => {
       // 1 item paket bundling (misal total normal 61.000 -> 50% = 30.500, fee = 4.000)
-      // 1 item reguler (basePrice 20.000 -> 50% = 10.000, fee = 2.000 karena ada bundling)
+      // 1 item reguler (basePrice 20.000 -> 50% = 10.000, fee = 2.300 karena ada bundling)
       const items: CartItem[] = [
         {
           id: 'bundle-1',
@@ -213,18 +213,18 @@ describe('Server-Side Price Recalculation (K1 Security Audit)', () => {
       assert.strictEqual(pricing.bundleSubtotal, 30500);
       assert.strictEqual(pricing.regularSubtotal, 10000);
       assert.strictEqual(pricing.bundleFee, 4000);
-      assert.strictEqual(pricing.regularFee, 2000);
-      assert.strictEqual(pricing.fee, 6000);
-      assert.strictEqual(pricing.total, 46500, 'Total harus persis Rp46.500');
+      assert.strictEqual(pricing.regularFee, 2300);
+      assert.strictEqual(pricing.fee, 6300);
+      assert.strictEqual(pricing.total, 46800, 'Total harus persis Rp46.800');
     });
 
-    it('Bundling 2 Large di outlet tier +3k (LIPPO-PURI): harga normal 56.000, total bayar Rp31.500', () => {
+    it('Bundling 2 Large di outlet tier +3k (LIPPO-PURI): harga normal 56.000, total bayar Rp32.500', () => {
       const tierDiff = 3000;
       // 2 Large drinks: baseline price 25.000 masing-masing + 3.000 = 28.000 masing-masing
       // Total normal = 28.000 + 28.000 = 56.000
       // Promo 50% = 28.000
-      // Fee bundle-2-large = 3.500
-      // Total bayar = 28.000 + 3.500 = 31.500
+      // Fee bundle-2-large = 4.500
+      // Total bayar = 28.000 + 4.500 = 32.500
       const bundleDetails = [
         { name: 'Kopi Kenangan Mantan', category: 'drink' as const, variantDescription: 'Large' },
         { name: 'Kopi Kenangan Mantan', category: 'drink' as const, variantDescription: 'Large' },
@@ -233,8 +233,8 @@ describe('Server-Side Price Recalculation (K1 Security Audit)', () => {
       const bundlePricing = calculateBundlePricing('bundle-2-large', bundleDetails, tierDiff);
       assert.strictEqual(bundlePricing.normalPrice, 56000, 'Harga normal harus 56.000');
       assert.strictEqual(bundlePricing.promoSubtotal, 28000, 'Promo subtotal harus 28.000');
-      assert.strictEqual(bundlePricing.bundleFee, 3500, 'Fee paket harus 3.500');
-      assert.strictEqual(bundlePricing.total, 31500, 'Total bayar harus persis Rp31.500');
+      assert.strictEqual(bundlePricing.bundleFee, 4500, 'Fee paket harus 4.500');
+      assert.strictEqual(bundlePricing.total, 32500, 'Total bayar harus persis Rp32.500');
     });
 
     it('Order reguler 1 item: biaya jasa Rp4.000', () => {
@@ -753,11 +753,11 @@ describe('Server-Side Price Recalculation (K1 Security Audit)', () => {
       // Item calculation:
       // promoPrice per item = (19k * 50% = 9.500) + 5.000 + 6.000 = 20.500
       // subtotal per item = 20.500 * 2 = 41.000
-      // regularFee = 2.000 * 2 = 4.000
-      // total = 45.000
+      // regularFee = 2.300 * 2 = 4.600
+      // total = 45.600
       assert.strictEqual(record.subtotal, 41000);
-      assert.strictEqual(record.fee, 4000);
-      assert.strictEqual(record.total, 45000);
+      assert.strictEqual(record.fee, 4600);
+      assert.strictEqual(record.total, 45600);
       assert.strictEqual(record.items[0].promoPrice, 20500);
       assert.strictEqual(record.items[0].subtotal, 41000);
       assert.strictEqual(record.items[0].originalPrice, 30000); // 24.000 + 6.000

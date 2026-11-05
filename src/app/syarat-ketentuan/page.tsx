@@ -113,7 +113,7 @@ export default function TermsPage() {
             <p>
               3.2. <strong>Biaya Jasa Order</strong>:
               <br />• 1 item pesanan: Rp4.000 flat.
-              <br />• 2 item atau lebih: Rp2.000 per item.
+              <br />• 2 item atau lebih: Rp2.300 per item (Kopi Kenangan).
             </p>
             <p>
               3.3. <strong>Metode Pembayaran</strong> yang sah:

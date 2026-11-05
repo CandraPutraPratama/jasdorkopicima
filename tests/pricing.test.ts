@@ -63,8 +63,8 @@ describe('Pricing Engine (Pure Calculation)', () => {
     const orderPricing = calculateOrderPricing(items);
     assert.strictEqual(orderPricing.totalQuantity, 2);
     assert.strictEqual(orderPricing.subtotal, 34500);
-    assert.strictEqual(orderPricing.fee, 4000);
-    assert.strictEqual(orderPricing.total, 38500);
+    assert.strictEqual(orderPricing.fee, 4600);
+    assert.strictEqual(orderPricing.total, 39100);
     assert.strictEqual(orderPricing.totalSavings, 26500);
   });
 
@@ -86,7 +86,7 @@ describe('Pricing Engine (Pure Calculation)', () => {
     assert.strictEqual(orderPricing.total, 13000);
   });
 
-  it('applies Rp2.000 x 2 = Rp4.000 fee when quantity is 2 of the same menu item', () => {
+  it('applies Rp2.300 x 2 = Rp4.600 fee when quantity is 2 of the same menu item', () => {
     const items = [
       {
         name: 'Kopi Kenangan Mantan',
@@ -99,12 +99,12 @@ describe('Pricing Engine (Pure Calculation)', () => {
 
     const orderPricing = calculateOrderPricing(items);
     assert.strictEqual(orderPricing.totalQuantity, 2);
-    assert.strictEqual(orderPricing.fee, 4000);
+    assert.strictEqual(orderPricing.fee, 4600);
     assert.strictEqual(orderPricing.subtotal, 18000);
-    assert.strictEqual(orderPricing.total, 22000);
+    assert.strictEqual(orderPricing.total, 22600);
   });
 
-  it('applies Rp2.000 x 5 = Rp10.000 fee when order has 5 items', () => {
+  it('applies Rp2.300 x 5 = Rp11.500 fee when order has 5 items', () => {
     const items = [
       {
         name: 'Kopi Kenangan Mantan',
@@ -124,7 +124,7 @@ describe('Pricing Engine (Pure Calculation)', () => {
 
     const orderPricing = calculateOrderPricing(items);
     assert.strictEqual(orderPricing.totalQuantity, 5);
-    assert.strictEqual(orderPricing.fee, 10000);
+    assert.strictEqual(orderPricing.fee, 11500);
   });
 
   it('calculates toppings correctly with zero discount on toppings', () => {
