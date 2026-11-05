@@ -155,7 +155,7 @@ export function MyOrdersView() {
             </p>
           </div>
 
-          <Link
+          <Link prefetch={false}
             href="/"
             className="inline-flex items-center justify-center px-5 py-2.5 bg-[#2B1D12] text-[#FAF4E8] hover:bg-[#3D2313] font-display font-black text-xs rounded-xl border-2 border-[#2B1D12] shadow-[3px_3px_0px_#C67D0A] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
           >
@@ -260,7 +260,7 @@ export function MyOrdersView() {
                   </div>
 
                   {/* Tombol Lanjutkan ke Pembayaran */}
-                  <Link
+                  <Link prefetch={false}
                     href={buildOrderPaymentUrl(order.id, getMyOrderAccessToken(order.id))}
                     className="w-full min-h-[42px] px-4 py-2.5 bg-[#2B1D12] text-[#FAF4E8] font-display font-black text-xs rounded-xl border-2 border-[#2B1D12] shadow-[3px_3px_0px_#C67D0A] transition hover:-translate-y-0.5 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none flex items-center justify-center gap-2"
                   >
@@ -358,7 +358,7 @@ export function MyOrdersView() {
                       {order.items?.length || 0} menu
                     </span>
 
-                    <Link
+                    <Link prefetch={false}
                       href={buildOrderPaymentUrl(order.id, getMyOrderAccessToken(order.id))}
                       className="text-[11px] font-black text-[#C67D0A] hover:underline underline-offset-2"
                     >

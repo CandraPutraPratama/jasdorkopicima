@@ -168,7 +168,7 @@ export function BrandCard({ brand, outletCount, isActive = true }: BrandCardProp
 
   if (isClickable) {
     return (
-      <Link href={`/${brand.slug}`} className="col-span-2 block focus-visible:outline-hidden group">
+      <Link prefetch={false} href={`/${brand.slug}`} className="col-span-2 block focus-visible:outline-hidden group">
         {cardContent}
       </Link>
     );

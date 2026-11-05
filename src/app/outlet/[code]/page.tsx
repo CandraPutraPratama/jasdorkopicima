@@ -344,7 +344,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           <p className="text-xs text-[#6A584D] max-w-xs mb-5 leading-relaxed">
             Outlet ini tidak terdaftar atau berada di luar jangkauan layanan kami.
           </p>
-          <Link
+          <Link prefetch={false}
             href={`/${brandSlug}`}
             className="min-h-[44px] px-6 py-2.5 bg-[#26150B] text-[#FBBF24] font-display font-bold text-xs rounded-xl flex items-center justify-center shadow-xs"
           >
@@ -374,7 +374,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           </div>
           <h2 className="font-display text-base font-bold text-[#26150B] mb-1">Gagal Memuat Outlet</h2>
           <p className="text-xs text-[#6A584D] max-w-xs mb-4 leading-relaxed">{errorMessage}</p>
-          <Link
+          <Link prefetch={false}
             href={`/${brandSlug}`}
             className="min-h-[44px] px-5 py-2.5 bg-[#26150B] text-[#FBBF24] font-display font-bold text-xs rounded-xl flex items-center justify-center"
           >
@@ -460,7 +460,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 pt-1 border-t border-amber-200/60">
-                  <Link
+                  <Link prefetch={false}
                     href={`/${brandSlug}`}
                     className="min-h-[38px] px-3.5 py-1.5 bg-[#26150B] text-[#FBBF24] hover:bg-[#3D2313] text-xs font-display font-bold rounded-xl flex items-center gap-1.5 transition shadow-xs"
                   >
@@ -499,7 +499,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                 </p>
               </div>
               <div className="pt-2 flex justify-center">
-                <Link
+                <Link prefetch={false}
                   href={`/${brandSlug}`}
                   className="min-h-[44px] px-5 py-2.5 bg-[#2B1D12] text-[#FAF4E8] hover:bg-[#3D2817] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none text-xs font-display font-black rounded-xl inline-flex items-center gap-2 transition-all border-2 border-[#2B1D12] shadow-[3px_3px_0px_#C67D0A]"
                 >

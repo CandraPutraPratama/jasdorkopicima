@@ -48,7 +48,7 @@ export function Header({
     >
       <div className="flex items-center gap-2 flex-1 min-w-0">
         {showBack ? (
-          <Link
+          <Link prefetch={false}
             href={backHref}
             className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[#2B1D12] hover:text-[#C67D0A] active:scale-95 transition -ml-1 rounded-xl shrink-0"
             aria-label={backLabel}
@@ -65,7 +65,7 @@ export function Header({
             </svg>
           </Link>
         ) : (
-          <Link href="/" className="flex items-center gap-2.5 group">
+          <Link prefetch={false} href="/" className="flex items-center gap-2.5 group">
             <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] shrink-0 flex items-center justify-center bg-[#FFFDF9]">
               <Image
                 src="/logo-jasdorkopicima.png"
@@ -98,7 +98,7 @@ export function Header({
       </div>
 
       {showBack && !title && (
-        <Link href="/" className="flex items-center gap-2 mr-2">
+        <Link prefetch={false} href="/" className="flex items-center gap-2 mr-2">
           <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] shrink-0 flex items-center justify-center bg-[#FFFDF9]">
             <Image
               src="/logo-jasdorkopicima.png"
@@ -113,7 +113,7 @@ export function Header({
 
       <div className="flex items-center gap-2 shrink-0">
         {showMyOrders && title !== 'Pesanan Saya' && (
-          <Link
+          <Link prefetch={false}
             href="/pesanan-saya"
             className="relative flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-extrabold text-[#2B1D12] bg-[#FFFDF9] hover:bg-[#FFE7D6] border-2 border-[#2B1D12] rounded-xl transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none shadow-[2px_2px_0px_#2B1D12] min-h-[36px]"
             title="Pesanan Saya"

@@ -111,7 +111,7 @@ export function OutletSearchCard({ outlet }: OutletSearchCardProps) {
         {isOrderable ? (
           <Link
             href={`/outlet/${outlet.code}`}
-            prefetch={true}
+            prefetch={false}
             onClick={(e) => {
               e.stopPropagation();
             }}

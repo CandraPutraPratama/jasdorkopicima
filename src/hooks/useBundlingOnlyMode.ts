@@ -1,24 +1,28 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { isBundlingOnlyMode } from '@/lib/feature-flags';
+import { useState, useEffect, useCallback } from "react";
+import { isBundlingOnlyMode } from "@/lib/feature-flags";
 
 export function useBundlingOnlyMode(): boolean {
   // Fallback awal membaca dari env var (default: false atau nilai build-time)
-  const [isBundlingOnly, setIsBundlingOnly] = useState<boolean>(isBundlingOnlyMode());
+  const [isBundlingOnly, setIsBundlingOnly] =
+    useState<boolean>(isBundlingOnlyMode());
 
   const fetchSetting = useCallback(async () => {
     try {
-      const res = await fetch('/api/site-settings', {
+      const res = await fetch("/api/site-settings", {
         // Cache revalidation akan diatur oleh header HTTP s-maxage=30, stale-while-revalidate=60
         next: { revalidate: 30 },
       });
       if (!res.ok) return;
       const data = await res.json();
-      const modeValue = typeof data?.min_order_50k_mode === 'boolean'
-        ? data.min_order_50k_mode
-        : (typeof data?.bundling_only_mode === 'boolean' ? data.bundling_only_mode : undefined);
-      if (typeof modeValue === 'boolean') {
+      const modeValue =
+        typeof data?.min_order_50k_mode === "boolean"
+          ? data.min_order_50k_mode
+          : typeof data?.bundling_only_mode === "boolean"
+            ? data.bundling_only_mode
+            : undefined;
+      if (typeof modeValue === "boolean") {
         setIsBundlingOnly(modeValue);
       }
     } catch {
@@ -32,17 +36,21 @@ export function useBundlingOnlyMode(): boolean {
 
     // Re-fetch saat tab kembali aktif
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
+      if (document.visibilityState === "visible") {
         fetchSetting();
       }
     };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    // Polling setiap 60 detik agar perubahan admin tercermin dalam 1-2 menit tanpa reload
-    const interval = setInterval(fetchSetting, 60000);
+    // Polling setiap 3 menit (hemat CPU Worker Free); lewati bila tab tersembunyi.
+    // Perubahan admin tetap tercermin saat tab kembali aktif (visibilitychange).
+    const interval = setInterval(() => {
+      if (document.visibilityState !== "visible") return;
+      fetchSetting();
+    }, 180000);
 
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearInterval(interval);
     };
   }, [fetchSetting]);

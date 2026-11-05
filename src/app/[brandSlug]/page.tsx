@@ -243,7 +243,7 @@ export default function BrandPage({ params }: BrandPageProps) {
             </p>
 
             <div className="pt-2 flex flex-col gap-2.5">
-              <Link
+              <Link prefetch={false}
                 href="/"
                 className="w-full py-3 px-4 bg-[#2B1D12] hover:bg-[#3D2313] text-[#FAF4E8] text-xs sm:text-sm font-display font-black rounded-xl transition border-2 border-[#2B1D12] shadow-[3px_3px_0px_#C67D0A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
               >
@@ -312,7 +312,7 @@ export default function BrandPage({ params }: BrandPageProps) {
             </p>
 
             <div className="pt-2 flex flex-col gap-2.5">
-              <Link
+              <Link prefetch={false}
                 href="/"
                 className="w-full py-3 px-4 bg-[#2B1D12] hover:bg-[#3D2817] text-[#FAF4E8] text-xs sm:text-sm font-display font-black rounded-xl transition border-2 border-[#2B1D12] shadow-[3px_3px_0px_#C67D0A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
               >
