@@ -79,3 +79,41 @@ describe("polling site-settings tidak lebih sering dari 3 menit", () => {
     });
   }
 });
+
+describe("komponen modal dan widget berat di-load dinamis (ssr: false) untuk offload CPU Worker", () => {
+  it("halaman outlet memuat modal dan bottom sheet interaktif dengan dynamic ssr: false", () => {
+    const src = read("src/app/outlet/[code]/page.tsx");
+    assert.ok(src.includes("import dynamic from 'next/dynamic'"));
+    assert.match(
+      src,
+      /const ProductBottomSheet\s*=\s*dynamic\([^}]*ssr:\s*false/,
+      "ProductBottomSheet harus di-load dengan dynamic ssr: false"
+    );
+    assert.match(
+      src,
+      /const BundlePickerBottomSheet\s*=\s*dynamic\([^}]*ssr:\s*false/,
+      "BundlePickerBottomSheet harus di-load dengan dynamic ssr: false"
+    );
+    assert.match(
+      src,
+      /const TomoroB1G1Modal\s*=\s*dynamic\([^}]*ssr:\s*false/,
+      "TomoroB1G1Modal harus di-load dengan dynamic ssr: false"
+    );
+    assert.match(
+      src,
+      /const SwitchOutletModal\s*=\s*dynamic\([^}]*ssr:\s*false/,
+      "SwitchOutletModal harus di-load dengan dynamic ssr: false"
+    );
+  });
+
+  it("halaman brand memuat KopiKenanganWifiBox dengan dynamic ssr: false", () => {
+    const src = read("src/app/[brandSlug]/page.tsx");
+    assert.ok(src.includes("import dynamic from 'next/dynamic'"));
+    assert.match(
+      src,
+      /const KopiKenanganWifiBox\s*=\s*dynamic\([^}]*ssr:\s*false/,
+      "KopiKenanganWifiBox harus di-load dengan dynamic ssr: false"
+    );
+  });
+});
+

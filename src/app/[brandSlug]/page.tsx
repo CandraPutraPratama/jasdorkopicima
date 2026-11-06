@@ -2,6 +2,7 @@
 
 import { use, useState, useEffect, useTransition } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { notFound } from 'next/navigation';
 import { useOperationalStatus } from '@/hooks/useOperationalStatus';
 import { useBrandStatus } from '@/hooks/useBrandStatus';
@@ -25,8 +26,13 @@ import {
   getAdminWhatsAppUrl,
 } from '@/lib/site-config';
 import { getBrandOutletProvider } from '@/lib/brand-provider';
-import { KopiKenanganWifiBox } from '@/components/KopiKenanganWifiBox';
 import type { Outlet } from '@/types/domain';
+
+// Offload SSR: KopiKenanganWifiBox mengambil password dari /api/wifi-today via client
+const KopiKenanganWifiBox = dynamic(
+  () => import('@/components/KopiKenanganWifiBox').then((m) => m.KopiKenanganWifiBox),
+  { ssr: false }
+);
 
 interface BrandPageProps {
   params: Promise<{ brandSlug: string }>;

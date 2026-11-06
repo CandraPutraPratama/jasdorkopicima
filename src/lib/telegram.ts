@@ -197,6 +197,76 @@ export function formatVoucherRecommendation(order: OrderRecord): string | null {
   return out;
 }
 
+export function getBrandDisplay(brandSlug?: string, outletCode?: string): string {
+  const isTomoro =
+    brandSlug?.toLowerCase() === 'tomoro' ||
+    outletCode?.toLowerCase().startsWith('tomoro-');
+
+  const isFore =
+    !isTomoro &&
+    (brandSlug?.toLowerCase() === 'fore' ||
+      outletCode?.toLowerCase().startsWith('fore-') ||
+      (Boolean(brandSlug) &&
+        !brandSlug!.toLowerCase().includes('kopi') &&
+        !brandSlug!.toLowerCase().includes('kenangan') &&
+        brandSlug!.toLowerCase().includes('fore')));
+
+  if (isTomoro) return 'TOMORO Coffee';
+  if (isFore) return 'Fore Coffee';
+  return 'Kopi Kenangan';
+}
+
+export function formatPickupDisplay(pickupTime?: string | null, createdAt?: string): string {
+  const isScheduled = Boolean(
+    pickupTime &&
+      pickupTime !== 'now' &&
+      !pickupTime.trim().toLowerCase().startsWith('sekarang')
+  );
+
+  if (isScheduled && pickupTime) {
+    const clean = pickupTime
+      .replace(/^(dijadwalkan|terjadwal)\s*(jam)?\s*/i, '')
+      .trim();
+    return `🕒 DIJADWALKAN JAM ${clean.toUpperCase()}`;
+  }
+
+  if (createdAt) {
+    try {
+      const createdDate = new Date(createdAt);
+      if (!isNaN(createdDate.getTime())) {
+        const estTime = new Date(createdDate.getTime() + 15 * 60 * 1000);
+        const estFormatted = estTime
+          .toLocaleTimeString('id-ID', {
+            timeZone: 'Asia/Jakarta',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          })
+          .replace('.', ':');
+        return `⚡ SEKARANG (Est. siap ~${estFormatted})`;
+      }
+    } catch {
+      // Abaikan parsing error tanggal
+    }
+  }
+
+  return '⚡ SEKARANG';
+}
+
+export function formatCustomerWaLink(customerWa?: string): string {
+  const raw = customerWa || '';
+  const digits = raw.replace(/\D/g, '');
+  if (!digits) return escapeHtml(raw);
+
+  const waNumber = digits.startsWith('0')
+    ? `62${digits.slice(1)}`
+    : digits.startsWith('8')
+      ? `62${digits}`
+      : digits;
+
+  return `<a href="https://wa.me/${waNumber}">${escapeHtml(raw)}</a>`;
+}
+
 export function formatOrderTelegramMessage(order: OrderRecord, extraNote?: string): string {
   const statusEmoji: Record<OrderStatus, string> = {
     menunggu_pembayaran: '⏳ Menunggu Pembayaran',
@@ -240,9 +310,28 @@ export function formatOrderTelegramMessage(order: OrderRecord, extraNote?: strin
         return `• ${qty}x <b>${escapeHtml(it.name)}</b>${parentPrice}\n${bundleLines}${noteStr}`;
       }
 
+      // Gabungkan opsi varian dan addons (seperti Whipped Cream, Syrup, Topping)
+      const optParts: string[] = [];
+      if (it.variantOptions && it.variantOptions.length > 0) {
+        optParts.push(...it.variantOptions.filter(Boolean));
+      }
+      if (it.addons && it.addons.length > 0) {
+        const existingLower = optParts.join(', ').toLowerCase();
+        for (const a of it.addons) {
+          if (a.name && !existingLower.includes(a.name.toLowerCase())) {
+            const hasSuffix = /\(\+Rp[\d.]+\)$/i.test(a.name);
+            const priceSuffix =
+              !hasSuffix && typeof a.price === 'number' && a.price > 0
+                ? ` (+${formatRupiah(a.price)})`
+                : '';
+            optParts.push(`${a.name}${priceSuffix}`);
+          }
+        }
+      }
+
       const variantStr =
-        it.variantOptions && it.variantOptions.length > 0
-          ? ` (${escapeHtml(it.variantOptions.join(', '))})`
+        optParts.length > 0
+          ? ` (${escapeHtml(optParts.join(', '))})`
           : '';
 
       const hasPrice =
@@ -279,20 +368,52 @@ export function formatOrderTelegramMessage(order: OrderRecord, extraNote?: strin
     })
     .join('\n');
 
+  const brandDisplay = getBrandDisplay(order.brand_slug, order.outlet_code);
+  const pickupDisplay = formatPickupDisplay(order.pickup_time, order.created_at);
+  const customerWaHtml = formatCustomerWaLink(order.customer_wa);
+
+  const computedSubtotal =
+    typeof order.subtotal === 'number' && order.subtotal > 0
+      ? order.subtotal
+      : (order.items || []).reduce((acc, it) => acc + (it.subtotal || 0), 0);
+  const computedFee =
+    typeof order.fee === 'number' ? order.fee : Math.max(0, order.total - computedSubtotal);
+  const computedTotal =
+    typeof order.total === 'number' && order.total > 0
+      ? order.total
+      : computedSubtotal + computedFee;
+
+  let totalNormalPrice = 0;
+  for (const it of order.items || []) {
+    const { totalNormal } = getItemNormalPrice(it);
+    totalNormalPrice += totalNormal;
+  }
+  const totalSavings = Math.max(0, totalNormalPrice - computedTotal);
+
   let text = `<b>JASDOR KOPI CIMA : PESANAN</b>\n`;
   text += `=====================\n`;
   text += `<b>Status:</b> ${statusText}\n`;
   text += `<b>Kode:</b> <code>${escapeHtml(order.id)}</code>\n`;
+  text += `<b>Brand:</b> ${escapeHtml(brandDisplay)}\n`;
   if (order.outlet_name) {
     text += `<b>Outlet:</b> ${escapeHtml(order.outlet_name)}\n`;
   }
-  text += `<b>Pemesan:</b> ${escapeHtml(order.customer_name)} (${escapeHtml(order.customer_wa)})\n`;
-  text += `<b>Total:</b> <b>${formatRupiah(order.total)}</b>\n`;
+  text += `<b>Pemesan:</b> ${escapeHtml(order.customer_name)} (${customerWaHtml})\n`;
+  text += `<b>Waktu Ambil:</b> ${pickupDisplay}\n`;
   text += `=====================\n`;
   text += `<b>Item Pesanan:</b>\n${itemLines || '• (Tidak ada item)'}\n`;
 
   if (order.notes) {
     text += `\n<b>Catatan Pesanan:</b>\n<i>${escapeHtml(order.notes)}</i>\n`;
+  }
+
+  text += `\n=====================\n`;
+  text += `<b>Rincian Pembayaran:</b>\n`;
+  text += `• Subtotal Menu: <b>${formatRupiah(computedSubtotal)}</b>\n`;
+  text += `• Biaya Jasa Order: <b>${formatRupiah(computedFee)}</b>\n`;
+  text += `• <b>Total Bayar:</b> <b>${formatRupiah(computedTotal)}</b>\n`;
+  if (totalSavings > 0) {
+    text += `• <i>Pelanggan hemat ${formatRupiah(totalSavings)} dari harga normal</i>\n`;
   }
 
   const voucherRec = formatVoucherRecommendation(order);

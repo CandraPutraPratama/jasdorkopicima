@@ -2,18 +2,17 @@
 
 import { use, useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { useOperationalStatus } from '@/hooks/useOperationalStatus';
 import { ClosedScreen } from '@/components/ClosedScreen';
 import { Header } from '@/components/Header';
 import { MenuCategoryNav } from '@/components/MenuCategoryNav';
 import { ProductCard } from '@/components/ProductCard';
-import { ProductBottomSheet } from '@/components/ProductBottomSheet';
 import { ProductCardSkeleton, CategoryTabSkeleton } from '@/components/Skeleton';
 import { useCart } from '@/hooks/useCart';
 import { useFavorites } from '@/hooks/useFavorites';
 import { FloatingCartBar } from '@/components/FloatingCartBar';
 import { CartDrawer } from '@/components/CartDrawer';
-import { SwitchOutletModal } from '@/components/SwitchOutletModal';
 import { determineActiveCategory } from '@/lib/category-scrollspy';
 import { isOutletClosed as checkIsOutletClosed } from '@/lib/orderability';
 import { resolveBrandSlugFromOutletCode } from '@/lib/site-config';
@@ -26,11 +25,30 @@ import {
 import { useBundlingOnlyMode } from '@/hooks/useBundlingOnlyMode';
 import { getRecommendedProducts } from '@/lib/recommendations';
 import { BundlePackageCard } from '@/components/BundlePackageCard';
-import { BundlePickerBottomSheet } from '@/components/BundlePickerBottomSheet';
-import { TomoroB1G1Modal } from '@/components/TomoroB1G1Modal';
 import { safeNormalizeOutletCode } from '@/lib/sanitizer';
 import { filterProductsByQuery } from '@/lib/menu-search';
 import type { Outlet, MenuGroup, Product } from '@/types/domain';
+
+// Offload SSR ke client untuk modal dan bottom sheet berat agar Cloudflare Worker tidak terkena Error 1102
+const ProductBottomSheet = dynamic(
+  () => import('@/components/ProductBottomSheet').then((m) => m.ProductBottomSheet),
+  { ssr: false }
+);
+
+const BundlePickerBottomSheet = dynamic(
+  () => import('@/components/BundlePickerBottomSheet').then((m) => m.BundlePickerBottomSheet),
+  { ssr: false }
+);
+
+const TomoroB1G1Modal = dynamic(
+  () => import('@/components/TomoroB1G1Modal').then((m) => m.TomoroB1G1Modal),
+  { ssr: false }
+);
+
+const SwitchOutletModal = dynamic(
+  () => import('@/components/SwitchOutletModal').then((m) => m.SwitchOutletModal),
+  { ssr: false }
+);
 
 interface OutletMenuPageProps {
   params: Promise<{ code: string }>;

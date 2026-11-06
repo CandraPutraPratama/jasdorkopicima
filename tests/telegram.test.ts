@@ -126,6 +126,76 @@ describe('Telegram Integration: Formatter & Keyboard', () => {
       assert.ok(msg.includes('Menunggu Konfirmasi') || msg.includes('MENUNGGU KONFIRMASI'));
     });
 
+    it('menampilkan brand dan waktu pengambilan (sekarang vs terjadwal) dengan jelas', () => {
+      // 1. Mode Sekarang
+      const orderNow: OrderRecord = {
+        ...mockOrder,
+        pickup_time: 'Sekarang (~10 menit)',
+        created_at: '2026-11-06T10:00:00.000Z',
+      };
+      const msgNow = formatOrderTelegramMessage(orderNow);
+      assert.ok(msgNow.includes('<b>Brand:</b> Kopi Kenangan'));
+      assert.ok(msgNow.includes('Waktu Ambil:') || msgNow.includes('Pickup:'));
+      assert.ok(msgNow.toLowerCase().includes('sekarang'));
+
+      // 2. Mode Terjadwal
+      const orderScheduled: OrderRecord = {
+        ...mockOrder,
+        pickup_time: '15:30',
+      };
+      const msgScheduled = formatOrderTelegramMessage(orderScheduled);
+      assert.ok(msgScheduled.includes('15:30'));
+      assert.ok(
+        msgScheduled.toLowerCase().includes('dijadwalkan') ||
+          msgScheduled.toLowerCase().includes('terjadwal')
+      );
+    });
+
+    it('menampilkan link WhatsApp pemesan yang dapat diklik langsung', () => {
+      const msg = formatOrderTelegramMessage(mockOrder);
+      assert.ok(
+        msg.includes('wa.me/'),
+        `Harus menyediakan tautan langsung ke WhatsApp pemesan, pesan aktual: ${msg}`
+      );
+    });
+
+    it('menampilkan rincian pembayaran: subtotal menu, biaya jasa order, dan total bayar', () => {
+      const msg = formatOrderTelegramMessage(mockOrder);
+      assert.ok(msg.includes('Subtotal Menu:') || msg.includes('Sub Total Menu:'));
+      assert.ok(msg.includes('Biaya Jasa Order:') || msg.includes('Biaya Jasa:'));
+      assert.ok(msg.includes('Total Bayar:') || msg.includes('Total:'));
+      assert.ok(msg.includes('Rp36.000')); // Subtotal menu
+      assert.ok(msg.includes('Rp2.000')); // Fee jasa
+      assert.ok(msg.includes('Rp38.000')); // Total
+    });
+
+    it('menyertakan addons menu reguler jika item memiliki addon tambahan', () => {
+      const orderWithAddons: OrderRecord = {
+        ...mockOrder,
+        items: [
+          {
+            id: 'item-addon',
+            bundleCode: 'single-1',
+            name: 'Kopi Kenangan Mantan',
+            basePrice: 18000,
+            promoPrice: 18000,
+            originalPrice: 20000,
+            quantity: 1,
+            subtotal: 24000,
+            variantOptions: ['Ice', 'Regular', 'Normal Sugar'],
+            addons: [
+              { name: 'Topping: Grass Jelly', price: 6000 },
+            ],
+          },
+        ],
+      };
+      const msg = formatOrderTelegramMessage(orderWithAddons);
+      assert.ok(
+        msg.includes('Grass Jelly'),
+        `Harus menyertakan addon Grass Jelly pada item di pesan Telegram, pesan aktual: ${msg}`
+      );
+    });
+
     describe('Rekomendasi Voucher Kopi Kenangan', () => {
       it('merekomendasikan Voucher Tanpa Minimal jika total harga normal < 50k', () => {
         const orderSmall: OrderRecord = {
