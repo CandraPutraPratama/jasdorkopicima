@@ -44,26 +44,26 @@ export function TrustStrip({ className = '' }: TrustStripProps) {
     <div
       className={`bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-2xl py-2 px-1 shadow-[3px_3px_0px_#2B1D12] ${className}`}
     >
-      <div className="grid grid-cols-3 divide-x-2 divide-[#2B1D12]/20 items-center text-center">
+      <div className="grid grid-cols-3 divide-x-2 divide-[#2B1D12]/15 items-center text-center">
         {/* Segmen 1: Total Orderan */}
         <div className="px-1 flex flex-col items-center justify-center">
-          <span className="font-display font-black text-xs sm:text-sm text-[#2B1D12] leading-tight">
+          <span className="font-display font-bold text-xs sm:text-sm text-[#2B1D12] leading-tight">
             {formatTotalOrders(counts.total)}
           </span>
-          <span className="text-[10px] text-[#6A584D] font-bold leading-tight mt-0.5 whitespace-nowrap">
+          <span className="text-[10px] text-[#7A6658] font-medium leading-tight mt-0.5 whitespace-nowrap">
             Total Orderan
           </span>
         </div>
 
         {/* Segmen 2: Orderan Hari Ini */}
         <div className="px-1 flex flex-col items-center justify-center">
-          <div className="flex items-center justify-center gap-1 leading-tight">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#15803D] border border-[#2B1D12] animate-pulse" />
-            <span className="font-display font-black text-xs sm:text-sm text-[#15803D]">
+          <div className="flex items-center justify-center gap-1.5 leading-tight">
+            <span className="w-2 h-2 rounded-full bg-[#15803D] shrink-0" />
+            <span className="font-display font-bold text-xs sm:text-sm text-[#15803D]">
               {counts.today} Order
             </span>
           </div>
-          <span className="text-[10px] text-[#6A584D] font-bold leading-tight mt-0.5 whitespace-nowrap">
+          <span className="text-[10px] text-[#7A6658] font-medium leading-tight mt-0.5 whitespace-nowrap">
             Hari Ini
           </span>
         </div>
@@ -74,12 +74,12 @@ export function TrustStrip({ className = '' }: TrustStripProps) {
           prefetch={false}
           className="px-1 flex flex-col items-center justify-center group hover:bg-[#FFF8E7] rounded-xl transition-colors py-0.5"
         >
-          <div className="flex items-center justify-center gap-0.5 text-[#C67D0A] text-xs sm:text-sm leading-tight">
+          <div className="flex items-center justify-center gap-1 text-[#C67D0A] text-xs sm:text-sm leading-tight">
             <span>★</span>
-            <span className="font-display font-black text-[#2B1D12] text-xs sm:text-sm">Real</span>
+            <span className="font-display font-bold text-[#2B1D12] text-xs sm:text-sm">4.9/5</span>
           </div>
-          <span className="text-[10px] text-[#DC2626] font-black underline decoration-[#DC2626]/40 group-hover:decoration-[#DC2626] leading-tight mt-0.5 whitespace-nowrap">
-            Testimoni
+          <span className="text-[10px] text-[#C67D0A] group-hover:text-[#A66504] font-semibold leading-tight mt-0.5 whitespace-nowrap">
+            Testimoni ➔
           </span>
         </Link>
       </div>

@@ -63,7 +63,7 @@ export function BrandCard({ brand, outletCount, isActive = true }: BrandCardProp
   };
 
   const cardContent = isClickable ? (
-    <div className="rounded-2xl overflow-hidden flex flex-row items-center transition relative bg-[#FFFDF9] border-2 border-[#2B1D12] shadow-[4px_4px_0px_#2B1D12] group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:shadow-[5px_5px_0px_#2B1D12] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none cursor-pointer">
+    <div className="rounded-2xl overflow-hidden flex flex-row items-center transition relative bg-[#FFFDF9] border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:shadow-[4px_4px_0px_#2B1D12] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer">
       {/* Visual Logo Brand (Kiri) */}
       <div className="w-24 sm:w-28 h-24 sm:h-28 relative flex items-center justify-center overflow-hidden border-r-2 border-[#2B1D12] bg-[#FAF4E8] shrink-0">
         {renderLogo()}
@@ -73,29 +73,29 @@ export function BrandCard({ brand, outletCount, isActive = true }: BrandCardProp
       <div className="p-3 sm:p-3.5 flex-1 flex flex-col justify-between min-w-0">
         <div>
           <div className="flex items-center gap-1.5 flex-wrap">
-            <h3 className="font-display font-black text-sm sm:text-base text-[#2B1D12] leading-tight">
+            <h3 className="font-display font-bold text-sm sm:text-base text-[#2B1D12] leading-tight">
               {brand.name}
             </h3>
             {brand.promoBadge && (
-              <span className="text-[10px] font-black text-[#DC2626] bg-[#FEF2F2] border border-[#DC2626] px-1.5 py-0.5 rounded-lg uppercase tracking-wide">
+              <span className="text-[10px] font-bold text-[#DC2626] bg-[#FEF2F2] border border-[#DC2626]/30 px-1.5 py-0.5 rounded-md uppercase tracking-wide">
                 {brand.promoBadge}
               </span>
             )}
           </div>
-          <p className="text-[11px] text-[#7A6658] font-bold mt-1">
+          <p className="text-[11px] text-[#7A6658] font-medium mt-1">
             {typeof outletCount === 'number' && outletCount > 0
               ? `${outletCount.toLocaleString('id-ID')} outlet tersedia`
               : brand.outletCountLabel || 'Tersedia di seluruh Indonesia'}
           </p>
         </div>
 
-        <div className="mt-2 flex items-center justify-between">
-          <span className="text-[10px] font-extrabold text-[#15803D] bg-[#D9F3EA] px-2 py-0.5 rounded-md border border-[#15803D]">
-            Order Disini
+        <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[#2B1D12]/10">
+          <span className="text-[10px] font-bold text-[#15803D] bg-[#D9F3EA] px-2 py-0.5 rounded-md">
+            Tersedia
           </span>
-          <span className="text-xs font-black text-[#2B1D12] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+          <span className="text-xs font-bold text-[#2B1D12] flex items-center gap-1 group-hover:text-[#C67D0A] transition-colors">
             Pilih Outlet
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+            <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </span>
@@ -103,7 +103,7 @@ export function BrandCard({ brand, outletCount, isActive = true }: BrandCardProp
       </div>
     </div>
   ) : (
-    <div className="rounded-2xl overflow-hidden flex flex-col transition relative bg-[#FFFDF9] border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] cursor-default select-none h-full">
+    <div className="rounded-2xl overflow-hidden flex flex-col transition relative bg-[#FFFDF9] border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] cursor-default select-none h-full">
       {/* Visual Logo Brand (Kotak Atas) - Semua brand tampil cerah/nyala dengan border solid */}
       <div className="h-24 sm:h-28 relative flex items-center justify-center overflow-hidden border-b-2 border-[#2B1D12] bg-[#FFFDF9]">
         {renderLogo()}
@@ -112,13 +112,13 @@ export function BrandCard({ brand, outletCount, isActive = true }: BrandCardProp
       {/* Konten Kartu Bawah */}
       <div className="p-3 flex-1 flex flex-col justify-between">
         <div>
-          <h3 className="font-display font-black text-xs sm:text-sm text-[#2B1D12] leading-tight line-clamp-1">
+          <h3 className="font-display font-bold text-xs sm:text-sm text-[#2B1D12] leading-tight line-clamp-1">
             {brand.name}
           </h3>
         </div>
 
-        <div className="flex items-center justify-between gap-1 mt-2.5 pt-2 border-t-2 border-[#2B1D12]/10">
-          <span className="text-[9px] font-extrabold text-[#2B1D12] bg-[#FFE7D6] border border-[#2B1D12] px-2 py-0.5 rounded-lg shadow-[1px_1px_0px_#2B1D12]">
+        <div className="flex items-center justify-between gap-1 mt-2 pt-2 border-t border-[#2B1D12]/10">
+          <span className="text-[9px] font-bold text-[#7A6658] bg-[#FAF4E8] border border-[#2B1D12]/20 px-2 py-0.5 rounded-md">
             Segera Hadir
           </span>
         </div>

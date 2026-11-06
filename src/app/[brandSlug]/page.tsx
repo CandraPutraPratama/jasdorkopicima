@@ -357,7 +357,7 @@ export default function BrandPage({ params }: BrandPageProps) {
         {/* Indikator Dibuka Manual oleh Admin */}
         {status?.overrideType === 'force_open' && (
           <div className="p-2.5 sm:p-3 bg-emerald-50 border-2 border-emerald-700 rounded-2xl shadow-[2px_2px_0px_#065F46] flex items-center gap-2.5 text-xs text-emerald-950">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse shrink-0" />
+            <span className="w-2 h-2 rounded-full bg-emerald-600 shrink-0" />
             <div className="font-medium leading-snug">
               <strong className="font-bold text-emerald-900">Dibuka manual oleh admin</strong> - Layanan menerima pesanan di luar jadwal operasional normal.
             </div>
@@ -367,7 +367,7 @@ export default function BrandPage({ params }: BrandPageProps) {
         {/* Banner Status Tentatif Hari Selasa */}
         {status?.isTentative && (
           <div className="p-3 bg-[#FEF3C7] border-2 border-[#2B1D12] rounded-2xl shadow-[2px_2px_0px_#2B1D12] flex items-center gap-2.5 text-xs text-[#2B1D12]">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
+            <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
             <div className="font-medium leading-snug">
               <strong className="font-bold">Info Layanan:</strong> {status.tentativeNote || 'Hari ini tentative - konfirmasi ke admin dulu ya.'}
             </div>
@@ -381,14 +381,14 @@ export default function BrandPage({ params }: BrandPageProps) {
         <QueueInfoBar />
 
         {/* Hero Ramping Brand Aktif */}
-        <div className="bg-[#2B1D12] text-[#FAF4E8] border-2 border-[#2B1D12] rounded-3xl p-5 relative overflow-hidden shadow-[4px_4px_0px_#C67D0A]">
+        <div className="bg-[#2B1D12] text-[#FAF4E8] border-2 border-[#2B1D12] rounded-2xl p-5 relative overflow-hidden shadow-[3px_3px_0px_#C67D0A]">
           <div className="relative z-10 space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[10px] font-black text-[#2B1D12] uppercase tracking-wider bg-[#FAF4E8] border-2 border-[#2B1D12] px-2.5 py-0.5 rounded-full shadow-[2px_2px_0px_#2B1D12]">
+              <span className="text-[10px] font-bold text-[#2B1D12] uppercase tracking-wider bg-[#FAF4E8] border border-[#2B1D12] px-2 py-0.5 rounded-md">
                 Layanan Jasa Order
               </span>
               {brand.promoBadge ? (
-                <span className="text-[10px] font-black text-white bg-[#DC2626] border-2 border-[#2B1D12] px-2.5 py-0.5 rounded-full uppercase tracking-wide shadow-[2px_2px_0px_#2B1D12]">
+                <span className="text-[10px] font-bold text-white bg-[#DC2626] border border-[#2B1D12] px-2 py-0.5 rounded-md uppercase tracking-wide">
                   {brand.promoBadge}
                 </span>
               ) : null}
@@ -396,7 +396,7 @@ export default function BrandPage({ params }: BrandPageProps) {
 
             <div className="flex items-center gap-3">
               {brand.logo && (
-                <div className="w-11 h-11 p-1.5 rounded-2xl bg-[#FFFDF9] shadow-[2px_2px_0px_#2B1D12] shrink-0 flex items-center justify-center border-2 border-[#2B1D12]">
+                <div className="w-11 h-11 p-1.5 rounded-xl bg-[#FFFDF9] shadow-[2px_2px_0px_#2B1D12] shrink-0 flex items-center justify-center border-2 border-[#2B1D12]">
                   <img
                     src={brand.logo}
                     alt={brand.name}
@@ -412,18 +412,18 @@ export default function BrandPage({ params }: BrandPageProps) {
             {brand.slug === 'kopi-kenangan' ? (
               <>
                 {/* Info Biaya Jasa Hero */}
-                <div className="bg-[#FAF4E8] text-[#2B1D12] border-2 border-[#2B1D12] rounded-2xl p-2 sm:p-2.5 shadow-[2px_2px_0px_#C67D0A] text-left space-y-1">
+                <div className="bg-[#FAF4E8] text-[#2B1D12] border-2 border-[#2B1D12] rounded-2xl p-2.5 shadow-[2px_2px_0px_#C67D0A] text-left space-y-1">
                   <div className="flex items-center gap-1.5 sm:gap-2">
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-[#FFE7D6] border-2 border-[#2B1D12] flex items-center justify-center shrink-0 shadow-[1px_1px_0px_#2B1D12]">
+                    <div className="w-5 h-5 rounded-lg bg-[#FFE7D6] border border-[#2B1D12] flex items-center justify-center shrink-0">
                       <svg className="w-3 h-3 text-[#2B1D12]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
-                    <span className="font-display font-black text-xs sm:text-[13px] text-[#2B1D12] tracking-tight">
+                    <span className="font-display font-bold text-xs sm:text-[13px] text-[#2B1D12] tracking-tight">
                       Informasi Biaya Jasa
                     </span>
                   </div>
-                  <div className="space-y-0.5 text-[10px] sm:text-[11px] text-[#4A3628] font-semibold pl-1 leading-snug">
+                  <div className="space-y-0.5 text-[10px] sm:text-[11px] text-[#4A3628] font-medium pl-1 leading-snug">
                     <p>- Biaya Jasa jika order hanya 1 menu = 4.000/menu</p>
                     <p>- Biaya Jasa jika order minimal 2 menu dst = 2.300/item</p>
                   </div>
@@ -432,30 +432,30 @@ export default function BrandPage({ params }: BrandPageProps) {
                 <KopiKenanganWifiBox />
               </>
             ) : (
-              <p className="text-xs sm:text-sm text-[#E3D6C5] leading-relaxed font-medium">
+              <p className="text-xs sm:text-sm text-[#E3D6C5] leading-relaxed font-normal">
                 Tersedia di {outletCount ? `${outletCount.toLocaleString('id-ID')} ` : ''}outlet resmi di seluruh Indonesia. Pilih outlet terdekat, tentukan menu favoritmu, dan pesan praktis via WhatsApp.
               </p>
             )}
 
             {/* 3 Langkah Order (Vertikal 2 Baris per Langkah, Sejajar Horizontal) */}
-            <div className="grid grid-cols-3 gap-2 pt-2.5 border-t-2 border-[#FAF4E8]/20 text-center">
+            <div className="grid grid-cols-3 gap-2 pt-2.5 border-t border-[#FAF4E8]/20 text-center">
               <div className="flex flex-col items-center gap-1 text-[#E3D6C5]">
-                <span className="w-5 h-5 rounded-full bg-[#FAF4E8] text-[#2B1D12] font-black text-[11px] flex items-center justify-center shadow-[1px_1px_0px_#2B1D12]">
+                <span className="w-5 h-5 rounded-full bg-[#FAF4E8] text-[#2B1D12] font-black text-[11px] flex items-center justify-center">
                   1
                 </span>
-                <span className="text-[10px] font-bold leading-tight">Cari Outlet</span>
+                <span className="text-[10px] font-medium leading-tight">Cari Outlet</span>
               </div>
               <div className="flex flex-col items-center gap-1 text-[#E3D6C5]">
-                <span className="w-5 h-5 rounded-full bg-[#FAF4E8] text-[#2B1D12] font-black text-[11px] flex items-center justify-center shadow-[1px_1px_0px_#2B1D12]">
+                <span className="w-5 h-5 rounded-full bg-[#FAF4E8] text-[#2B1D12] font-black text-[11px] flex items-center justify-center">
                   2
                 </span>
-                <span className="text-[10px] font-bold leading-tight">Pilih Menu</span>
+                <span className="text-[10px] font-medium leading-tight">Pilih Menu</span>
               </div>
               <div className="flex flex-col items-center gap-1 text-[#E3D6C5]">
-                <span className="w-5 h-5 rounded-full bg-[#15803D] text-white font-black text-[11px] flex items-center justify-center border border-white shadow-[1px_1px_0px_#2B1D12]">
+                <span className="w-5 h-5 rounded-full bg-[#15803D] text-white font-black text-[11px] flex items-center justify-center border border-white">
                   3
                 </span>
-                <span className="text-[10px] font-bold leading-tight">Order via WA</span>
+                <span className="text-[10px] font-medium leading-tight">Order via WA</span>
               </div>
             </div>
           </div>
@@ -480,16 +480,16 @@ export default function BrandPage({ params }: BrandPageProps) {
             <div className="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-2xl p-3 shadow-[3px_3px_0px_#2B1D12] space-y-2">
               <div className="flex items-center justify-between gap-1.5 flex-wrap">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[10px] font-black uppercase tracking-wider bg-[#2B1D12] text-[#FAF4E8] px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-[1px_1px_0px_#C67D0A]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-[#2B1D12] text-[#FAF4E8] px-2.5 py-0.5 rounded-full flex items-center gap-1">
                     <span>🎁</span>
                     <span>Paket Bundling</span>
                   </span>
-                  <span className="text-[10px] font-black uppercase tracking-wider bg-[#DC2626] text-white border border-[#2B1D12] px-2 py-0.5 rounded-md shadow-[1px_1px_0px_#2B1D12]">
-                    PROMO TERBATAS
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-[#DC2626] text-white border border-[#2B1D12]/20 px-2 py-0.5 rounded-md">
+                    Diskon 50%
                   </span>
                 </div>
                 {shouldShowBundlingCountdown() && (
-                  <span className="text-[10px] font-bold text-[#2B1D12] bg-[#FFF8E7] border border-[#2B1D12] px-2 py-0.5 rounded-md flex items-center gap-1">
+                  <span className="text-[10px] font-semibold text-[#7A6658] bg-[#FAF4E8] border border-[#2B1D12]/15 px-2 py-0.5 rounded-md flex items-center gap-1">
                     <span>⏳</span>
                     <span>{countdown.formatted}</span>
                   </span>
@@ -497,23 +497,23 @@ export default function BrandPage({ params }: BrandPageProps) {
               </div>
 
               <div className="text-xs">
-                <p className="text-xs text-[#2B1D12] font-black leading-tight">
+                <p className="text-xs text-[#2B1D12] font-bold leading-tight">
                   Diskon 50% + hemat fee jasa order di tiap outlet Kopi Kenangan!
                 </p>
               </div>
 
               {/* 3 Micro Chips (Inline) */}
               <div className="grid grid-cols-3 gap-1.5 text-center pt-0.5">
-                <div className="px-1.5 py-1 bg-[#FAF4E8] rounded-lg border border-[#2B1D12]/20">
-                  <span className="block font-black text-[10px] text-[#2B1D12] leading-tight truncate">3 Reguler</span>
+                <div className="px-1.5 py-1 bg-[#FAF4E8] rounded-lg border border-[#2B1D12]/15">
+                  <span className="block font-bold text-[10px] text-[#2B1D12] leading-tight truncate">3 Reguler</span>
                   <span className="text-[9px] font-bold text-[#15803D] block leading-tight">Fee 4rb</span>
                 </div>
-                <div className="px-1.5 py-1 bg-[#FAF4E8] rounded-lg border border-[#2B1D12]/20">
-                  <span className="block font-black text-[10px] text-[#2B1D12] leading-tight truncate">2 Large</span>
-                  <span className="text-[9px] font-bold text-[#15803D] block leading-tight">Fee 3.5rb</span>
+                <div className="px-1.5 py-1 bg-[#FAF4E8] rounded-lg border border-[#2B1D12]/15">
+                  <span className="block font-bold text-[10px] text-[#2B1D12] leading-tight truncate">2 Large</span>
+                  <span className="text-[9px] font-bold text-[#15803D] block leading-tight">Fee 4.5rb</span>
                 </div>
-                <div className="px-1.5 py-1 bg-[#FAF4E8] rounded-lg border border-[#2B1D12]/20">
-                  <span className="block font-black text-[10px] text-[#2B1D12] leading-tight truncate">2 Minum+2 Roti</span>
+                <div className="px-1.5 py-1 bg-[#FAF4E8] rounded-lg border border-[#2B1D12]/15">
+                  <span className="block font-bold text-[10px] text-[#2B1D12] leading-tight truncate">2 Minum+2 Roti</span>
                   <span className="text-[9px] font-bold text-[#15803D] block leading-tight">Fee 6rb</span>
                 </div>
               </div>
