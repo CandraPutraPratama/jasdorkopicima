@@ -10,6 +10,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Workflow & Standar Kerja Jasdor (Wajib Dipatuhi)
 
+> **Memori Proyek:** Agent **WAJIB** membaca [`PROJECT_CONTEXT.md`](./PROJECT_CONTEXT.md) di awal percakapan untuk memahami profil bisnis, skema harga terbaru, arsitektur Cloudflare Workers, dan status sistem tanpa perlu dijelaskan ulang oleh user.
+
 Gunakan skill ECC yang terinstall di `.agents/skills`:
 
 1. **Sebelum ngoding:**
