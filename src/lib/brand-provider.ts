@@ -39,12 +39,17 @@ export class KopiKenanganOutletProvider implements BrandOutletProvider {
       );
       if (!res.ok) return [];
       const data = await res.json();
-      return data.items || [];
+      const list: Outlet[] = data.items || [];
+      if (data.suggestion) (list as any).suggestion = data.suggestion;
+      if (data.isFuzzy) (list as any).isFuzzy = data.isFuzzy;
+      return list;
     }
 
     try {
       const { searchOutlets } = await import('./outlet-service.ts');
-      const { items } = await searchOutlets(query, page, pageSize);
+      const { items, suggestion, isFuzzy } = await searchOutlets(query, page, pageSize);
+      if (suggestion) (items as any).suggestion = suggestion;
+      if (isFuzzy) (items as any).isFuzzy = isFuzzy;
       return items;
     } catch {
       return [];
@@ -124,12 +129,17 @@ export class ForeOutletProvider implements BrandOutletProvider {
       );
       if (!res.ok) return [];
       const data = await res.json();
-      return data.items || [];
+      const list: Outlet[] = data.items || [];
+      if (data.suggestion) (list as any).suggestion = data.suggestion;
+      if (data.isFuzzy) (list as any).isFuzzy = data.isFuzzy;
+      return list;
     }
 
     try {
       const { searchOutlets } = await import('./outlet-service.ts');
-      const { items } = await searchOutlets(query, page, pageSize, 'Fore Coffee');
+      const { items, suggestion, isFuzzy } = await searchOutlets(query, page, pageSize, 'Fore Coffee');
+      if (suggestion) (items as any).suggestion = suggestion;
+      if (isFuzzy) (items as any).isFuzzy = isFuzzy;
       return items;
     } catch {
       return [];
@@ -207,12 +217,17 @@ export class TomoroOutletProvider implements BrandOutletProvider {
       );
       if (!res.ok) return [];
       const data = await res.json();
-      return data.items || [];
+      const list: Outlet[] = data.items || [];
+      if (data.suggestion) (list as any).suggestion = data.suggestion;
+      if (data.isFuzzy) (list as any).isFuzzy = data.isFuzzy;
+      return list;
     }
 
     try {
       const { searchOutlets } = await import('./outlet-service.ts');
-      const { items } = await searchOutlets(query, page, pageSize, 'tomoro');
+      const { items, suggestion, isFuzzy } = await searchOutlets(query, page, pageSize, 'tomoro');
+      if (suggestion) (items as any).suggestion = suggestion;
+      if (isFuzzy) (items as any).isFuzzy = isFuzzy;
       return items;
     } catch {
       return [];

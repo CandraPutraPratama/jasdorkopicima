@@ -90,19 +90,23 @@ async function handleGet(request: NextRequest) {
       page: number;
       pageSize: number;
       items: Outlet[];
+      suggestion?: string;
+      isFuzzy?: boolean;
     }>(cacheKey);
 
     if (cached) {
       return NextResponse.json(cached);
     }
 
-    const { items, total } = await searchOutlets(keyword, page, pageSize, brandParam);
+    const { items, total, suggestion, isFuzzy } = await searchOutlets(keyword, page, pageSize, brandParam);
 
     const responsePayload = {
       total,
       page,
       pageSize,
       items,
+      suggestion,
+      isFuzzy: Boolean(isFuzzy),
     };
 
     // Cache status outlet selama 90 detik agar status 'Pesan Sekarang' tetap segar

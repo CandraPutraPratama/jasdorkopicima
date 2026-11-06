@@ -23,6 +23,7 @@ import { useMinOrder50kMode } from '@/hooks/useBundlingOnlyMode';
 import { useQueueStatus, fetchQueueStatus } from '@/hooks/useQueueStatus';
 import { QUEUE_POPUP_THRESHOLD_MINUTES, getQueueLoadInfo, type QueueStatus } from '@/lib/queue';
 import { resolveBrandSlugFromOutletCode } from '@/lib/site-config';
+import { getSavedCustomer, saveSavedCustomer } from '@/lib/saved-customer';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -119,8 +120,33 @@ export function CartDrawer({
   const router = useRouter();
   const [customerName, setCustomerName] = useState('');
   const [customerWa, setCustomerWa] = useState('');
+  const [hasAutoFilled, setHasAutoFilled] = useState(false);
   const [pickupMode, setPickupMode] = useState<'now' | 'scheduled'>('now');
   const [selectedSlot, setSelectedSlot] = useState<string>('');
+
+  // Auto-fill nama dan nomor WA jika ada riwayat pesanan sebelumnya
+  useEffect(() => {
+    if (!isOpen) return;
+    try {
+      const saved = getSavedCustomer();
+      if (saved) {
+        let filled = false;
+        if (!customerName && saved.name) {
+          setCustomerName(saved.name);
+          filled = true;
+        }
+        if (!customerWa && saved.waInputPhone) {
+          setCustomerWa(saved.waInputPhone);
+          filled = true;
+        }
+        if (filled) {
+          setHasAutoFilled(true);
+        }
+      }
+    } catch {
+      // safe fallback
+    }
+  }, [isOpen, customerName, customerWa]);
 
   // Submit state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -328,9 +354,10 @@ export function CartDrawer({
         throw new Error(orderData.error || 'Gagal membuat pesanan. Silakan coba beberapa saat lagi.');
       }
 
-      // 2. Berhasil membuat pesanan: simpan ke Pesanan Saya di perangkat ini
+      // 2. Berhasil membuat pesanan: simpan ke Pesanan Saya dan simpan identitas pelanggan untuk auto-fill
       if (orderData.orderId) {
         saveMyOrder(orderData.orderId, undefined, undefined, orderData.accessToken);
+        saveSavedCustomer(trimmedName, sanitizedPhone);
       }
 
       // Kosongkan keranjang, tutup drawer, dan arahkan ke halaman bayar
@@ -549,10 +576,15 @@ export function CartDrawer({
             <div className="p-3.5 space-y-2.5">
               {/* 1. Informasi Pick Up (Ringkas) */}
               <div className="bg-[#FFFDF9] rounded-2xl p-3 border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-2.5">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <h4 className="font-display text-[11px] font-black text-[#2B1D12] uppercase tracking-wide">
                     Informasi Pick Up
                   </h4>
+                  {hasAutoFilled && (
+                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-600/30 px-2 py-0.5 rounded-md flex items-center gap-1 shrink-0">
+                      <span>✓</span> Tersimpan otomatis
+                    </span>
+                  )}
                 </div>
 
                 {/* Input Nama */}

@@ -8,6 +8,7 @@ import { resolveForeTimezone } from './fore-menu-data.ts';
 import { isOutletOpenBySchedule } from './orderability.ts';
 import type { Outlet } from '../types/domain.ts';
 import tomoroTimezoneMap from './tomoro-timezone-data.ts';
+import { fuzzySearchOutlets } from './fuzzy-search.ts';
 
 export function resolveTomoroTimezone(code: string): string {
   const norm = (code || '').trim().toLowerCase();
@@ -37,7 +38,153 @@ export function evaluateTomoroOutletStatus(
 export interface SearchOutletsResult {
   items: Outlet[];
   total: number;
-  source: 'database' | 'kk-api-fallback';
+  source: 'database' | 'kk-api-fallback' | 'fuzzy-fallback';
+  suggestion?: string;
+  isFuzzy?: boolean;
+}
+
+async function fuzzyFallbackTomoro(
+  supabase: ReturnType<typeof getSupabaseServerClient>,
+  trimmed: string,
+  pageSize: number
+): Promise<SearchOutletsResult | null> {
+  try {
+    const allRes = await supabase
+      .from('outlets')
+      .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand, updated_at')
+      .eq('is_in_scope', true)
+      .eq('brand', 'TOMORO Coffee')
+      .order('name', { ascending: true });
+
+    if (allRes.error || !allRes.data || allRes.data.length === 0) return null;
+
+    const allOutlets: Outlet[] = allRes.data.map((row) => {
+      const timezone = resolveTomoroTimezone(row.code);
+      const statusObj = evaluateTomoroOutletStatus(row, new Date(), timezone);
+      return {
+        id: Number(row.id),
+        code: row.code,
+        name: row.name,
+        address: row.address,
+        isOpen: statusObj.isOpen,
+        openTime: row.open_time || '08:00',
+        closeTime: row.close_time || '23:20',
+        timeZone: timezone === 'Asia/Jayapura' ? 9 : timezone === 'Asia/Makassar' ? 8 : 7,
+        timezone,
+        brand: 'TOMORO Coffee',
+        canOrder: statusObj.canOrder,
+        orderReason: statusObj.orderReason,
+      };
+    });
+
+    const fuzzy = fuzzySearchOutlets(trimmed, allOutlets);
+    if (fuzzy.matches.length > 0) {
+      return {
+        items: fuzzy.matches.slice(0, pageSize),
+        total: fuzzy.matches.length,
+        source: 'fuzzy-fallback',
+        suggestion: fuzzy.bestSuggestion,
+        isFuzzy: true,
+      };
+    }
+  } catch {}
+  return null;
+}
+
+async function fuzzyFallbackFore(
+  supabase: ReturnType<typeof getSupabaseServerClient>,
+  trimmed: string,
+  pageSize: number
+): Promise<SearchOutletsResult | null> {
+  try {
+    const allRes = await supabase
+      .from('outlets')
+      .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand')
+      .eq('is_active', true)
+      .eq('is_in_scope', true)
+      .eq('brand', 'Fore Coffee')
+      .order('name', { ascending: true });
+
+    if (allRes.error || !allRes.data || allRes.data.length === 0) return null;
+
+    const allOutlets: Outlet[] = allRes.data.map((row) => {
+      const timezone = resolveForeTimezone(row.code);
+      const isOpen = isOutletOpenBySchedule(row.open_time, row.close_time, new Date(), timezone);
+      return {
+        id: Number(row.id),
+        code: row.code,
+        name: row.name,
+        address: row.address,
+        isOpen,
+        openTime: row.open_time || '',
+        closeTime: row.close_time || '',
+        timeZone: timezone === 'Asia/Jayapura' ? 9 : timezone === 'Asia/Makassar' ? 8 : 7,
+        timezone,
+        brand: 'Fore Coffee',
+        canOrder: isOpen,
+        orderReason: isOpen ? undefined : 'Outlet sedang tutup',
+      };
+    });
+
+    const fuzzy = fuzzySearchOutlets(trimmed, allOutlets);
+    if (fuzzy.matches.length > 0) {
+      return {
+        items: fuzzy.matches.slice(0, pageSize),
+        total: fuzzy.matches.length,
+        source: 'fuzzy-fallback',
+        suggestion: fuzzy.bestSuggestion,
+        isFuzzy: true,
+      };
+    }
+  } catch {}
+  return null;
+}
+
+async function fuzzyFallbackKK(
+  supabase: ReturnType<typeof getSupabaseServerClient>,
+  trimmed: string,
+  pageSize: number
+): Promise<SearchOutletsResult | null> {
+  try {
+    const allRes = await supabase
+      .from('outlets')
+      .select('id, code, name, address, latitude, longitude, open_time, close_time, is_active, is_in_scope, brand')
+      .eq('is_active', true)
+      .eq('is_in_scope', true)
+      .neq('brand', 'Fore Coffee')
+      .neq('brand', 'TOMORO Coffee')
+      .order('name', { ascending: true })
+      .limit(300);
+
+    if (allRes.error || !allRes.data || allRes.data.length === 0) return null;
+
+    const allOutlets: Outlet[] = allRes.data.map((row) => ({
+      id: Number(row.id),
+      code: row.code,
+      name: row.name,
+      address: row.address,
+      isOpen: true,
+      openTime: row.open_time || '',
+      closeTime: row.close_time || '',
+      timeZone: 7,
+      timezone: 'Asia/Jakarta',
+      brand: 'Kopi Kenangan',
+      canOrder: false,
+      orderReason: 'Status real-time tidak tersedia',
+    }));
+
+    const fuzzy = fuzzySearchOutlets(trimmed, allOutlets);
+    if (fuzzy.matches.length > 0) {
+      return {
+        items: fuzzy.matches.slice(0, pageSize),
+        total: fuzzy.matches.length,
+        source: 'fuzzy-fallback',
+        suggestion: fuzzy.bestSuggestion,
+        isFuzzy: true,
+      };
+    }
+  } catch {}
+  return null;
 }
 
 /**
@@ -106,11 +253,19 @@ export async function searchOutlets(
           };
         });
 
-        return {
-          items,
-          total: count ?? items.length,
-          source: 'database',
-        };
+        if (items.length > 0) {
+          return {
+            items,
+            total: count ?? items.length,
+            source: 'database',
+          };
+        }
+
+        // Fallback anti-typo / pencarian fuzzy jika pencarian exact kosong
+        if (trimmed.length >= 3) {
+          const fuzzyRes = await fuzzyFallbackTomoro(supabase, trimmed, pageSize);
+          if (fuzzyRes) return fuzzyRes;
+        }
       }
     } catch (err: any) {
       console.warn(`[OutletService] Tomoro Supabase search error: ${err.message}`);
@@ -163,11 +318,19 @@ export async function searchOutlets(
           };
         });
 
-        return {
-          items,
-          total: count ?? items.length,
-          source: 'database',
-        };
+        if (items.length > 0) {
+          return {
+            items,
+            total: count ?? items.length,
+            source: 'database',
+          };
+        }
+
+        // Fallback anti-typo / pencarian fuzzy jika pencarian exact kosong
+        if (trimmed.length >= 3) {
+          const fuzzyRes = await fuzzyFallbackFore(supabase, trimmed, pageSize);
+          if (fuzzyRes) return fuzzyRes;
+        }
       }
     } catch (err: any) {
       console.warn(`[OutletService] Fore Supabase search error: ${err.message}`);
@@ -191,11 +354,13 @@ export async function searchOutlets(
         item.address.toLowerCase().includes(lowerKeyword) ||
         item.code.toLowerCase().includes(lowerKeyword)
     );
-    return {
-      items,
-      total: items.length,
-      source: 'kk-api-fallback',
-    };
+    if (items.length > 0) {
+      return {
+        items,
+        total: items.length,
+        source: 'kk-api-fallback',
+      };
+    }
   } catch (kkErr: any) {
     console.warn(`[OutletService] KK API queryStore error (${kkErr.message}). Fallback ke Supabase.`);
   }
@@ -223,6 +388,7 @@ export async function searchOutlets(
       .eq('is_active', true)
       .eq('is_in_scope', true)
       .neq('brand', 'Fore Coffee')
+      .neq('brand', 'TOMORO Coffee')
       .or(`name.ilike.%${safeTerm}%,address.ilike.%${safeTerm}%`)
       .order('name', { ascending: true })
       .range(from, to);
@@ -245,11 +411,19 @@ export async function searchOutlets(
         orderReason: 'Status real-time tidak tersedia',
       }));
 
-      return {
-        items,
-        total: count ?? items.length,
-        source: 'database',
-      };
+      if (items.length > 0) {
+        return {
+          items,
+          total: count ?? items.length,
+          source: 'database',
+        };
+      }
+
+      // Fallback anti-typo / pencarian fuzzy jika pencarian exact Kopi Kenangan kosong
+      if (trimmed.length >= 3) {
+        const fuzzyRes = await fuzzyFallbackKK(supabase, trimmed, pageSize);
+        if (fuzzyRes) return fuzzyRes;
+      }
     }
   } catch (err: any) {
     console.warn(`[OutletService] Supabase fallback juga gagal: ${err.message}`);

@@ -76,6 +76,7 @@ export default function BrandPage({ params }: BrandPageProps) {
   const [isLoadingFeatured, setIsLoadingFeatured] = useState(true);
   const [isLoadingOutlets, setIsLoadingOutlets] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [fuzzySuggestion, setFuzzySuggestion] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
   const [outletCount, setOutletCount] = useState<number | null>(null);
   const [, startTransition] = useTransition();
@@ -149,6 +150,7 @@ export default function BrandPage({ params }: BrandPageProps) {
 
     if (!debouncedQuery) {
       setOutlets([]);
+      setFuzzySuggestion(null);
       setIsLoadingOutlets(false);
       setHasSearched(false);
       setSearchError(null);
@@ -158,6 +160,7 @@ export default function BrandPage({ params }: BrandPageProps) {
     let isCancelled = false;
     setIsLoadingOutlets(true);
     setSearchError(null);
+    setFuzzySuggestion(null);
     setHasSearched(true);
 
     const provider = getBrandOutletProvider(brand.slug);
@@ -171,6 +174,7 @@ export default function BrandPage({ params }: BrandPageProps) {
       .then((items) => {
         if (!isCancelled) {
           setOutlets(items);
+          setFuzzySuggestion((items as any).suggestion || null);
           setIsLoadingOutlets(false);
         }
       })
@@ -178,6 +182,7 @@ export default function BrandPage({ params }: BrandPageProps) {
         if (!isCancelled) {
           setSearchError(err instanceof Error ? err.message : 'Terjadi kendala saat mencari outlet');
           setOutlets([]);
+          setFuzzySuggestion(null);
           setIsLoadingOutlets(false);
         }
       });
@@ -580,6 +585,15 @@ export default function BrandPage({ params }: BrandPageProps) {
               </span>
             ) : null}
           </div>
+
+          {fuzzySuggestion && outlets.length > 0 && (
+            <div className="p-2.5 bg-amber-50 border-2 border-amber-600/30 rounded-xl text-xs text-amber-950 flex items-center gap-2 shadow-[2px_2px_0px_#C67D0A] animate-in fade-in">
+              <span className="text-amber-600 font-bold text-sm shrink-0">💡</span>
+              <span className="leading-snug font-medium">
+                Menampilkan hasil yang mirip dengan: <strong className="font-bold text-amber-900 underline decoration-amber-600/50">{fuzzySuggestion}</strong>
+              </span>
+            </div>
+          )}
 
           {searchError && (
             <div className="p-3 bg-rose-50 border-2 border-rose-300 rounded-2xl text-xs font-bold text-rose-700 shadow-[2px_2px_0px_#DC2626]">
