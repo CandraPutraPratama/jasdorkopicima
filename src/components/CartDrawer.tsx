@@ -753,12 +753,27 @@ export function CartDrawer({
               {errorMessage && (
                 <div
                   role="alert"
-                  className="p-2.5 bg-rose-50 border-2 border-[#DC2626] rounded-xl text-rose-900 text-xs flex items-start gap-2 shadow-[2px_2px_0px_#2B1D12] animate-in fade-in"
+                  className="p-3 bg-rose-50 border-2 border-[#DC2626] rounded-xl text-rose-900 text-xs flex flex-col gap-2.5 shadow-[2px_2px_0px_#2B1D12] animate-in fade-in"
                 >
-                  <svg className="w-4 h-4 text-[#DC2626] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                  <span className="leading-tight flex-1 font-bold">{errorMessage}</span>
+                  <div className="flex items-start gap-2">
+                    <svg className="w-4 h-4 text-[#DC2626] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span className="leading-tight flex-1 font-bold">{errorMessage}</span>
+                  </div>
+
+                  {errorMessage.toLowerCase().includes('refresh') && (
+                    <button
+                      type="button"
+                      onClick={() => window.location.reload()}
+                      className="w-full py-2 px-3 bg-[#DC2626] hover:bg-[#B91C1C] active:translate-x-0.5 active:translate-y-0.5 text-white font-bold text-xs rounded-lg shadow-[2px_2px_0px_#2B1D12] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      Perbarui Keranjang Sekarang
+                    </button>
+                  )}
                 </div>
               )}
 
