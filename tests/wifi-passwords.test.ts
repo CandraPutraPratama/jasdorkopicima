@@ -90,7 +90,7 @@ describe('Kopi Kenangan Server WiFi Passwords Logic', () => {
     assert.strictEqual(KOPI_KENANGAN_WIFI_PASSWORDS[4], 'SahabatSetia=4');
     assert.strictEqual(KOPI_KENANGAN_WIFI_PASSWORDS[5], 'PaduanPas!05');
     assert.strictEqual(KOPI_KENANGAN_WIFI_PASSWORDS[6], 'NgopiSeru#06');
-    assert.strictEqual(KOPI_KENANGAN_WIFI_PASSWORDS[7], 'NyantaiNgopi@07');
+    assert.strictEqual(KOPI_KENANGAN_WIFI_PASSWORDS[7], 'KopiTemanPagi@07');
     assert.strictEqual(KOPI_KENANGAN_WIFI_PASSWORDS[8], 'KopiPenutupSore08');
     assert.strictEqual(KOPI_KENANGAN_WIFI_PASSWORDS[9], 'SegarnyaKopi=09');
     assert.strictEqual(KOPI_KENANGAN_WIFI_PASSWORDS[10], 'NgopiBarengYuk!10');

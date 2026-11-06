@@ -30,7 +30,7 @@ Dokumen ini adalah memori persisten dan konteks utama proyek **Jasdor Cima**. Se
 ## 3. Fitur WiFi Outlet Kopi Kenangan
 - **SSID**: `Teman Kenangan`
 - **Username**: `kopikenangan`
-- **Password Hari Ini (06 November)**: `NgopiSeru#06`
+- **Password Hari Ini (07 November)**: `KopiTemanPagi@07`
 - **Server Module**: [`src/lib/server/wifi-passwords.ts`](src/lib/server/wifi-passwords.ts) (Menyimpan rotasi 31 hari penuh, aman di server, di-cache 60 detik di edge `/api/wifi-today`).
 
 ---
