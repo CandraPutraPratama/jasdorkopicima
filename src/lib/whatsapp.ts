@@ -354,11 +354,15 @@ export function buildOrderWhatsAppConfirmationMessage(
     }
   }
 
+  const trackingUrl = `https://jasdor.cimagroup.my.id/bayar/${encodeURIComponent(order.id)}${order.access_token ? `?t=${encodeURIComponent(order.access_token)}` : ''}`;
+
   const lines: string[] = [];
   lines.push('📸 *[WAJIB LAMPIRKAN FOTO BUKTI PEMBAYARAN]*');
   lines.push('_Pesanan baru akan diproses setelah foto bukti transfer masuk._');
   lines.push('----------------------------------------');
   lines.push(`Halo Kak, saya sudah bayar pesanan #${order.id}`);
+  lines.push('');
+  lines.push(`Pantau status pesanan:\n${trackingUrl}`);
   lines.push('');
   lines.push(`Brand: ${brandDisplay}`);
   lines.push(`Nama: ${cleanCustomerName(order.customer_name)}`);
@@ -450,16 +454,9 @@ export function buildOrderWhatsAppConfirmationMessage(
   if (typeof order.queueAhead === 'number') {
     lines.push('');
     lines.push(
-      `Antrean: ${order.queueAhead} order di depan kamu. Pesanan diproses satu per satu sesuai urutan masuk (FIFO).`
-    );
-    lines.push(
-      'Mohon jangan spam chat/telepon ya Kak, chat yang naik ke atas justru diproses lebih akhir.'
+      `Antrean: ${order.queueAhead} order di depan kamu (diproses urut FIFO).`
     );
   }
-
-  const trackingUrl = `https://jasdor.cimagroup.my.id/bayar/${encodeURIComponent(order.id)}${order.access_token ? `?t=${encodeURIComponent(order.access_token)}` : ''}`;
-  lines.push('');
-  lines.push(`Pantau status pesanan:\n${trackingUrl}`);
 
   lines.push('');
   lines.push('Mohon konfirmasi pesanan saya. Terima kasih!');

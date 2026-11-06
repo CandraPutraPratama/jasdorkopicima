@@ -273,6 +273,9 @@ test('buildOrderWhatsAppConfirmationMessage formats pre-filled message correctly
     '----------------------------------------',
     'Halo Kak, saya sudah bayar pesanan #CG-AB12CD',
     '',
+    'Pantau status pesanan:',
+    'https://jasdor.cimagroup.my.id/bayar/CG-AB12CD',
+    '',
     'Brand: Kopi Kenangan',
     'Nama: Budi Santoso',
     'Outlet: Lippo Mall Puri',
@@ -287,9 +290,6 @@ test('buildOrderWhatsAppConfirmationMessage formats pre-filled message correctly
     'Total: Rp38.000',
     '',
     'Kamu hemat Rp78.000 dari harga normal!',
-    '',
-    'Pantau status pesanan:',
-    'https://jasdor.cimagroup.my.id/bayar/CG-AB12CD',
     '',
     'Mohon konfirmasi pesanan saya. Terima kasih!',
   ].join('\n');
@@ -381,6 +381,9 @@ test('buildOrderWhatsAppConfirmationMessage formats Bundling 3 Reguler exactly a
     '----------------------------------------',
     'Halo Kak, saya sudah bayar pesanan #CG-BND001',
     '',
+    'Pantau status pesanan:',
+    'https://jasdor.cimagroup.my.id/bayar/CG-BND001',
+    '',
     'Brand: Kopi Kenangan',
     'Nama: Candra',
     'Outlet: Lippo Mall Puri',
@@ -398,9 +401,6 @@ test('buildOrderWhatsAppConfirmationMessage formats Bundling 3 Reguler exactly a
     'Total: Rp32.500',
     '',
     'Kamu hemat Rp24.500 dari harga normal!',
-    '',
-    'Pantau status pesanan:',
-    'https://jasdor.cimagroup.my.id/bayar/CG-BND001',
     '',
     'Mohon konfirmasi pesanan saya. Terima kasih!',
   ].join('\n');
@@ -496,15 +496,15 @@ test('buildOrderWhatsAppConfirmationMessage memakai estimasi dinamis antrean dan
   // Estimasi dinamis 12 menit menggantikan tetap 15 menit
   assert.ok(message.includes('Pickup: Sekarang (estimasi siap ~jam 14:12)'));
   assert.ok(!message.includes('14:15'));
-  // Blok info antrean FIFO + anti-spam tampil
+  // Blok info antrean FIFO ringkas tampil
   assert.ok(
     message.includes(
-      'Antrean: 3 order di depan kamu. Pesanan diproses satu per satu sesuai urutan masuk (FIFO).'
+      'Antrean: 3 order di depan kamu (diproses urut FIFO).'
     )
   );
   assert.ok(
-    message.includes(
-      'Mohon jangan spam chat/telepon ya Kak, chat yang naik ke atas justru diproses lebih akhir.'
+    !message.includes(
+      'Mohon jangan spam chat/telepon ya Kak'
     )
   );
 });
@@ -539,7 +539,7 @@ test('buildOrderWhatsAppConfirmationMessage memperlakukan pickup_time "Sekarang 
 
   assert.ok(message.includes('Pickup: Sekarang (estimasi siap ~jam 14:04)'));
   assert.ok(!message.includes('Dijadwalkan jam Sekarang'));
-  assert.ok(message.includes('Antrean: 0 order di depan kamu.'));
+  assert.ok(message.includes('Antrean: 0 order di depan kamu (diproses urut FIFO).'));
 });
 
 test('buildOrderWhatsAppConfirmationMessage menyertakan banner wajib lampirkan bukti transfer di baris paling atas', async () => {
@@ -570,7 +570,7 @@ test('buildOrderWhatsAppConfirmationMessage menyertakan banner wajib lampirkan b
   assert.ok(message.includes('Halo Kak, saya sudah bayar pesanan #CG-BUKTI01'));
 });
 
-test('buildOrderWhatsAppConfirmationMessage menyertakan link pantau status pesanan (P1)', async () => {
+test('buildOrderWhatsAppConfirmationMessage menyertakan link pantau status pesanan (P1) di bagian atas', async () => {
   const { buildOrderWhatsAppConfirmationMessage } = await import('../src/lib/whatsapp.ts');
 
   const order = {
@@ -595,6 +595,14 @@ test('buildOrderWhatsAppConfirmationMessage menyertakan link pantau status pesan
   const message = buildOrderWhatsAppConfirmationMessage(order);
   assert.ok(message.includes('Pantau status pesanan:'));
   assert.ok(message.includes('https://jasdor.cimagroup.my.id/bayar/CG-TRACK99?t=abc123token456'));
+
+  // Pastikan link pantau berada di atas sebelum metadata Brand dan daftar Pesanan
+  const trackingIdx = message.indexOf('Pantau status pesanan:');
+  const brandIdx = message.indexOf('Brand:');
+  const pesananIdx = message.indexOf('Pesanan:');
+  assert.ok(trackingIdx !== -1, 'Tracking link should exist');
+  assert.ok(trackingIdx < brandIdx, 'Tracking link should appear before Brand metadata');
+  assert.ok(brandIdx < pesananIdx, 'Brand metadata should appear before Pesanan');
 });
 
 
