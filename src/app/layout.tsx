@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: '%s | Jasdor Kopi Cima',
   },
   description:
-    'Jasdor Kopi Cima adalah layanan jasa order minuman dan kopi favorit (Kopi Kenangan, Fore Coffee, Tomoro Coffee) dengan promo hemat. Pesan mudah dari HP, biaya jasa hemat mulai Rp2.000/item, checkout otomatis via WhatsApp.',
+    'Jasdor Kopi Cima adalah layanan jasa order minuman dan kopi favorit (Kopi Kenangan, Fore Coffee, Tomoro Coffee) dengan promo hemat. Pesan mudah dari HP, biaya jasa hemat mulai Rp2.300/item, checkout otomatis via WhatsApp.',
   keywords: [
     'Jasdor Kopi Cima',
     'Jasdor Cima',
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Jasdor Kopi Cima - Jasa Order Kopi Kenangan, Fore & Tomoro Promo Hemat',
     description:
-      'Layanan jasa order minuman dan kopi brand favorit (Kopi Kenangan, Fore Coffee, Tomoro Coffee) dengan promo hemat. Pesan mudah dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
+      'Layanan jasa order minuman dan kopi brand favorit (Kopi Kenangan, Fore Coffee, Tomoro Coffee) dengan promo hemat. Pesan mudah dari HP, biaya jasa mulai Rp2.300/item, checkout otomatis via WhatsApp.',
     url: 'https://jasdor.cimagroup.my.id',
     siteName: 'Jasdor Kopi Cima',
     images: [
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Jasdor Kopi Cima - Jasa Order Kopi Kenangan, Fore & Tomoro Promo Hemat',
     description:
-      'Layanan jasa order minuman dan kopi brand favorit (Kopi Kenangan, Fore Coffee, Tomoro Coffee) dengan promo hemat. Pesan mudah dari HP, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.',
+      'Layanan jasa order minuman dan kopi brand favorit (Kopi Kenangan, Fore Coffee, Tomoro Coffee) dengan promo hemat. Pesan mudah dari HP, biaya jasa mulai Rp2.300/item, checkout otomatis via WhatsApp.',
     images: ['/og-image.png'],
   },
 };

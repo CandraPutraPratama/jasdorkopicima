@@ -61,7 +61,7 @@ export async function generateMetadata({
       const brandName = isFore ? 'Fore Coffee' : isTomoro ? 'TOMORO Coffee' : 'Kopi Kenangan';
       const description = `Pesan ${brandName} di ${outletName}${
         address ? ` (${address})` : ''
-      }. Layanan jasa order hemat, biaya jasa mulai Rp2.000/item, checkout otomatis via WhatsApp.`;
+      }. Layanan jasa order hemat, biaya jasa mulai Rp2.300/item, checkout otomatis via WhatsApp.`;
 
       return {
         title: outletName,
