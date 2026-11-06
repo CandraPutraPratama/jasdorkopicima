@@ -16,7 +16,7 @@ export const KOPI_KENANGAN_WIFI_PASSWORDS: Record<number, string> = {
   3: 'WorkFromKenangan+03',
   4: 'SahabatSetia=4',
   5: 'PaduanPas!05',
-  6: 'AndalanMantan#06',
+  6: 'NgopiSeru#06',
   7: 'NyantaiNgopi@07',
   8: 'KopiPenutupSore08',
   9: 'SegarnyaKopi=09',
