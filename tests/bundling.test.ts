@@ -177,31 +177,31 @@ test('Pricing Invariant: calculateOrderPricing hanya item reguler tetap 100% ide
   assert.equal(multi.total, 21600);
 });
 
-test('Bundling Promo: isBundlingPromoActive hanya aktif 31 Okt - 1 Nov 2026', async () => {
+test('Bundling Promo: isBundlingPromoActive hanya aktif 7 Nov - 8 Nov 2026', async () => {
   const { isBundlingPromoActive, BUNDLING_PROMO_START, BUNDLING_PROMO_END } = await import(
     '../src/lib/bundling.ts'
   );
 
-  assert.equal(BUNDLING_PROMO_START, '2026-10-31T00:00:00+07:00');
-  assert.equal(BUNDLING_PROMO_END, '2026-11-01T23:59:59+07:00');
+  assert.equal(BUNDLING_PROMO_START, '2026-11-07T00:00:00+07:00');
+  assert.equal(BUNDLING_PROMO_END, '2026-11-08T23:59:59+07:00');
 
-  // Sebelum promo
-  assert.equal(isBundlingPromoActive(new Date('2026-10-30T23:59:59+07:00')), false);
+  // Sebelum promo (Jumat malam)
+  assert.equal(isBundlingPromoActive(new Date('2026-11-06T23:59:59+07:00')), false);
   // Mulai promo (Sabtu pagi)
-  assert.equal(isBundlingPromoActive(new Date('2026-10-31T00:00:01+07:00')), true);
+  assert.equal(isBundlingPromoActive(new Date('2026-11-07T00:00:01+07:00')), true);
   // Sedang berjalan (Sabtu siang)
-  assert.equal(isBundlingPromoActive(new Date('2026-10-31T14:40:00+07:00')), true);
+  assert.equal(isBundlingPromoActive(new Date('2026-11-07T14:40:00+07:00')), true);
   // Sedang berjalan (Minggu malam)
-  assert.equal(isBundlingPromoActive(new Date('2026-11-01T23:59:50+07:00')), true);
+  assert.equal(isBundlingPromoActive(new Date('2026-11-08T23:59:50+07:00')), true);
   // Setelah promo berakhir (Senin)
-  assert.equal(isBundlingPromoActive(new Date('2026-11-02T00:00:01+07:00')), false);
+  assert.equal(isBundlingPromoActive(new Date('2026-11-09T00:00:01+07:00')), false);
 });
 
 test('Bundling Promo: getBundlingRemainingTime menghitung sisa jam dan menit dengan format benar', async () => {
   const { getBundlingRemainingTime } = await import('../src/lib/bundling.ts');
 
   // 2 jam 15 menit sebelum berakhir
-  const ref = new Date('2026-11-01T21:44:59+07:00');
+  const ref = new Date('2026-11-08T21:44:59+07:00');
   const res = getBundlingRemainingTime(ref);
   assert.equal(res.hours, 2);
   assert.equal(res.minutes, 15);
@@ -209,7 +209,7 @@ test('Bundling Promo: getBundlingRemainingTime menghitung sisa jam dan menit den
   assert.equal(res.formatted, 'Berakhir dalam 2 jam 15 mnt');
 
   // Setelah expired
-  const expiredRef = new Date('2026-11-02T01:00:00+07:00');
+  const expiredRef = new Date('2026-11-09T01:00:00+07:00');
   const expRes = getBundlingRemainingTime(expiredRef);
   assert.equal(expRes.isExpired, true);
   assert.equal(expRes.formatted, 'Promo berakhir');
