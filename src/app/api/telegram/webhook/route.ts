@@ -3,6 +3,7 @@ import {
   getTelegramConfig,
   answerTelegramCallback,
   editTelegramOrderMessage,
+  deleteTelegramMessage,
 } from '../../../../lib/telegram.ts';
 import { updateOrderStatusByAdmin } from '../../../../lib/order-service.ts';
 import type { OrderStatus } from '../../../../types/order.ts';
@@ -19,13 +20,22 @@ export async function POST(request: NextRequest) {
 
   const config = getTelegramConfig();
   const adminChatId = String(config.chatId);
+  const authorizedIds = adminChatId
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
 
   // 1. Tangani callback_query (klik tombol inline)
   if (body?.callback_query) {
     const cb = body.callback_query;
     const fromId = String(cb?.from?.id || '');
+    const chatFromMsg = cb?.message?.chat?.id ? String(cb.message.chat.id) : '';
 
-    if (!adminChatId || fromId !== adminChatId) {
+    const isAuthorized =
+      authorizedIds.length > 0 &&
+      (authorizedIds.includes(fromId) || (chatFromMsg && authorizedIds.includes(chatFromMsg)));
+
+    if (!isAuthorized) {
       if (cb.id) {
         await answerTelegramCallback(cb.id, 'Akses ditolak: Anda bukan admin resmi Jasdor.', true);
       }
@@ -72,36 +82,49 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  // 2. Tangani pesan teks biasa (misal: /start)
+  // 2. Tangani pesan teks biasa (misal: /start atau ketikan tidak sengaja)
   if (body?.message) {
     const msg = body.message;
     const fromId = String(msg?.from?.id || '');
+    const chatId = msg?.chat?.id;
+    const messageId = msg?.message_id;
     const text = String(msg?.text || '').trim();
 
     if (text === '/start') {
-      const isAuthorized = adminChatId && fromId === adminChatId;
+      const isAuthorized =
+        authorizedIds.length > 0 &&
+        (authorizedIds.includes(fromId) || (chatId && authorizedIds.includes(String(chatId))));
+
       const replyText = isAuthorized
-        ? `👋 <b>Halo Admin Jasdor Kopi Cima!</b>\n\nBot ini sudah aktif dan terhubung ke sistem Jasdor.\nSetiap ada pesanan yang menyelesaikan pembayaran, notifikasi dan tombol aksi langsung muncul di sini.`
+        ? `👋 <b>Halo Admin Jasdor Kopi Cima!</b>\n\nBot ini khusus untuk menerima notifikasi pesanan masuk.\nSetiap ada pesanan baru, rincian pesanan dan tombol status langsung dikirim ke sini.\n\n<i>Tips: Anda tidak perlu mengetik apa pun di sini, cukup klik tombol status pada pesanan.</i>`
         : `Akses dibatasi hanya untuk admin resmi Jasdor Kopi Cima (Chat ID Anda: <code>${fromId}</code>).`;
 
-      if (config.botToken && msg.chat?.id) {
+      if (config.botToken && chatId) {
         try {
           await fetch(`https://api.telegram.org/bot${config.botToken}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              chat_id: msg.chat.id,
+              chat_id: chatId,
               text: replyText,
               parse_mode: 'HTML',
+              reply_markup: { remove_keyboard: true },
             }),
           });
         } catch {
           // Abaikan kesalahan koneksi Telegram
         }
       }
+      return NextResponse.json({ ok: true });
     }
 
-    return NextResponse.json({ ok: true });
+    // Jika user/admin tidak sengaja mengetik atau mengirim pesan apa pun selain /start:
+    // Otomatis hapus pesan tersebut seketika agar ruang chat bot tetap 100% bersih dan rapi
+    if (chatId && messageId) {
+      await deleteTelegramMessage(chatId, messageId);
+    }
+
+    return NextResponse.json({ ok: true, cleaned: true });
   }
 
   return NextResponse.json({ ok: true, ignored: true });

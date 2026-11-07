@@ -592,3 +592,34 @@ export async function answerTelegramCallback(
     console.error('[Telegram] Gagal answerCallbackQuery:', err);
   }
 }
+
+/**
+ * Menghapus pesan Telegram (misalnya pesan teks yang tidak sengaja diketik oleh user/admin).
+ */
+export async function deleteTelegramMessage(
+  chatId: string | number,
+  messageId: number,
+  overrideConfig?: Partial<TelegramConfig>
+): Promise<boolean> {
+  const config = {
+    ...getTelegramConfig(),
+    ...overrideConfig,
+  };
+
+  if (!config.botToken) return false;
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${config.botToken}/deleteMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        message_id: messageId,
+      }),
+    });
+    const data = (await res.json()) as any;
+    return Boolean(data?.ok);
+  } catch {
+    return false;
+  }
+}

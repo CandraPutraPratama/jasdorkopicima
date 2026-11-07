@@ -37,4 +37,47 @@ describe('Telegram Webhook: /api/telegram/webhook', () => {
     assert.equal(data.ok, true);
     assert.equal(data.action, 'unauthorized');
   });
+
+  it('membersihkan pesan teks biasa yang tidak sengaja dikirim pengguna dengan auto-delete (cleaned: true)', async () => {
+    const req = new NextRequest('http://localhost:3000/api/telegram/webhook', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        update_id: 2,
+        message: {
+          message_id: 12345,
+          chat: { id: 12345678 },
+          from: { id: 12345678 },
+          text: 'halo tes kepencet nih',
+        },
+      }),
+    });
+
+    const res = await POST(req);
+    assert.equal(res.status, 200);
+    const data = await res.json();
+    assert.equal(data.ok, true);
+    assert.equal(data.cleaned, true);
+  });
+
+  it('menangani pesan perintah /start dengan aman', async () => {
+    const req = new NextRequest('http://localhost:3000/api/telegram/webhook', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        update_id: 3,
+        message: {
+          message_id: 12346,
+          chat: { id: 12345678 },
+          from: { id: 12345678 },
+          text: '/start',
+        },
+      }),
+    });
+
+    const res = await POST(req);
+    assert.equal(res.status, 200);
+    const data = await res.json();
+    assert.equal(data.ok, true);
+  });
 });
