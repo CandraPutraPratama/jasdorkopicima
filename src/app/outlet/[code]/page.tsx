@@ -442,20 +442,34 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
         <div className="flex-1 flex flex-col">
           {/* Banner Aktif Mode Pesan Bareng */}
           {activeGroupId && (
-            <div className="mx-4 mt-3 p-3 bg-[#2B1D12] text-[#FAF4E8] rounded-2xl flex items-center justify-between gap-2.5 text-xs shadow-md border-2 border-[#C67D0A]">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="text-base shrink-0">👥</span>
+            <div className="mx-4 mt-3 p-3 bg-[#26150B] text-[#FAF4E8] rounded-2xl flex items-center justify-between gap-3 text-xs shadow-[3px_3px_0px_#2B1D12] border-2 border-[#D9A74A]/60">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#FBBF24] shrink-0 animate-pulse" />
                 <div className="truncate">
-                  <span className="block text-[10px] text-[#C67D0A] font-bold uppercase">Mode Pesan Bareng</span>
-                  <span className="text-[#FBBF24] font-black">{activeGroupId}</span>
+                  <span className="block text-[10px] text-[#D9A74A] font-bold uppercase tracking-wider">
+                    Sesi Pesan Bareng
+                  </span>
+                  <span className="text-[#FBBF24] font-mono font-black text-xs">
+                    #{activeGroupId}
+                  </span>
                 </div>
               </div>
               <Link
                 prefetch={false}
                 href={`/group/${activeGroupId}`}
-                className="shrink-0 px-2.5 py-1 bg-[#FAF4E8] text-[#2B1D12] font-black rounded-lg text-[11px] hover:bg-[#FFE7D6] transition"
+                className="shrink-0 px-3 py-1.5 bg-[#FAF4E8] hover:bg-white text-[#2B1D12] font-display font-black rounded-xl text-xs shadow-[2px_2px_0px_#2B1D12] active:translate-x-[1px] active:translate-y-[1px] transition flex items-center gap-1"
               >
-                Lihat Room →
+                <span>Lihat Room</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
               </Link>
             </div>
           )}
@@ -500,26 +514,51 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
               </div>
             )}
 
-            {/* Promo Card Pesan Bareng */}
+            {/* Kartu Fitur Pesan Bareng Teman / Kantor */}
             {!isOutletClosed && !activeGroupId && (
-              <div className="mt-3 p-3 bg-gradient-to-r from-[#FFF8E7] to-[#FFEBD4] border-2 border-[#2B1D12] rounded-2xl shadow-[2px_2px_0px_#2B1D12] flex items-center justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-base shrink-0">👥</span>
-                    <h3 className="font-display font-black text-xs text-[#2B1D12] truncate">
-                      Pesan Bareng Kantor / Tongkrongan
-                    </h3>
+              <div className="mt-3.5 p-3.5 bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-2xl shadow-[3px_3px_0px_#2B1D12] flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="w-10 h-10 rounded-xl bg-[#FAF4E8] border border-[#2B1D12]/20 flex items-center justify-center text-[#2B1D12] shrink-0">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 h-5 text-[#2B1D12]"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
                   </div>
-                  <p className="text-[11px] text-[#7A6455] font-medium leading-tight mt-0.5">
-                    Pilih kopi dari HP masing-masing, bayar sekaligus lewat 1 QRIS!
-                  </p>
+                  <div className="min-w-0">
+                    <h3 className="font-display font-black text-xs sm:text-sm text-[#2B1D12] leading-tight truncate">
+                      Pesan Bareng Teman / Kantor
+                    </h3>
+                    <p className="text-[11px] text-[#7A6455] font-medium leading-tight mt-0.5 truncate">
+                      Satu link untuk pilih bersama. Bayar sekali lewat 1 QRIS.
+                    </p>
+                  </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsGroupOrderModalOpen(true)}
-                  className="shrink-0 px-3 py-1.5 bg-[#2B1D12] text-[#FBBF24] hover:bg-[#3D2313] text-xs font-black rounded-xl shadow-xs transition active:scale-95 cursor-pointer"
+                  className="shrink-0 px-3.5 py-2 bg-[#2B1D12] hover:bg-[#3D2313] text-[#FBBF24] text-xs font-display font-black rounded-xl border border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A] transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer flex items-center gap-1.5"
                 >
-                  + Mulai
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span>Mulai</span>
                 </button>
               </div>
             )}
@@ -1003,28 +1042,60 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
 
       {/* Dialog Masukkan Nama Pemesan untuk Pesanan Bareng */}
       {pendingGroupItem && activeGroupId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="participant-name-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#2B1D12]/70 animate-in fade-in duration-200"
+        >
           <div className="w-full max-w-sm bg-[#FFFDF9] border-3 border-[#2B1D12] rounded-3xl p-5 shadow-[6px_6px_0px_#2B1D12] space-y-4">
-            <div className="flex items-center justify-between border-b border-[#2B1D12]/10 pb-2">
-              <div className="flex items-center gap-1.5">
-                <span className="text-lg">👤</span>
-                <h3 className="font-display font-black text-sm text-[#2B1D12]">
+            <div className="flex items-center justify-between border-b border-[#2B1D12]/15 pb-2.5">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-[#FAF4E8] border border-[#2B1D12]/20 flex items-center justify-center text-[#2B1D12]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                </div>
+                <h3 id="participant-name-title" className="font-display font-black text-sm text-[#2B1D12]">
                   Nama Pemesan Minuman
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setPendingGroupItem(null)}
-                className="text-xs font-bold p-1 hover:bg-neutral-100 rounded-lg text-[#7A6455] cursor-pointer"
+                aria-label="Tutup dialog"
+                className="w-7 h-7 rounded-lg border border-[#2B1D12] bg-[#FAF4E8] hover:bg-[#FFE7D6] text-[#2B1D12] font-black flex items-center justify-center transition cursor-pointer"
               >
-                ✕
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
 
-            <div className="p-2.5 bg-[#FAF4E8] rounded-xl border border-[#2B1D12]/20 text-xs">
-              <span className="font-bold text-[#2B1D12] block">{pendingGroupItem.name}</span>
+            <div className="p-3 bg-[#FAF4E8] rounded-xl border border-[#2B1D12]/20 text-xs space-y-0.5">
+              <span className="font-display font-black text-[#2B1D12] block text-xs">
+                {pendingGroupItem.name}
+              </span>
               {pendingGroupItem.variantDescription && (
-                <span className="text-[#7A6455] text-[11px] block mt-0.5">
+                <span className="text-[#7A6455] text-[11px] block">
                   {pendingGroupItem.variantDescription}
                 </span>
               )}
@@ -1041,8 +1112,11 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                 value={groupParticipantName}
                 onChange={(e) => setGroupParticipantName(e.target.value)}
                 placeholder="Ketik nama kamu (misal: Rian)..."
-                className="w-full min-h-[42px] px-3 py-2 bg-white border-2 border-[#2B1D12] rounded-xl text-xs font-bold text-[#2B1D12] focus:outline-hidden"
+                className="w-full min-h-[44px] px-3.5 py-2 bg-white border-2 border-[#2B1D12] rounded-xl text-xs font-bold text-[#2B1D12] focus:outline-hidden focus:border-[#C67D0A] shadow-[2px_2px_0px_#2B1D12]/10"
               />
+              <span className="text-[10px] text-[#7A6455] block">
+                Nama ini akan ditulis pada label cup agar pesanan tidak tertukar.
+              </span>
             </div>
 
             <button
@@ -1071,9 +1145,30 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                   setIsAddingToGroup(false);
                 }
               }}
-              className="w-full min-h-[44px] bg-[#2B1D12] text-[#FBBF24] hover:bg-[#3D2313] font-display font-black text-xs rounded-xl shadow-[3px_3px_0px_#C67D0A] flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer"
+              className="w-full min-h-[46px] bg-[#2B1D12] text-[#FBBF24] hover:bg-[#3D2313] font-display font-black text-xs rounded-xl border border-[#2B1D12] shadow-[3px_3px_0px_#C67D0A] flex items-center justify-center gap-2 disabled:opacity-50 transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer"
             >
-              {isAddingToGroup ? 'Menambahkan...' : '✓ Tambahkan ke Pesanan Bareng'}
+              {isAddingToGroup ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-[#FBBF24] border-t-transparent rounded-full animate-spin" />
+                  <span>Menambahkan...</span>
+                </>
+              ) : (
+                <>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4 text-[#FBBF24]"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span>Tambahkan ke Pesanan Bareng</span>
+                </>
+              )}
             </button>
           </div>
         </div>
