@@ -68,6 +68,16 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState<boolean>(false);
   const [isB1G1ModalOpen, setIsB1G1ModalOpen] = useState<boolean>(false);
 
+  // Buka CartDrawer otomatis jika diarahkan dari fitur "Pesan Lagi" (openCart=true)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('openCart') === 'true') {
+        setIsCartDrawerOpen(true);
+      }
+    }
+  }, []);
+
   const [outlet, setOutlet] = useState<Outlet | null>(null);
   const [menuGroups, setMenuGroups] = useState<MenuGroup[]>([]);
   const [activeCategoryCode, setActiveCategoryCode] = useState<string>('');

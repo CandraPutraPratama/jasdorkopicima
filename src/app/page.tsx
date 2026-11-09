@@ -16,6 +16,7 @@ import {
 } from '@/lib/site-config';
 import { WhatsAppIcon } from '@/components/WhatsAppIcon';
 import { ActiveOrderBanner } from '@/components/ActiveOrderBanner';
+import { RecentOrderReorderCard } from '@/components/RecentOrderReorderCard';
 import { QueueInfoBar } from '@/components/QueueInfoBar';
 import { TrustStrip } from '@/components/TrustStrip';
 
@@ -113,6 +114,9 @@ export default function PortalPage() {
 
         {/* Live Status Antrean Pemrosesan Toko */}
         <QueueInfoBar />
+
+        {/* Kartu Pesan Ulang Cepat untuk Pelanggan Kembali */}
+        <RecentOrderReorderCard />
 
         {/* Hero Kompak (Varian C) */}
         <div className="bg-[#2B1D12] text-[#FAF4E8] border-2 border-[#2B1D12] rounded-2xl p-5 relative overflow-hidden shadow-[3px_3px_0px_#C67D0A]">

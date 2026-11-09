@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useMyOrders } from '@/lib/use-my-orders';
 import { formatRupiah } from '@/lib/currency';
 import { formatCountdownTimer, buildOrderPaymentUrl, getMyOrderAccessToken } from '@/lib/my-orders';
+import { executeReorder } from '@/lib/reorder';
 
 function ActiveOrderCountdown({ expiresAt }: { expiresAt: string }) {
   const [secondsLeft, setSecondsLeft] = useState<number>(() => {
@@ -69,6 +71,7 @@ function formatDateIndo(dateStr: string): string {
 }
 
 export function MyOrdersView() {
+  const router = useRouter();
   const { activeOrders, historyOrders, isLoading, refresh } = useMyOrders();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -353,17 +356,30 @@ export function MyOrdersView() {
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t-2 border-[#2B1D12] flex items-center justify-between">
-                    <span className="text-[11px] text-[#6A584D] font-bold">
-                      {order.items?.length || 0} menu
-                    </span>
+                  <div className="pt-2 border-t-2 border-[#2B1D12] flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] text-[#6A584D] font-bold">
+                        {order.items?.length || 0} menu
+                      </span>
+                      <span className="text-[#6A584D]">•</span>
+                      <Link prefetch={false}
+                        href={buildOrderPaymentUrl(order.id, getMyOrderAccessToken(order.id))}
+                        className="text-[11px] font-black text-[#C67D0A] hover:underline underline-offset-2"
+                      >
+                        Lihat Rincian
+                      </Link>
+                    </div>
 
-                    <Link prefetch={false}
-                      href={buildOrderPaymentUrl(order.id, getMyOrderAccessToken(order.id))}
-                      className="text-[11px] font-black text-[#C67D0A] hover:underline underline-offset-2"
+                    <button
+                      type="button"
+                      onClick={() => executeReorder(order, router)}
+                      className="px-3 py-1 rounded-xl bg-[#2B1D12] text-[#FAF4E8] font-display font-black text-[11px] border-2 border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A] hover:bg-[#3D2A1C] transition flex items-center gap-1 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer"
                     >
-                      Lihat Rincian
-                    </Link>
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      <span>Pesan Lagi</span>
+                    </button>
                   </div>
                 </div>
               );
