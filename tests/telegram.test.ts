@@ -171,6 +171,44 @@ describe('Telegram Integration: Formatter & Keyboard', () => {
       assert.ok(msg.includes('Rp38.000')); // Total
     });
 
+    it('menampilkan header khusus Pesanan Bareng dan nama pemesan per cup untuk pesanan rombongan', () => {
+      const groupOrder: OrderRecord = {
+        ...mockOrder,
+        notes: '[Pesanan Bareng] Host: Dimas (2 cup)',
+        items: [
+          {
+            id: 'item-grp-1',
+            bundleCode: 'reguler-1',
+            name: 'Creamy Aren Latte',
+            basePrice: 20000,
+            promoPrice: 12000,
+            originalPrice: 20000,
+            quantity: 1,
+            subtotal: 12000,
+            variantOptions: ['Ice, Regular'],
+            notes: '[Rian] Less Sugar',
+          },
+          {
+            id: 'item-grp-2',
+            bundleCode: 'reguler-2',
+            name: 'Americano',
+            basePrice: 15000,
+            promoPrice: 10000,
+            originalPrice: 15000,
+            quantity: 1,
+            subtotal: 10000,
+            variantOptions: ['Hot, Regular'],
+            notes: '[Sarah]',
+          },
+        ],
+      };
+
+      const msg = formatOrderTelegramMessage(groupOrder);
+      assert.ok(msg.includes('PESANAN BARENG KANTOR'), 'Harus menampilkan header Pesanan Bareng');
+      assert.ok(msg.includes('👤 <b>Rian:</b> 1x <b>Creamy Aren Latte</b>'), 'Harus menampilkan nama Rian');
+      assert.ok(msg.includes('👤 <b>Sarah:</b> 1x <b>Americano</b>'), 'Harus menampilkan nama Sarah');
+    });
+
     it('menyertakan addons menu reguler jika item memiliki addon tambahan', () => {
       const orderWithAddons: OrderRecord = {
         ...mockOrder,

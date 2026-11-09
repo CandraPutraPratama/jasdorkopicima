@@ -2,6 +2,7 @@
 
 import { use, useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useOperationalStatus } from '@/hooks/useOperationalStatus';
 import { ClosedScreen } from '@/components/ClosedScreen';
@@ -50,6 +51,13 @@ const SwitchOutletModal = dynamic(
   { ssr: false }
 );
 
+const CreateGroupOrderModal = dynamic(
+  () => import('@/components/CreateGroupOrderModal').then((m) => m.CreateGroupOrderModal),
+  { ssr: false }
+);
+
+import type { CartItem } from '@/lib/cart-reducer';
+
 interface OutletMenuPageProps {
   params: Promise<{ code: string }>;
 }
@@ -64,6 +72,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   const isBundlingOnly = useBundlingOnlyMode();
 
   const cart = useCart();
+  const router = useRouter();
   const { isFavorite, toggleFavorite } = useFavorites();
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState<boolean>(false);
   const [isB1G1ModalOpen, setIsB1G1ModalOpen] = useState<boolean>(false);
@@ -163,6 +172,23 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   }, [allOutletProducts, searchQuery]);
 
   const isSearching = searchQuery.trim().length > 0;
+
+  // Group Order (Pesan Bareng) states
+  const [isGroupOrderModalOpen, setIsGroupOrderModalOpen] = useState(false);
+  const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
+  const [groupParticipantName, setGroupParticipantName] = useState<string>('');
+  const [pendingGroupItem, setPendingGroupItem] = useState<Omit<CartItem, 'id'> | null>(null);
+  const [isAddingToGroup, setIsAddingToGroup] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const grp = params.get('groupId') || params.get('group');
+      if (grp) {
+        setActiveGroupId(grp.toUpperCase().trim());
+      }
+    }
+  }, []);
 
   const categoryRefs = useRef<Record<string, HTMLElement | null>>({});
   const isManualClickRef = useRef<boolean>(false);
@@ -414,6 +440,26 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
       {/* Content Outlet Menu */}
       {!isLoading && !errorMessage && outlet && (
         <div className="flex-1 flex flex-col">
+          {/* Banner Aktif Mode Pesan Bareng */}
+          {activeGroupId && (
+            <div className="mx-4 mt-3 p-3 bg-[#2B1D12] text-[#FAF4E8] rounded-2xl flex items-center justify-between gap-2.5 text-xs shadow-md border-2 border-[#C67D0A]">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-base shrink-0">👥</span>
+                <div className="truncate">
+                  <span className="block text-[10px] text-[#C67D0A] font-bold uppercase">Mode Pesan Bareng</span>
+                  <span className="text-[#FBBF24] font-black">{activeGroupId}</span>
+                </div>
+              </div>
+              <Link
+                prefetch={false}
+                href={`/group/${activeGroupId}`}
+                className="shrink-0 px-2.5 py-1 bg-[#FAF4E8] text-[#2B1D12] font-black rounded-lg text-[11px] hover:bg-[#FFE7D6] transition"
+              >
+                Lihat Room →
+              </Link>
+            </div>
+          )}
+
           {/* Indikator Dibuka Manual oleh Admin */}
           {jasdorStatus?.overrideType === 'force_open' && (
             <div className="mx-4 mt-3 p-2.5 sm:p-3 bg-emerald-50 border border-emerald-400 rounded-2xl flex items-center gap-2.5 text-xs text-emerald-950">
@@ -451,6 +497,30 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                     <span>Telp: {outlet.phone}</span>
                   </>
                 )}
+              </div>
+            )}
+
+            {/* Promo Card Pesan Bareng */}
+            {!isOutletClosed && !activeGroupId && (
+              <div className="mt-3 p-3 bg-gradient-to-r from-[#FFF8E7] to-[#FFEBD4] border-2 border-[#2B1D12] rounded-2xl shadow-[2px_2px_0px_#2B1D12] flex items-center justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-base shrink-0">👥</span>
+                    <h3 className="font-display font-black text-xs text-[#2B1D12] truncate">
+                      Pesan Bareng Kantor / Tongkrongan
+                    </h3>
+                  </div>
+                  <p className="text-[11px] text-[#7A6455] font-medium leading-tight mt-0.5">
+                    Pilih kopi dari HP masing-masing, bayar sekaligus lewat 1 QRIS!
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsGroupOrderModalOpen(true)}
+                  className="shrink-0 px-3 py-1.5 bg-[#2B1D12] text-[#FBBF24] hover:bg-[#3D2313] text-xs font-black rounded-xl shadow-xs transition active:scale-95 cursor-pointer"
+                >
+                  + Mulai
+                </button>
               </div>
             )}
 
@@ -841,8 +911,12 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           tierDiff={tierDiff}
           onClose={() => setSelectedBundleConfig(null)}
           onAddToCart={(bundleItem) => {
-            cart.addItem(bundleItem, outlet.code, outlet.name);
-            setIsCartDrawerOpen(true);
+            if (activeGroupId) {
+              setPendingGroupItem(bundleItem);
+            } else {
+              cart.addItem(bundleItem, outlet.code, outlet.name);
+              setIsCartDrawerOpen(true);
+            }
           }}
         />
       )}
@@ -855,8 +929,12 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           products={allOutletProducts}
           isOutletClosed={isOutletClosed}
           onAddToCart={(bundleItem) => {
-            cart.addItem(bundleItem, outlet.code, outlet.name);
-            setIsCartDrawerOpen(true);
+            if (activeGroupId) {
+              setPendingGroupItem(bundleItem);
+            } else {
+              cart.addItem(bundleItem, outlet.code, outlet.name);
+              setIsCartDrawerOpen(true);
+            }
           }}
         />
       )}
@@ -867,14 +945,20 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           outletCode={outlet.code}
           product={selectedProduct}
           onClose={() => setSelectedProduct(null)}
-          onAddToCart={(item) => cart.addItem(item, outlet.code, outlet.name)}
+          onAddToCart={(item) => {
+            if (activeGroupId) {
+              setPendingGroupItem(item);
+            } else {
+              cart.addItem(item, outlet.code, outlet.name);
+            }
+          }}
           isOutletClosed={isOutletClosed}
           brandSlug={brandSlug}
         />
       )}
 
-      {/* Floating Cart Bar jika ada item di keranjang */}
-      {cart.totalQuantity > 0 && (
+      {/* Floating Cart Bar jika ada item di keranjang (hanya saat mode personal) */}
+      {!activeGroupId && cart.totalQuantity > 0 && (
         <FloatingCartBar
           totalQuantity={cart.totalQuantity}
           subtotal={cart.pricing.total}
@@ -904,6 +988,95 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           onConfirm={cart.confirmSwitchOutlet}
           onCancel={cart.cancelSwitchOutlet}
         />
+      )}
+
+      {/* Modal Buat Link Pesanan Bareng */}
+      {outlet && (
+        <CreateGroupOrderModal
+          isOpen={isGroupOrderModalOpen}
+          onClose={() => setIsGroupOrderModalOpen(false)}
+          outletCode={outlet.code}
+          outletName={outlet.name}
+          brandSlug={brandSlug}
+        />
+      )}
+
+      {/* Dialog Masukkan Nama Pemesan untuk Pesanan Bareng */}
+      {pendingGroupItem && activeGroupId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="w-full max-w-sm bg-[#FFFDF9] border-3 border-[#2B1D12] rounded-3xl p-5 shadow-[6px_6px_0px_#2B1D12] space-y-4">
+            <div className="flex items-center justify-between border-b border-[#2B1D12]/10 pb-2">
+              <div className="flex items-center gap-1.5">
+                <span className="text-lg">👤</span>
+                <h3 className="font-display font-black text-sm text-[#2B1D12]">
+                  Nama Pemesan Minuman
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPendingGroupItem(null)}
+                className="text-xs font-bold p-1 hover:bg-neutral-100 rounded-lg text-[#7A6455] cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-2.5 bg-[#FAF4E8] rounded-xl border border-[#2B1D12]/20 text-xs">
+              <span className="font-bold text-[#2B1D12] block">{pendingGroupItem.name}</span>
+              {pendingGroupItem.variantDescription && (
+                <span className="text-[#7A6455] text-[11px] block mt-0.5">
+                  {pendingGroupItem.variantDescription}
+                </span>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="p-name" className="text-xs font-bold text-[#2B1D12] block">
+                Minuman ini untuk siapa? *
+              </label>
+              <input
+                id="p-name"
+                type="text"
+                autoFocus
+                value={groupParticipantName}
+                onChange={(e) => setGroupParticipantName(e.target.value)}
+                placeholder="Ketik nama kamu (misal: Rian)..."
+                className="w-full min-h-[42px] px-3 py-2 bg-white border-2 border-[#2B1D12] rounded-xl text-xs font-bold text-[#2B1D12] focus:outline-hidden"
+              />
+            </div>
+
+            <button
+              type="button"
+              disabled={isAddingToGroup || !groupParticipantName.trim()}
+              onClick={async () => {
+                setIsAddingToGroup(true);
+                try {
+                  const res = await fetch(`/api/group-orders/${encodeURIComponent(activeGroupId)}/items`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      participantName: groupParticipantName.trim(),
+                      cartItem: pendingGroupItem,
+                    }),
+                  });
+                  const data = await res.json();
+                  if (!res.ok || !data.success) {
+                    throw new Error(data.error || 'Gagal menambahkan menu');
+                  }
+                  setPendingGroupItem(null);
+                  router.push(`/group/${activeGroupId}`);
+                } catch (err: any) {
+                  alert(err.message || 'Gagal menambahkan menu ke pesanan bareng');
+                } finally {
+                  setIsAddingToGroup(false);
+                }
+              }}
+              className="w-full min-h-[44px] bg-[#2B1D12] text-[#FBBF24] hover:bg-[#3D2313] font-display font-black text-xs rounded-xl shadow-[3px_3px_0px_#C67D0A] flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer"
+            >
+              {isAddingToGroup ? 'Menambahkan...' : '✓ Tambahkan ke Pesanan Bareng'}
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

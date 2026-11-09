@@ -498,7 +498,18 @@ export function formatOrderTelegramMessage(order: OrderRecord, extraNote?: strin
         }
       }
 
-      return `• ${qty}x <b>${escapeHtml(it.name)}</b>${variantStr}${priceText}${noteStr}`;
+      let participantPrefix = '';
+      let cleanNote = noteStr;
+      if (it.notes && it.notes.startsWith('[')) {
+        const match = it.notes.match(/^\[([^\]]+)\](.*)$/);
+        if (match) {
+          participantPrefix = `👤 <b>${escapeHtml(match[1].trim())}:</b> `;
+          const rem = match[2].replace(/^[\s\-]+/, '').trim();
+          cleanNote = rem ? ` - <i>${escapeHtml(rem)}</i>` : '';
+        }
+      }
+
+      return `• ${participantPrefix}${qty}x <b>${escapeHtml(it.name)}</b>${variantStr}${priceText}${cleanNote}`;
     })
     .join('\n');
 
@@ -524,7 +535,10 @@ export function formatOrderTelegramMessage(order: OrderRecord, extraNote?: strin
   }
   const totalSavings = Math.max(0, totalNormalPrice - computedTotal);
 
-  let text = `<b>JASDOR KOPI CIMA : PESANAN</b>\n`;
+  const isGroupOrder = Boolean(order.notes && order.notes.includes('[Pesanan Bareng]'));
+  let text = isGroupOrder
+    ? `<b>👥 JASDOR : PESANAN BARENG KANTOR</b>\n`
+    : `<b>JASDOR KOPI CIMA : PESANAN</b>\n`;
   text += `=====================\n`;
   text += `<b>Status:</b> ${statusText}\n`;
   text += `<b>Kode:</b> <code>${escapeHtml(order.id)}</code>\n`;
