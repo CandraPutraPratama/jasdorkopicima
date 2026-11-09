@@ -5,6 +5,8 @@ import {
   formatOrderTelegramMessage,
   getOrderInlineKeyboard,
   sendTelegramOrderNotification,
+  findBestSplit,
+  cleanVariantTokens,
 } from '../src/lib/telegram.ts';
 
 const mockOrder: OrderRecord = {
@@ -77,7 +79,7 @@ describe('Telegram Integration: Formatter & Keyboard', () => {
     it('menampilkan informasi subtotal dan harga satuan (@harga) untuk item qty > 1', () => {
       const msg = formatOrderTelegramMessage(mockOrder);
       assert.ok(
-        msg.includes('• 2x <b>Kopi Kenangan Mantan</b> (Ice, Regular, Normal Sugar) - <b>Rp36.000</b> (@Rp18.000)'),
+        msg.includes('• 2x <b>Kopi Kenangan Mantan</b> (Ice, Regular) - <b>Rp36.000</b> (@Rp18.000)'),
         `Harus menampilkan subtotal Rp36.000 dan harga satuan @Rp18.000, pesan aktual: ${msg}`
       );
       assert.ok(
@@ -322,6 +324,79 @@ describe('Telegram Integration: Formatter & Keyboard', () => {
         assert.ok(msg.includes('Transaksi 2'));
       });
 
+      it('merekomendasikan Split > 2 Transaksi (misal 4 transaksi) untuk order besar (224k) agar hemat maksimal', () => {
+        const orderLarge224k: OrderRecord = {
+          ...mockOrder,
+          items: [
+            {
+              id: 'b-1',
+              bundleCode: 'b-reg-1',
+              name: 'Bundling 3 Reguler',
+              isBundle: true,
+              basePrice: 53000,
+              originalPrice: 53000,
+              bundleNormalPrice: 53000,
+              promoPrice: 29500,
+              quantity: 1,
+              subtotal: 29500,
+            },
+            {
+              id: 'b-2',
+              bundleCode: 'b-reg-2',
+              name: 'Bundling 3 Reguler',
+              isBundle: true,
+              basePrice: 53000,
+              originalPrice: 53000,
+              bundleNormalPrice: 53000,
+              promoPrice: 29500,
+              quantity: 1,
+              subtotal: 29500,
+            },
+            {
+              id: 'b-3',
+              bundleCode: 'b-reg-3',
+              name: 'Bundling 3 Reguler',
+              isBundle: true,
+              basePrice: 53000,
+              originalPrice: 53000,
+              bundleNormalPrice: 53000,
+              promoPrice: 29500,
+              quantity: 1,
+              subtotal: 29500,
+            },
+            {
+              id: 'm-1',
+              bundleCode: 'milo',
+              name: 'Milo Dinosaurus',
+              basePrice: 32000,
+              originalPrice: 32000,
+              promoPrice: 16000,
+              quantity: 1,
+              subtotal: 16000,
+            },
+            {
+              id: 'm-2',
+              bundleCode: 'oreo',
+              name: 'Oreo Shake',
+              basePrice: 33000,
+              originalPrice: 33000,
+              promoPrice: 16500,
+              quantity: 1,
+              subtotal: 16500,
+            },
+          ],
+        };
+        // Total normal: 53k + 53k + 53k + 32k + 33k = 224.000
+        const msg = formatOrderTelegramMessage(orderLarge224k);
+        assert.ok(msg.includes('Total Harga Normal: <b>Rp224.000</b>'));
+        assert.ok(msg.includes('Split 4 Transaksi'), 'Harus merekomendasikan split 4 transaksi');
+        assert.ok(msg.includes('Transaksi 1'));
+        assert.ok(msg.includes('Transaksi 2'));
+        assert.ok(msg.includes('Transaksi 3'));
+        assert.ok(msg.includes('Transaksi 4'));
+        assert.ok(msg.includes('Est. Hemat ~<b>Rp112.000</b>'));
+      });
+
       it('TIDAK menampilkan rekomendasi voucher Kopi Kenangan untuk brand lain (Tomoro/Fore)', () => {
         const orderTomoro: OrderRecord = {
           ...mockOrder,
@@ -371,6 +446,65 @@ describe('Telegram Integration: Formatter & Keyboard', () => {
 
       const keyboardBatal = getOrderInlineKeyboard('KK-1028-TEST', 'dibatalkan');
       assert.equal(keyboardBatal.inline_keyboard.length, 0);
+    });
+  });
+
+  describe('cleanVariantTokens helper', () => {
+    it('membersihkan opsi default standar (beans, milk, normal sugar, normal ice) sehingga tersisa varian dasar', () => {
+      const raw = ['Ice', 'Regular', 'Kenangan Blend', 'Milk', 'Normal Sugar', 'Normal Ice'];
+      const cleaned = cleanVariantTokens(raw, 'Creamy Aren Latte');
+      assert.deepEqual(cleaned, ['Ice', 'Regular']);
+    });
+
+    it('mempertahankan kustomisasi non-standar (Less Sugar, Less Ice, Oat Milk, Topping)', () => {
+      const raw = ['Ice', 'Regular', 'Kenangan Blend', 'Oat Milk', 'Less Sugar', 'Less Ice'];
+      const cleaned = cleanVariantTokens(raw, 'Creamy Aren Latte');
+      assert.deepEqual(cleaned, ['Ice', 'Regular', 'Oat Milk', 'Less Sugar', 'Less Ice']);
+    });
+
+    it('membersihkan default Whipped Cream Vanilla untuk Kenangan Frappe biasa, namun menampilkan jika memilih Whipped Cream Coklat', () => {
+      // Menu Kenangan Frappe biasa: default Whipped Cream Vanilla
+      const defaultFrappe = ['Ice', 'Regular', 'Kenangan Blend', 'Milk', 'Normal Sugar', 'Normal Ice', 'Whipped Cream Vanilla'];
+      assert.deepEqual(cleanVariantTokens(defaultFrappe, 'Butterscotch Kenangan Frappe'), ['Ice', 'Regular']);
+
+      // Jika custom ke Whipped Cream Coklat: tampilkan
+      const customFrappe = ['Ice', 'Regular', 'Kenangan Blend', 'Milk', 'Normal Sugar', 'Normal Ice', 'Whipped Cream Coklat'];
+      assert.deepEqual(cleanVariantTokens(customFrappe, 'Butterscotch Kenangan Frappe'), ['Ice', 'Regular', 'Whipped Cream Coklat']);
+    });
+
+    it('membersihkan default Whipped Cream Coklat untuk Dutch Choco Kenangan Frappe, namun menampilkan jika memilih Whipped Cream Vanilla', () => {
+      // Dutch Choco: default Whipped Cream Coklat
+      const defaultDutch = ['Ice', 'Regular', 'Kenangan Blend', 'Milk', 'Normal Sugar', 'Normal Ice', 'Whipped Cream Coklat'];
+      assert.deepEqual(cleanVariantTokens(defaultDutch, 'Dutch Choco Kenangan Frappe'), ['Ice', 'Regular']);
+
+      // Jika custom ke Vanilla: tampilkan
+      const customDutch = ['Ice', 'Regular', 'Kenangan Blend', 'Milk', 'Normal Sugar', 'Normal Ice', 'Whipped Cream Vanilla'];
+      assert.deepEqual(cleanVariantTokens(customDutch, 'Dutch Choco Kenangan Frappe'), ['Ice', 'Regular', 'Whipped Cream Vanilla']);
+    });
+  });
+
+  describe('findBestSplit algorithm', () => {
+    it('mengembalikan null jika total normal <= 70k atau item < 2', () => {
+      assert.equal(findBestSplit([{ name: 'Kopi Kenangan Mantan', normalPrice: 30000 }]), null);
+      assert.equal(findBestSplit([
+        { name: 'A', normalPrice: 30000 },
+        { name: 'B', normalPrice: 30000 },
+      ]), null); // total 60k <= 70k
+    });
+
+    it('mempartisi order 224k menjadi 4 transaksi terdistribusi optimal', () => {
+      const units = [
+        { name: 'Bundling 3 Reguler', normalPrice: 53000 },
+        { name: 'Bundling 3 Reguler', normalPrice: 53000 },
+        { name: 'Bundling 3 Reguler', normalPrice: 53000 },
+        { name: 'Milo Dinosaurus', normalPrice: 32000 },
+        { name: 'Oreo Shake', normalPrice: 33000 },
+      ];
+      const result = findBestSplit(units);
+      assert.ok(result);
+      assert.equal(result.k, 4);
+      assert.equal(result.totalDiscount, 112000);
+      assert.equal(result.transactions.length, 4);
     });
   });
 

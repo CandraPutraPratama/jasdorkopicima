@@ -325,10 +325,10 @@ export function BundlePickerBottomSheet({
                         : 'bg-[#FFFDF9] text-[#2B1D12] border-[#2B1D12] hover:bg-[#FFE7D6] shadow-[2px_2px_0px_#2B1D12] cursor-pointer'
                   }`}
                 >
-                  <div className="text-[10px] font-black uppercase tracking-wider opacity-90 truncate">
+                  <div className="text-[10px] font-black uppercase tracking-wider opacity-90 break-words leading-tight">
                     {slotLabel}
                   </div>
-                  <div className="text-xs font-black truncate mt-1">
+                  <div className="text-xs font-black leading-tight break-words mt-1 line-clamp-2">
                     {slot.productName || 'Pilih item...'}
                   </div>
                 </button>
@@ -377,7 +377,7 @@ export function BundlePickerBottomSheet({
                         <span className={`w-4 h-4 rounded-full border-2 border-[#2B1D12] flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#2B1D12]' : 'bg-white'}`}>
                           {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white" />}
                         </span>
-                        <span className="truncate">{item.name}</span>
+                        <span className="font-bold leading-tight break-words pr-1">{item.name}</span>
                       </div>
                       <span className="shrink-0 text-xs font-bold text-[#7A6658]">
                         {formatRupiah(item.displayPrice)}

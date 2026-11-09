@@ -70,38 +70,184 @@ export function getItemNormalPrice(it: OrderRecord['items'][number]): {
   return { unitNormal, totalNormal: unitNormal * qty };
 }
 
-function findSplitForMin50k(units: ItemUnit[]): { tx1: ItemUnit[]; tx2: ItemUnit[] } | null {
+export interface VoucherSplitTransaction {
+  items: ItemUnit[];
+  totalNormal: number;
+  voucherType: string;
+  discount: number;
+}
+
+export interface VoucherSplitResult {
+  k: number;
+  transactions: VoucherSplitTransaction[];
+  totalDiscount: number;
+}
+
+export function evaluateVoucherForBasket(items: ItemUnit[]): VoucherSplitTransaction {
+  const sum = items.reduce((s, u) => s + u.normalPrice, 0);
+  if (sum >= 50000 && sum <= 60000) {
+    return {
+      items,
+      totalNormal: sum,
+      voucherType: 'Voucher Min. 50k, Maks 30k',
+      discount: Math.min(30000, Math.round(sum * 0.5)),
+    };
+  }
+
+  return {
+    items,
+    totalNormal: sum,
+    voucherType: 'Voucher Tanpa Min (Maks 35k)',
+    discount: Math.min(35000, Math.round(sum * 0.5)),
+  };
+}
+
+export function findBestSplit(units: ItemUnit[]): VoucherSplitResult | null {
   const total = units.reduce((s, u) => s + u.normalPrice, 0);
   if (total <= 70000 || units.length < 2) return null;
 
-  let bestTx1: number[] | null = null;
-  let bestSum = Infinity;
+  const sorted = [...units].sort((a, b) => b.normalPrice - a.normalPrice);
+  const maxK = Math.min(sorted.length, Math.max(2, Math.floor(total / 40000)));
 
-  // Pruning search untuk menemukan kombinasi yang jumlahnya >= 50.000 dan sedekat mungkin ke 50.000 - 60.000
-  function backtrack(idx: number, currentIndices: number[], currentSum: number) {
-    if (currentSum >= 50000) {
-      if (currentSum < bestSum) {
-        bestSum = currentSum;
-        bestTx1 = [...currentIndices];
+  let bestResult: VoucherSplitResult | null = null;
+  let bestScore = -1;
+
+  for (let k = 2; k <= maxK; k++) {
+    // 1. Greedy assignment (Longest Processing Time first)
+    const greedyBaskets: ItemUnit[][] = Array.from({ length: k }, () => []);
+    const greedySums = new Array(k).fill(0);
+    for (const u of sorted) {
+      let minIdx = 0;
+      let minSum = Infinity;
+      for (let b = 0; b < k; b++) {
+        if (greedySums[b] < minSum) {
+          minSum = greedySums[b];
+          minIdx = b;
+        }
       }
-      return;
+      greedyBaskets[minIdx].push(u);
+      greedySums[minIdx] += u.normalPrice;
     }
-    if (idx >= units.length || currentSum >= bestSum) return;
 
-    backtrack(idx + 1, [...currentIndices, idx], currentSum + units[idx].normalPrice);
-    backtrack(idx + 1, currentIndices, currentSum);
+    if (!greedySums.some((s) => s === 0)) {
+      const txs = greedyBaskets.map(evaluateVoucherForBasket);
+      const totalDisc = txs.reduce((acc, t) => acc + t.discount, 0);
+      const score = totalDisc * 1000 - k;
+      if (score > bestScore) {
+        bestScore = score;
+        bestResult = { k, transactions: txs, totalDiscount: totalDisc };
+      }
+    }
+
+    // 2. Backtracking search jika sorted.length <= 14
+    if (sorted.length <= 14) {
+      let stateCount = 0;
+      const baskets: ItemUnit[][] = Array.from({ length: k }, () => []);
+      const sums = new Array(k).fill(0);
+
+      const search = (idx: number) => {
+        if (stateCount++ > 15000) return;
+        if (idx === sorted.length) {
+          if (sums.some((s) => s === 0)) return;
+          const txs = baskets.map(evaluateVoucherForBasket);
+          const totalDisc = txs.reduce((acc, t) => acc + t.discount, 0);
+          const sc = totalDisc * 1000 - k;
+          if (sc > bestScore) {
+            bestScore = sc;
+            bestResult = {
+              k,
+              transactions: txs.map((t) => ({ ...t, items: [...t.items] })),
+              totalDiscount: totalDisc,
+            };
+          }
+          return;
+        }
+
+        const item = sorted[idx];
+        let emptyVisited = false;
+        for (let b = 0; b < k; b++) {
+          if (sums[b] === 0) {
+            if (emptyVisited) continue;
+            emptyVisited = true;
+          }
+          if (sums[b] >= 75000 && item.normalPrice > 15000) continue;
+
+          baskets[b].push(item);
+          sums[b] += item.normalPrice;
+          search(idx + 1);
+          sums[b] -= item.normalPrice;
+          baskets[b].pop();
+        }
+      };
+
+      search(0);
+    }
   }
 
-  const sorted = units.slice(0, 15);
-  backtrack(0, [], 0);
+  if (!bestResult || bestResult.totalDiscount <= 35000) {
+    return null;
+  }
 
-  if (!bestTx1 || bestSum >= total) return null;
+  return bestResult;
+}
 
-  const tx1Set = new Set(bestTx1);
-  const tx1 = sorted.filter((_, i) => tx1Set.has(i));
-  const tx2 = [...sorted.filter((_, i) => !tx1Set.has(i)), ...units.slice(15)];
+export function cleanVariantTokens(tokens: string[], productName?: string): string[] {
+  const isDutchChoco = Boolean(productName && /dutch\s*choco/i.test(productName));
+  const isFrappe = Boolean(productName && /frappe/i.test(productName));
 
-  return { tx1, tx2 };
+  const flat: string[] = [];
+  for (const t of tokens) {
+    if (!t) continue;
+    const parts = t.split(',').map((p) => p.trim()).filter(Boolean);
+    flat.push(...parts);
+  }
+
+  const result: string[] = [];
+  for (const part of flat) {
+    const lower = part.toLowerCase();
+
+    // Default beans
+    if (lower === 'kenangan blend' || lower === 'fore blend' || lower === 'master blend') {
+      continue;
+    }
+    // Default milk
+    if (lower === 'milk' || lower === 'master milk') {
+      continue;
+    }
+    // Default sugar
+    if (lower === 'normal sugar' || lower === '100% sugar' || lower === 'regular sugar') {
+      continue;
+    }
+    // Default ice
+    if (lower === 'normal ice' || lower === '100% ice' || lower === 'regular ice') {
+      continue;
+    }
+    // Default espresso
+    if (lower === 'normal shot' || lower === '1 shot') {
+      continue;
+    }
+    // Default topping
+    if (lower === 'no topping' || lower === 'tanpa topping') {
+      continue;
+    }
+
+    // Default whipped cream untuk frappe
+    if (isFrappe) {
+      if (isDutchChoco) {
+        if (/coke?lat/i.test(lower) || /chocolate/i.test(lower)) {
+          continue; // Default whipped cream untuk Dutch Choco Kenangan Frappe
+        }
+      } else {
+        if (/vanil?la/i.test(lower)) {
+          continue; // Default whipped cream untuk seluruh Kenangan Frappe lainnya
+        }
+      }
+    }
+
+    result.push(part);
+  }
+
+  return result;
 }
 
 export function formatVoucherRecommendation(order: OrderRecord): string | null {
@@ -160,39 +306,23 @@ export function formatVoucherRecommendation(order: OrderRecord): string | null {
 
   // 4. Total Normal > 70k (Melebihi batas maksimal 70k untuk 1 voucher)
   const estDiscountSingle = Math.min(35000, Math.round(totalOrderNormal * 0.5));
-  const split = findSplitForMin50k(units);
+  const split = findBestSplit(units);
 
   if (split) {
-    const sum1 = split.tx1.reduce((s, u) => s + u.normalPrice, 0);
-    const sum2 = split.tx2.reduce((s, u) => s + u.normalPrice, 0);
-    const disc1 = Math.min(30000, Math.round(sum1 * 0.5));
-    const disc2 =
-      sum2 >= 50000 && sum2 <= 60000
-        ? Math.min(30000, Math.round(sum2 * 0.5))
-        : Math.min(35000, Math.round(sum2 * 0.5));
-    const totalSplitDisc = disc1 + disc2;
-
-    const names1 = split.tx1.map((u) => u.name).join(', ');
-    const names2 = split.tx2.map((u) => u.name).join(', ');
-    const tx2Voucher =
-      sum2 >= 50000 && sum2 <= 60000
-        ? 'Voucher Min. 50k (Maks 30k)'
-        : 'Voucher Tanpa Min (Maks 35k)';
-
     out += `• <i>Total normal melebihi batas 70k untuk 1 voucher.</i>\n`;
-    out += `🔥 <b>Saran: Split 2 Transaksi</b> (Est. Hemat ~<b>${formatRupiah(totalSplitDisc)}</b> vs ~Rp35.000 jika 1 transaksi):\n`;
-    out += `1. <b>Transaksi 1 (Voucher Min. 50k, Maks 30k):</b>\n`;
-    out += `   • Menu (~${formatRupiah(sum1)} normal): ${escapeHtml(names1)}\n`;
-    out += `   • Est. Diskon: <b>${formatRupiah(disc1)}</b>\n`;
-    out += `2. <b>Transaksi 2 (${tx2Voucher}):</b>\n`;
-    out += `   • Menu (~${formatRupiah(sum2)} normal): ${escapeHtml(names2)}\n`;
-    out += `   • Est. Diskon: <b>${formatRupiah(disc2)}</b>\n`;
+    out += `🔥 <b>Saran: Split ${split.k} Transaksi</b> (Est. Hemat ~<b>${formatRupiah(split.totalDiscount)}</b> vs ~Rp35.000 jika 1 transaksi):\n`;
+    split.transactions.forEach((tx, idx) => {
+      const names = tx.items.map((u) => u.name).join(', ');
+      out += `${idx + 1}. <b>Transaksi ${idx + 1} (${tx.voucherType}):</b>\n`;
+      out += `   • Menu (~${formatRupiah(tx.totalNormal)} normal): ${escapeHtml(names)}\n`;
+      out += `   • Est. Diskon: <b>${formatRupiah(tx.discount)}</b>\n`;
+    });
     out += `• <i>Jika tetap 1 transaksi: Gunakan Voucher Tanpa Minimal (Diskon mentok Rp35.000).</i>\n`;
     return out;
   }
 
   out += `• <i>Total normal melebihi batas 70k untuk 1 voucher.</i>\n`;
-  out += `🔥 <b>Saran: Split 2 Transaksi</b> agar menu 50k-60k dapat diskon voucher min. 50k dan sisanya voucher tanpa min.\n`;
+  out += `🔥 <b>Saran: Split Transaksi</b> jika memungkinkan agar diskon tidak terpotong batas maksimal voucher.\n`;
   out += `• <i>Jika tetap 1 transaksi: Gunakan Voucher Tanpa Minimal (Diskon mentok ${formatRupiah(estDiscountSingle)}).</i>\n`;
   return out;
 }
@@ -289,7 +419,10 @@ export function formatOrderTelegramMessage(order: OrderRecord, extraNote?: strin
       if (it.isBundle && it.bundleDetails && it.bundleDetails.length > 0) {
         const bundleLines = it.bundleDetails
           .map((d) => {
-            const opt = d.variantDescription ? ` (${escapeHtml(d.variantDescription)})` : '';
+            const cleanedBundleOpt = d.variantDescription
+              ? cleanVariantTokens([d.variantDescription], d.name).join(', ')
+              : '';
+            const opt = cleanedBundleOpt ? ` (${escapeHtml(cleanedBundleOpt)})` : '';
             const isFreeB1G1 =
               d.promoPrice === 0 || (it.bundleType === 'tomoro-b1g1' && d.promoPrice === 0);
             let dPrice = '';
@@ -329,9 +462,10 @@ export function formatOrderTelegramMessage(order: OrderRecord, extraNote?: strin
         }
       }
 
+      const cleanedOpts = cleanVariantTokens(optParts, it.name);
       const variantStr =
-        optParts.length > 0
-          ? ` (${escapeHtml(optParts.join(', '))})`
+        cleanedOpts.length > 0
+          ? ` (${escapeHtml(cleanedOpts.join(', '))})`
           : '';
 
       const hasPrice =

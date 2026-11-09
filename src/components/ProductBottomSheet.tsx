@@ -19,6 +19,7 @@ import {
   getClientCachedProductOptions,
   setClientCachedProductOptions,
   getProductDescriptionFallback,
+  getInitialWhippedCream,
 } from '@/lib/product-customization';
 
 function getInitialDimensions(opt: ProductOptionDetails | null): Record<number, number> {
@@ -139,7 +140,9 @@ export function ProductBottomSheet({
   const [selectedNotes, setSelectedNotes] = useState<Record<string, string>>(() =>
     getInitialNotes(initialOptions)
   );
-  const [selectedWhippedCream, setSelectedWhippedCream] = useState<Addon | null>(null);
+  const [selectedWhippedCream, setSelectedWhippedCream] = useState<Addon | null>(() =>
+    getInitialWhippedCream(initialOptions, product.name)
+  );
   const [selectedDairy, setSelectedDairy] = useState<Addon | null>(() =>
     getInitialDairy(initialOptions)
   );
@@ -153,17 +156,20 @@ export function ProductBottomSheet({
   const [quantity, setQuantity] = useState<number>(1);
   const [customerNotes, setCustomerNotes] = useState<string>('');
 
-  const applyOptions = useCallback((opt: ProductOptionDetails) => {
-    setOptions(opt);
-    setSelectedDimensions(getInitialDimensions(opt));
-    setSelectedNotes(getInitialNotes(opt));
-    setSelectedDairy(getInitialDairy(opt));
-    setSelectedEspresso(getInitialEspresso(opt));
-    setSelectedWhippedCream(null);
-    setSelectedSyrups([]);
-    setSelectedToppings(getInitialToppings(opt));
-    setIsLoading(false);
-  }, []);
+  const applyOptions = useCallback(
+    (opt: ProductOptionDetails) => {
+      setOptions(opt);
+      setSelectedDimensions(getInitialDimensions(opt));
+      setSelectedNotes(getInitialNotes(opt));
+      setSelectedDairy(getInitialDairy(opt));
+      setSelectedEspresso(getInitialEspresso(opt));
+      setSelectedWhippedCream(getInitialWhippedCream(opt, product.name));
+      setSelectedSyrups([]);
+      setSelectedToppings(getInitialToppings(opt));
+      setIsLoading(false);
+    },
+    [product.name]
+  );
 
   // Fetch product options
   useEffect(() => {
@@ -616,7 +622,7 @@ export function ProductBottomSheet({
                         type="button"
                         disabled={!isAvailable}
                         onClick={() => handleSelectDimensionValue(dim.code, val.id)}
-                        className={`min-h-[46px] p-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
+                        className={`min-h-[48px] h-full px-1.5 py-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
                           isSelected
                             ? 'border-[#2B1D12] bg-[#2B1D12] text-[#FAF4E8] font-display shadow-[2px_2px_0px_#C67D0A]'
                             : isAvailable
@@ -624,7 +630,7 @@ export function ProductBottomSheet({
                             : 'border-[#D4C3B2] bg-[#EFE5D8] text-[#8C7667] cursor-not-allowed line-through'
                         }`}
                       >
-                        <span className="line-clamp-2 leading-tight">{val.name}</span>
+                        <span className="leading-tight break-words text-center text-[11px] sm:text-xs">{val.name}</span>
                         {addition > 0 && (
                           <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#C67D0A]'}`}>
                             +{formatRupiah(addition)}
@@ -673,13 +679,13 @@ export function ProductBottomSheet({
                             [note.name]: optText,
                           }))
                         }
-                        className={`min-h-[46px] p-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
+                        className={`min-h-[48px] h-full px-1.5 py-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
                           isSelected
                             ? 'border-[#2B1D12] bg-[#2B1D12] text-[#FAF4E8] font-display shadow-[2px_2px_0px_#C67D0A]'
                             : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
                         }`}
                       >
-                        <span className="line-clamp-2 leading-tight">{optText}</span>
+                        <span className="leading-tight break-words text-center text-[11px] sm:text-xs">{optText}</span>
                       </button>
                     );
                   })}
@@ -710,7 +716,7 @@ export function ProductBottomSheet({
                       type="button"
                       disabled={addon.isSoldOut}
                       onClick={() => setSelectedWhippedCream(addon)}
-                      className={`min-h-[46px] p-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
+                      className={`min-h-[48px] h-full px-1.5 py-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
                         isSelected
                           ? 'border-[#2B1D12] bg-[#2B1D12] text-[#FAF4E8] font-display shadow-[2px_2px_0px_#C67D0A]'
                           : addon.isSoldOut
@@ -718,7 +724,7 @@ export function ProductBottomSheet({
                           : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
                       }`}
                     >
-                      <span className="line-clamp-2 leading-tight">{addon.name}</span>
+                      <span className="leading-tight break-words text-center text-[11px] sm:text-xs">{addon.name}</span>
                       <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#15803D]'}`}>
                         Gratis
                       </span>
@@ -751,7 +757,7 @@ export function ProductBottomSheet({
                       type="button"
                       disabled={addon.isSoldOut}
                       onClick={() => setSelectedDairy(addon)}
-                      className={`min-h-[46px] p-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
+                      className={`min-h-[48px] h-full px-1.5 py-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
                         isSelected
                           ? 'border-[#2B1D12] bg-[#2B1D12] text-[#FAF4E8] font-display shadow-[2px_2px_0px_#C67D0A]'
                           : addon.isSoldOut
@@ -759,7 +765,7 @@ export function ProductBottomSheet({
                           : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
                       }`}
                     >
-                      <span className="line-clamp-2 leading-tight">{addon.name}</span>
+                      <span className="leading-tight break-words text-center text-[11px] sm:text-xs">{addon.name}</span>
                       {addon.price > 0 ? (
                         <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#C67D0A]'}`}>
                           +{formatRupiah(addon.price)}
@@ -798,7 +804,7 @@ export function ProductBottomSheet({
                       type="button"
                       disabled={addon.isSoldOut}
                       onClick={() => setSelectedEspresso(addon)}
-                      className={`min-h-[46px] p-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
+                      className={`min-h-[48px] h-full px-1.5 py-2 rounded-xl text-xs font-bold border-2 text-center flex flex-col items-center justify-center transition ${
                         isSelected
                           ? 'border-[#2B1D12] bg-[#2B1D12] text-[#FAF4E8] font-display shadow-[2px_2px_0px_#C67D0A]'
                           : addon.isSoldOut
@@ -806,7 +812,7 @@ export function ProductBottomSheet({
                           : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
                       }`}
                     >
-                      <span className="line-clamp-2 leading-tight">{addon.name}</span>
+                      <span className="leading-tight break-words text-center text-[11px] sm:text-xs">{addon.name}</span>
                       {addon.price > 0 ? (
                         <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#C67D0A]'}`}>
                           +{formatRupiah(addon.price)}
@@ -874,7 +880,7 @@ export function ProductBottomSheet({
                             </svg>
                           )}
                         </div>
-                        <span className="line-clamp-2 leading-tight text-[11px] font-bold">{addon.name}</span>
+                        <span className="leading-tight break-words text-[11px] font-bold">{addon.name}</span>
                       </div>
                       {priceToAdd > 0 ? (
                         <span className="text-[10px] text-[#2B1D12] shrink-0 font-extrabold">
@@ -943,7 +949,7 @@ export function ProductBottomSheet({
                             </svg>
                           )}
                         </div>
-                        <span className="line-clamp-2 leading-tight text-[11px] font-bold">{addon.name}</span>
+                        <span className="leading-tight break-words text-[11px] font-bold">{addon.name}</span>
                       </div>
                       {priceToAdd > 0 ? (
                         <span className="text-[10px] text-[#2B1D12] shrink-0 font-extrabold">

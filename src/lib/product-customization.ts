@@ -1,4 +1,4 @@
-import type { Product, ProductOptionDetails, VariantSku } from '../types/domain.ts';
+import type { Product, ProductOptionDetails, VariantSku, Addon } from '../types/domain.ts';
 import { getKkMenuDescription } from './kk-menu-descriptions.ts';
 
 /**
@@ -120,4 +120,37 @@ export function setClientCachedProductOptions(
 
 export function clearClientCachedProductOptions(): void {
   clientOptionsMemoryCache.clear();
+}
+
+/**
+ * Menentukan opsi Whipped Cream default untuk menu minuman:
+ * - Khusus Dutch Choco Kenangan Frappe: default 'Whipped Cream Coklat' (atau Chocolate)
+ * - Seluruh menu Kenangan Frappe lainnya: default 'Whipped Cream Vanilla'
+ * - Jika bukan Frappe atau tidak ada opsi whipped cream, kembalikan null
+ */
+export function getInitialWhippedCream(
+  opt: ProductOptionDetails | null,
+  productName?: string
+): Addon | null {
+  const allAddons = opt?.addons || [];
+  const whipped = allAddons.filter((a) => a.group === 'whipped_cream');
+  if (whipped.length === 0) return null;
+
+  const isDutchChoco = Boolean(productName && /dutch\s*choco/i.test(productName));
+
+  if (isDutchChoco) {
+    const chocolate = whipped.find(
+      (w) =>
+        /coke?lat/i.test(w.name) ||
+        /chocolate/i.test(w.name)
+    );
+    if (chocolate && !chocolate.isSoldOut) return chocolate;
+  }
+
+  // Untuk seluruh menu Kenangan Frappe lainnya: default Vanilla
+  const vanilla = whipped.find((w) => /vanil?la/i.test(w.name));
+  if (vanilla && !vanilla.isSoldOut) return vanilla;
+
+  // Fallback: opsi pertama yang masih tersedia (stok ada)
+  return whipped.find((w) => !w.isSoldOut) || whipped[0] || null;
 }

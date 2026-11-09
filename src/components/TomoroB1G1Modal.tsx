@@ -281,10 +281,10 @@ export function TomoroB1G1Modal({
                         : 'bg-[#FFFDF9] text-[#2B1D12] border-[#2B1D12] hover:bg-[#FFE7D6] shadow-[2px_2px_0px_#2B1D12] cursor-pointer'
                   }`}
                 >
-                  <div className="text-[10px] font-black uppercase tracking-wider opacity-90 truncate">
+                  <div className="text-[10px] font-black uppercase tracking-wider opacity-90 break-words leading-tight">
                     {slotLabel}
                   </div>
-                  <div className="text-xs font-black truncate mt-1">
+                  <div className="text-xs font-black leading-tight break-words mt-1 line-clamp-2">
                     {slot.product ? slot.product.name : 'Pilih menu...'}
                   </div>
                   {slot.product && (
@@ -361,7 +361,7 @@ export function TomoroB1G1Modal({
                       ) : null}
 
                       <div className="min-w-0 flex-1">
-                        <div className="truncate font-black text-xs text-[#2B1D12]">{p.name}</div>
+                        <div className="font-black text-xs text-[#2B1D12] leading-tight break-words">{p.name}</div>
                         {p.description && (
                           <div className="text-[10px] text-[#7A6658] font-normal truncate mt-0.5">
                             {p.description}

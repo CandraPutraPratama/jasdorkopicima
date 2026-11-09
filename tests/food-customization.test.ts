@@ -4,6 +4,7 @@ import {
   isFoodOrNonCustomizableProduct,
   getSynthesizedNonCustomizableOptions,
   getProductDescriptionFallback,
+  getInitialWhippedCream,
 } from '../src/lib/product-customization.ts';
 import type { Product } from '../src/types/domain.ts';
 import { cleanNotes } from '../src/lib/whatsapp.ts';
@@ -145,5 +146,42 @@ describe('Food & Non-Customizable Products - Detection & Sheet Flow', () => {
       false
     );
     assert.strictEqual(drinkFallback, 'Pilih varian suhu, ukuran, dan topping favoritmu.');
+  });
+
+  describe('getInitialWhippedCream defaults', () => {
+    const mockWhippedOptions = {
+      product: { name: 'Frappe' } as any,
+      dimensions: [],
+      skus: [],
+      optionMap: {},
+      defaultSelectionMap: {},
+      addons: [
+        { sku: 'WC-1', name: 'Whipped Cream Vanilla', price: 0, categoryName: 'Whipped Cream', group: 'whipped_cream' as const },
+        { sku: 'WC-2', name: 'Whipped Cream Coklat', price: 0, categoryName: 'Whipped Cream', group: 'whipped_cream' as const },
+        { sku: 'WC-0', name: 'No Whipped Cream', price: 0, categoryName: 'Whipped Cream', group: 'whipped_cream' as const },
+      ],
+      notes: [],
+    };
+
+    it('memilih default Whipped Cream Vanilla untuk menu Kenangan Frappe biasa', () => {
+      const selected = getInitialWhippedCream(mockWhippedOptions, 'Butterscotch Kenangan Frappe');
+      assert.ok(selected);
+      assert.strictEqual(selected.name, 'Whipped Cream Vanilla');
+
+      const selectedMatcha = getInitialWhippedCream(mockWhippedOptions, 'Matcha Kenangan Frappe');
+      assert.ok(selectedMatcha);
+      assert.strictEqual(selectedMatcha.name, 'Whipped Cream Vanilla');
+    });
+
+    it('memilih default Whipped Cream Coklat khusus untuk Dutch Choco Kenangan Frappe', () => {
+      const selected = getInitialWhippedCream(mockWhippedOptions, 'Dutch Choco Kenangan Frappe');
+      assert.ok(selected);
+      assert.strictEqual(selected.name, 'Whipped Cream Coklat');
+    });
+
+    it('mengembalikan null jika tidak ada opsi whipped cream', () => {
+      const selected = getInitialWhippedCream({ ...mockWhippedOptions, addons: [] }, 'Kopi Kenangan Mantan');
+      assert.strictEqual(selected, null);
+    });
   });
 });
