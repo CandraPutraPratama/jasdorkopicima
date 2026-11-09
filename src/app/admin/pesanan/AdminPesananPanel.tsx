@@ -7,6 +7,14 @@ import { formatRupiah } from '@/lib/currency';
 import { getOrderBreakdown } from '@/lib/pricing';
 import type { OperationalOverride } from '@/lib/site-settings';
 import type { OperationalStatusResult } from '@/lib/operational';
+import {
+  getSoundEnabled,
+  setSoundEnabled,
+  playOrderChime,
+  playTestTone,
+  detectNewPendingOrders,
+  formatAdminTitleAlert,
+} from '@/lib/admin-sound';
 
 // Pesanan yang relevan untuk tampilan default panel: yang sudah melewati klaim
 // pembayaran (sudah klik "Saya Sudah Bayar"), ditambah pesanan terminal yang
@@ -69,6 +77,32 @@ export default function AdminPesananPanel() {
   // Pilihan massal untuk memasukkan pesanan Perlu Dicek ke Antrian
   const [selectedQueueIds, setSelectedQueueIds] = useState<string[]>([]);
   const [isBulkQueueing, setIsBulkQueueing] = useState(false);
+
+  // Notifikasi Suara (Audio Alert) & Deteksi Pesanan Baru
+  const [isSoundEnabled, setIsSoundEnabled] = useState<boolean>(true);
+  const isSoundEnabledRef = useRef<boolean>(true);
+  const isInitialLoadRef = useRef<boolean>(true);
+  const [newOrderBanner, setNewOrderBanner] = useState<string | null>(null);
+
+  useEffect(() => {
+    const saved = getSoundEnabled();
+    setIsSoundEnabled(saved);
+    isSoundEnabledRef.current = saved;
+  }, []);
+
+  const handleToggleSound = () => {
+    const next = !isSoundEnabled;
+    setIsSoundEnabled(next);
+    isSoundEnabledRef.current = next;
+    setSoundEnabled(next);
+    if (next) {
+      playTestTone();
+    }
+  };
+
+  const handleTestSound = () => {
+    playTestTone();
+  };
 
   // Pengaturan Situs: Mode Khusus Bundling
   const [isBundlingOnly, setIsBundlingOnly] = useState<boolean>(false);
@@ -146,7 +180,28 @@ export default function AdminPesananPanel() {
         throw new Error(data.error || 'Gagal memuat daftar pesanan');
       }
       setIsAuthenticated(true);
-      setOrders(data.orders || []);
+      const nextOrders: OrderRecord[] = data.orders || [];
+
+      // Deteksi pesanan baru yang menunggu konfirmasi admin
+      if (!isInitialLoadRef.current) {
+        const newPending = detectNewPendingOrders(ordersRef.current, nextOrders, false);
+        if (newPending.length > 0) {
+          if (isSoundEnabledRef.current) {
+            playOrderChime();
+          }
+          const latest = newPending[0];
+          const outletInfo = latest.outlet_name || latest.outlet_code || 'Outlet';
+          setNewOrderBanner(
+            newPending.length === 1
+              ? `🔔 Pesanan Baru Masuk: #${latest.id.slice(0, 8)} (${latest.customer_name} - ${outletInfo})`
+              : `🔔 Ada ${newPending.length} pesanan baru menunggu konfirmasi pembayaran!`
+          );
+        }
+      } else {
+        isInitialLoadRef.current = false;
+      }
+
+      setOrders(nextOrders);
       setLastUpdatedAt(new Date());
     } catch (err: any) {
       setOrderError(err.message || 'Terjadi kesalahan saat memuat pesanan');
@@ -159,6 +214,55 @@ export default function AdminPesananPanel() {
     fetchOrders();
     fetchSettings();
   }, [fetchOrders, fetchSettings]);
+
+  // Polling otomatis: 15 detik saat tab aktif, 30 detik saat tab di background
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    let timerId: ReturnType<typeof setTimeout> | null = null;
+    let isCancelled = false;
+
+    const scheduleNextPoll = () => {
+      if (isCancelled) return;
+      const delay =
+        typeof document !== 'undefined' && document.visibilityState === 'visible'
+          ? 15000
+          : 30000;
+
+      timerId = setTimeout(async () => {
+        if (!isCancelled) {
+          await fetchOrders();
+          scheduleNextPoll();
+        }
+      }, delay);
+    };
+
+    scheduleNextPoll();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchOrders();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      isCancelled = true;
+      if (timerId) clearTimeout(timerId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isAuthenticated, fetchOrders]);
+
+  // Notifikasi judul tab dinamis saat ada pesanan menunggu konfirmasi
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const count = orders.filter((o) => o.status === 'menunggu_konfirmasi').length;
+    document.title = formatAdminTitleAlert(count);
+    return () => {
+      document.title = 'Panel Admin Pesanan | Jasdor Kopi Cima';
+    };
+  }, [isAuthenticated, orders]);
 
 
   
@@ -515,16 +619,45 @@ export default function AdminPesananPanel() {
             <p className="text-[11px] text-[#7A6455] font-medium">Kelola pesanan dan kontrol operasional website</p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#7A6455]">
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7A6455]" />
-              Manual
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#7A6455] bg-white px-2.5 py-1 rounded-lg border border-[#E0D4C5]">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span>Auto 15s</span>
               {lastUpdatedAt && (
-                <span className="font-normal">
-                  · {lastUpdatedAt.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                <span className="font-normal text-[10px] hidden sm:inline">
+                  · {lastUpdatedAt.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                 </span>
               )}
             </span>
+
+            <button
+              type="button"
+              onClick={handleToggleSound}
+              title={isSoundEnabled ? 'Matikan Notifikasi Suara' : 'Aktifkan Notifikasi Suara'}
+              className={`px-2.5 py-1 text-xs font-bold rounded-lg border transition flex items-center gap-1 cursor-pointer ${
+                isSoundEnabled
+                  ? 'bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100'
+                  : 'bg-neutral-100 text-neutral-500 border-neutral-300 hover:bg-neutral-200'
+              }`}
+            >
+              <span>{isSoundEnabled ? '🔊' : '🔇'}</span>
+              <span className="hidden sm:inline">{isSoundEnabled ? 'Suara ON' : 'Suara OFF'}</span>
+            </button>
+
+            {isSoundEnabled && (
+              <button
+                type="button"
+                onClick={handleTestSound}
+                title="Tes Bunyi Chime Speaker"
+                className="px-2 py-1 bg-white border border-[#E0D4C5] hover:bg-[#F2EBE1] text-[#26150B] text-xs font-semibold rounded-lg transition cursor-pointer"
+              >
+                Tes
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => {
@@ -532,14 +665,14 @@ export default function AdminPesananPanel() {
                 fetchSettings();
               }}
               disabled={isLoadingOrders || isLoadingSettings}
-              className="px-3 py-1.5 bg-white border border-[#E0D4C5] hover:bg-[#F2EBE1] text-[#26150B] text-xs font-semibold rounded-lg shadow-2xs transition cursor-pointer"
+              className="px-3 py-1 bg-white border border-[#E0D4C5] hover:bg-[#F2EBE1] text-[#26150B] text-xs font-semibold rounded-lg shadow-2xs transition cursor-pointer"
             >
               {isLoadingOrders || isLoadingSettings ? 'Memuat...' : 'Segarkan'}
             </button>
             <button
               type="button"
               onClick={handleLogout}
-              className="px-3 py-1.5 bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold rounded-lg transition cursor-pointer"
+              className="px-3 py-1 bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold rounded-lg transition cursor-pointer"
             >
               Keluar
             </button>
@@ -638,6 +771,36 @@ export default function AdminPesananPanel() {
 
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-4 pt-4 space-y-4">
+        {/* Banner Notifikasi Pesanan Baru (Audio + Visual Alert) */}
+        {newOrderBanner && (
+          <div className="p-3 bg-gradient-to-r from-amber-500 to-rose-500 text-white rounded-2xl shadow-[3px_3px_0px_#26150B] border-2 border-[#26150B] flex items-center justify-between gap-3 animate-pulse">
+            <div className="flex items-center gap-2">
+              <span className="text-xl shrink-0">🔔</span>
+              <span className="text-xs font-black leading-tight">{newOrderBanner}</span>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  handleSelectTab('pesanan');
+                  setFilterStatus('menunggu_konfirmasi');
+                  setNewOrderBanner(null);
+                }}
+                className="px-2.5 py-1 bg-white text-[#26150B] text-xs font-black rounded-lg shadow-xs cursor-pointer hover:bg-amber-50 active:scale-95 transition"
+              >
+                Periksa
+              </button>
+              <button
+                type="button"
+                onClick={() => setNewOrderBanner(null)}
+                className="p-1 hover:bg-white/20 rounded-md text-white text-xs font-bold cursor-pointer"
+                title="Tutup Notifikasi"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
         {/* Kontrol Status Operasional Website (Manual Override) */}
         {activeTab === 'operasional' && (
           <section aria-label="Status Operasional Website" className="bg-white rounded-2xl border-2 border-[#26150B] p-4 shadow-[3px_3px_0px_#26150B] space-y-3">
