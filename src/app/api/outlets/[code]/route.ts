@@ -76,9 +76,31 @@ async function handleGet(
       return NextResponse.json(responsePayload);
     }
 
-    const rawStore = await kkApiClient.getStore(code);
+    let rawStore: any = null;
+    try {
+      rawStore = await kkApiClient.getStore(code);
+    } catch (e: any) {
+      console.warn(`[ApiOutletDetail] kkApiClient.getStore error for [${code}]:`, e.message);
+    }
+
+    if (!rawStore) {
+      const dbOutlet = await getOutletByCode(code);
+      if (dbOutlet) {
+        const inScope = await verifyStoreScope(code, dbOutlet);
+        if (inScope) {
+          const responsePayload = { outlet: dbOutlet };
+          await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.storeOpenStatusTtlSeconds);
+          return NextResponse.json(responsePayload);
+        }
+      }
+      return NextResponse.json(
+        { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
+        { status: 404 }
+      );
+    }
+
     const inScope = await verifyStoreScope(code, rawStore);
-    if (!rawStore || !inScope) {
+    if (!inScope) {
       return NextResponse.json(
         { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
         { status: 404 }

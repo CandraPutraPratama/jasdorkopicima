@@ -3,7 +3,8 @@ import { kkApiClient } from '@/lib/kk-client';
 import { normalizeMenu } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
-import { verifyStoreScope } from '@/lib/outlet-service';
+import { verifyStoreScope, getOutletByCode } from '@/lib/outlet-service';
+import { getKopiKenanganFallbackMenu } from '@/lib/kk-menu-fallback';
 import { safeNormalizeOutletCode } from '@/lib/sanitizer';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
 import type { MenuGroup } from '@/types/domain';
@@ -70,35 +71,37 @@ async function handleGet(
   }
 
   // Validasi apakah outlet berada dalam lingkup Kopi Kenangan resmi
+  let rawStore: any = null;
   try {
-    const rawStore = await kkApiClient.getStore(code);
-    const inScope = await verifyStoreScope(code, rawStore);
-    if (!rawStore || !inScope) {
-      return NextResponse.json(
-        { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
-        { status: 404 }
-      );
-    }
+    rawStore = await kkApiClient.getStore(code);
   } catch (storeErr: any) {
-    if (
-      storeErr.message?.includes('404') ||
-      storeErr.message?.includes('tidak ditemukan') ||
-      storeErr.message?.includes('not exist')
-    ) {
-      return NextResponse.json(
-        { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
-        { status: 404 }
-      );
+    console.warn(`[Menu API] kkApiClient.getStore error for [${code}]:`, storeErr.message);
+  }
+
+  let isVerifiedInScope = false;
+  if (rawStore) {
+    isVerifiedInScope = await verifyStoreScope(code, rawStore);
+  } else {
+    const dbOutlet = await getOutletByCode(code);
+    if (dbOutlet) {
+      isVerifiedInScope = await verifyStoreScope(code, dbOutlet);
     }
+  }
+
+  if (!isVerifiedInScope) {
+    return NextResponse.json(
+      { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
+      { status: 404 }
+    );
   }
 
   // 1. Cek cache segar untuk Kopi Kenangan
   const cached = await cacheService.get<{ menuGroups: MenuGroup[] }>(cacheKey);
-  if (cached) {
+  if (cached && cached.menuGroups && cached.menuGroups.length > 0) {
     return NextResponse.json(cached);
   }
 
-  // 2. Ambil dari KK API dengan proteksi stale-if-error
+  // 2. Ambil dari KK API dengan proteksi stale-if-error dan fallback kanonikal
   try {
     const rawMenu = await kkApiClient.queryProductMenu(code);
     const menuGroups = normalizeMenu(rawMenu);
@@ -111,7 +114,7 @@ async function handleGet(
 
     // Stale-if-error: kembalikan cache terakhir walau sudah kedaluwarsa
     const staleData = await cacheService.getStale<{ menuGroups: MenuGroup[] }>(cacheKey);
-    if (staleData) {
+    if (staleData && staleData.menuGroups && staleData.menuGroups.length > 0) {
       console.warn(`[Menu API] Menggunakan STALE data untuk outlet [${code}] karena KK error.`);
       return NextResponse.json(
         { ...staleData, isStale: true },
@@ -119,10 +122,12 @@ async function handleGet(
       );
     }
 
-    return NextResponse.json(
-      { error: error.message || 'Gagal memuat menu outlet' },
-      { status: 500 }
-    );
+    // Fallback menu kanonikal Kopi Kenangan jika KK API token tidak dapat dijangkau
+    console.info(`[Menu API] Menggunakan menu kanonikal fallback untuk [${code}].`);
+    const fallbackMenu = getKopiKenanganFallbackMenu();
+    const fallbackPayload = { menuGroups: fallbackMenu, isFallback: true };
+    await cacheService.set(cacheKey, fallbackPayload, BUSINESS_CONFIG.cache.menuTtlSeconds);
+    return NextResponse.json(fallbackPayload);
   }
 }
 

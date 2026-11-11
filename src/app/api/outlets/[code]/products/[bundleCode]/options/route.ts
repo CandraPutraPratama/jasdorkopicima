@@ -3,7 +3,8 @@ import { kkApiClient } from '@/lib/kk-client';
 import { normalizeProductOptions } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
-import { verifyStoreScope } from '@/lib/outlet-service';
+import { verifyStoreScope, getOutletByCode } from '@/lib/outlet-service';
+import { findCrossOutletCachedOptions } from '@/lib/kk-menu-fallback';
 import { safeNormalizeOutletCode } from '@/lib/sanitizer';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
 import { checkAndLogMarginSafety } from '@/lib/margin-guard';
@@ -74,21 +75,39 @@ async function handleGet(
 
   // 1. Cek cache segar untuk Kopi Kenangan
   const cached = await cacheService.get<{ options: ProductOptionDetails }>(cacheKey);
-  if (cached) {
+  if (cached && cached.options) {
     return NextResponse.json(cached);
   }
 
-  // 2. Ambil dari KK API dengan proteksi stale-if-error
+  // 2. Validasi apakah outlet berada dalam lingkup resmi Kopi Kenangan
+  let store: any = null;
   try {
-    const store = await kkApiClient.getStore(code);
-    const inScope = await verifyStoreScope(code, store);
-    if (!store || !inScope) {
-      return NextResponse.json(
-        { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
-        { status: 404 }
-      );
+    store = await kkApiClient.getStore(code);
+  } catch (storeErr: any) {
+    console.warn(`[Options API] kkApiClient.getStore error for [${code}]:`, storeErr.message);
+  }
+
+  let inScope = false;
+  if (store) {
+    inScope = await verifyStoreScope(code, store);
+  } else {
+    const dbOutlet = await getOutletByCode(code);
+    if (dbOutlet) {
+      inScope = await verifyStoreScope(code, dbOutlet);
+      store = dbOutlet;
     }
-    const rawOptions = await kkApiClient.getProductOptions(store.id, code, bundleCode);
+  }
+
+  if (!store || !inScope) {
+    return NextResponse.json(
+      { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
+      { status: 404 }
+    );
+  }
+
+  // 3. Ambil dari KK API dengan proteksi stale-if-error dan fallback cross-outlet
+  try {
+    const rawOptions = await kkApiClient.getProductOptions(store.id || 0, code, bundleCode);
     const options = normalizeProductOptions(rawOptions);
 
     // Pengaman margin berjalan: pantau jika selisih KK melebihi ambang batas impas
@@ -100,26 +119,14 @@ async function handleGet(
     });
 
     const responsePayload = { options };
-
     await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.optionsTtlSeconds);
     return NextResponse.json(responsePayload);
   } catch (error: any) {
     console.error(`[Options API] KK gagal mengambil opsi [${code}/${bundleCode}]: ${error.message}`);
 
-    if (
-      error.message?.includes('404') ||
-      error.message?.includes('tidak ditemukan') ||
-      error.message?.includes('not exist')
-    ) {
-      return NextResponse.json(
-        { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
-        { status: 404 }
-      );
-    }
-
     // Stale-if-error: kembalikan cache terakhir walau sudah kedaluwarsa
     const staleData = await cacheService.getStale<{ options: ProductOptionDetails }>(cacheKey);
-    if (staleData) {
+    if (staleData && staleData.options) {
       console.warn(`[Options API] Menggunakan STALE data untuk opsi [${code}/${bundleCode}] karena KK error.`);
       return NextResponse.json(
         { ...staleData, isStale: true },
@@ -127,9 +134,25 @@ async function handleGet(
       );
     }
 
+    // Cross-outlet fallback: cari opsi autentik dari snapshot generic_cache atau fallback sintetis
+    const fallbackOptions = await findCrossOutletCachedOptions(bundleCode);
+    if (fallbackOptions) {
+      console.info(`[Options API] Menggunakan fallback opsi untuk [${bundleCode}].`);
+      checkAndLogMarginSafety({
+        productName: fallbackOptions.product.name,
+        outletCode: code,
+        basePrice: fallbackOptions.product.basePrice,
+        skus: fallbackOptions.skus,
+      });
+
+      const responsePayload = { options: fallbackOptions };
+      await cacheService.set(cacheKey, responsePayload, BUSINESS_CONFIG.cache.optionsTtlSeconds);
+      return NextResponse.json(responsePayload);
+    }
+
     return NextResponse.json(
-      { error: error.message || 'Gagal memuat opsi varian produk' },
-      { status: 500 }
+      { error: 'Varian produk tidak ditemukan atau tidak tersedia' },
+      { status: 404 }
     );
   }
 }
