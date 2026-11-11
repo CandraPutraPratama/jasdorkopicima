@@ -43,6 +43,8 @@ test('Kopi Kenangan Fallback Menu - Struktur dan Integritas', async (t) => {
       bundleCode: '9999999',
       productCode: '9999999000',
       name: 'Kopi Kenangan Mantan',
+      description: 'Espresso dengan susu dan gula aren',
+      image: 'https://gambar.cimagroup.my.id/product/sample.jpg',
       basePrice: 19000,
       originalPrice: 19000,
       isSoldOut: false,
