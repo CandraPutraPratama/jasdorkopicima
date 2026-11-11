@@ -2,12 +2,21 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { getEnvVar } from './env.ts';
 
 let serverClientInstance: SupabaseClient | null = null;
+let isCustomMockInstance = false;
 
 /**
  * Menyimpan instance khusus (misal untuk mock dalam unit testing).
  */
 export function setSupabaseServerClientInstance(client: SupabaseClient | null) {
   serverClientInstance = client;
+  isCustomMockInstance = client !== null;
+}
+
+/**
+ * Memeriksa apakah saat ini sedang menggunakan client mock khusus dalam unit testing.
+ */
+export function isCustomSupabaseClientInstance(): boolean {
+  return isCustomMockInstance;
 }
 
 /**

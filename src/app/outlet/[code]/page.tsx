@@ -13,7 +13,6 @@ import { ProductCardSkeleton, CategoryTabSkeleton } from '@/components/Skeleton'
 import { useCart } from '@/hooks/useCart';
 import { useFavorites } from '@/hooks/useFavorites';
 import { FloatingCartBar } from '@/components/FloatingCartBar';
-import { CartDrawer } from '@/components/CartDrawer';
 import { determineActiveCategory } from '@/lib/category-scrollspy';
 import { isOutletClosed as checkIsOutletClosed } from '@/lib/orderability';
 import { resolveBrandSlugFromOutletCode } from '@/lib/site-config';
@@ -53,6 +52,11 @@ const SwitchOutletModal = dynamic(
 
 const CreateGroupOrderModal = dynamic(
   () => import('@/components/CreateGroupOrderModal').then((m) => m.CreateGroupOrderModal),
+  { ssr: false }
+);
+
+const CartDrawer = dynamic(
+  () => import('@/components/CartDrawer').then((m) => m.CartDrawer),
   { ssr: false }
 );
 

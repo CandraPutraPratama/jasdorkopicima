@@ -7,6 +7,14 @@ interface OutletLayoutProps {
   params: Promise<{ code: string }>;
 }
 
+interface CachedMetadata {
+  metadata: Metadata;
+  expiresAt: number;
+}
+
+const metadataMemoryCache = new Map<string, CachedMetadata>();
+const METADATA_MEMORY_TTL_MS = 3600_000; // 1 jam cache di memori isolate Worker
+
 export async function generateMetadata({
   params,
 }: {
@@ -20,6 +28,11 @@ export async function generateMetadata({
   }
 
   const cleanCode = safeNormalizeOutletCode(code);
+
+  const cached = metadataMemoryCache.get(cleanCode);
+  if (cached && Date.now() < cached.expiresAt) {
+    return cached.metadata;
+  }
 
   try {
     const supabase = getSupabaseServerClient();
@@ -63,7 +76,7 @@ export async function generateMetadata({
         address ? ` (${address})` : ''
       }. Layanan jasa order hemat, biaya jasa mulai Rp2.300/item, checkout otomatis via WhatsApp.`;
 
-      return {
+      const resultMeta: Metadata = {
         title: outletName,
         description,
         openGraph: {
@@ -86,15 +99,29 @@ export async function generateMetadata({
           images: ['/og-image.png'],
         },
       };
+
+      metadataMemoryCache.set(cleanCode, {
+        metadata: resultMeta,
+        expiresAt: Date.now() + METADATA_MEMORY_TTL_MS,
+      });
+
+      return resultMeta;
     }
   } catch {
     // Fallback bila database tidak merespons
   }
 
-  return {
+  const fallbackMeta: Metadata = {
     title: `Outlet ${cleanCode}`,
     description: `Pesan menu favorit di outlet ${cleanCode}. Promo jasa order hemat via Jasdor.`,
   };
+
+  metadataMemoryCache.set(cleanCode, {
+    metadata: fallbackMeta,
+    expiresAt: Date.now() + 60_000,
+  });
+
+  return fallbackMeta;
 }
 
 export default function OutletLayout({ children }: OutletLayoutProps) {

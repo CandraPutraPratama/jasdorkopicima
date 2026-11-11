@@ -1,4 +1,4 @@
-import { getSupabaseServerClient } from './supabase-server.ts';
+import { getSupabaseServerClient, isCustomSupabaseClientInstance } from './supabase-server.ts';
 import { isMinOrder50kMode } from './feature-flags.ts';
 
 export type OperationalOverride = 'auto' | 'force_open' | 'force_closed' | 'temporary_break';
@@ -19,11 +19,28 @@ export class SiteSettingsError extends Error {
   }
 }
 
+interface CachedSetting {
+  value: string | null;
+  expiresAt: number;
+}
+
+const siteSettingsMemoryCache = new Map<string, CachedSetting>();
+const SITE_SETTINGS_MEMORY_TTL_MS = 60_000; // 60 detik cache di memori isolate Worker
+
 /**
  * Mengambil nilai pengaturan situs berdasarkan key dari database Supabase.
  * Mengembalikan null jika key tidak ditemukan atau jika tabel belum tersedia.
+ * Dilengkapi memory cache agar Cloudflare Worker tidak kehabisan CPU (Error 1102).
  */
 export async function getSiteSetting(key: string): Promise<string | null> {
+  const isMock = isCustomSupabaseClientInstance();
+  if (!isMock) {
+    const cached = siteSettingsMemoryCache.get(key);
+    if (cached && Date.now() < cached.expiresAt) {
+      return cached.value;
+    }
+  }
+
   try {
     const supabase = getSupabaseServerClient();
     const { data, error } = await supabase
@@ -35,12 +52,24 @@ export async function getSiteSetting(key: string): Promise<string | null> {
     if (error) {
       // Jika tabel belum dibuat (misal migrasi belum dijalankan), log peringatan dan kembalikan null
       console.warn(`[SiteSettings] Gagal membaca key "${key}":`, error.message);
+      if (!isMock) {
+        const cached = siteSettingsMemoryCache.get(key);
+        if (cached) return cached.value;
+      }
       return null;
     }
 
-    return data?.value ?? null;
+    const val = data?.value ?? null;
+    if (!isMock) {
+      siteSettingsMemoryCache.set(key, { value: val, expiresAt: Date.now() + SITE_SETTINGS_MEMORY_TTL_MS });
+    }
+    return val;
   } catch (err: unknown) {
     console.warn(`[SiteSettings] Exception saat membaca key "${key}":`, err instanceof Error ? err.message : String(err));
+    if (!isMock) {
+      const cached = siteSettingsMemoryCache.get(key);
+      if (cached) return cached.value;
+    }
     return null;
   }
 }
@@ -49,6 +78,7 @@ export async function getSiteSetting(key: string): Promise<string | null> {
  * Menyimpan atau memperbarui nilai pengaturan situs (upsert) ke database Supabase.
  */
 export async function setSiteSetting(key: string, value: string): Promise<void> {
+  siteSettingsMemoryCache.set(key, { value, expiresAt: Date.now() + SITE_SETTINGS_MEMORY_TTL_MS });
   const supabase = getSupabaseServerClient();
   const now = new Date().toISOString();
 

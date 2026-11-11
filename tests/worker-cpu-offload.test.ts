@@ -104,6 +104,11 @@ describe("komponen modal dan widget berat di-load dinamis (ssr: false) untuk off
       /const SwitchOutletModal\s*=\s*dynamic\([^}]*ssr:\s*false/,
       "SwitchOutletModal harus di-load dengan dynamic ssr: false"
     );
+    assert.match(
+      src,
+      /const CartDrawer\s*=\s*dynamic\([^}]*ssr:\s*false/,
+      "CartDrawer harus di-load dengan dynamic ssr: false"
+    );
   });
 
   it("halaman brand memuat KopiKenanganWifiBox dengan dynamic ssr: false", () => {
