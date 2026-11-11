@@ -27,6 +27,7 @@ import { getRecommendedProducts } from '@/lib/recommendations';
 import { BundlePackageCard } from '@/components/BundlePackageCard';
 import { safeNormalizeOutletCode } from '@/lib/sanitizer';
 import { filterProductsByQuery } from '@/lib/menu-search';
+import { getClientSessionCache, setClientSessionCache } from '@/lib/client-cache';
 import type { Outlet, MenuGroup, Product } from '@/types/domain';
 
 // Offload SSR ke client untuk modal dan bottom sheet berat agar Cloudflare Worker tidak terkena Error 1102
@@ -202,6 +203,26 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     if (!outletCode) return;
 
     let isCancelled = false;
+    const cacheKey = `outlet_data:${outletCode.toUpperCase()}`;
+
+    // Nomor 2: Cek Client Storage Cache (sessionStorage) terlebih dahulu
+    const cached = getClientSessionCache<{ outlet: Outlet; menuGroups: MenuGroup[] }>(cacheKey, 300_000);
+    if (cached && cached.outlet && Array.isArray(cached.menuGroups) && cached.menuGroups.length > 0) {
+      setOutlet(cached.outlet);
+      setMenuGroups(cached.menuGroups);
+      const allProds = cached.menuGroups.flatMap((g) => g.products || []);
+      const availBundles = getAvailableBundlePackages(allProds);
+      setActiveCategoryCode(
+        isKopiKenangan && isBundlingPromoActive() && availBundles.length > 0
+          ? 'paket-bundling'
+          : 'favorit'
+      );
+      setIsLoading(false);
+      setErrorMessage(null);
+      setIsNotFound(false);
+      return;
+    }
+
     setIsLoading(true);
     setErrorMessage(null);
     setIsNotFound(false);
@@ -227,8 +248,9 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     ])
       .then(([outletData, menuData]) => {
         if (!isCancelled) {
-          setOutlet(outletData.outlet || null);
+          const freshOutlet = outletData.outlet || null;
           const groups: MenuGroup[] = menuData.menuGroups || [];
+          setOutlet(freshOutlet);
           setMenuGroups(groups);
           if (groups.length > 0) {
             const allProds = groups.flatMap((g) => g.products || []);
@@ -238,6 +260,9 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
                 ? 'paket-bundling'
                 : 'favorit'
             );
+          }
+          if (freshOutlet && groups.length > 0) {
+            setClientSessionCache(cacheKey, { outlet: freshOutlet, menuGroups: groups });
           }
           setIsLoading(false);
         }

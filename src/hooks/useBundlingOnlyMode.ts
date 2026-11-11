@@ -2,16 +2,29 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { isBundlingOnlyMode } from "@/lib/feature-flags";
+import { fetchBootstrap, getCachedBootstrap } from "@/lib/client-bootstrap";
 
 export function useBundlingOnlyMode(): boolean {
-  // Fallback awal membaca dari env var (default: false atau nilai build-time)
-  const [isBundlingOnly, setIsBundlingOnly] =
-    useState<boolean>(isBundlingOnlyMode());
+  // Fallback awal membaca dari cache bootstrap atau env var (default: false atau nilai build-time)
+  const [isBundlingOnly, setIsBundlingOnly] = useState<boolean>(() => {
+    const cached = getCachedBootstrap();
+    if (typeof cached?.siteSettings?.min_order_50k_mode === 'boolean') {
+      return cached.siteSettings.min_order_50k_mode;
+    }
+    return isBundlingOnlyMode();
+  });
 
-  const fetchSetting = useCallback(async () => {
+  const fetchSetting = useCallback(async (force = false) => {
     try {
+      // Nomor 3: Ambil dari endpoint bootstrap terpadu untuk memangkas pemanggilan berulang
+      const bootstrap = await fetchBootstrap(force);
+      if (typeof bootstrap?.siteSettings?.min_order_50k_mode === 'boolean') {
+        setIsBundlingOnly(bootstrap.siteSettings.min_order_50k_mode);
+        return;
+      }
+
+      // Fallback ke endpoint individual jika bootstrap belum tersedia
       const res = await fetch("/api/site-settings", {
-        // Cache revalidation akan diatur oleh header HTTP s-maxage=30, stale-while-revalidate=60
         next: { revalidate: 30 },
       });
       if (!res.ok) return;
@@ -37,7 +50,7 @@ export function useBundlingOnlyMode(): boolean {
     // Re-fetch saat tab kembali aktif
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        fetchSetting();
+        fetchSetting(true);
       }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);

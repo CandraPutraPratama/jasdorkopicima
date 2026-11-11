@@ -173,12 +173,25 @@ export function useMyOrders(): UseMyOrdersResult {
     );
     if (!hasActiveOrders) return;
 
+    // Nomor 4: Tab Inactive Guard - re-fetch otomatis saat tab kembali aktif
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        const current = syncEntries();
+        fetchOrdersFromServer(current, true);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
     const interval = setInterval(() => {
+      if (document.visibilityState !== 'visible') return;
       const current = syncEntries();
       fetchOrdersFromServer(current, false);
     }, 30000);
 
-    return () => clearInterval(interval);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+      clearInterval(interval);
+    };
   }, [orders, syncEntries, fetchOrdersFromServer]);
 
   // Klasifikasi pesanan aktif vs riwayat

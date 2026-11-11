@@ -43,7 +43,21 @@ export function AutoCheck({
       return;
     }
 
+    // Nomor 4: Tab Inactive Guard - saat pelanggan beralih ke app m-banking lalu kembali, cek status instan
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && !isCheckingRef.current) {
+        setCountdown(20);
+        onCheckRef.current(false);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     const intervalId = setInterval(() => {
+      // Hentikan countdown jika tab sedang tidak aktif di latar belakang HP
+      if (document.visibilityState !== 'visible') {
+        return;
+      }
+
       setCountdown((prev) => {
         if (prev <= 1) {
           // Panggil pengecekan hanya jika tidak sedang ada request yang in-flight
@@ -57,6 +71,7 @@ export function AutoCheck({
     }, 1000);
 
     return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       clearInterval(intervalId);
     };
   }, [isFinal]);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { fetchBootstrap, getCachedBootstrap } from "@/lib/client-bootstrap";
 
 export const DEFAULT_BRAND_STATUS: Record<string, boolean> = {
   "kopi-kenangan": true,
@@ -9,12 +10,25 @@ export const DEFAULT_BRAND_STATUS: Record<string, boolean> = {
 };
 
 export function useBrandStatus() {
-  const [brandStatus, setBrandStatus] =
-    useState<Record<string, boolean>>(DEFAULT_BRAND_STATUS);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [brandStatus, setBrandStatus] = useState<Record<string, boolean>>(() => {
+    return getCachedBootstrap()?.siteSettings?.brand_status ?? DEFAULT_BRAND_STATUS;
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(!getCachedBootstrap()?.siteSettings);
 
-  const fetchBrandStatus = useCallback(async () => {
+  const fetchBrandStatus = useCallback(async (force = false) => {
     try {
+      // Nomor 3: Ambil dari endpoint bootstrap terpadu untuk memangkas pemanggilan berulang
+      const bootstrap = await fetchBootstrap(force);
+      if (bootstrap?.siteSettings?.brand_status) {
+        setBrandStatus((prev) => ({
+          ...prev,
+          ...bootstrap.siteSettings.brand_status,
+        }));
+        setIsLoading(false);
+        return;
+      }
+
+      // Fallback ke endpoint individual jika bootstrap tidak tersedia
       const res = await fetch("/api/site-settings", {
         next: { revalidate: 30 },
       });
@@ -38,7 +52,7 @@ export function useBrandStatus() {
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        fetchBrandStatus();
+        fetchBrandStatus(true);
       }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);

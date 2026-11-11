@@ -4,36 +4,52 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { TOTAL_ORDERS_BASELINE } from '@/lib/site-config';
 import { formatTotalOrders } from '@/lib/order-stats';
+import { fetchBootstrap, getCachedBootstrap } from '@/lib/client-bootstrap';
 
 interface TrustStripProps {
   className?: string;
 }
 
 export function TrustStrip({ className = '' }: TrustStripProps) {
-  const [counts, setCounts] = useState<{ today: number; total: number }>({
-    today: 0,
-    total: TOTAL_ORDERS_BASELINE,
+  const [counts, setCounts] = useState<{ today: number; total: number }>(() => {
+    const cached = getCachedBootstrap();
+    if (cached?.orderCounts) {
+      return cached.orderCounts;
+    }
+    return {
+      today: 0,
+      total: TOTAL_ORDERS_BASELINE,
+    };
   });
 
   useEffect(() => {
     let isCancelled = false;
 
-    fetch('/api/stats/order-counts')
-      .then((res) => {
-        if (!res.ok) throw new Error('Gagal memuat statistik order');
-        return res.json();
-      })
-      .then((data: { today?: number; total?: number }) => {
-        if (!isCancelled && typeof data.total === 'number') {
-          setCounts({
-            today: typeof data.today === 'number' ? data.today : 0,
-            total: data.total,
-          });
-        }
-      })
-      .catch(() => {
-        // Fallback baseline sudah terpasang pada initial state
-      });
+    // Nomor 3: Ambil dari endpoint bootstrap terpadu untuk efisiensi CPU Worker
+    fetchBootstrap().then((bootstrap) => {
+      if (!isCancelled && bootstrap?.orderCounts) {
+        setCounts(bootstrap.orderCounts);
+        return;
+      }
+
+      // Fallback ke endpoint individual jika bootstrap belum tersedia
+      fetch('/api/stats/order-counts')
+        .then((res) => {
+          if (!res.ok) throw new Error('Gagal memuat statistik order');
+          return res.json();
+        })
+        .then((data: { today?: number; total?: number }) => {
+          if (!isCancelled && typeof data.total === 'number') {
+            setCounts({
+              today: typeof data.today === 'number' ? data.today : 0,
+              total: data.total,
+            });
+          }
+        })
+        .catch(() => {
+          // Fallback baseline sudah terpasang pada initial state
+        });
+    });
 
     return () => {
       isCancelled = true;

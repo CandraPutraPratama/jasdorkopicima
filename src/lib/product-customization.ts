@@ -1,5 +1,6 @@
 import type { Product, ProductOptionDetails, VariantSku, Addon } from '../types/domain.ts';
 import { getKkMenuDescription } from './kk-menu-descriptions.ts';
+import { getClientSessionCache, setClientSessionCache } from './client-cache.ts';
 
 /**
  * Pola regex kata kunci menu makanan / non-minuman (roti, pastry, bakery, pasta, snack, dan air mineral).
@@ -106,7 +107,15 @@ export function getClientCachedProductOptions(
   bundleCode: string
 ): ProductOptionDetails | undefined {
   const key = `${outletCode.toUpperCase()}:${bundleCode}`;
-  return clientOptionsMemoryCache.get(key);
+  if (clientOptionsMemoryCache.has(key)) {
+    return clientOptionsMemoryCache.get(key);
+  }
+  const sessionCached = getClientSessionCache<ProductOptionDetails>(`opt_${key}`, 600_000);
+  if (sessionCached) {
+    clientOptionsMemoryCache.set(key, sessionCached);
+    return sessionCached;
+  }
+  return undefined;
 }
 
 export function setClientCachedProductOptions(
@@ -116,6 +125,7 @@ export function setClientCachedProductOptions(
 ): void {
   const key = `${outletCode.toUpperCase()}:${bundleCode}`;
   clientOptionsMemoryCache.set(key, options);
+  setClientSessionCache(`opt_${key}`, options);
 }
 
 export function clearClientCachedProductOptions(): void {

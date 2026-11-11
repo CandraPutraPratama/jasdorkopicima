@@ -3,18 +3,32 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { OperationalStatusResult } from '@/lib/operational';
 import { OPERATIONAL_GATE_ENABLED } from '@/lib/feature-flags';
+import { fetchBootstrap, getCachedBootstrap } from '@/lib/client-bootstrap';
 
 export function useOperationalStatus() {
-  const [status, setStatus] = useState<OperationalStatusResult | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(OPERATIONAL_GATE_ENABLED); // Mulai loading hanya jika flag aktif
+  const [status, setStatus] = useState<OperationalStatusResult | null>(() => {
+    return getCachedBootstrap()?.operational ?? null;
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(
+    OPERATIONAL_GATE_ENABLED && !getCachedBootstrap()?.operational
+  );
   const [error, setError] = useState<string | null>(null);
 
-  const fetchStatus = useCallback(async () => {
+  const fetchStatus = useCallback(async (force = false) => {
     // Saat flag mati: tidak ada polling, langsung anggap buka
     if (!OPERATIONAL_GATE_ENABLED) return;
 
     try {
-      // Periksa apakah ada query simulate di URL browser untuk mode pengujian
+      // Nomor 3: Ambil dari endpoint bootstrap terpadu untuk efisiensi CPU Worker
+      const bootstrap = await fetchBootstrap(force);
+      if (bootstrap?.operational) {
+        setStatus(bootstrap.operational);
+        setError(null);
+        setIsLoading(false);
+        return;
+      }
+
+      // Fallback ke endpoint individual jika bootstrap tidak mengembalikan data
       let simulateParam = '';
       if (typeof window !== 'undefined') {
         const urlParams = new URLSearchParams(window.location.search);
@@ -47,9 +61,24 @@ export function useOperationalStatus() {
 
     fetchStatus();
 
-    // Cek ulang setiap 60 detik di sisi klien
-    const interval = setInterval(fetchStatus, 60000);
-    return () => clearInterval(interval);
+    // Nomor 4: Tab Inactive Guard - sinkronisasi status saat tab kembali aktif
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchStatus(true);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Cek ulang setiap 60 detik di sisi klien (lewati jika tab di-minimize / tidak aktif)
+    const interval = setInterval(() => {
+      if (document.visibilityState !== 'visible') return;
+      fetchStatus();
+    }, 60000);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearInterval(interval);
+    };
   }, [fetchStatus]);
 
   // Saat flag mati: selalu buka, tidak loading, tidak error
