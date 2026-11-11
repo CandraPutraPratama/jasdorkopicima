@@ -27,8 +27,9 @@ export function orderItemToCartItem(
     : [];
 
   const toppingTotal = addons.reduce((acc, a) => acc + (a.price || 0), 0);
+  const isFore = brandSlug === 'fore';
   const basePrice = item.basePrice || item.originalPrice || item.promoPrice || 0;
-  const targetPrice = item.promoPrice || basePrice;
+  const targetPrice = isFore ? (item.originalPrice || item.basePrice || 0) : (item.promoPrice || basePrice);
   const variantAddition = Math.max(0, targetPrice - basePrice);
 
   const cartItemCandidate: Omit<CartItem, 'id'> = {

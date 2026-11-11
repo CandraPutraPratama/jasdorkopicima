@@ -4,7 +4,7 @@ import { normalizeStore } from '../../../../lib/adapter.ts';
 import { isOutletClosed } from '../../../../lib/orderability.ts';
 import { verifyStoreScope, getOutletByCode } from '../../../../lib/outlet-service.ts';
 import { getTomoroProductNormalPrice, isTomoroItemEligible } from '../../../../lib/tomoro-menu-data.ts';
-import { findForeProduct } from '../../../../lib/fore-menu-data.ts';
+import { findForeProduct, getForeProductOptions } from '../../../../lib/fore-menu-data.ts';
 import { checkRateLimitKV, getClientIp } from '../../../../lib/rate-limit-kv.ts';
 import { validateCustomerName, validateCustomerPhone } from '../../../../lib/sanitizer.ts';
 import { getEffectiveJasdorOperationalStatus } from '../../../../lib/operational.ts';
@@ -214,24 +214,93 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           );
         }
+
+        const options = getForeProductOptions(product.bundleCode, outletCode);
+        let resolvedSkuPrice = product.basePrice;
+        let resolvedVariantAddition = 0;
+        let matchedSku = options?.skus?.find((s) => s.sku === it.sku);
+
+        // Jika SKU tidak cocok langsung atau tidak dikirim, cari via variantAddition atau deskripsi
+        if (!matchedSku && options?.skus) {
+          if (it.variantAddition === 7000 || (it.variantDescription && /large/i.test(it.variantDescription))) {
+            matchedSku = options.skus.find((s) => s.variantAddition === 7000 || s.sku.includes('_LRG'));
+          } else {
+            matchedSku = options.skus.find((s) => s.variantAddition === 0 || s.sku.includes('_REG') || s.sku.includes('_DEFAULT'));
+          }
+        }
+
+        if (matchedSku) {
+          resolvedSkuPrice = matchedSku.price;
+          resolvedVariantAddition = matchedSku.variantAddition || 0;
+        } else if (it.variantAddition && it.variantAddition > 0) {
+          resolvedVariantAddition = it.variantAddition;
+          resolvedSkuPrice = product.basePrice + it.variantAddition;
+        }
+
+        // Resolusi dan verifikasi addon / topping Fore
+        let verifiedToppingTotal = 0;
+        const verifiedAddons: any[] = [];
+        if (Array.isArray(it.addons) && it.addons.length > 0) {
+          for (const clientAddon of it.addons) {
+            const matchedAddon = options?.addons?.find(
+              (a) =>
+                (clientAddon.sku ? a.sku === clientAddon.sku : false) ||
+                a.name.trim().toLowerCase() === (clientAddon.name || '').trim().toLowerCase()
+            );
+            if (matchedAddon) {
+              verifiedAddons.push({
+                sku: matchedAddon.sku,
+                name: matchedAddon.name,
+                price: matchedAddon.price,
+                categoryName: matchedAddon.categoryName,
+                group: matchedAddon.group,
+                isSoldOut: false,
+              });
+              verifiedToppingTotal += matchedAddon.price;
+            } else if (typeof clientAddon.price === 'number') {
+              verifiedAddons.push(clientAddon);
+              verifiedToppingTotal += clientAddon.price;
+            }
+          }
+        } else if (typeof it.toppingTotal === 'number' && it.toppingTotal > 0) {
+          verifiedToppingTotal = it.toppingTotal;
+        }
+
         serverItems.push({
           id: it.id || `fore-item-${Date.now()}-${Math.random()}`,
           bundleCode: product.bundleCode || it.bundleCode,
+          sku: matchedSku?.sku || it.sku,
           name: product.name,
           basePrice: product.basePrice,
-          skuPrice: product.basePrice,
-          variantAddition: it.variantAddition || 0,
-          toppingTotal: it.toppingTotal || 0,
+          skuPrice: resolvedSkuPrice,
+          variantAddition: resolvedVariantAddition,
+          toppingTotal: verifiedToppingTotal,
           quantity: it.quantity,
           brandSlug: 'fore',
           variantDescription: it.variantDescription || '',
-          addons: it.addons || [],
+          addons: verifiedAddons,
           notes: it.notes || '',
         });
       }
 
+      // Normalisasi item kiriman client untuk rekalkulasi jika ada inkonsistensi skuPrice
+      const normalizedClientItems: CartItem[] = items.map((it) => {
+        if (
+          it.variantAddition &&
+          it.variantAddition > 0 &&
+          it.skuPrice &&
+          it.skuPrice <= it.basePrice
+        ) {
+          return {
+            ...it,
+            skuPrice: it.basePrice + it.variantAddition,
+          };
+        }
+        return it;
+      });
+
       const serverPricing = calculateServerOrderPricing(serverItems, 'fore');
-      const rawClientPricing = calculateServerOrderPricing(items, 'fore');
+      const rawClientPricing = calculateServerOrderPricing(normalizedClientItems, 'fore');
       const clientSentTotal =
         typeof body.total === 'number'
           ? Math.round(body.total)
