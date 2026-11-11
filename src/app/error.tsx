@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
-import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 export default function ErrorBoundary({
@@ -11,9 +10,36 @@ export default function ErrorBoundary({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const [isRetrying, setIsRetrying] = useState(false);
+
   useEffect(() => {
     console.error('[ErrorBoundary caught error]:', error);
+
+    // Deteksi jika error berasal dari chunk script yang usang pasca-deployment baru
+    const isChunkOrModuleError =
+      error?.name === 'ChunkLoadError' ||
+      error?.message?.includes('Loading chunk') ||
+      error?.message?.includes('Failed to fetch dynamically imported module') ||
+      error?.message?.includes('Load failed');
+
+    if (isChunkOrModuleError && typeof window !== 'undefined') {
+      const reloadKey = 'jasdor_chunk_reload_' + (error?.digest || 'latest');
+      if (!sessionStorage.getItem(reloadKey)) {
+        sessionStorage.setItem(reloadKey, 'true');
+        window.location.reload();
+      }
+    }
   }, [error]);
+
+  const handleRetry = () => {
+    setIsRetrying(true);
+    if (typeof window !== 'undefined') {
+      // Hard reload memastikan browser mengunduh HTML dan chunk hash terbaru
+      window.location.reload();
+    } else {
+      reset();
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-between p-6 bg-white text-stone-800 text-center">
@@ -58,33 +84,39 @@ export default function ErrorBoundary({
 
         <div className="space-y-2">
           <button
-            onClick={() => reset()}
+            onClick={handleRetry}
+            disabled={isRetrying}
             type="button"
-            className="min-h-[44px] w-full px-4 py-2.5 bg-[#111111] text-[#D4AF37] hover:bg-stone-900 active:scale-95 text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition shadow-xs"
+            className="min-h-[44px] w-full px-4 py-2.5 bg-[#111111] text-[#D4AF37] hover:bg-stone-900 active:scale-95 text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition shadow-xs disabled:opacity-60 cursor-pointer"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-            Coba Lagi
+            {isRetrying ? (
+              <span className="w-4 h-4 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+            )}
+            {isRetrying ? 'Memuat Ulang...' : 'Coba Lagi'}
           </button>
 
-          <Link
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a
             href="/"
             className="min-h-[44px] w-full px-4 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold rounded-xl flex items-center justify-center transition"
           >
             Kembali ke Beranda
-          </Link>
+          </a>
         </div>
       </div>
 
