@@ -1,86 +1,99 @@
-# jasdorkopicima
+# Jasdor Cima
 
-Website layanan jasa order Kopi Kenangan independen. Membantu customer mencari outlet, memesan menu dengan diskon 50% dari harga dasar, memilih varian flat-rate, dan menghasilkan draft pesanan WhatsApp secara terstruktur.
+Aplikasi web jasa order minuman kopi. Customer memilih outlet, menu, dan varian dari Kopi Kenangan, Fore Coffee, dan Tomoro Coffee, membayar lewat QRIS, lalu pesanan dikonfirmasi ke admin lewat WhatsApp.
 
-> **Status Proyek**: **Tahap 6 (Production Ready & Launch Hardening Selesai)**.
+Live: https://jasdor.cimagroup.my.id
 
----
+## Catatan
 
-## 🏛️ Arsitektur Singkat
+- Jasdor Cima adalah layanan independen. Proyek ini bukan mitra resmi dan tidak berafiliasi dengan Kopi Kenangan, Fore Coffee, maupun Tomoro Coffee. Nama dan logo brand dimiliki pemiliknya masing-masing.
+- Data outlet dan menu diambil dari endpoint web order brand yang tidak didokumentasikan secara resmi, lalu disimpan sebagai cache. Endpoint itu bisa berubah atau ditutup sewaktu-waktu.
+- Pengembangan dibantu AI coding assistant. Panduan untuk agent ada di `AGENTS.md` dan `PROJECT_CONTEXT.md`.
 
-```
-[ Customer Browser ]
-       │
-       ▼ (HTTPS / Custom Domain)
-[ Cloudflare Workers Edge (Next.js 16 via @opennextjs/cloudflare) ]
-  ├── Rate Limiter (Sliding Window per IP)
-  ├── Edge Rendering (Mobile-first, Tailwind CSS, OpenGraph Preview)
-  ├── API Routes (/api/outlets, /menu, /options, /validate-cart, /sync-status)
-  └── Business Engine (Flat Pricing, Allowlist & Exclusion Rules, Margin Guard)
-       │                        │
-       ▼                        ▼
-[ Supabase PostgreSQL ]   [ Kopi Kenangan API ]
-  ├── outlets (pg_trgm)     ├── /create_web_token
-  └── generic_cache         ├── /store/query_store & get_store
-                            └── /product/query_web_order_product_menu
-```
+## Fitur
 
----
+Untuk customer:
 
-## ⚙️ Variabel Lingkungan (Environment Variables)
+- Cari outlet (pencarian fuzzy) dan lihat status buka atau tutup serta antrean.
+- Pilih menu, varian, dan add-on per brand, termasuk paket bundling.
+- Keranjang dengan validasi harga dan stok di sisi server sebelum pesanan dibuat.
+- Pesanan grup: satu orang membuat sesi, teman menambahkan item, lalu sesi dikunci.
+- Pembayaran QRIS dan konfirmasi pembayaran, lalu pesan pesanan terstruktur ke WhatsApp.
+- Halaman "Pesanan Saya" untuk melihat riwayat dan memesan ulang.
+- Dapat dipasang sebagai PWA.
 
-| Variabel | Lingkungan | Deskripsi |
-|---|---|---|
-| `KOPI_KENANGAN_API_BASE` | Local / Edge | URL dasar API Kopi Kenangan (`https://order.kopikenangan.com/web_order/api`) |
-| `KOPI_KENANGAN_PHONE` | Local / Edge | Nomor HP sesi tamu (dikosongkan `""` untuk guest order resmi) |
-| `NEXT_PUBLIC_SUPABASE_URL` | Local / Client / Edge | URL project Supabase |
-| `SUPABASE_URL` | Server / Edge | URL project Supabase (untuk service role) |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server / Edge | Kunci service role Supabase (server-only, bypass RLS) |
-| `SYNC_SECRET` | Server / Edge | Secret token acak untuk otorisasi endpoint sync outlet |
-| `NEXT_PUBLIC_WHATSAPP_PHONE`| Local / Client | Nomor WhatsApp pemilik penerima pesanan (`628xxx`) |
-| `ALLOW_SIMULATE` | Local Only | Diset `"true"` HANYA untuk debug simulasi buka/tutup lokal. Jangan diset di prod! |
+Untuk admin:
 
----
+- Panel pesanan di `/admin/pesanan` dengan login berbasis password dan sesi bertanda tangan.
+- Ubah status pesanan dan pengaturan situs.
+- Notifikasi pesanan baru dan konfirmasi lewat bot Telegram (webhook).
+- Pembatalan otomatis untuk pesanan yang tidak dibayar (cron).
 
-## 🛡️ Pengamanan & Fitur Tahap 6
+Di sisi sistem:
 
-1. **Pengecekan Stok Segar (Fresh Stock Validation)**:
-   - `POST /api/outlets/[code]/validate-cart`: Memvalidasi ketersediaan produk & SKU di keranjang langsung ke KK sebelum redirect ke WhatsApp, sekaligus menyegarkan cache menu.
-   - Jika API KK timeout atau bermasalah, customer diberi modal peringatan ramah dan pilihan melanjutkan konfirmasi via WhatsApp tanpa memblokir pesanan.
-2. **Rate Limiting**:
-   - Membatasi request per IP di seluruh endpoint `/api/*` untuk mencegah eksploitasi dan scraping berlebih.
-3. **Observability & Status Sync**:
-   - `GET /api/sync-status`: Memeriksa waktu terakhir sinkronisasi dan jumlah outlet in-scope vs out-of-scope.
-   - Error log dari KK disanitasi agar tidak membocorkan token atau data sensitif.
-5. **WhatsApp & Social Share Preview**:
-   - Dilengkapi metadata OpenGraph, favicon, dan logo jasa order resmi.
+- Rate limiting per IP, dengan penyimpanan di Cloudflare KV.
+- Sanitasi input, header keamanan, dan pembersihan log agar token tidak bocor.
+- Margin guard: harga dihitung ulang di server, bukan dipercaya dari klien.
+- Sinkronisasi outlet terjadwal lewat GitHub Actions.
 
----
+## Teknologi
 
-## 📖 Panduan Operasional Pemilik
+| Bagian | Yang dipakai |
+| --- | --- |
+| Framework | Next.js 16 (App Router), React 19, TypeScript |
+| Tampilan | Tailwind CSS 4 |
+| Database | Supabase (PostgreSQL), migrasi di `supabase/migrations` |
+| Hosting | Cloudflare Workers lewat `@opennextjs/cloudflare`, KV untuk rate limit, R2 untuk gambar |
+| Notifikasi | Telegram Bot API, WhatsApp (tautan pesan terstruktur) |
+| Pengujian | `node:test`, sekitar 90 file di `tests/` |
+| CI | GitHub Actions: deploy dan sinkronisasi outlet |
 
-Untuk instruksi lengkap pengelolaan jasa order (mengubah harga flat, mengubah nomor WA, rotasi secret, panduan penanganan error API KK, dan sync manual), baca:
-👉 [docs/RUNBOOK.md](file:///c:/Users/LENOVO/websitebisnis/jasdorkopicima/docs/RUNBOOK.md)
+## Menjalankan secara lokal
 
----
-
-## 🚀 Perintah Pengembangan
+Butuh Node.js 22 atau lebih baru dan project Supabase sendiri.
 
 ```bash
-# Instalasi dependensi (otomatis menjalankan patch-package)
 npm install
-
-# Menjalankan unit test suite
-npm test
-
-# Menjalankan linter & type check
-npm run lint
-npx tsc --noEmit
-
-# Menjalankan server dev lokal
+cp .env.example .env.local   # isi nilainya, lihat bagian di bawah
 npm run dev
-
-# Build dan deploy ke Cloudflare Workers
-npm run build:worker
-npm run deploy
 ```
+
+Perintah lain:
+
+```bash
+npm test             # unit dan integration test
+npm run lint
+npx tsc --noEmit     # cek tipe
+npm run deploy       # build untuk Workers lalu wrangler deploy
+```
+
+## Environment variable
+
+Daftar lengkap ada di `.env.example`. Yang wajib untuk menjalankan aplikasi:
+
+| Variabel | Fungsi |
+| --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Koneksi ke Supabase (kunci service role hanya untuk server) |
+| `SYNC_SECRET` | Secret untuk endpoint sinkronisasi outlet |
+| `NEXT_PUBLIC_WHATSAPP_PHONE` | Nomor WhatsApp admin penerima pesanan |
+| `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` | Login dan sesi panel admin |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_ADMIN_CHAT_ID` | Notifikasi Telegram |
+
+Jangan pernah commit `.env.local`.
+
+## Struktur folder
+
+```text
+src/app/          halaman dan API route (outlet, menu, pesanan, grup, admin, cron)
+src/components/   komponen UI (keranjang, bottom sheet produk, pembayaran, admin)
+src/lib/          logika bisnis: harga, bundling, validasi opsi, rate limit, Telegram
+src/hooks/        hook klien (keranjang, status operasional, antrean)
+supabase/         migrasi database
+tests/            test otomatis
+scripts/          skrip bantu untuk sinkronisasi data dan pemeriksaan
+docs/             runbook operasional dan catatan audit
+```
+
+## Dokumentasi tambahan
+
+Panduan operasional (mengubah harga flat, rotasi secret, menangani error API brand, sinkronisasi manual) ada di [docs/RUNBOOK.md](docs/RUNBOOK.md).
