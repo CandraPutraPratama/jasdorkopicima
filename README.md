@@ -8,7 +8,7 @@ Live: https://jasdor.cimagroup.my.id
 
 - Jasdor Cima adalah layanan independen. Proyek ini bukan mitra resmi dan tidak berafiliasi dengan Kopi Kenangan, Fore Coffee, maupun Tomoro Coffee. Nama dan logo brand dimiliki pemiliknya masing-masing.
 - Data outlet dan menu diambil dari endpoint web order brand yang tidak didokumentasikan secara resmi, lalu disimpan sebagai cache. Endpoint itu bisa berubah atau ditutup sewaktu-waktu.
-- Pengembangan dibantu AI coding assistant. Panduan untuk agent ada di `AGENTS.md` dan `PROJECT_CONTEXT.md`.
+- Pengembangan dibantu AI coding assistant.
 
 ## Fitur
 

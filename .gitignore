@@ -68,3 +68,16 @@ supabase/.temp/
 /.ua/
 /.understand-anything/
 
+
+# AI coding assistant files (kept locally, not published)
+/.agents/
+/.superpowers/
+/anti-slop/
+/docs/superpowers/
+/AGENTS.md
+/GEMINI.md
+/PROJECT_CONTEXT.md
+/Brief Proyek *.md
+/docs/session-log-*.md
+/docs/audit-*.md
+/docs/prompt-*.md
