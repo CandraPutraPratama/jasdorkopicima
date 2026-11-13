@@ -98,6 +98,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isNotFound, setIsNotFound] = useState<boolean>(false);
+  const [isEstimatedMenu, setIsEstimatedMenu] = useState<boolean>(false);
 
   // Status apakah outlet sedang tutup / tidak dapat dipesan (Single Source of Truth)
   const isOutletClosed = checkIsOutletClosed(outlet);
@@ -206,10 +207,11 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
     const cacheKey = `outlet_data:${outletCode.toUpperCase()}`;
 
     // Nomor 2: Cek Client Storage Cache (sessionStorage) terlebih dahulu
-    const cached = getClientSessionCache<{ outlet: Outlet; menuGroups: MenuGroup[] }>(cacheKey, 300_000);
+    const cached = getClientSessionCache<{ outlet: Outlet; menuGroups: MenuGroup[]; isStale?: boolean }>(cacheKey, 300_000);
     if (cached && cached.outlet && Array.isArray(cached.menuGroups) && cached.menuGroups.length > 0) {
       setOutlet(cached.outlet);
       setMenuGroups(cached.menuGroups);
+      setIsEstimatedMenu(Boolean(cached.isStale));
       const allProds = cached.menuGroups.flatMap((g) => g.products || []);
       const availBundles = getAvailableBundlePackages(allProds);
       setActiveCategoryCode(
@@ -252,6 +254,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           const groups: MenuGroup[] = menuData.menuGroups || [];
           setOutlet(freshOutlet);
           setMenuGroups(groups);
+          setIsEstimatedMenu(menuData.source === 'stale' || Boolean(menuData.isStale));
           if (groups.length > 0) {
             const allProds = groups.flatMap((g) => g.products || []);
             const availBundles = getAvailableBundlePackages(allProds);
@@ -262,7 +265,11 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
             );
           }
           if (freshOutlet && groups.length > 0) {
-            setClientSessionCache(cacheKey, { outlet: freshOutlet, menuGroups: groups });
+            setClientSessionCache(cacheKey, {
+              outlet: freshOutlet,
+              menuGroups: groups,
+              isStale: menuData.source === 'stale' || Boolean(menuData.isStale),
+            });
           }
           setIsLoading(false);
         }
@@ -469,6 +476,17 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
       {/* Content Outlet Menu */}
       {!isLoading && !errorMessage && outlet && (
         <div className="flex-1 flex flex-col">
+          {/* Banner data tersimpan: data real-time Kopi Kenangan sedang tidak tersedia */}
+          {isEstimatedMenu && (
+            <div
+              role="status"
+              className="mx-4 mt-3 p-3 bg-[#FFF4D6] text-[#5B3A00] rounded-2xl text-xs border-2 border-[#D9A74A]/60 leading-relaxed"
+            >
+              <span className="font-bold">Harga dan stok dari data tersimpan.</span> Data real-time
+              outlet sedang tidak tersedia. Harga akhir bisa sedikit berbeda dan akan kami cek
+              ulang sebelum pesanan diproses.
+            </div>
+          )}
           {/* Banner Aktif Mode Pesan Bareng */}
           {activeGroupId && (
             <div className="mx-4 mt-3 p-3 bg-[#26150B] text-[#FAF4E8] rounded-2xl flex items-center justify-between gap-3 text-xs shadow-[3px_3px_0px_#2B1D12] border-2 border-[#D9A74A]/60">

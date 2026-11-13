@@ -43,12 +43,24 @@ export class KkApiClient {
     }
 
     const phone = process.env.KOPI_KENANGAN_PHONE || '';
-    const res = await this.rawFetch<KkApiResponse<{ web_order_session_token: string }>>(
-      '/create_web_token',
-      { phone }
-    );
+    // Log diagnosis: hanya status dan boolean, TIDAK PERNAH nilai nomor HP/token.
+    let res: KkApiResponse<{ web_order_session_token: string }>;
+    try {
+      res = await this.rawFetch<KkApiResponse<{ web_order_session_token: string }>>(
+        '/create_web_token',
+        { phone }
+      );
+    } catch (err: any) {
+      console.warn(
+        `[KkClient] create_web_token gagal: ${err?.message} (phoneConfigured=${Boolean(phone)})`
+      );
+      throw err;
+    }
 
     if (res.error_code !== 0 || !res.data?.web_order_session_token) {
+      console.warn(
+        `[KkClient] create_web_token ditolak: error_code=${res.error_code} msg=${res.msg} (phoneConfigured=${Boolean(phone)})`
+      );
       throw new Error(`Gagal membuat web token Kopi Kenangan: ${res.msg} (code: ${res.error_code})`);
     }
 

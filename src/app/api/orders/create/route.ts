@@ -15,6 +15,7 @@ import {
   calculateServerOrderPricing,
   validateRegularOrderSubtotal,
   getServerOutletMenu,
+  isServerMenuEstimated,
   recalculateOrderItemsWithServerPrices,
   OrderValidationError,
   OrderError,
@@ -634,6 +635,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Tandai pesanan bila harga berasal dari menu cadangan agar admin cek ulang di app KK
+    const isEstimatedMenu = await isServerMenuEstimated(outletCode);
+
     const allProducts = menuGroups.flatMap((g) => g.products || []);
     const { getOutletTierDiff } = await import('../../../../lib/bundling.ts');
     const tierDiff = getOutletTierDiff(allProducts);
@@ -736,7 +740,9 @@ export async function POST(request: NextRequest) {
       customerWa: phoneVal.sanitized,
       items: recalculated.items,
       pickupTime: pickupVal.sanitized,
-      notes,
+      notes: isEstimatedMenu
+        ? `[Harga Estimasi - cek ulang di app KK] ${notes || ''}`.trim()
+        : notes,
     });
 
     const savedOrder = await saveOrderToDb(orderRecord);

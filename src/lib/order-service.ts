@@ -1,3 +1,4 @@
+import { readFreshRealMenu, readStaleRealMenu } from './menu-source.ts';
 import { getSupabaseServerClient } from './supabase-server.ts';
 import { QRIS_CONFIG } from './site-config.ts';
 import {
@@ -219,10 +220,10 @@ export function validateRegularOrderSubtotal(params: {
 export async function getServerOutletMenu(outletCode: string): Promise<MenuGroup[]> {
   const cacheKey = cacheKeys.menu(outletCode);
 
-  // 1. Cek cache segar
-  const cached = await cacheService.get<{ menuGroups: MenuGroup[] }>(cacheKey);
-  if (cached && Array.isArray(cached.menuGroups) && cached.menuGroups.length > 0) {
-    return cached.menuGroups;
+  // 1. Cek cache segar (hanya menu ASLI; menu kanonikal lama tidak boleh jadi dasar harga)
+  const freshMenu = await readFreshRealMenu(cacheService, cacheKey);
+  if (freshMenu) {
+    return freshMenu;
   }
 
   // 2. Ambil dari KK API
@@ -237,11 +238,11 @@ export async function getServerOutletMenu(outletCode: string): Promise<MenuGroup
   } catch (error: any) {
     console.error(`[OrderService] Gagal memuat menu fresh outlet [${outletCode}]:`, error.message);
 
-    // Stale-if-error: kembalikan cache stale jika ada
-    const staleData = await cacheService.getStale<{ menuGroups: MenuGroup[] }>(cacheKey);
-    if (staleData && Array.isArray(staleData.menuGroups) && staleData.menuGroups.length > 0) {
+    // Stale-if-error: hanya cache ASLI outlet ini, bukan menu kanonikal
+    const staleMenu = await readStaleRealMenu(cacheService, cacheKey);
+    if (staleMenu) {
       console.warn(`[OrderService] Menggunakan STALE data menu untuk outlet [${outletCode}].`);
-      return staleData.menuGroups;
+      return staleMenu;
     }
 
     throw new OrderError(
@@ -250,6 +251,14 @@ export async function getServerOutletMenu(outletCode: string): Promise<MenuGroup
       503
     );
   }
+}
+
+/**
+ * True bila harga pesanan ini berasal dari data stale (tidak ada menu segar dari
+ * KK API), sehingga admin perlu mengecek ulang harga di app KK.
+ */
+export async function isServerMenuEstimated(outletCode: string): Promise<boolean> {
+  return (await readFreshRealMenu(cacheService, cacheKeys.menu(outletCode))) === null;
 }
 
 /**
