@@ -3,7 +3,7 @@ import { kkApiClient } from '@/lib/kk-client';
 import { normalizeMenu } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
-import { verifyStoreScope, getOutletByCode } from '@/lib/outlet-service';
+import { checkStoreScope, getOutletByCode, type StoreScopeStatus } from '@/lib/outlet-service';
 import { getKopiKenanganFallbackMenu } from '@/lib/kk-menu-fallback';
 import { safeNormalizeOutletCode } from '@/lib/sanitizer';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
@@ -70,6 +70,14 @@ async function handleGet(
     return NextResponse.json(responsePayload);
   }
 
+  // Cache segar dicek PERTAMA. Menu hanya pernah ditulis ke cache setelah outlet
+  // lolos verifikasi, jadi hit cache tidak perlu lagi memanggil KK API + Supabase
+  // (hemat 2-3 subrequest dan CPU Worker per permintaan).
+  const freshCached = await cacheService.get<{ menuGroups: MenuGroup[] }>(cacheKey);
+  if (freshCached && freshCached.menuGroups && freshCached.menuGroups.length > 0) {
+    return NextResponse.json(freshCached);
+  }
+
   // Validasi apakah outlet berada dalam lingkup Kopi Kenangan resmi
   let rawStore: any = null;
   try {
@@ -78,27 +86,37 @@ async function handleGet(
     console.warn(`[Menu API] kkApiClient.getStore error for [${code}]:`, storeErr.message);
   }
 
-  let isVerifiedInScope = false;
+  let scopeStatus: StoreScopeStatus = 'out-of-scope';
   if (rawStore) {
-    isVerifiedInScope = await verifyStoreScope(code, rawStore);
+    scopeStatus = await checkStoreScope(code, rawStore);
   } else {
     const dbOutlet = await getOutletByCode(code);
     if (dbOutlet) {
-      isVerifiedInScope = await verifyStoreScope(code, dbOutlet);
+      scopeStatus = await checkStoreScope(code, dbOutlet);
     }
   }
 
-  if (!isVerifiedInScope) {
+  if (scopeStatus === 'unavailable') {
+    // Kegagalan sementara (Supabase/KK tidak terjangkau), BUKAN outlet tidak ada.
+    // 503 + Retry-After supaya klien tahu boleh mencoba lagi.
+    const staleMenu = await cacheService.getStale<{ menuGroups: MenuGroup[] }>(cacheKey);
+    if (staleMenu && staleMenu.menuGroups && staleMenu.menuGroups.length > 0) {
+      return NextResponse.json(
+        { ...staleMenu, isStale: true },
+        { headers: { 'X-Cache-Status': 'STALE-IF-ERROR' } }
+      );
+    }
+    return NextResponse.json(
+      { error: 'Layanan sedang sibuk. Silakan coba lagi sebentar lagi.' },
+      { status: 503, headers: { 'Retry-After': '5' } }
+    );
+  }
+
+  if (scopeStatus !== 'in-scope') {
     return NextResponse.json(
       { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
       { status: 404 }
     );
-  }
-
-  // 1. Cek cache segar untuk Kopi Kenangan
-  const cached = await cacheService.get<{ menuGroups: MenuGroup[] }>(cacheKey);
-  if (cached && cached.menuGroups && cached.menuGroups.length > 0) {
-    return NextResponse.json(cached);
   }
 
   // 2. Ambil dari KK API dengan proteksi stale-if-error dan fallback kanonikal

@@ -791,7 +791,23 @@ export async function getOutletByCode(code: string): Promise<Outlet | null> {
  *    - Upsert ke Supabase agar tersimpan untuk request berikutnya.
  *    - Bila tidak ditemukan di KK API, tolak.
  */
+export type StoreScopeStatus = 'in-scope' | 'out-of-scope' | 'unavailable';
+
+/**
+ * Sama seperti verifyStoreScope, tetapi membedakan "outlet memang di luar lingkup"
+ * dari "belum bisa diverifikasi karena Supabase/KK sedang gagal" (sementara).
+ */
+export async function checkStoreScope(code: string, rawStore?: any): Promise<StoreScopeStatus> {
+  const result = await resolveStoreScope(code, rawStore);
+  if (result === 'unavailable') return 'unavailable';
+  return result ? 'in-scope' : 'out-of-scope';
+}
+
 export async function verifyStoreScope(code: string, rawStore?: any): Promise<boolean> {
+  return (await resolveStoreScope(code, rawStore)) === true;
+}
+
+async function resolveStoreScope(code: string, rawStore?: any): Promise<boolean | 'unavailable'> {
   const normCode = (code || '').trim().toLowerCase();
   const upperCode = (code || '').trim().toUpperCase();
   const normName = (rawStore?.name || '').trim().toLowerCase();
@@ -851,7 +867,7 @@ export async function verifyStoreScope(code: string, rawStore?: any): Promise<bo
     }
     // Jika tidak ada di cache, TOLAK outlet demi keamanan (jangan izinkan outlet tak terverifikasi)
     console.error(`[verifyStoreScope] Supabase tidak terjangkau dan tidak ada data cache untuk "${upperCode}". Outlet ditolak.`);
-    return false;
+    return 'unavailable';
   }
 
   // Kasus jika record ditemukan di database Supabase
@@ -908,7 +924,7 @@ export async function verifyStoreScope(code: string, rawStore?: any): Promise<bo
     return inScope;
   } catch (kkQueryErr: any) {
     console.warn(`[verifyStoreScope] Gagal mencari outlet di KK API: ${kkQueryErr.message}`);
-    return false;
+    return 'unavailable';
   }
 }
 

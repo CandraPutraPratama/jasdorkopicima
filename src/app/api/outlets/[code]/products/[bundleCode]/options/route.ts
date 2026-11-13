@@ -3,7 +3,7 @@ import { kkApiClient } from '@/lib/kk-client';
 import { normalizeProductOptions } from '@/lib/adapter';
 import { cacheService, cacheKeys } from '@/lib/cache';
 import { BUSINESS_CONFIG } from '@/config/business';
-import { verifyStoreScope, getOutletByCode } from '@/lib/outlet-service';
+import { checkStoreScope, getOutletByCode, type StoreScopeStatus } from '@/lib/outlet-service';
 import { findCrossOutletCachedOptions } from '@/lib/kk-menu-fallback';
 import { safeNormalizeOutletCode } from '@/lib/sanitizer';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit.ts';
@@ -87,17 +87,25 @@ async function handleGet(
     console.warn(`[Options API] kkApiClient.getStore error for [${code}]:`, storeErr.message);
   }
 
-  let inScope = false;
+  let scopeStatus: StoreScopeStatus = 'out-of-scope';
   if (store) {
-    inScope = await verifyStoreScope(code, store);
+    scopeStatus = await checkStoreScope(code, store);
   } else {
     const dbOutlet = await getOutletByCode(code);
     if (dbOutlet) {
-      inScope = await verifyStoreScope(code, dbOutlet);
+      scopeStatus = await checkStoreScope(code, dbOutlet);
       store = dbOutlet;
     }
   }
 
+  if (scopeStatus === 'unavailable') {
+    return NextResponse.json(
+      { error: 'Layanan sedang sibuk. Silakan coba lagi sebentar lagi.' },
+      { status: 503, headers: { 'Retry-After': '5' } }
+    );
+  }
+
+  const inScope = scopeStatus === 'in-scope';
   if (!store || !inScope) {
     return NextResponse.json(
       { error: 'Outlet tidak ditemukan atau di luar jangkauan' },
