@@ -201,7 +201,12 @@ export function normalizeProductOptions(raw: KkProductOptionsData): ProductOptio
   const rawSkus = raw.option_product_map || {};
 
   for (const [key, item] of Object.entries(rawSkus)) {
-    const keyParts = key.split(/[,_]/).map((s) => Number(s.trim()));
+    // Key KK berformat "dim-nilai:dim-nilai:" (atau daftar nilai dipisah , atau _): ambil id nilainya.
+    const keyParts = key
+      .split(/[,_:]/)
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((s) => Number(s.includes('-') ? s.split('-')[1] : s));
     const hasHiddenVal = keyParts.some((id) => hiddenValueIds.has(id));
     const skuName = (item.name || '').trim();
     if (hasHiddenVal || isHiddenOptionValue(skuName)) {

@@ -340,6 +340,22 @@ export async function recalculateOrderItemsWithServerPrices(params: {
     bundleDetails: it.bundleDetails ? it.bundleDetails.map((d) => ({ ...d })) : undefined,
   }));
 
+  // Hangatkan cache opsi untuk semua produk reguler sekaligus. Fetch bersamaan
+  // ke outlet yang sama berbagi satu request product_info di KkApiClient, jadi
+  // outlet dingin dengan N produk berbeda cukup 1 unduhan (bukan N). Hasil/galat
+  // diabaikan di sini; loop di bawah membaca cache dan menangani galat seperti biasa.
+  const warmCodes = new Set<string>();
+  for (const it of recomputedItems) {
+    if (it.isBundle || !it.bundleCode) continue;
+    const prod = allProducts.find((p) => p.bundleCode === it.bundleCode);
+    if (prod && !prod.isSoldOut) warmCodes.add(it.bundleCode);
+  }
+  if (warmCodes.size > 1) {
+    await Promise.allSettled(
+      [...warmCodes].map((code) => getServerProductOptions(storeId, outletCode, code))
+    );
+  }
+
   for (const item of recomputedItems) {
     if (item.isBundle) {
       const bundleType = item.bundleType as any;

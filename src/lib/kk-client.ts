@@ -1,4 +1,5 @@
 import { BUSINESS_CONFIG } from '../config/business.ts';
+import { mapProductInfoToMenu, mapProductInfoToOptions, type KkProductInfoData } from './kk-product-info.ts';
 import type {
   KkApiResponse,
   KkStoreItem,
@@ -9,8 +10,9 @@ import type {
 
 export class KkApiClient {
   private baseUrl: string;
-  private currentToken: string | null = null;
   private lastRequestTime = 0;
+  /** Fetch product_info yang sedang berjalan per store_code; dihapus saat selesai (bukan cache). */
+  private inflightProductInfo = new Map<string, Promise<KkProductInfoData>>();
 
   constructor(baseUrl?: string) {
     this.baseUrl =
@@ -33,48 +35,11 @@ export class KkApiClient {
   }
 
   /**
-   * Mengambil token sesi berjalan atau membuat token baru jika belum ada / diminta refresh.
-   * Nomor HP diambil dari KOPI_KENANGAN_PHONE di env, atau string kosong jika tidak diisi.
-   * TIDAK menggunakan nomor HP fiktif/karangan.
-   */
-  public async getSessionToken(forceRefresh = false): Promise<string> {
-    if (this.currentToken && !forceRefresh) {
-      return this.currentToken;
-    }
-
-    const phone = process.env.KOPI_KENANGAN_PHONE || '';
-    // Log diagnosis: hanya status dan boolean, TIDAK PERNAH nilai nomor HP/token.
-    let res: KkApiResponse<{ web_order_session_token: string }>;
-    try {
-      res = await this.rawFetch<KkApiResponse<{ web_order_session_token: string }>>(
-        '/create_web_token',
-        { phone }
-      );
-    } catch (err: any) {
-      console.warn(
-        `[KkClient] create_web_token gagal: ${err?.message} (phoneConfigured=${Boolean(phone)})`
-      );
-      throw err;
-    }
-
-    if (res.error_code !== 0 || !res.data?.web_order_session_token) {
-      console.warn(
-        `[KkClient] create_web_token ditolak: error_code=${res.error_code} msg=${res.msg} (phoneConfigured=${Boolean(phone)})`
-      );
-      throw new Error(`Gagal membuat web token Kopi Kenangan: ${res.msg} (code: ${res.error_code})`);
-    }
-
-    this.currentToken = res.data.web_order_session_token;
-    return this.currentToken;
-  }
-
-  /**
    * Eksekusi HTTP POST dasar ke API KK dengan timeout dan header standar.
    */
   private async rawFetch<T>(
     endpoint: string,
-    body: Record<string, any>,
-    token?: string | null
+    body: Record<string, any>
   ): Promise<T> {
     await this.applyPoliteDelay();
 
@@ -85,10 +50,6 @@ export class KkApiClient {
       'time_zone': '7',
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)',
     };
-
-    if (token) {
-      headers['authorization'] = token;
-    }
 
     const timeoutMs = BUSINESS_CONFIG.client.timeoutMs;
     const controller = new AbortController();
@@ -103,7 +64,9 @@ export class KkApiClient {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
+        const httpErr: any = new Error(`HTTP Error ${response.status}: ${response.statusText}`);
+        httpErr.httpStatus = response.status;
+        throw httpErr;
       }
 
       return (await response.json()) as T;
@@ -118,30 +81,44 @@ export class KkApiClient {
   }
 
   /**
-   * Request dengan penanganan auth 444 dan otomatis retry tepat 1x.
+   * Ambil product_info outlet (menu + varian + add-on) TANPA token/phone.
+   * Permintaan bersamaan untuk store_code yang sama berbagi satu fetch (dedupe in-flight).
+   * Timeout dari rawFetch; retry 1x hanya untuk gagal network/timeout/5xx.
+   * 4xx dan error_code != 0 tidak di-retry.
    */
-  private async requestWithAuth<T extends { error_code: number; msg: string }>(
-    endpoint: string,
-    body: Record<string, any>,
-    isRetry = false
-  ): Promise<T> {
-    const token = await this.getSessionToken(isRetry);
-    const result = await this.rawFetch<T>(endpoint, body, token);
+  private fetchProductInfo(storeCode: string): Promise<KkProductInfoData> {
+    const running = this.inflightProductInfo.get(storeCode);
+    if (running) return running;
+    const request = this.fetchProductInfoOnce(storeCode).finally(() => {
+      this.inflightProductInfo.delete(storeCode);
+    });
+    this.inflightProductInfo.set(storeCode, request);
+    return request;
+  }
 
-    if (result.error_code === 444) {
-      if (isRetry) {
-        throw new Error(`Autentikasi KK gagal permanen setelah 1x retry (error_code 444)`);
+  private async fetchProductInfoOnce(storeCode: string): Promise<KkProductInfoData> {
+    let lastError: any;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const res = await this.rawFetch<KkApiResponse<KkProductInfoData>>('/product/product_info', {
+          store_code: storeCode,
+        });
+        if (res.error_code !== 0 || !res.data) {
+          const apiErr: any = new Error(`KK product_info gagal: ${res.msg} (kode: ${res.error_code})`);
+          apiErr.noRetry = true;
+          throw apiErr;
+        }
+        return res.data;
+      } catch (err: any) {
+        lastError = err;
+        const retryable = err?.httpStatus === undefined || err.httpStatus >= 500;
+        if (!retryable || err?.noRetry) break;
+        if (attempt === 0) {
+          console.warn(`[KkClient] product_info [${storeCode}] gagal (${err?.message}), retry 1x`);
+        }
       }
-      // Hapus token lokal dan coba lagi tepat SATU kali dengan token baru
-      this.currentToken = null;
-      return this.requestWithAuth<T>(endpoint, body, true);
     }
-
-    if (result.error_code !== 0) {
-      throw new Error(`KK API Error pada ${endpoint}: ${result.msg} (kode: ${result.error_code})`);
-    }
-
-    return result;
+    throw lastError;
   }
 
   /**
@@ -190,40 +167,27 @@ export class KkApiClient {
   }
 
   /**
-   * 3. Query Product Menu: menu lengkap outlet (memerlukan auth).
+   * 3. Menu outlet dari product_info (tanpa auth), dipetakan ke KkMenuData.
+   * Respons mentah (~2,3 MB) tidak disimpan; hanya hasil parse ringkas yang dipakai pemanggil.
    */
-  public async queryProductMenu(storeCode: string, salesType = 10402): Promise<KkMenuData> {
-    const res = await this.requestWithAuth<KkApiResponse<KkMenuData>>(
-      '/product/query_web_order_product_menu',
-      {
-        store_code: storeCode,
-        sales_type: salesType,
-      }
-    );
-
-    return res.data;
+  public async queryProductMenu(storeCode: string): Promise<KkMenuData> {
+    return mapProductInfoToMenu(await this.fetchProductInfo(storeCode));
   }
 
   /**
-   * 4. Get Product Options: opsi varian, SKU kombinasi, dan topping produk (memerlukan auth).
+   * 4. Opsi varian, SKU kombinasi, dan add-on 1 produk dari product_info (tanpa auth).
+   * `outletId` dipertahankan demi kompatibilitas pemanggil; tidak dipakai.
    */
   public async getProductOptions(
-    outletId: number,
+    _outletId: number,
     storeCode: string,
-    bundleCode: string,
-    salesTypeCode = 10402
+    bundleCode: string
   ): Promise<KkProductOptionsData> {
-    const res = await this.requestWithAuth<KkApiResponse<KkProductOptionsData>>(
-      '/product/get_web_order_product_options',
-      {
-        outlet_id: outletId,
-        store_code: storeCode,
-        bundle_code: bundleCode,
-        sales_type_code: salesTypeCode,
-      }
-    );
-
-    return res.data;
+    const options = mapProductInfoToOptions(await this.fetchProductInfo(storeCode), bundleCode);
+    if (!options) {
+      throw new Error(`Produk ${bundleCode} tidak ada di product_info outlet ${storeCode}`);
+    }
+    return options;
   }
 }
 
