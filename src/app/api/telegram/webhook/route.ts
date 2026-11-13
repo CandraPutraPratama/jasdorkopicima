@@ -7,10 +7,44 @@ import {
 } from '../../../../lib/telegram.ts';
 import { updateOrderStatusByAdmin } from '../../../../lib/order-service.ts';
 import type { OrderStatus } from '../../../../types/order.ts';
+import { getEnvVar } from '../../../../lib/env.ts';
 
 export const dynamic = 'force-dynamic';
 
+/** Perbandingan constant-time agar secret tidak bocor lewat timing. */
+function timingSafeEqualString(expected: string, provided: string): boolean {
+  const a = new TextEncoder().encode(expected);
+  const b = new TextEncoder().encode(provided);
+  let diff = a.length ^ b.length;
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    diff |= (a[i] ?? 0) ^ (b[i] ?? 0);
+  }
+  return diff === 0;
+}
+
+/**
+ * Telegram mengirim header X-Telegram-Bot-Api-Secret-Token yang sama dengan
+ * `secret_token` saat setWebhook. Bila TELEGRAM_WEBHOOK_SECRET diset, request
+ * tanpa header yang cocok ditolak. Bila belum diset, webhook tetap berjalan
+ * (kompatibel dengan setup lama) tetapi memberi peringatan di log.
+ */
+function isWebhookAuthentic(request: NextRequest): boolean {
+  const expected = (getEnvVar('TELEGRAM_WEBHOOK_SECRET') || '').trim();
+  if (!expected) {
+    console.warn(
+      '[Telegram Webhook] TELEGRAM_WEBHOOK_SECRET belum diset; request tidak diverifikasi asalnya.'
+    );
+    return true;
+  }
+  const provided = request.headers.get('x-telegram-bot-api-secret-token') || '';
+  return timingSafeEqualString(expected, provided);
+}
+
 export async function POST(request: NextRequest) {
+  if (!isWebhookAuthentic(request)) {
+    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
   let body: any;
   try {
     body = await request.json();

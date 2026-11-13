@@ -81,3 +81,46 @@ describe('Telegram Webhook: /api/telegram/webhook', () => {
     assert.equal(data.ok, true);
   });
 });
+
+describe('Telegram Webhook: verifikasi secret token', () => {
+  const makeReq = (headers: Record<string, string> = {}) =>
+    new NextRequest('http://localhost:3000/api/telegram/webhook', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...headers },
+      body: JSON.stringify({}),
+    });
+
+  const withSecret = async (fn: () => Promise<void>) => {
+    const prev = process.env.TELEGRAM_WEBHOOK_SECRET;
+    process.env.TELEGRAM_WEBHOOK_SECRET = 'rahasia-webhook-tes';
+    try {
+      await fn();
+    } finally {
+      if (prev === undefined) delete process.env.TELEGRAM_WEBHOOK_SECRET;
+      else process.env.TELEGRAM_WEBHOOK_SECRET = prev;
+    }
+  };
+
+  it('menolak 401 bila secret diset tetapi header tidak ada', async () => {
+    await withSecret(async () => {
+      const res = await POST(makeReq());
+      assert.equal(res.status, 401);
+    });
+  });
+
+  it('menolak 401 bila header secret salah', async () => {
+    await withSecret(async () => {
+      const res = await POST(makeReq({ 'x-telegram-bot-api-secret-token': 'salah' }));
+      assert.equal(res.status, 401);
+    });
+  });
+
+  it('menerima bila header secret cocok', async () => {
+    await withSecret(async () => {
+      const res = await POST(
+        makeReq({ 'x-telegram-bot-api-secret-token': 'rahasia-webhook-tes' })
+      );
+      assert.equal(res.status, 200);
+    });
+  });
+});
