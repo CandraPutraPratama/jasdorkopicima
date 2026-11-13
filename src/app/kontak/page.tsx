@@ -61,7 +61,7 @@ export default function ContactPage() {
 
           <div>
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[#15803D] text-[11px] font-bold mb-1">
-              <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#25D366]" />
               <span>Customer Service WhatsApp</span>
             </div>
             <h2 className="font-display font-black text-xl text-[#26150B] mt-1">

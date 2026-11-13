@@ -135,20 +135,18 @@ export default function FaqPage() {
         </div>
 
         {/* Highlight Jadwal Operasional */}
-        <div className="p-3.5 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-1.5">
+        <div className="p-3.5 bg-[#FFFDF9] rounded-2xl border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-[#A66908] uppercase tracking-wider flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-bold text-[#8C5D17] flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-600" />
               Jadwal Layanan Pemesanan
             </span>
-            <span className="text-[10px] font-bold px-2 py-0.5 bg-[#FAF7F2] text-[#6A584D] rounded-full border border-[#E8DEC0]">
-              WIB (Waktu Indonesia Barat)
-            </span>
+            <span className="text-xs font-medium text-[#7A6658]">Waktu Indonesia Barat</span>
           </div>
-          <p className="text-xs font-bold text-[#26150B] leading-snug">
+          <p className="text-xs font-bold text-[#2B1D12] leading-snug">
             {JADWAL_OPERASIONAL_LENGKAP}
           </p>
-          <p className="text-[11px] text-[#735F52] leading-tight">
+          <p className="text-xs text-[#7A6658] leading-tight">
             Hari libur: Senin, Rabu, dan Kamis. Pemesanan di luar jadwal buka akan dibalas saat admin aktif kembali.
           </p>
         </div>
@@ -158,24 +156,19 @@ export default function FaqPage() {
           {FAQ_LIST.map((faq) => (
             <article
               key={faq.id}
-              className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-2 border-l-4 border-l-[#C67D0A] transition hover:border-[#D9A74A]/60"
+              className="p-4 bg-[#FFFDF9] rounded-2xl border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-2"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#A66908] block mb-0.5">
+                  <span className="text-xs font-bold text-[#8C5D17] block mb-0.5">
                     {faq.category}
                   </span>
-                  <h2 className="font-display font-bold text-sm text-[#26150B] leading-snug">
+                  <h2 className="font-display font-bold text-sm text-[#2B1D12] leading-snug">
                     {faq.q}
                   </h2>
                 </div>
-                {faq.highlight && (
-                  <span className="shrink-0 px-2 py-0.5 bg-[#FBF5EC] text-[#8C5D17] text-[10px] font-bold rounded-md border border-[#EADAC5] whitespace-nowrap">
-                    {faq.highlight}
-                  </span>
-                )}
               </div>
-              <p className="text-xs text-[#4A3525] leading-relaxed whitespace-pre-line pt-0.5">
+              <p className="text-xs text-[#4A3628] leading-relaxed whitespace-pre-line pt-0.5">
                 {faq.a}
               </p>
             </article>
@@ -183,16 +176,16 @@ export default function FaqPage() {
         </div>
 
         {/* Ringkasan Metode Pembayaran */}
-        <div className="p-4 bg-white rounded-2xl border border-[#EFE5D8] shadow-2xs space-y-3">
+        <div className="p-4 bg-[#FFFDF9] rounded-2xl border-2 border-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-3">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-[#FEF3C7] text-[#B45309] flex items-center justify-center font-bold text-xs shrink-0">
               Rp
             </div>
             <div>
-              <h3 className="font-display font-bold text-sm text-[#26150B]">
+              <h3 className="font-display font-bold text-sm text-[#2B1D12]">
                 Metode Pembayaran Resmi
               </h3>
-              <p className="text-[11px] text-[#735F52]">
+              <p className="text-xs text-[#7A6658]">
                 Dibayarkan setelah admin mengonfirmasi pesanan Anda via WhatsApp
               </p>
             </div>
@@ -205,10 +198,10 @@ export default function FaqPage() {
                 className="p-2.5 bg-[#FAF7F2] rounded-xl border border-[#EDE3D6]/70 flex items-center justify-between gap-2"
               >
                 <div>
-                  <span className="font-display font-bold text-xs text-[#26150B] block">
+                  <span className="font-display font-bold text-xs text-[#2B1D12] block">
                     {m.nama}
                   </span>
-                  <span className="text-[11px] text-[#5C4A3E] block mt-0.5">
+                  <span className="text-xs text-[#5C4A3E] block mt-0.5">
                     {m.keterangan}
                   </span>
                 </div>
@@ -243,7 +236,7 @@ export default function FaqPage() {
         <div className="text-center pt-2">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#8C7667] hover:text-[#26150B] transition"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#8C7667] hover:text-[#2B1D12] transition"
           >
             <span>← Kembali ke Beranda</span>
           </Link>

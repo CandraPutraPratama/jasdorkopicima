@@ -491,7 +491,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           {activeGroupId && (
             <div className="mx-4 mt-3 p-3 bg-[#26150B] text-[#FAF4E8] rounded-2xl flex items-center justify-between gap-3 text-xs shadow-[3px_3px_0px_#2B1D12] border-2 border-[#D9A74A]/60">
               <div className="flex items-center gap-2.5 min-w-0">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#FBBF24] shrink-0 animate-pulse" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#FBBF24] shrink-0" />
                 <div className="truncate">
                   <span className="block text-[10px] text-[#D9A74A] font-bold uppercase tracking-wider">
                     Sesi Pesan Bareng
@@ -524,7 +524,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           {/* Indikator Dibuka Manual oleh Admin */}
           {jasdorStatus?.overrideType === 'force_open' && (
             <div className="mx-4 mt-3 p-2.5 sm:p-3 bg-emerald-50 border border-emerald-400 rounded-2xl flex items-center gap-2.5 text-xs text-emerald-950">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse shrink-0" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 shrink-0" />
               <div className="font-medium leading-snug">
                 <strong className="font-bold text-emerald-900">Dibuka manual oleh admin</strong> - Layanan menerima pesanan saat ini.
               </div>
@@ -534,7 +534,7 @@ export default function OutletMenuPage({ params }: OutletMenuPageProps) {
           {/* Banner Status Tentatif Hari Selasa */}
           {jasdorStatus?.isTentative && (
             <div className="mx-4 mt-3 p-3 bg-[#FEF3C7] border border-amber-300 rounded-2xl flex items-center gap-2.5 text-xs text-[#2B1D12]">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse shrink-0" />
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
               <div className="font-medium leading-snug">
                 <strong className="font-bold">Info Layanan:</strong> {jasdorStatus.tentativeNote || 'Hari ini tentative - konfirmasi ke admin dulu ya.'}
               </div>

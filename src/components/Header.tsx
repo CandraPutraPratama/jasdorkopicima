@@ -173,7 +173,7 @@ export function Header({
           <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#FFFDF9] rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
             <span
               className={`w-2 h-2 rounded-full border border-[#2B1D12] ${
-                isOpen ? 'bg-[#15803D] animate-pulse' : 'bg-[#DC2626]'
+                isOpen ? 'bg-[#15803D]' : 'bg-[#DC2626]'
               }`}
             />
             <span className="text-[11px] font-bold text-[#2B1D12]">

@@ -77,22 +77,19 @@ export function BrandCard({ brand, outletCount, isActive = true }: BrandCardProp
               {brand.name}
             </h3>
             {brand.promoBadge && (
-              <span className="text-[10px] font-bold text-[#DC2626] bg-[#FEF2F2] border border-[#DC2626]/30 px-1.5 py-0.5 rounded-md uppercase tracking-wide">
+              <span className="text-xs font-bold text-[#DC2626] bg-[#FEF2F2] border border-[#DC2626]/30 px-1.5 py-0.5 rounded-md uppercase tracking-wide">
                 {brand.promoBadge}
               </span>
             )}
           </div>
-          <p className="text-[11px] text-[#7A6658] font-medium mt-1">
+          <p className="text-xs text-[#7A6658] font-medium mt-1">
             {typeof outletCount === 'number' && outletCount > 0
               ? `${outletCount.toLocaleString('id-ID')} outlet tersedia`
               : brand.outletCountLabel || 'Tersedia di seluruh Indonesia'}
           </p>
         </div>
 
-        <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[#2B1D12]/10">
-          <span className="text-[10px] font-bold text-[#15803D] bg-[#D9F3EA] px-2 py-0.5 rounded-md">
-            Tersedia
-          </span>
+        <div className="mt-2.5 flex items-center justify-end pt-2 border-t border-[#2B1D12]/10">
           <span className="text-xs font-bold text-[#2B1D12] flex items-center gap-1 group-hover:text-[#C67D0A] transition-colors">
             Pilih Outlet
             <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -118,7 +115,7 @@ export function BrandCard({ brand, outletCount, isActive = true }: BrandCardProp
         </div>
 
         <div className="flex items-center justify-between gap-1 mt-2 pt-2 border-t border-[#2B1D12]/10">
-          <span className="text-[9px] font-bold text-[#7A6658] bg-[#FAF4E8] border border-[#2B1D12]/20 px-2 py-0.5 rounded-md">
+          <span className="text-xs font-bold text-[#7A6658] bg-[#FAF4E8] border border-[#2B1D12]/20 px-2 py-0.5 rounded-md">
             Segera Hadir
           </span>
         </div>

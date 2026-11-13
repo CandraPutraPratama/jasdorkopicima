@@ -117,7 +117,7 @@ export function MyOrdersView() {
               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
             />
           </svg>
-          <span className="text-[11px]">{isRefreshing ? 'Memuat...' : 'Segarkan'}</span>
+          <span className="text-xs">{isRefreshing ? 'Memuat...' : 'Segarkan'}</span>
         </button>
       </div>
 
@@ -171,7 +171,7 @@ export function MyOrdersView() {
       {activeOrders.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#C67D0A] animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#C67D0A]" />
             <h3 className="font-display font-black text-sm text-[#2B1D12] uppercase tracking-wider">
               Pesanan Berjalan ({activeOrders.length})
             </h3>
@@ -191,10 +191,10 @@ export function MyOrdersView() {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-black text-sm text-[#2B1D12]">
+                        <span className="font-mono font-bold text-sm text-[#2B1D12]">
                           #{order.id}
                         </span>
-                        <span className="text-[10px] text-[#6A584D] font-bold">
+                        <span className="text-xs text-[#6A584D] font-bold">
                           {formatDateIndo(order.created_at)}
                         </span>
                       </div>
@@ -226,7 +226,7 @@ export function MyOrdersView() {
                     <div className="text-right shrink-0">
                       {isPendingPayment && (
                         <div className="inline-flex flex-col items-end gap-1">
-                          <span className="px-2.5 py-0.5 text-[10px] font-black rounded-full bg-[#FFF0C2] text-[#2B1D12] border-2 border-[#2B1D12]">
+                          <span className="px-2.5 py-0.5 text-xs font-bold rounded-full bg-[#FFF0C2] text-[#2B1D12] border-2 border-[#2B1D12]">
                             Menunggu Pembayaran
                           </span>
                           {order.expires_at && (
@@ -236,13 +236,13 @@ export function MyOrdersView() {
                       )}
 
                       {isWaitingConfirm && (
-                        <span className="px-2.5 py-0.5 text-[10px] font-black rounded-full bg-[#DDF0FF] text-[#2B1D12] border-2 border-[#2B1D12]">
+                        <span className="px-2.5 py-0.5 text-xs font-bold rounded-full bg-[#DDF0FF] text-[#2B1D12] border-2 border-[#2B1D12]">
                           Menunggu Konfirmasi Admin
                         </span>
                       )}
 
                       {isInQueue && (
-                        <span className="px-2.5 py-0.5 text-[10px] font-black rounded-full bg-[#E0E7FF] text-[#2B1D12] border-2 border-[#2B1D12]">
+                        <span className="px-2.5 py-0.5 text-xs font-bold rounded-full bg-[#E0E7FF] text-[#2B1D12] border-2 border-[#2B1D12]">
                           Dalam Antrian
                         </span>
                       )}
@@ -255,7 +255,7 @@ export function MyOrdersView() {
                       {order.items?.length || 0} item pesanan
                     </span>
                     <div className="text-right">
-                      <span className="text-[10px] text-[#6A584D] block leading-none font-bold">Total Tagihan</span>
+                      <span className="text-xs text-[#6A584D] block leading-none font-bold">Total Tagihan</span>
                       <span className="font-display font-black text-sm text-[#DC2626]">
                         {formatRupiah(order.total)}
                       </span>
@@ -312,28 +312,28 @@ export function MyOrdersView() {
                   className="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-2xl p-3.5 shadow-[3px_3px_0px_#2B1D12] space-y-2.5"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono font-black text-xs text-[#2B1D12]">
+                    <span className="font-mono font-bold text-xs text-[#2B1D12]">
                       #{order.id}
                     </span>
 
                     {/* Status Badge */}
                     {isProcessed && (
-                      <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-[#D9F3EA] text-[#15803D] border-2 border-[#15803D]">
+                      <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-[#D9F3EA] text-[#15803D] border-2 border-[#15803D]">
                         Diproses
                       </span>
                     )}
                     {isCompleted && (
-                      <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-emerald-600 text-white border-2 border-emerald-700">
+                      <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-emerald-600 text-white border-2 border-emerald-700">
                         Selesai
                       </span>
                     )}
                     {isCancelled && (
-                      <span className="px-2 py-0.5 text-[10px] font-black rounded-full bg-[#FFEBEB] text-[#DC2626] border-2 border-[#DC2626]">
+                      <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-[#FFEBEB] text-[#DC2626] border-2 border-[#DC2626]">
                         Dibatalkan
                       </span>
                     )}
                     {isExpired && (
-                      <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-[#EFE5D8] text-[#6A584D] border-2 border-[#2B1D12]">
+                      <span className="px-2 py-0.5 text-xs font-bold rounded-full bg-[#EFE5D8] text-[#6A584D] border-2 border-[#2B1D12]">
                         Kedaluwarsa
                       </span>
                     )}
@@ -344,7 +344,7 @@ export function MyOrdersView() {
                       <p className="font-bold text-[#2B1D12] truncate">
                         {order.outlet_name || 'Outlet Pilihan'}
                       </p>
-                      <p className="text-[10px] text-[#6A584D] font-medium">
+                      <p className="text-xs text-[#6A584D] font-medium">
                         {formatDateIndo(order.created_at)}
                       </p>
                     </div>
@@ -358,13 +358,13 @@ export function MyOrdersView() {
 
                   <div className="pt-2 border-t-2 border-[#2B1D12] flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] text-[#6A584D] font-bold">
+                      <span className="text-xs text-[#6A584D] font-bold">
                         {order.items?.length || 0} menu
                       </span>
                       <span className="text-[#6A584D]">•</span>
                       <Link prefetch={false}
                         href={buildOrderPaymentUrl(order.id, getMyOrderAccessToken(order.id))}
-                        className="text-[11px] font-black text-[#C67D0A] hover:underline underline-offset-2"
+                        className="text-xs font-bold text-[#C67D0A] hover:underline underline-offset-2"
                       >
                         Lihat Rincian
                       </Link>
@@ -373,7 +373,7 @@ export function MyOrdersView() {
                     <button
                       type="button"
                       onClick={() => executeReorder(order, router)}
-                      className="px-3 py-1 rounded-xl bg-[#2B1D12] text-[#FAF4E8] font-display font-black text-[11px] border-2 border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A] hover:bg-[#3D2A1C] transition flex items-center gap-1 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer"
+                      className="px-3 py-1 rounded-xl bg-[#2B1D12] text-[#FAF4E8] font-display font-black text-xs border-2 border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A] hover:bg-[#3D2A1C] transition flex items-center gap-1 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer"
                     >
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />

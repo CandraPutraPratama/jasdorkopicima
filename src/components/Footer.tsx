@@ -31,7 +31,7 @@ export function Footer() {
         {/* Hierarki 2: Jam Operasional */}
         <div className="pt-0.5 pb-1">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FFF8E7] border-2 border-[#2B1D12] rounded-full text-[11px] font-black text-[#C67D0A] shadow-[2px_2px_0px_#2B1D12]">
-            <span className="w-2 h-2 rounded-full bg-[#15803D] animate-pulse shrink-0" />
+            <span className="w-2 h-2 rounded-full bg-[#15803D] shrink-0" />
             <span>{JADWAL_OPERASIONAL_LENGKAP}</span>
           </div>
         </div>

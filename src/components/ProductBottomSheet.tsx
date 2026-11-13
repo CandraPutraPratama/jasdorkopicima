@@ -489,7 +489,7 @@ export function ProductBottomSheet({
             <h3 className="font-display font-black text-base text-[#2B1D12] line-clamp-1">
               {product.name}
             </h3>
-            <span className="text-[11px] text-[#C67D0A] font-extrabold uppercase tracking-wide">
+            <span className="text-xs text-[#C67D0A] font-extrabold uppercase tracking-wide">
               {isFood ? 'Detail & Catatan Pesanan' : 'Kustomisasi Menu'}
             </span>
           </div>
@@ -544,7 +544,7 @@ export function ProductBottomSheet({
                     <line x1="10" y1="2" x2="10" y2="4" />
                     <line x1="14" y1="2" x2="14" y2="4" />
                   </svg>
-                  <span className="text-[7px] font-black uppercase tracking-wider text-[#8C7667] mt-0.5">
+                  <span className="text-[7px] font-bold uppercase tracking-wider text-[#8C7667] mt-0.5">
                     Jasdor
                   </span>
                 </div>
@@ -561,7 +561,7 @@ export function ProductBottomSheet({
                 <span className="text-xs text-[#8C7667] line-through">
                   {formatRupiah(pricing.originalPricePerItem)}
                 </span>
-                <span className="text-[10px] font-black text-[#DC2626] bg-[#FFEBEB] border-2 border-[#DC2626] px-1.5 py-0.2 rounded-md">
+                <span className="text-xs font-bold text-[#DC2626] bg-[#FFEBEB] border-2 border-[#DC2626] px-1.5 py-0.2 rounded-md">
                   {isFore ? '-25%' : '-50%'}
                 </span>
               </div>
@@ -600,7 +600,7 @@ export function ProductBottomSheet({
                   <span className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide">
                     {dim.name}
                   </span>
-                  <span className="text-[10px] text-[#2B1D12] font-bold bg-[#FFF0C2] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
+                  <span className="text-xs text-[#2B1D12] font-bold bg-[#FFF0C2] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
                     Pilih 1
                   </span>
                 </div>
@@ -630,9 +630,9 @@ export function ProductBottomSheet({
                             : 'border-[#D4C3B2] bg-[#EFE5D8] text-[#8C7667] cursor-not-allowed line-through'
                         }`}
                       >
-                        <span className="leading-tight break-words text-center text-[11px] sm:text-xs">{val.name}</span>
+                        <span className="leading-tight break-words text-center text-xs">{val.name}</span>
                         {addition > 0 && (
-                          <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#C67D0A]'}`}>
+                          <span className={`text-xs mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#C67D0A]'}`}>
                             +{formatRupiah(addition)}
                           </span>
                         )}
@@ -661,7 +661,7 @@ export function ProductBottomSheet({
                   <span className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide">
                     {note.name}
                   </span>
-                  <span className="text-[10px] text-[#2B1D12] font-bold bg-[#DDF0FF] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
+                  <span className="text-xs text-[#2B1D12] font-bold bg-[#DDF0FF] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
                     Pilih 1
                   </span>
                 </div>
@@ -685,7 +685,7 @@ export function ProductBottomSheet({
                             : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
                         }`}
                       >
-                        <span className="leading-tight break-words text-center text-[11px] sm:text-xs">{optText}</span>
+                        <span className="leading-tight break-words text-center text-xs">{optText}</span>
                       </button>
                     );
                   })}
@@ -702,7 +702,7 @@ export function ProductBottomSheet({
                   <span>Whipped Cream</span>
                   <span className="text-[#DC2626] text-sm">*</span>
                 </span>
-                <span className="text-[10px] text-[#2B1D12] font-black bg-[#FFF0C2] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
+                <span className="text-xs text-[#2B1D12] font-bold bg-[#FFF0C2] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
                   Wajib Pilih 1 • Gratis
                 </span>
               </div>
@@ -724,8 +724,8 @@ export function ProductBottomSheet({
                           : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
                       }`}
                     >
-                      <span className="leading-tight break-words text-center text-[11px] sm:text-xs">{addon.name}</span>
-                      <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#15803D]'}`}>
+                      <span className="leading-tight break-words text-center text-xs">{addon.name}</span>
+                      <span className={`text-xs mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#15803D]'}`}>
                         Gratis
                       </span>
                     </button>
@@ -743,7 +743,7 @@ export function ProductBottomSheet({
                   <span>Pilihan Susu</span>
                   <span className="text-[#DC2626] text-sm">*</span>
                 </span>
-                <span className="text-[10px] text-[#2B1D12] font-black bg-[#FFF0C2] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
+                <span className="text-xs text-[#2B1D12] font-bold bg-[#FFF0C2] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
                   Wajib Pilih 1
                 </span>
               </div>
@@ -765,13 +765,13 @@ export function ProductBottomSheet({
                           : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
                       }`}
                     >
-                      <span className="leading-tight break-words text-center text-[11px] sm:text-xs">{addon.name}</span>
+                      <span className="leading-tight break-words text-center text-xs">{addon.name}</span>
                       {addon.price > 0 ? (
-                        <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#C67D0A]'}`}>
+                        <span className={`text-xs mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#C67D0A]'}`}>
                           +{formatRupiah(addon.price)}
                         </span>
                       ) : (
-                        <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#15803D]'}`}>
+                        <span className={`text-xs mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#15803D]'}`}>
                           Gratis
                         </span>
                       )}
@@ -790,7 +790,7 @@ export function ProductBottomSheet({
                   <span>Espresso</span>
                   <span className="text-[#DC2626] text-sm">*</span>
                 </span>
-                <span className="text-[10px] text-[#2B1D12] font-black bg-[#FFF0C2] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
+                <span className="text-xs text-[#2B1D12] font-bold bg-[#FFF0C2] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
                   Wajib Pilih 1
                 </span>
               </div>
@@ -812,13 +812,13 @@ export function ProductBottomSheet({
                           : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
                       }`}
                     >
-                      <span className="leading-tight break-words text-center text-[11px] sm:text-xs">{addon.name}</span>
+                      <span className="leading-tight break-words text-center text-xs">{addon.name}</span>
                       {addon.price > 0 ? (
-                        <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#C67D0A]'}`}>
+                        <span className={`text-xs mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#C67D0A]'}`}>
                           +{formatRupiah(addon.price)}
                         </span>
                       ) : (
-                        <span className={`text-[10px] mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#15803D]'}`}>
+                        <span className={`text-xs mt-0.5 ${isSelected ? 'text-[#FAF4E8]' : 'text-[#15803D]'}`}>
                           Gratis
                         </span>
                       )}
@@ -836,7 +836,7 @@ export function ProductBottomSheet({
                 <span className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide">
                   Syrup / Add-on
                 </span>
-                <span className="text-[10px] text-[#2B1D12] font-bold bg-[#FFE7D6] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
+                <span className="text-xs text-[#2B1D12] font-bold bg-[#FFE7D6] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
                   {isFore
                     ? 'Opsional (Maks. 1) • +Rp7.000'
                     : isTomoro
@@ -860,7 +860,7 @@ export function ProductBottomSheet({
                       onClick={() => handleToggleSyrup(addon)}
                       className={`min-h-[46px] p-2.5 rounded-xl border-2 flex items-center justify-between text-xs transition text-left ${
                         isChecked
-                          ? 'border-[#2B1D12] bg-[#FFF0C2] font-black text-[#2B1D12] shadow-[2px_2px_0px_#C67D0A]'
+                          ? 'border-[#2B1D12] bg-[#FFF0C2] font-bold text-[#2B1D12] shadow-[2px_2px_0px_#C67D0A]'
                           : addon.isSoldOut
                           ? 'border-[#D4C3B2] bg-[#EFE5D8] text-[#8C7667] cursor-not-allowed'
                           : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
@@ -880,14 +880,14 @@ export function ProductBottomSheet({
                             </svg>
                           )}
                         </div>
-                        <span className="leading-tight break-words text-[11px] font-bold">{addon.name}</span>
+                        <span className="leading-tight break-words text-xs font-bold">{addon.name}</span>
                       </div>
                       {priceToAdd > 0 ? (
-                        <span className="text-[10px] text-[#2B1D12] shrink-0 font-extrabold">
+                        <span className="text-xs text-[#2B1D12] shrink-0 font-extrabold">
                           +{formatRupiah(priceToAdd)}
                         </span>
                       ) : (
-                        <span className="text-[10px] text-[#15803D] shrink-0 font-extrabold">
+                        <span className="text-xs text-[#15803D] shrink-0 font-extrabold">
                           Gratis
                         </span>
                       )}
@@ -905,7 +905,7 @@ export function ProductBottomSheet({
                 <span className="font-display text-xs font-black text-[#2B1D12] uppercase tracking-wide">
                   Topping
                 </span>
-                <span className="text-[10px] text-[#2B1D12] font-bold bg-[#D9F3EA] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
+                <span className="text-xs text-[#2B1D12] font-bold bg-[#D9F3EA] px-2 py-0.5 rounded-full border-2 border-[#2B1D12]">
                   {isFore
                     ? 'Opsional (Maks. 2) • +Rp7.000'
                     : isTomoro
@@ -929,7 +929,7 @@ export function ProductBottomSheet({
                       onClick={() => handleToggleTopping(addon)}
                       className={`min-h-[46px] p-2.5 rounded-xl border-2 flex items-center justify-between text-xs transition text-left ${
                         isChecked
-                          ? 'border-[#2B1D12] bg-[#D9F3EA] font-black text-[#2B1D12] shadow-[2px_2px_0px_#C67D0A]'
+                          ? 'border-[#2B1D12] bg-[#D9F3EA] font-bold text-[#2B1D12] shadow-[2px_2px_0px_#C67D0A]'
                           : addon.isSoldOut
                           ? 'border-[#D4C3B2] bg-[#EFE5D8] text-[#8C7667] cursor-not-allowed'
                           : 'border-[#2B1D12] bg-white text-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] hover:bg-[#FFF8E7] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none'
@@ -949,14 +949,14 @@ export function ProductBottomSheet({
                             </svg>
                           )}
                         </div>
-                        <span className="leading-tight break-words text-[11px] font-bold">{addon.name}</span>
+                        <span className="leading-tight break-words text-xs font-bold">{addon.name}</span>
                       </div>
                       {priceToAdd > 0 ? (
-                        <span className="text-[10px] text-[#2B1D12] shrink-0 font-extrabold">
+                        <span className="text-xs text-[#2B1D12] shrink-0 font-extrabold">
                           +{formatRupiah(priceToAdd)}
                         </span>
                       ) : (
-                        <span className="text-[10px] text-[#15803D] shrink-0 font-extrabold">
+                        <span className="text-xs text-[#15803D] shrink-0 font-extrabold">
                           Gratis
                         </span>
                       )}
@@ -977,7 +977,7 @@ export function ProductBottomSheet({
                 >
                   Catatan Tambahan
                 </label>
-                <span className="text-[11px] font-bold text-[#8C7667]">
+                <span className="text-xs font-bold text-[#8C7667]">
                   {customerNotes.length}/100
                 </span>
               </div>
@@ -1002,7 +1002,7 @@ export function ProductBottomSheet({
         <div className="sticky bottom-0 bg-[#FAF4E8] border-t-2 border-[#2B1D12] p-3.5 sm:p-4 space-y-2.5 shadow-lg overscroll-contain touch-none shrink-0 pb-[max(0.875rem,env(safe-area-inset-bottom))]">
           <div className="flex items-baseline justify-between">
             <div>
-              <span className="text-[10px] text-[#6A584D] block font-bold">
+              <span className="text-xs text-[#6A584D] block font-bold">
                 Total Estimasi ({quantity} item)
               </span>
               <div className="flex items-baseline gap-2">
@@ -1016,7 +1016,7 @@ export function ProductBottomSheet({
             </div>
 
             <div className="text-right">
-              <span className="text-[10px] font-black text-[#15803D] bg-[#D9F3EA] px-2 py-0.5 rounded-md border-2 border-[#15803D]">
+              <span className="text-xs font-bold text-[#15803D] bg-[#D9F3EA] px-2 py-0.5 rounded-md border-2 border-[#15803D]">
                 Hemat {formatRupiah(pricing.savingsTotal)}
               </span>
             </div>
@@ -1024,14 +1024,14 @@ export function ProductBottomSheet({
 
           {/* Peringatan jika Whipped Cream belum dipilih */}
           {isWhippedCreamMissing && !isOutletClosed && (
-            <div className="p-2 bg-rose-50 border-2 border-[#DC2626] rounded-xl text-rose-900 text-[11px] text-center font-bold">
+            <div className="p-2 bg-rose-50 border-2 border-[#DC2626] rounded-xl text-rose-900 text-xs text-center font-bold">
               Silakan pilih 1 opsi Whipped Cream sebelum menambahkan ke keranjang
             </div>
           )}
 
           {/* Peringatan jika outlet sedang tutup */}
           {isOutletClosed && (
-            <div className="p-2 bg-[#FFF0C2] border-2 border-[#2B1D12] rounded-xl text-[#2B1D12] text-[11px] text-center font-bold">
+            <div className="p-2 bg-[#FFF0C2] border-2 border-[#2B1D12] rounded-xl text-[#2B1D12] text-xs text-center font-bold">
               Outlet ini sedang tutup - menu ini hanya untuk dilihat (tidak dapat dipesan)
             </div>
           )}
@@ -1044,7 +1044,7 @@ export function ProductBottomSheet({
                 type="button"
                 disabled={quantity <= 1 || isOutletClosed}
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="w-9 h-full bg-[#FAF4E8] rounded-lg flex items-center justify-center text-[#2B1D12] font-black disabled:opacity-30 hover:bg-[#FFF8E7] active:scale-95 text-sm"
+                className="w-9 h-full bg-[#FAF4E8] rounded-lg flex items-center justify-center text-[#2B1D12] font-bold disabled:opacity-30 hover:bg-[#FFF8E7] active:scale-95 text-sm"
                 aria-label="Kurangi jumlah"
               >
                 -
@@ -1056,7 +1056,7 @@ export function ProductBottomSheet({
                 type="button"
                 disabled={isOutletClosed}
                 onClick={() => setQuantity((q) => q + 1)}
-                className="w-9 h-full bg-[#FAF4E8] rounded-lg flex items-center justify-center text-[#2B1D12] font-black disabled:opacity-30 hover:bg-[#FFF8E7] active:scale-95 text-sm"
+                className="w-9 h-full bg-[#FAF4E8] rounded-lg flex items-center justify-center text-[#2B1D12] font-bold disabled:opacity-30 hover:bg-[#FFF8E7] active:scale-95 text-sm"
                 aria-label="Tambah jumlah"
               >
                 +

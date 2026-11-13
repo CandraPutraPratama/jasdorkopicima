@@ -326,7 +326,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
         <div className="max-w-md mx-auto flex items-center justify-between">
           <Link
             href="/"
-            className="flex items-center gap-1.5 text-xs font-black text-[#2B1D12] hover:text-[#C67D0A] transition"
+            className="flex items-center gap-1.5 text-xs font-bold text-[#2B1D12] hover:text-[#C67D0A] transition"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
@@ -335,16 +335,16 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
           </Link>
 
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-[#6A584D] font-bold">ID Pesanan:</span>
+            <span className="text-xs text-[#6A584D] font-bold">ID Pesanan:</span>
             <button
               type="button"
               onClick={handleCopyId}
-              className="inline-flex items-center gap-1 text-xs font-mono font-black text-[#2B1D12] bg-white hover:bg-[#FFF8E7] border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] px-2 py-0.5 rounded-lg transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+              className="inline-flex items-center gap-1 text-xs font-mono font-bold text-[#2B1D12] bg-white hover:bg-[#FFF8E7] border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] px-2 py-0.5 rounded-lg transition active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
               title="Salin ID Pesanan"
             >
               <span>{order.id}</span>
               {isCopiedId ? (
-                <span className="text-[10px] text-[#15803D] font-sans font-black">Disalin!</span>
+                <span className="text-xs text-[#15803D] font-sans font-bold">Disalin!</span>
               ) : (
                 <svg className="w-3 h-3 text-[#2B1D12]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -361,10 +361,10 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
         {status === 'menunggu_pembayaran' && (
           <div className="bg-[#FFF0C2] border-2 border-[#2B1D12] rounded-2xl p-3.5 flex items-center justify-between text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12]">
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#C67D0A] animate-pulse" />
-              <span className="font-black">Menunggu Pembayaran</span>
+              <div className="w-2.5 h-2.5 rounded-full bg-[#C67D0A]" />
+              <span className="font-bold">Menunggu Pembayaran</span>
             </div>
-            <div className="flex items-center gap-1 font-mono font-black text-[#2B1D12] bg-white px-2 py-0.5 rounded-lg border-2 border-[#2B1D12] shadow-[1px_1px_0px_#2B1D12]">
+            <div className="flex items-center gap-1 font-mono font-bold text-[#2B1D12] bg-white px-2 py-0.5 rounded-lg border-2 border-[#2B1D12] shadow-[1px_1px_0px_#2B1D12]">
               <svg className="w-3.5 h-3.5 text-[#C67D0A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -378,12 +378,12 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
             {/* Header Status */}
             <div className="flex items-center justify-between pb-3 border-b-2 border-[#2B1D12]/15">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#C67D0A] animate-pulse shrink-0" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#C67D0A] shrink-0" />
                 <span className="font-display font-black text-sm sm:text-base text-[#2B1D12]">
                   Pesanan Masuk Antrian
                 </span>
               </div>
-              <span className="px-2.5 py-1 text-[10px] font-black rounded-lg bg-[#FFF0C2] text-[#854D0E] border-2 border-[#2B1D12] shadow-[1.5px_1.5px_0px_#2B1D12]">
+              <span className="px-2.5 py-1 text-xs font-bold rounded-lg bg-[#FFF0C2] text-[#854D0E] border-2 border-[#2B1D12] shadow-[1.5px_1.5px_0px_#2B1D12]">
                 {status === 'antrian' ? 'Dalam Antrian' : 'Menunggu Konfirmasi'}
               </span>
             </div>
@@ -391,7 +391,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
             {/* Info Posisi & Estimasi */}
             <div className="grid grid-cols-2 gap-2.5 text-center">
               <div className="bg-[#FAF4E8] rounded-xl p-2.5 sm:p-3 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
-                <span className="text-[10px] font-bold text-[#7A6658] uppercase tracking-wider block">Posisi Antrian</span>
+                <span className="text-xs font-bold text-[#7A6658] uppercase tracking-wider block">Posisi Antrian</span>
                 <span className="font-display font-black text-sm sm:text-base text-[#2B1D12] mt-0.5 block">
                   {queueAhead !== undefined
                     ? queueAhead === 0
@@ -401,7 +401,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                 </span>
               </div>
               <div className="bg-[#FAF4E8] rounded-xl p-2.5 sm:p-3 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12]">
-                <span className="text-[10px] font-bold text-[#7A6658] uppercase tracking-wider block">Estimasi Siap</span>
+                <span className="text-xs font-bold text-[#7A6658] uppercase tracking-wider block">Estimasi Siap</span>
                 <span className="font-display font-black text-sm sm:text-base text-[#C67D0A] mt-0.5 block">
                   {queueAhead !== undefined && queueAhead > 3
                     ? `~${Math.max(20, (queueAhead + 1) * 4)} Menit`
@@ -412,12 +412,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
             {/* Transparansi Alur Proses: 4 Tahapan (Vertikal di Layar HP, Horizontal di Layar Tablet/Desktop) */}
             <div className="bg-[#FAF4E8] rounded-xl p-3 sm:p-3.5 border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] space-y-3">
-              <p className="text-xs font-black text-[#2B1D12] flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#C67D0A] shrink-0" />
-                <span className="bg-[#FFF0C2] px-2 py-0.5 rounded border border-[#2B1D12]/20">
-                  Tahapan Proses Pesanan:
-                </span>
-              </p>
+              <p className="text-xs font-bold text-[#2B1D12]">Tahapan Proses Pesanan:</p>
 
               {/* Tampilan Vertikal untuk Layar Kecil (< sm / 320px - 430px) */}
               <div className="sm:hidden space-y-2">
@@ -460,7 +455,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
                     {/* Lingkaran status */}
                     <div
-                      className={`relative z-10 w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 border-2 border-[#2B1D12] ${
+                      className={`relative z-10 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 border-2 border-[#2B1D12] ${
                         step.isDone
                           ? 'bg-[#15803D] text-white shadow-[1px_1px_0px_#2B1D12]'
                           : step.isActive
@@ -543,7 +538,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                   >
                     <div className="flex items-center gap-1.5 mb-1.5">
                       <span
-                        className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 border border-[#2B1D12] ${
+                        className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold shrink-0 border border-[#2B1D12] ${
                           step.isDone
                             ? 'bg-[#15803D] text-white'
                             : step.isActive
@@ -559,12 +554,12 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                           step.num
                         )}
                       </span>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#7A6658]">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#7A6658]">
                         Tahap {step.num}
                       </span>
                     </div>
                     <span
-                      className={`text-[11px] font-bold leading-tight break-words text-balance ${
+                      className={`text-xs font-bold leading-tight break-words text-balance ${
                         step.isDone
                           ? 'text-[#15803D]'
                           : step.isActive
@@ -580,8 +575,8 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
             </div>
 
             {/* Box Penenang: Anti Spam Chat WA */}
-            <div className="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-xl p-3 shadow-[2px_2px_0px_#2B1D12] text-[11px] leading-snug">
-              <p className="font-black text-[#854D0E] flex items-center gap-2">
+            <div className="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-xl p-3 shadow-[2px_2px_0px_#2B1D12] text-xs leading-snug">
+              <p className="font-bold text-[#854D0E] flex items-center gap-2">
                 <span className="text-base leading-none shrink-0" role="img" aria-label="Chat">💬</span>
                 <span>Harap Menunggu dengan Santai:</span>
               </p>
@@ -591,8 +586,8 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
             </div>
 
             {/* Box Kebijakan Tegas: Anti Batal & Anti Refund */}
-            <div className="bg-[#FFF5F5] border-2 border-[#DC2626] rounded-xl p-3 shadow-[2px_2px_0px_#DC2626] text-[11px] leading-snug">
-              <p className="font-black text-[#DC2626] flex items-center gap-2">
+            <div className="bg-[#FFF5F5] border-2 border-[#DC2626] rounded-xl p-3 shadow-[2px_2px_0px_#DC2626] text-xs leading-snug">
+              <p className="font-bold text-[#DC2626] flex items-center gap-2">
                 <span className="text-base leading-none shrink-0" role="img" aria-label="Peringatan">⚠️</span>
                 <span>Kebijakan Pembatalan & Refund:</span>
               </p>
@@ -621,14 +616,14 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                 Pembayaran Terverifikasi & Pesanan Diproses
               </span>
             </div>
-            <p className="text-[11px] text-[#2B1D12] mt-0.5 leading-relaxed font-medium">
+            <p className="text-xs text-[#2B1D12] mt-0.5 leading-relaxed font-medium">
               Admin telah berhasil memverifikasi pembayaran dan bersiap memproses pesananmu. Mohon ditunggu bukti pesanan dan nomor antriannya yaa kak.
             </p>
-            <div className="bg-white/80 rounded-xl p-2 border border-[#15803D]/20 text-[11px] flex items-center justify-between font-bold">
+            <div className="bg-white/80 rounded-xl p-2 border border-[#15803D]/20 text-xs flex items-center justify-between font-bold">
               <span className="text-[#6A584D]">Estimasi Pesanan diproses:</span>
               <span className="text-[#15803D]">~5 - 15 Menit</span>
             </div>
-            <p className="text-[10px] text-[#6A584D] italic font-medium">
+            <p className="text-xs text-[#6A584D] italic font-medium">
               Pesanan yang sudah diproses di outlet tidak dapat dibatalkan atau di-refund. Kamu bisa langsung bersiap menuju outlet bila memilih pick-up sekarang.
             </p>
           </div>
@@ -639,12 +634,12 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
           <div className="bg-[#FFF8E7] border-2 border-[#2B1D12] rounded-2xl p-4 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-3 animate-in fade-in">
             <div className="flex items-center justify-between pb-2 border-b-2 border-[#2B1D12]/15">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#C67D0A] animate-pulse shrink-0" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#C67D0A] shrink-0" />
                 <span className="font-display font-black text-sm text-[#854D0E]">
                   Pesananmu sedang Dibuat
                 </span>
               </div>
-              <span className="px-2 py-0.5 text-[10px] font-black rounded-lg bg-[#C67D0A]/15 text-[#854D0E] border border-[#C67D0A]/30">
+              <span className="px-2 py-0.5 text-xs font-bold rounded-lg bg-[#C67D0A]/15 text-[#854D0E] border border-[#C67D0A]/30">
                 Tahap Pembuatan
               </span>
             </div>
@@ -652,7 +647,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
             <div className="bg-white rounded-xl p-3 border-2 border-[#2B1D12]/20 shadow-[1px_1px_0px_#2B1D12] space-y-2">
               <div className="flex items-center justify-between text-xs font-bold">
                 <span className="text-[#6A584D]">Estimasi Pesanan Selesai:</span>
-                <span className="font-mono font-black text-sm text-[#C67D0A]">
+                <span className="font-mono font-bold text-sm text-[#C67D0A]">
                   ~{formatCountdown(brewProgress.remainingSeconds)}
                 </span>
               </div>
@@ -662,24 +657,24 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                   style={{ width: `${Math.max(5, brewProgress.progressPercent)}%` }}
                 />
               </div>
-              <div className="flex justify-between text-[10px] text-[#6A584D] font-bold">
+              <div className="flex justify-between text-xs text-[#6A584D] font-bold">
                 <span>Admin Selesai</span>
                 <span>{brewProgress.progressPercent}% Proses Pembuatan</span>
                 <span>Siap Ambil</span>
               </div>
             </div>
 
-            <div className="text-[11px] text-[#2B1D12] leading-relaxed bg-white/70 rounded-xl p-2.5 border border-[#2B1D12]/10 space-y-1">
+            <div className="text-xs text-[#2B1D12] leading-relaxed bg-white/70 rounded-xl p-2.5 border border-[#2B1D12]/10 space-y-1">
               <p className="font-medium">
                 Admin Jasdor telah selesai memesankan dan membayarkan pesananmu di Outlet resmi. Saat ini barista outlet sedang membuat pesanan sesuai yang dipesan.
               </p>
-              <div className="pt-1 flex items-center justify-between text-[11px] font-bold border-t border-[#2B1D12]/10">
+              <div className="pt-1 flex items-center justify-between text-xs font-bold border-t border-[#2B1D12]/10">
                 <span className="text-[#6A584D]">Order atas nama:</span>
-                <span className="font-black text-[#2B1D12] underline decoration-2">{order.customer_name}</span>
+                <span className="font-bold text-[#2B1D12] underline decoration-2">{order.customer_name}</span>
               </div>
             </div>
 
-            <div className="bg-white/90 border border-[#C67D0A]/40 rounded-xl p-2.5 text-[11px] leading-snug">
+            <div className="bg-white/90 border border-[#C67D0A]/40 rounded-xl p-2.5 text-xs leading-snug">
               <p className="font-bold text-[#854D0E] flex items-center gap-1">
                 <span>📍</span>
                 <span>Persiapan Pengambilan:</span>
@@ -703,27 +698,27 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                   Waktu Racik Selesai
                 </span>
               </div>
-              <span className="px-2 py-0.5 text-[10px] font-black rounded-lg bg-[#15803D]/15 text-[#15803D] border border-[#15803D]/30">
+              <span className="px-2 py-0.5 text-xs font-bold rounded-lg bg-[#15803D]/15 text-[#15803D] border border-[#15803D]/30">
                 Siap Ditanyakan ke Barista
               </span>
             </div>
 
             <div className="bg-white rounded-xl p-3.5 border-2 border-[#15803D] shadow-[2px_2px_0px_#15803D] space-y-1.5">
               <p className="text-xs sm:text-[13px] font-bold text-[#2B1D12] leading-relaxed">
-                &ldquo;Halo kak👋! sepertinya kopi sudah siap di pick up, silahkan tanya ke barista/kasir apakah orderan atas nama <span className="font-black text-[#15803D] underline decoration-2">{order.customer_name}</span> sudah siap atau belum&rdquo;
+                &ldquo;Halo kak👋! sepertinya kopi sudah siap di pick up, silahkan tanya ke barista/kasir apakah orderan atas nama <span className="font-bold text-[#15803D] underline decoration-2">{order.customer_name}</span> sudah siap atau belum&rdquo;
               </p>
             </div>
 
-            <div className="text-[11px] text-[#2B1D12] leading-relaxed bg-white/80 rounded-xl p-2.5 border border-[#15803D]/20 space-y-1 font-medium">
+            <div className="text-xs text-[#2B1D12] leading-relaxed bg-white/80 rounded-xl p-2.5 border border-[#15803D]/20 space-y-1 font-medium">
               <p className="font-bold text-[#15803D]">Langkah Pengambilan di Outlet:</p>
-              <ol className="list-decimal list-inside space-y-0.5 text-[#2B1D12] text-[11px]">
+              <ol className="list-decimal list-inside space-y-0.5 text-[#2B1D12] text-xs">
                 <li>Datangi pick-up counter outlet <span className="font-bold">{order.outlet_name || order.outlet_code}</span>.</li>
-                <li>Sebutkan nama pemesan: <span className="font-black text-[#15803D]">{order.customer_name}</span>.</li>
+                <li>Sebutkan nama pemesan: <span className="font-bold text-[#15803D]">{order.customer_name}</span>.</li>
                 <li>Jika barista masih menyelesaikan pesanan, mohon menunggu sejenak dengan ramah.</li>
               </ol>
             </div>
 
-            <div className="text-[10px] text-[#6A584D] text-center pt-0.5 font-medium">
+            <div className="text-xs text-[#6A584D] text-center pt-0.5 font-medium">
               Terima kasih sudah memesan lewat Jasdor Kopi Cima. Selamat menikmati kopimu!
             </div>
           </div>
@@ -731,30 +726,30 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
         {status === 'kedaluwarsa' && (
           <div className="bg-[#FFEBEB] border-2 border-[#DC2626] rounded-2xl p-4 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-3 animate-in fade-in">
-            <div className="flex items-center gap-2 text-[#DC2626] font-black">
+            <div className="flex items-center gap-2 text-[#DC2626] font-bold">
               <svg className="w-4 h-4 text-[#DC2626]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <span>Waktu Pembayaran Kedaluwarsa</span>
             </div>
-            <p className="text-[11px] text-[#2B1D12] leading-relaxed font-medium">
+            <p className="text-xs text-[#2B1D12] leading-relaxed font-medium">
               Batas waktu pembayaran 60 menit untuk pesanan ini telah habis. Jangan transfer untuk pesanan yang sudah kedaluwarsa.
             </p>
 
             {/* Tombol Darurat: Jika customer terlanjur transfer */}
             <div className="p-3 bg-white rounded-xl border-2 border-[#DC2626]/30 shadow-[2px_2px_0px_#DC2626] space-y-1.5">
-              <p className="text-[11px] font-bold text-[#DC2626] flex items-center gap-1.5">
+              <p className="text-xs font-bold text-[#DC2626] flex items-center gap-1.5">
                 <span>⚠️</span>
                 <span>Terlanjur Transfer di Menit Terakhir?</span>
               </p>
-              <p className="text-[10px] text-[#4A3628] leading-snug font-medium">
+              <p className="text-xs text-[#4A3628] leading-snug font-medium">
                 Jika uangmu sudah terlanjur terpotong dari m-banking/e-wallet, klik tombol di bawah untuk verifikasi manual ke admin:
               </p>
               <a
                 href={buildEmergencyExpiredWhatsAppUrl(order.id, order.total)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full mt-1 py-2 px-3 bg-[#15803D] hover:bg-[#166534] text-white text-[11px] font-bold rounded-lg transition border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] flex items-center justify-center gap-1.5 active:translate-x-[1px] active:translate-y-[1px]"
+                className="w-full mt-1 py-2 px-3 bg-[#15803D] hover:bg-[#166534] text-white text-xs font-bold rounded-lg transition border-2 border-[#2B1D12] shadow-[2px_2px_0px_#2B1D12] flex items-center justify-center gap-1.5 active:translate-x-[1px] active:translate-y-[1px]"
               >
                 <WhatsAppIcon className="w-3.5 h-3.5 fill-white" />
                 <span>Terlanjur Transfer? Hubungi Admin WhatsApp</span>
@@ -772,8 +767,8 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
         {status === 'dibatalkan' && (
           <div className="bg-[#EFE5D8] border-2 border-[#2B1D12] rounded-2xl p-4 text-xs text-[#2B1D12] shadow-[3px_3px_0px_#2B1D12] space-y-2">
-            <p className="font-black text-[#2B1D12]">Pesanan Dibatalkan</p>
-            <p className="text-[11px] text-[#6A584D]">Pesanan ini telah dibatalkan oleh admin atau sistem.</p>
+            <p className="font-bold text-[#2B1D12]">Pesanan Dibatalkan</p>
+            <p className="text-xs text-[#6A584D]">Pesanan ini telah dibatalkan oleh admin atau sistem.</p>
             <Link
               href="/"
               className="inline-flex items-center justify-center w-full min-h-[40px] px-4 py-2 bg-[#2B1D12] text-[#FAF4E8] font-display font-black text-xs rounded-xl border-2 border-[#2B1D12] shadow-[2px_2px_0px_#C67D0A] transition"
@@ -807,7 +802,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                 />
               </div>
 
-              <span className="text-[10px] font-black text-[#6A584D] uppercase tracking-wider block">
+              <span className="text-xs font-bold text-[#6A584D] uppercase tracking-wider block">
                 Total Nominal Pembayaran
               </span>
               <div className="flex items-center justify-center gap-2">
@@ -821,7 +816,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                   title="Salin Angka Nominal"
                 >
                   {isCopiedAmount ? (
-                    <span className="text-[10px] text-[#15803D] font-black px-1">Disalin</span>
+                    <span className="text-xs text-[#15803D] font-bold px-1">Disalin</span>
                   ) : (
                     <svg className="w-3.5 h-3.5 text-[#2B1D12]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -829,8 +824,8 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                   )}
                 </button>
               </div>
-              <p className="text-[10px] text-[#6A584D] font-medium">
-                Ketik nominal <span className="font-black text-[#2B1D12]">TEPAT {formatRupiah(order.total)}</span> tanpa dibulatkan.
+              <p className="text-xs text-[#6A584D] font-medium">
+                Ketik nominal <span className="font-bold text-[#2B1D12]">TEPAT {formatRupiah(order.total)}</span> tanpa dibulatkan.
               </p>
             </div>
 
@@ -841,16 +836,16 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                 <div className="w-full flex items-center justify-between pb-2 border-b-2 border-[#2B1D12]/10 mb-3">
                   <div className="flex items-center gap-1.5">
                     <span className="font-display font-black text-sm tracking-wider text-[#2B1D12]">QRIS</span>
-                    <span className="text-[9px] font-bold text-[#7A6658] uppercase">Standar Nasional</span>
+                    <span className="text-xs font-bold text-[#7A6658] uppercase">Standar Nasional</span>
                   </div>
-                  <span className="text-[10px] font-mono font-black text-[#2B1D12] bg-[#FAF4E8] px-2 py-0.5 rounded border border-[#2B1D12]/20">
+                  <span className="text-xs font-mono font-bold text-[#2B1D12] bg-[#FAF4E8] px-2 py-0.5 rounded border border-[#2B1D12]/20">
                     {QRIS_CONFIG.nmid}
                   </span>
                 </div>
 
                 <div className="text-center mb-2">
                   <p className="font-display font-black text-base text-[#2B1D12] tracking-tight">{QRIS_CONFIG.merchantName}</p>
-                  <p className="text-[10px] font-medium text-[#7A6658]">NMID: {QRIS_CONFIG.nmid}</p>
+                  <p className="text-xs font-medium text-[#7A6658]">NMID: {QRIS_CONFIG.nmid}</p>
                 </div>
 
                 {/* QR Code Container dengan Garis Hijau Scan (Elemen #2 Mockup) */}
@@ -888,7 +883,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                       loading="lazy"
                     />
                   </div>
-                  <p className="text-[10px] sm:text-[11px] text-[#7A6658] font-bold leading-tight">
+                  <p className="text-xs text-[#7A6658] font-bold leading-tight">
                     Screenshot layar ini untuk scan via m-banking/e-wallet. Meong approved. 😎
                   </p>
                 </div>
@@ -896,8 +891,8 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
 
               {/* Peringatan Keamanan Wajib */}
               <div className="w-full bg-[#FFEBEB] border-2 border-[#DC2626] rounded-xl px-2.5 py-1.5 text-center">
-                <p className="text-[11px] text-[#2B1D12] font-bold leading-tight">
-                  Pastikan merchant: <span className="font-black text-[#DC2626] underline decoration-2">{QRIS_CONFIG.merchantName}</span> sebelum bayar.
+                <p className="text-xs text-[#2B1D12] font-bold leading-tight">
+                  Pastikan merchant: <span className="font-bold text-[#DC2626] underline decoration-2">{QRIS_CONFIG.merchantName}</span> sebelum bayar.
                 </p>
               </div>
             </div>
@@ -907,7 +902,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
               <button
                 type="button"
                 onClick={() => setIsCaraBayarOpen((prev) => !prev)}
-                className="w-full px-3 py-2 flex items-center justify-between text-left font-black text-[#2B1D12] text-[11px] hover:bg-[#FFF8E7] transition cursor-pointer"
+                className="w-full px-3 py-2 flex items-center justify-between text-left font-bold text-[#2B1D12] text-xs hover:bg-[#FFF8E7] transition cursor-pointer"
                 aria-expanded={isCaraBayarOpen}
               >
                 <span className="flex items-center gap-1.5">
@@ -927,11 +922,11 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
               </button>
               {isCaraBayarOpen && (
                 <div className="px-3 pb-3 pt-1 border-t-2 border-[#2B1D12] animate-in fade-in">
-                  <ol className="list-decimal list-inside space-y-1 text-[#2B1D12] text-[11px] leading-relaxed font-medium">
+                  <ol className="list-decimal list-inside space-y-1 text-[#2B1D12] text-xs leading-relaxed font-medium">
                     <li>Buka aplikasi m-banking atau e-wallet pilihanmu (BCA, Mandiri, GoPay, OVO, Dana, dll).</li>
                     <li>Pindai (scan) kode QRIS di atas.</li>
-                    <li>Ketik nominal <span className="font-black text-[#2B1D12]">TEPAT {formatRupiah(order.total)}</span> tanpa dibulatkan.</li>
-                    <li>Periksa nama penerima: <span className="font-black text-[#2B1D12]">{QRIS_CONFIG.merchantName}</span>.</li>
+                    <li>Ketik nominal <span className="font-bold text-[#2B1D12]">TEPAT {formatRupiah(order.total)}</span> tanpa dibulatkan.</li>
+                    <li>Periksa nama penerima: <span className="font-bold text-[#2B1D12]">{QRIS_CONFIG.merchantName}</span>.</li>
                     <li>Selesaikan pembayaran, lalu tap tombol di bawah.</li>
                   </ol>
                 </div>
@@ -946,7 +941,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
             <h3 className="font-display font-black text-xs text-[#2B1D12] uppercase tracking-wide">
               Rincian Pesanan
             </h3>
-            <span className="text-[11px] text-[#2B1D12] font-bold">
+            <span className="text-xs text-[#2B1D12] font-bold">
               Outlet: {order.outlet_name || order.outlet_code}
             </span>
           </div>
@@ -955,21 +950,21 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
             {order.items.map((it, idx) => (
               <div key={idx} className="pt-2 first:pt-0 flex items-start justify-between text-xs gap-3">
                 <div className="min-w-0 flex-1">
-                  <p className="font-black text-[#2B1D12] leading-tight">
+                  <p className="font-bold text-[#2B1D12] leading-tight">
                     {it.quantity}x {it.name}
                   </p>
                   {it.variantOptions && it.variantOptions.length > 0 && (
-                    <p className="text-[11px] text-[#6A584D] font-medium mt-0.5">
+                    <p className="text-xs text-[#6A584D] font-medium mt-0.5">
                       {it.variantOptions.join(' • ')}
                     </p>
                   )}
                   {it.addons && it.addons.length > 0 && (
-                    <p className="text-[11px] text-[#C67D0A] font-bold">
+                    <p className="text-xs text-[#C67D0A] font-bold">
                       + {it.addons.map((a) => a.name).join(', ')}
                     </p>
                   )}
                   {it.notes && (
-                    <p className="text-[10px] text-[#8C7667] italic mt-0.5">
+                    <p className="text-xs text-[#8C7667] italic mt-0.5">
                       Catatan: &quot;{it.notes}&quot;
                     </p>
                   )}
@@ -1007,17 +1002,17 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
               </div>
             )}
             <div className="pt-2 border-t-2 border-[#2B1D12] flex justify-between items-baseline font-bold">
-              <span className="text-xs font-black text-[#2B1D12]">Total Tagihan</span>
+              <span className="text-xs font-bold text-[#2B1D12]">Total Tagihan</span>
               <span className="font-display text-base font-black text-[#DC2626]">
                 {formatRupiah(order.total)}
               </span>
             </div>
           </div>
 
-          <div className="bg-[#FAF4E8] rounded-xl p-3 text-[11px] text-[#2B1D12] space-y-1 border-2 border-[#2B1D12]">
-            <p><span className="font-black text-[#2B1D12]">Outlet:</span> {order.outlet_name || order.outlet_code}</p>
-            <p><span className="font-black text-[#2B1D12]">Pemesan:</span> {order.customer_name} ({order.customer_wa})</p>
-            <p><span className="font-black text-[#2B1D12]">Jadwal Pick up:</span> {order.pickup_time || 'Sekarang'}</p>
+          <div className="bg-[#FAF4E8] rounded-xl p-3 text-xs text-[#2B1D12] space-y-1 border-2 border-[#2B1D12]">
+            <p><span className="font-bold text-[#2B1D12]">Outlet:</span> {order.outlet_name || order.outlet_code}</p>
+            <p><span className="font-bold text-[#2B1D12]">Pemesan:</span> {order.customer_name} ({order.customer_wa})</p>
+            <p><span className="font-bold text-[#2B1D12]">Jadwal Pick up:</span> {order.pickup_time || 'Sekarang'}</p>
           </div>
         </section>
       </main>
@@ -1027,14 +1022,14 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
         <div className="fixed bottom-0 inset-x-0 z-40 bg-[#FAF4E8] border-t-2 border-[#2B1D12] px-4 py-2.5 sm:py-3 shadow-lg">
           <div className="max-w-md mx-auto space-y-1.5">
             {confirmError && (
-              <div className="p-2 bg-rose-50 border-2 border-[#DC2626] rounded-lg text-rose-900 text-[11px] text-center font-bold">
+              <div className="p-2 bg-rose-50 border-2 border-[#DC2626] rounded-lg text-rose-900 text-xs text-center font-bold">
                 {confirmError}
               </div>
             )}
 
             {status === 'menunggu_pembayaran' && (
               <div className="space-y-1.5">
-                <div className="bg-[#FFF8E7] border border-[#C67D0A]/40 rounded-xl px-2.5 py-1 text-[10px] text-[#6A584D] text-center leading-tight">
+                <div className="bg-[#FFF8E7] border border-[#C67D0A]/40 rounded-xl px-2.5 py-1 text-xs text-[#6A584D] text-center leading-tight">
                   <span className="font-bold text-[#2B1D12]">Catatan:</span> Pesanan yang sudah dibayar tidak dapat dibatalkan atau di-refund sepihak yaa kak🥰🙏.
                 </div>
                 <button
@@ -1057,7 +1052,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                     </>
                   )}
                 </button>
-                <p className="text-[10px] text-center text-[#6A584D] font-bold">
+                <p className="text-xs text-center text-[#6A584D] font-bold">
                   Siapkan screenshot bukti pembayaranmu
                 </p>
               </div>
@@ -1067,17 +1062,17 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
               <div className="space-y-2">
                 {/* Box Info Wajib Kirim Bukti Pembayaran */}
                 <div className="bg-[#FFFDF9] border-2 border-[#2B1D12] rounded-2xl p-3 sm:p-3.5 shadow-[3px_3px_0px_#2B1D12] space-y-2 animate-in fade-in">
-                  <div className="flex items-center gap-1.5 text-xs font-black text-[#DC2626] uppercase tracking-wide">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#DC2626] uppercase tracking-wide">
                     <span className="text-sm">⚠️</span>
                     <span>WAJIB: Kirim Bukti Pembayaran</span>
                   </div>
-                  <ol className="list-decimal list-inside space-y-1 text-[11px] font-bold text-[#2B1D12] leading-snug">
+                  <ol className="list-decimal list-inside space-y-1 text-xs font-bold text-[#2B1D12] leading-snug">
                     <li>Screenshot bukti pembayaran dari aplikasi bank/e-wallet kamu</li>
                     <li>Klik tombol &quot;Kirim Bukti Bayar via WhatsApp&quot; di bawah</li>
                     <li>Lampirkan (attach) foto screenshot bukti tersebut di chat WhatsApp sebelum kirim</li>
                     <li>Kirim chat beserta fotonya - admin langsung mencocokkan dan memproses pesananmu</li>
                   </ol>
-                  <p className="text-[10px] font-bold text-[#DC2626] bg-[#FFEBEB] px-2.5 py-1 rounded-lg border border-[#DC2626]/30 leading-tight">
+                  <p className="text-xs font-bold text-[#DC2626] bg-[#FFEBEB] px-2.5 py-1 rounded-lg border border-[#DC2626]/30 leading-tight">
                     Catatan: Pesanan TIDAK AKAN DIPROSES kasir sebelum bukti transfer dikirim ke WhatsApp.
                   </p>
                 </div>
@@ -1091,7 +1086,7 @@ export function PaymentView({ initialOrder, accessToken }: PaymentViewProps) {
                   <WhatsAppIcon className="h-4.5 w-4.5 text-white shrink-0" />
                   <span>Kirim Bukti Bayar via WhatsApp (Wajib)</span>
                 </a>
-                <p className="text-[10px] text-center text-[#2B1D12] leading-tight font-bold">
+                <p className="text-xs text-center text-[#2B1D12] leading-tight font-bold">
                   Wajib dikirim agar pesananmu diproses. Pesanan tanpa bukti pembayaran WhatsApp tidak akan diproses admin.
                 </p>
               </div>

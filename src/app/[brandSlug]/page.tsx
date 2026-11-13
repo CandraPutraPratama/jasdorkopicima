@@ -388,16 +388,11 @@ export default function BrandPage({ params }: BrandPageProps) {
         {/* Hero Ramping Brand Aktif */}
         <div className="bg-[#2B1D12] text-[#FAF4E8] border-2 border-[#2B1D12] rounded-2xl p-5 relative overflow-hidden shadow-[3px_3px_0px_#C67D0A]">
           <div className="relative z-10 space-y-2">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[10px] font-bold text-[#2B1D12] uppercase tracking-wider bg-[#FAF4E8] border border-[#2B1D12] px-2 py-0.5 rounded-md">
-                Layanan Jasa Order
+            {brand.promoBadge ? (
+              <span className="inline-block text-xs font-bold text-white bg-[#DC2626] border border-[#2B1D12] px-2 py-0.5 rounded-md uppercase tracking-wide">
+                {brand.promoBadge}
               </span>
-              {brand.promoBadge ? (
-                <span className="text-[10px] font-bold text-white bg-[#DC2626] border border-[#2B1D12] px-2 py-0.5 rounded-md uppercase tracking-wide">
-                  {brand.promoBadge}
-                </span>
-              ) : null}
-            </div>
+            ) : null}
 
             <div className="flex items-center gap-3">
               {brand.logo && (
@@ -428,7 +423,7 @@ export default function BrandPage({ params }: BrandPageProps) {
                       Informasi Biaya Jasa
                     </span>
                   </div>
-                  <div className="space-y-0.5 text-[10px] sm:text-[11px] text-[#4A3628] font-medium pl-1 leading-snug">
+                  <div className="space-y-0.5 text-xs text-[#4A3628] font-medium pl-1 leading-snug">
                     <p>- Biaya Jasa jika order hanya 1 menu = 4.000/menu</p>
                     <p>- Biaya Jasa jika order minimal 2 menu dst = 2.300/item</p>
                   </div>
@@ -441,28 +436,6 @@ export default function BrandPage({ params }: BrandPageProps) {
                 Tersedia di {outletCount ? `${outletCount.toLocaleString('id-ID')} ` : ''}outlet resmi di seluruh Indonesia. Pilih outlet terdekat, tentukan menu favoritmu, dan pesan praktis via WhatsApp.
               </p>
             )}
-
-            {/* 3 Langkah Order (Vertikal 2 Baris per Langkah, Sejajar Horizontal) */}
-            <div className="grid grid-cols-3 gap-2 pt-2.5 border-t border-[#FAF4E8]/20 text-center">
-              <div className="flex flex-col items-center gap-1 text-[#E3D6C5]">
-                <span className="w-5 h-5 rounded-full bg-[#FAF4E8] text-[#2B1D12] font-black text-[11px] flex items-center justify-center">
-                  1
-                </span>
-                <span className="text-[10px] font-medium leading-tight">Cari Outlet</span>
-              </div>
-              <div className="flex flex-col items-center gap-1 text-[#E3D6C5]">
-                <span className="w-5 h-5 rounded-full bg-[#FAF4E8] text-[#2B1D12] font-black text-[11px] flex items-center justify-center">
-                  2
-                </span>
-                <span className="text-[10px] font-medium leading-tight">Pilih Menu</span>
-              </div>
-              <div className="flex flex-col items-center gap-1 text-[#E3D6C5]">
-                <span className="w-5 h-5 rounded-full bg-[#15803D] text-white font-black text-[11px] flex items-center justify-center border border-white">
-                  3
-                </span>
-                <span className="text-[10px] font-medium leading-tight">Order via WA</span>
-              </div>
-            </div>
           </div>
         </div>
 

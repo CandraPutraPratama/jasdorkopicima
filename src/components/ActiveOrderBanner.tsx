@@ -24,7 +24,7 @@ export function ActiveOrderBanner() {
       className="w-full bg-[#FFFBEB] border border-[#FDE68A] text-[#92400E] px-3.5 py-2.5 rounded-2xl flex items-center justify-between gap-3 shadow-2xs animate-in fade-in slide-in-from-top-1 duration-200"
     >
       <div className="flex items-center gap-2 min-w-0">
-        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
+        <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
         <p className="text-xs font-medium text-[#78350F] truncate leading-tight">
           Pesanan menunggu pembayaran{' '}
           <strong className="font-extrabold text-[#92400E]">{orderTotalFormatted}</strong>
