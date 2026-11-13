@@ -3,6 +3,9 @@ import { IMAGE_MANIFEST } from './image-manifest.ts';
 
 export type ImageSource = 'kk' | 'r2';
 
+/** UUID gambar placeholder KK yang dipakai produk tanpa foto (contoh: Sugar Donut, Chocolate Donut). */
+const KK_PLACEHOLDER_IMAGE_UUIDS = new Set(['5376bb69-9e4f-6cb5-5bc7-b1503a7a4032']);
+
 /**
  * Ekstraksi UUID dari URL foto produk atau ikon addon Kopi Kenangan.
  * Menangani 2 pola path yang sah:
@@ -49,6 +52,11 @@ export function lookupManifestMirrorUrl(url?: string | null): string | null {
 export function rewriteProductImageUrl(url?: string | null, sourceOverride?: ImageSource): string {
   const rawUrl = (url || '').trim();
   if (!rawUrl) return '';
+
+  // Gambar placeholder bawaan KK (hati merah bergaris) bukan foto produk: kembalikan kosong
+  // agar UI memakai gambar fallback sendiri.
+  const uuid = extractProductImageUuid(rawUrl);
+  if (uuid && KK_PLACEHOLDER_IMAGE_UUIDS.has(uuid)) return '';
 
   const activeSource: ImageSource = sourceOverride || BUSINESS_CONFIG.imageSource;
   if (activeSource !== 'r2') {

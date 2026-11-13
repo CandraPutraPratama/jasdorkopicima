@@ -4,6 +4,14 @@ import { extractProductImageUuid, rewriteProductImageUrl } from '../src/lib/imag
 import { normalizeProduct, normalizeProductOptions } from '../src/lib/adapter.ts';
 
 describe('Image URL & Manifest Mirroring (Tahap 7-B & 7-C)', () => {
+  test('gambar placeholder bawaan KK dikembalikan kosong agar UI memakai fallback, di source kk maupun r2', () => {
+    const placeholder = 'https://cdn.kopikenangan.com/public/5376bb69-9e4f-6cb5-5bc7-b1503a7a4032';
+    assert.strictEqual(rewriteProductImageUrl(placeholder, 'kk'), '');
+    assert.strictEqual(rewriteProductImageUrl(placeholder, 'r2'), '');
+    const real = 'https://cdn.kopikenangan.com/public/392219eb-08e1-daf9-69d6-a12a8242e5be';
+    assert.strictEqual(rewriteProductImageUrl(real, 'kk'), real);
+  });
+
   describe('extractProductImageUuid', () => {
     test('mengekstrak UUID dari pola 1 (/ID/release/pub/kk-api-management/product/<uuid>)', () => {
       const url = 'https://cdn.kopikenangan.com/ID/release/pub/kk-api-management/product/ace3b7e3-7320-4adb-b9cb-61752ff91dea?';
