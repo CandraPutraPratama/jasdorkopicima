@@ -96,9 +96,37 @@ export const ELIGIBLE_FOODS: BundleEligibleItem[] = [
 /** Patokan harga normal baseline Kopi Kenangan Mantan reguler */
 export const BASE_MANTAN_REGULAR_PRICE = 19000;
 
-/** Periode promo bundling terbatas Sabtu-Minggu (WIB) */
-export const BUNDLING_PROMO_START = '2026-11-07T00:00:00+07:00';
-export const BUNDLING_PROMO_END = '2026-11-08T23:59:59+07:00';
+/**
+ * Jadwal promo bundling berulang tiap pekan (WIB, UTC+7, tanpa DST):
+ * Sabtu 15.00 sampai Minggu 23.20.
+ */
+const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
+/** Offset awal/akhir promo dari Senin 00.00 WIB dalam pekan berjalan */
+const PROMO_START_OFFSET_MS = 5 * DAY_MS + 15 * 60 * 60 * 1000; // Sabtu 15.00
+const PROMO_END_OFFSET_MS = 6 * DAY_MS + (23 * 60 + 20) * 60 * 1000; // Minggu 23.20
+
+/** Epoch ms Senin 00.00 WIB pada pekan yang memuat tanggal referensi */
+function getWibWeekStartMs(referenceDate: Date): number {
+  // Epoch 0 (Kamis 1 Jan 1970 UTC) + 4 hari = Senin 5 Jan 1970 UTC sebagai jangkar pekan
+  const mondayAnchor = 4 * DAY_MS;
+  const shifted = referenceDate.getTime() + WIB_OFFSET_MS - mondayAnchor;
+  const weekIndex = Math.floor(shifted / WEEK_MS);
+  return weekIndex * WEEK_MS + mondayAnchor - WIB_OFFSET_MS;
+}
+
+/** Awal dan akhir jendela promo pada pekan yang memuat tanggal referensi */
+export function getBundlingPromoWindow(referenceDate: Date = new Date()): {
+  start: number;
+  end: number;
+} {
+  const weekStart = getWibWeekStartMs(referenceDate);
+  return {
+    start: weekStart + PROMO_START_OFFSET_MS,
+    end: weekStart + PROMO_END_OFFSET_MS,
+  };
+}
 
 /**
  * Cek apakah promo bundling saat ini sedang aktif.
@@ -116,11 +144,10 @@ export function isBundlingPromoActive(
 }
 
 /**
- * Cek apakah tanggal referensi berada di dalam rentang tanggal promo BUNDLING_PROMO_START/END.
+ * Cek apakah tanggal referensi berada di dalam jendela promo mingguan (Sabtu 15.00 - Minggu 23.20 WIB).
  */
 export function isWithinBundlingPromoPeriod(referenceDate: Date = new Date()): boolean {
-  const start = new Date(BUNDLING_PROMO_START).getTime();
-  const end = new Date(BUNDLING_PROMO_END).getTime();
+  const { start, end } = getBundlingPromoWindow(referenceDate);
   const current = referenceDate.getTime();
   return current >= start && current <= end;
 }
@@ -145,7 +172,7 @@ export interface BundlingRemainingTime {
  * Hitung sisa waktu promo bundling aktif.
  */
 export function getBundlingRemainingTime(referenceDate: Date = new Date()): BundlingRemainingTime {
-  const end = new Date(BUNDLING_PROMO_END).getTime();
+  const { end } = getBundlingPromoWindow(referenceDate);
   const diff = end - referenceDate.getTime();
   if (diff <= 0) {
     return { hours: 0, minutes: 0, isExpired: true, formatted: 'Promo berakhir' };
