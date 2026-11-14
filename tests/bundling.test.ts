@@ -1,4 +1,4 @@
-import test from 'node:test';
+import test, { mock } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   calculateBundlePricing,
@@ -8,6 +8,8 @@ import {
   getBundleDescription,
 } from '../src/lib/bundling.ts';
 import { calculateOrderPricing } from '../src/lib/pricing.ts';
+
+mock.timers.enable({ apis: ['Date'], now: new Date('2026-11-21T12:00:00+07:00') }); // pekan normal: tanpa harga khusus sementara
 
 test('Bundling: Paket 1 (Bundling 3 Reguler) - 3x Mantan 19k -> Bayar Rp32.500', () => {
   const selected = [
@@ -596,3 +598,45 @@ test('Tier Pricing: Tipe bermenu-outlet (Paket 1 & Paket 3) TIDAK double-countin
   assert.equal(pricing.total, 34000);
 });
 
+
+test('Bundling: 2 Mantan Large total bayar 28.000 (termasuk fee) hanya pekan 14-15 Nov 2026', async () => {
+  const { calculateBundlePricing, validateBundleSelection } = await import('../src/lib/bundling.ts');
+  const twoMantan = [
+    { name: 'Kopi Kenangan Mantan', category: 'drink' as const },
+    { name: 'Kopi Kenangan Mantan', category: 'drink' as const },
+  ];
+  const sat = new Date('2026-11-14T16:00:00+07:00');
+
+  // Sabtu: total bayar 28.000 = promo 23.500 + fee 4.500
+  const p = calculateBundlePricing('bundle-2-large', twoMantan, 0, sat);
+  assert.equal(p.total, 28000);
+  assert.equal(p.bundleFee, 4500);
+  assert.equal(p.promoSubtotal, 23500);
+  assert.equal(p.normalPrice, 50000);
+  assert.equal(validateBundleSelection('bundle-2-large', twoMantan, 0).isValid, true);
+
+  // Minggu 23.20 tepat masih berlaku, outlet tier tetap 28.000
+  assert.equal(calculateBundlePricing('bundle-2-large', twoMantan, 0, new Date('2026-11-15T23:20:00+07:00')).total, 28000);
+  assert.equal(calculateBundlePricing('bundle-2-large', twoMantan, 3000, sat).total, 28000);
+
+  // Setelah Minggu 23.20 dan pekan depan: kembali normal 29.500
+  assert.equal(calculateBundlePricing('bundle-2-large', twoMantan, 0, new Date('2026-11-15T23:20:01+07:00')).total, 29500);
+  assert.equal(calculateBundlePricing('bundle-2-large', twoMantan, 0, new Date('2026-11-21T16:00:00+07:00')).total, 29500);
+  assert.equal(calculateBundlePricing('bundle-2-large', twoMantan, 0, new Date('2026-11-22T12:00:00+07:00')).total, 29500);
+
+  // Kombinasi lain (Mantan + Taro) tidak terpengaruh: (25.000 + 29.000) / 2 + 4.500 = 31.500
+  const mixed = [
+    { name: 'Kopi Kenangan Mantan', category: 'drink' as const },
+    { name: 'Taro Cloud Latte', category: 'drink' as const },
+  ];
+  assert.equal(calculateBundlePricing('bundle-2-large', mixed, 0, sat).total, 31500);
+
+  // Paket lain tidak terpengaruh
+  const reg = calculateBundlePricing(
+    'bundle-3-reguler',
+    [{ name: 'Kopi Kenangan Mantan', category: 'drink', liveBasePrice: 19000 }],
+    0,
+    sat
+  );
+  assert.equal(reg.promoSubtotal, 9500);
+});

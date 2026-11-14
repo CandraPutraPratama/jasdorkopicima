@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, afterEach } from 'node:test';
+import { describe, it, beforeEach, afterEach, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   recalculateOrderItemsWithServerPrices,
@@ -10,6 +10,8 @@ import { cacheService } from '../src/lib/cache.ts';
 import { kkApiClient } from '../src/lib/kk-client.ts';
 import { POST } from '../src/app/api/orders/create/route.ts';
 import { BRANDS } from '../src/lib/site-config.ts';
+
+mock.timers.enable({ apis: ['Date'], now: new Date('2026-11-21T12:00:00+07:00') }); // pekan normal: tanpa harga khusus sementara
 import { setSupabaseServerClientInstance } from '../src/lib/supabase-server.ts';
 import type { CartItem } from '../src/lib/cart-reducer.ts';
 import type { Product } from '../src/types/domain.ts';

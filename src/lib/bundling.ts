@@ -464,6 +464,48 @@ export interface BundlePricingResult {
 }
 
 /**
+ * Harga total tetap sementara (sudah termasuk fee jasa) untuk kombinasi paket tertentu.
+ * Berlaku hanya di antara `from` dan `until` (inklusif), setelah itu otomatis kembali ke harga normal.
+ */
+interface BundleTotalOverride {
+  bundleType: BundleType;
+  /** Semua slot paket harus berisi menu ini agar override berlaku */
+  itemName: string;
+  total: number;
+  from: string;
+  until: string;
+}
+
+const BUNDLE_TOTAL_OVERRIDES: BundleTotalOverride[] = [
+  // Pekan 14-15 Nov 2026 saja: 2 Mantan Large di paket 2 Large, total bayar 28.000 termasuk fee
+  {
+    bundleType: 'bundle-2-large',
+    itemName: 'Kopi Kenangan Mantan',
+    total: 28000,
+    from: '2026-11-14T00:00:00+07:00',
+    until: '2026-11-15T23:20:00+07:00',
+  },
+];
+
+function findBundleTotalOverride(
+  bundleType: BundleType,
+  selectedItems: BundleSelectedItem[],
+  referenceDate: Date
+): BundleTotalOverride | undefined {
+  const now = referenceDate.getTime();
+  return BUNDLE_TOTAL_OVERRIDES.find(
+    (o) =>
+      o.bundleType === bundleType &&
+      now >= new Date(o.from).getTime() &&
+      now <= new Date(o.until).getTime() &&
+      selectedItems.length > 0 &&
+      selectedItems.every(
+        (it) => normalizeProductName(it.name) === normalizeProductName(o.itemName)
+      )
+  );
+}
+
+/**
  * Menghitung harga paket bundling murni.
  * Rumus:
  * - normalPrice: total harga normal dari setiap item di dalam paket.
@@ -477,7 +519,8 @@ export interface BundlePricingResult {
 export function calculateBundlePricing(
   bundleType: BundleType,
   selectedItems: BundleSelectedItem[],
-  tierDiff: number = 0
+  tierDiff: number = 0,
+  referenceDate: Date = new Date()
 ): BundlePricingResult {
   const config = BUNDLE_PACKAGES[bundleType];
   if (!config) {
@@ -511,8 +554,11 @@ export function calculateBundlePricing(
     };
   });
 
-  const promoSubtotal = Math.round(normalPrice * 0.5);
   const bundleFee = config.fee;
+  const totalOverride = findBundleTotalOverride(bundleType, selectedItems, referenceDate);
+  const promoSubtotal = totalOverride
+    ? Math.max(0, totalOverride.total - bundleFee)
+    : Math.round(normalPrice * 0.5);
   const total = promoSubtotal + bundleFee;
   const totalSavings = normalPrice - promoSubtotal;
 
