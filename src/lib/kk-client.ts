@@ -12,7 +12,10 @@ export class KkApiClient {
   private baseUrl: string;
   private lastRequestTime = 0;
   /** Fetch product_info yang sedang berjalan per store_code; dihapus saat selesai (bukan cache). */
-  private inflightProductInfo = new Map<string, Promise<KkProductInfoData>>();
+  /** Percobaan ulang untuk "get file error" KK: 6 x 2 detik (data siap dalam 5-9 detik). */
+  private static readonly FILE_PENDING_MAX_RETRIES = 6;
+  public filePendingDelayMs = 2000;
+  private inflightProductInfo =new Map<string, Promise<KkProductInfoData>>();
 
   constructor(baseUrl?: string) {
     this.baseUrl =
@@ -98,24 +101,37 @@ export class KkApiClient {
 
   private async fetchProductInfoOnce(storeCode: string): Promise<KkProductInfoData> {
     let lastError: any;
-    for (let attempt = 0; attempt < 2; attempt++) {
+    let networkRetries = 0;
+    let filePendingRetries = 0;
+    for (;;) {
       try {
         const res = await this.rawFetch<KkApiResponse<KkProductInfoData>>('/product/product_info', {
           store_code: storeCode,
         });
         if (res.error_code !== 0 || !res.data) {
           const apiErr: any = new Error(`KK product_info gagal: ${res.msg} (kode: ${res.error_code})`);
-          apiErr.noRetry = true;
+          // KK menyiapkan file menu outlet saat pertama diminta: "get file error" baru siap
+          // setelah sekitar 5-8 detik. Hanya error ini yang layak ditunggu dan dicoba ulang.
+          apiErr.filePending = /get file error/i.test(String(res.msg || ''));
+          apiErr.noRetry = !apiErr.filePending;
           throw apiErr;
         }
         return res.data;
       } catch (err: any) {
         lastError = err;
-        const retryable = err?.httpStatus === undefined || err.httpStatus >= 500;
-        if (!retryable || err?.noRetry) break;
-        if (attempt === 0) {
-          console.warn(`[KkClient] product_info [${storeCode}] gagal (${err?.message}), retry 1x`);
+        if (err?.filePending) {
+          if (filePendingRetries >= KkApiClient.FILE_PENDING_MAX_RETRIES) break;
+          filePendingRetries++;
+          console.warn(
+            `[KkClient] product_info [${storeCode}] belum siap di KK (get file error), tunggu lalu coba lagi ${filePendingRetries}/${KkApiClient.FILE_PENDING_MAX_RETRIES}`
+          );
+          await new Promise((resolve) => setTimeout(resolve, this.filePendingDelayMs));
+          continue;
         }
+        const retryable = err?.httpStatus === undefined || err.httpStatus >= 500;
+        if (!retryable || err?.noRetry || networkRetries >= 1) break;
+        networkRetries++;
+        console.warn(`[KkClient] product_info [${storeCode}] gagal (${err?.message}), retry 1x`);
       }
     }
     throw lastError;

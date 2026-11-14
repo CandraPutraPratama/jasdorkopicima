@@ -199,3 +199,54 @@ describe('KkApiClient: satu fetch product_info per outlet (dedupe in-flight)', (
     assert.equal(menu.menu_groups.length, 1);
   });
 });
+
+describe('KkApiClient: "get file error" KK dicoba ulang sampai data siap', () => {
+  const originalFetch = globalThis.fetch;
+  const originalDelay = BUSINESS_CONFIG.client.politeDelayMs;
+
+  beforeEach(() => {
+    BUSINESS_CONFIG.client.politeDelayMs = 0;
+  });
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
+    BUSINESS_CONFIG.client.politeDelayMs = originalDelay;
+  });
+
+  const fileError = () => new Response(JSON.stringify({ error_code: -1, msg: 'get file error', data: null }));
+  const ok = () =>
+    new Response(JSON.stringify({ error_code: 0, msg: 'OK', data: { menu_groups: [], menu_items: [] } }));
+
+  it('berhasil setelah beberapa kali get file error', async () => {
+    let calls = 0;
+    globalThis.fetch = async () => (++calls <= 3 ? fileError() : ok());
+    const client = new KkApiClient('https://mock-kk.test');
+    client.filePendingDelayMs = 0;
+    const menu = await client.queryProductMenu('OUTLET-BARU');
+    assert.deepStrictEqual(menu, { menu_groups: [] });
+    assert.equal(calls, 4);
+  });
+
+  it('menyerah setelah 6 percobaan ulang (total 7 panggilan) dan melempar error asli', async () => {
+    let calls = 0;
+    globalThis.fetch = async () => {
+      calls++;
+      return fileError();
+    };
+    const client = new KkApiClient('https://mock-kk.test');
+    client.filePendingDelayMs = 0;
+    await assert.rejects(() => client.queryProductMenu('OUTLET-RUSAK'), /get file error/);
+    assert.equal(calls, 7);
+  });
+
+  it('error_code lain tidak diulang', async () => {
+    let calls = 0;
+    globalThis.fetch = async () => {
+      calls++;
+      return new Response(JSON.stringify({ error_code: 1001, msg: 'store not found', data: null }));
+    };
+    const client = new KkApiClient('https://mock-kk.test');
+    client.filePendingDelayMs = 0;
+    await assert.rejects(() => client.queryProductMenu('X'), /store not found/);
+    assert.equal(calls, 1);
+  });
+});
